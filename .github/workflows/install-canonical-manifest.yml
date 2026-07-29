@@ -8,9 +8,17 @@ on:
       - tools/.seed-v4/**
       - tools/install_canonical_manifest.py
       - .github/workflows/install-canonical-manifest.yml
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 permissions:
   contents: write
+  pull-requests: read
 
 concurrency:
   group: install-canonical-language-manifest
@@ -18,6 +26,7 @@ concurrency:
 
 jobs:
   install:
+    if: github.event_name == 'push' || github.head_ref == 'feature/canonical-manifest-clean'
     runs-on: ubuntu-latest
     steps:
       - name: Check out clean manifest branch
