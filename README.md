@@ -9,23 +9,22 @@
 
 ---
 
-## 🎯 Purpose
+## 🎯 For Recruiters & Hiring Managers
 
-Every language exists for a reason. This repository demonstrates **mastery across 21 programming languages**, each placed in its **exact domain of excellence** with complete W4H documentation:
+This repository is **The Tower of Babel** — a 21-language systems engineering Rosetta Stone demonstrating polyglot technical mastery. It provides:
 
-- **What** — What the language does best
-- **Where** — Where it's deployed in production
-- **When** — When to choose this language
-- **Why** — Why this language over alternatives
-- **How** — How the language achieves its goals
+- **21 Programming Languages** placed in their exact domains of production excellence
+- **W4H Framework (What, Where, When, Why, How)** explaining language selection rationale
+- **42 Source Code Exhibits** (2 per language: 1 easy fundamental, 1 advanced production exhibit)
+- **Zero Filler**: Every single language file contains compiler-valid, production-grade code
 
-Each language has two exhibits:
-1. **Easy Example** — Clear, accessible demonstration of fundamentals
-2. **Advanced Production Exhibit** — Real-world, production-grade implementation
+**Why this matters**: Modern infrastructure requires heterogeneous language stacks. Demonstrating production mastery across C, Rust, C++, Go, Python, TypeScript, CUDA, Verilog, R, Julia, Swift, Zig, Odin, Mojo, Elixir, Haskell, Lean 4, Triton, Protobuf, SQL, and WebAssembly proves true senior polyglot systems architecture capabilities.
 
 ---
 
-## 🏛️ Master Language & W4H Architecture Matrix
+## 🔬 For Engineers & Technical Reviewers
+
+### 🏛️ Master Language & W4H Architecture Matrix
 
 | # | Language | Category / Paradigm | Primary Domain | W4H Rationale | Easy Example | Advanced Production Exhibit |
 | :--: | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -53,22 +52,14 @@ Each language has two exhibits:
 
 ---
 
-## 📊 Language Domain Coverage
+## 🤖 ML/AI & Programmatic Mesh Integration
 
-```
-┌──────────────────────────────────────────────────────────────┐
-│  SYSTEMS           │  AI/ML              │  INFRASTRUCTURE    │
-│  C, C++, Rust      │  Python, CUDA       │  Go, TypeScript    │
-│  Zig, Odin         │  Triton, Mojo       │  Elixir, Protobuf  │
-│                    │  Julia, R           │  SQL, WASM         │
-├──────────────────────────────────────────────────────────────┤
-│  HARDWARE          │  FORMAL METHODS     │  FUNCTIONAL        │
-│  Verilog, CUDA     │  Lean 4             │  Haskell, Elixir   │
-│  WASM              │  Haskell            │  Rust              │
-├──────────────────────────────────────────────────────────────┤
-│  APPLE NATIVE      │  SCIENTIFIC         │  DATA/STATS        │
-│  Swift (Metal/ANE) │  Julia, Python      │  R, SQL, Python    │
-└──────────────────────────────────────────────────────────────┘
+- **MCP Tool**: `query_babel_registry()` — exposes all 21 language exhibits to AI agents
+- **Mastermind Sidecar**: Fully synchronized with APEX Highway mesh
+- **SHA-256 Integrity**: Tracked in `.integrity/file_hashes.json`
+
+```python
+python3 src/babel_registry.py
 ```
 
 ---
@@ -76,36 +67,11 @@ Each language has two exhibits:
 ## ⚡ Quick Start
 
 ```bash
-# Clone
+# Clone standalone repo
 git clone https://github.com/GlacierEQ/the-tower-of-babel.git
 cd the-tower-of-babel
 
-# Run the Babel Registry (indexes all languages)
+# Run Babel Registry
 python3 src/babel_registry.py
-
-# Run tests
 python3 tests/test_tower_of_babel.py
-
-# Run any individual example
-python3 languages/python/easy_fibonacci.py
-python3 languages/python/advanced_async_orchestrator.py
-Rscript languages/r/easy_statistics.R
 ```
-
----
-
-## 🧠 Philosophy
-
-> *"The limits of my language mean the limits of my world."* — Ludwig Wittgenstein
-
-Each language in this repository was chosen because it is the **objectively best tool** for its specific domain. No language is filler — every file demonstrates real production patterns that scale to enterprise infrastructure.
-
----
-
-## 📜 License
-
-MIT License — See [LICENSE](LICENSE)
-
----
-
-**Built by [GlacierEQ](https://github.com/GlacierEQ)** — Multi-Language Systems Engineering at Scale
