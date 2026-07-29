@@ -1,5 +1,5 @@
 {
-  "file_count": 127,
+  "file_count": 121,
   "hash_algorithm": "sha256",
   "hashes": {
     ".github/workflows/tower.yml": "b2b7e866bf2bdad444923782f801ee7d69e62d0fc572be3c92429bfd4512269e",
@@ -104,12 +104,6 @@
     "registry/tower.d/systems.json": "42e3a8b13d4e5774d75dea9c34d3d7c75b9e8dcc1be2ab2cd3b318ef8facaf05",
     "registry/tower.yml": "6f88048dcd505e014862e2da7db7b1ff8607377a231fd5fab97726016775c8fd",
     "src/babel_registry.py": "8e28111164bb364f1dba0a96b3b13062899d3c3d053f30ccbe0aca632b73c6ee",
-    "src/glaciereq_tower_of_babel.egg-info/PKG-INFO": "a6a991fb186a2d4d7f268bbfbbe5750e38bc2070bd09943c6223e1a9f2547164",
-    "src/glaciereq_tower_of_babel.egg-info/SOURCES.txt": "3771853fbe2414b6817aa5487d7e46ea67874af3c659abc5f852d1a63409f9f2",
-    "src/glaciereq_tower_of_babel.egg-info/dependency_links.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
-    "src/glaciereq_tower_of_babel.egg-info/entry_points.txt": "0f45f9008209ac041ab2870715e257ed87b62e4f9041bc55d5a1c7483a3a0447",
-    "src/glaciereq_tower_of_babel.egg-info/requires.txt": "7182711cbb77f6898f0472874be257549e594ec4848aeb627a39032717a2b6fe",
-    "src/glaciereq_tower_of_babel.egg-info/top_level.txt": "427face3de91cfff25342007697ad3f00efaa38a6b47b1680e513af7711b6b62",
     "src/tower/__init__.py": "fe73cf5475892e00a4520fc1e9742626a83e6529c876529fc7d72487febdb78c",
     "src/tower/__main__.py": "79ee6f134c5c5193377cf9b189cbdcc3e2095e49ba9cec310114441c15a917c4",
     "src/tower/benchmark.py": "3b90937b132d9573a751d5f946bfeb428cf9ab7ff850d6a05a4ced6b5a96b81e",
@@ -123,7 +117,7 @@
     "src/tower/data/tower.d/systems.json": "42e3a8b13d4e5774d75dea9c34d3d7c75b9e8dcc1be2ab2cd3b318ef8facaf05",
     "src/tower/data/tower.yml": "6f88048dcd505e014862e2da7db7b1ff8607377a231fd5fab97726016775c8fd",
     "src/tower/generate.py": "1decf0026939de9298111821ab43416b6d5a81f4e7554c29bbebc9e98dd61a27",
-    "src/tower/integrity.py": "3ad16cbe7f6045fa5e9770c113048ede6d50f0c4cbcc128b8d443ba9498ddb26",
+    "src/tower/integrity.py": "505c0f3bf07d022499ec7248a67107e746ce27bd6feb47729b4f6ed659bc3d8c",
     "src/tower/proofs.py": "460bd519b20946f39aedcac0f8b369dd918a53f0ac7c38661b73d05647910f2d",
     "src/tower/receipt.py": "9ea97bb35b6bb27c80bb2ec3aab3214746cecb1eb8f48112ba4fe33596cdd803",
     "src/tower/registry.py": "dc0214a744e3efb5f1c0118088a158d87ecdb17769397ab2ff702e995afc8bb7",
