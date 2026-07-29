@@ -1,8 +1,8 @@
 {
-  "file_count": 121,
+  "file_count": 127,
   "hash_algorithm": "sha256",
   "hashes": {
-    ".github/workflows/tower.yml": "ad061b3750aa202bb4cbc300834474c5c42d8d1bdf404eeeac3aa765a0b4e08b",
+    ".github/workflows/tower.yml": "b2b7e866bf2bdad444923782f801ee7d69e62d0fc572be3c92429bfd4512269e",
     ".gitignore": "c6572b4405b8cf647c9da1702f7cec6a7338a4c4375ce86fbab18aacc528fbe2",
     ".integrity/watchdog_daemon.py": "8d446adc5fc711d8c8b553140dc9f26e1bc9aa10c8bd445484e92cac330f30a3",
     "AGENTS.md": "fec8125d18e4088277551c8cd25852d062c37db3a3c864d3bc6d6dffd21fd22c",
@@ -16,7 +16,7 @@
     "flagship/lean4/invariant.lean": "ca1c42e3c739f552177ca4716a2d342208f966aa37a906550b9a00ea3820459c",
     "flagship/mission.input.json": "a6cff985b59219e60250505ad2349c7632864703a920a12f8963e4530f06b0dd",
     "flagship/python/planner.py": "7e02c5ac79c8ec95b24f7b79e0aedcb9dada2b0da84fc07793b442d6807b8788",
-    "flagship/run_pipeline.py": "c10cb5e43fff05628339bb3562dafe3c05a96e09a8cd63b8ffded5e311a80a40",
+    "flagship/run_pipeline.py": "b3c4df3394e74f201288d1f8e4e98e90e46eac06e0f07480e485404fb81b4991",
     "flagship/rust/Cargo.toml": "7893e0325027fc0a5a99bb384d848393325c800ebb1793fb6196da50fcb62273",
     "flagship/rust/src/main.rs": "4e9c54cdf94ca6cd1b91b6b6726117b581e67efa179a6fab0157c847960c8169",
     "flagship/sql/state.sql": "371f59b59608cb4484c76620f756d4816a702ee7b41555c7bff40f139299c688",
@@ -40,7 +40,7 @@
     "languages/capnproto/advanced_agent_mesh.capnp": "6a12c55595f3878cb9e979a48d6ea369aa9cf73fa05822b6df83c11a1ee3896f",
     "languages/capnproto/easy_user.capnp": "fc7aa7bcbcedd4c02be188d5927d7a378ff030c237fc390c4ca87b0182d7b50b",
     "languages/chisel/advanced_noc_router.scala": "56b0f34652644c6d565c2ef5b7de29c7f00310579d671ef03e5dcdae21f349dc",
-    "languages/chisel/easy_counter.scala": "c589d3c5b356a73efbc769e8684964c3c6aa08fe9a6704bab2627e8402d9c0c6",
+    "languages/chisel/easy_counter.scala": "3eac4da597e8d23181e89994096845018ba77fb011e32436f198b6ffc7d375ef",
     "languages/coq/advanced_receipt_chain.v": "f67a2ea98f7e198e02915d01c54f258c3bfea445fe82de8cb7a94e2974ce2bfb",
     "languages/coq/easy_logic.v": "84d90d34f238d8dc46b58439f63c00fdeb291fa3977f353404616a1fa9e3e3df",
     "languages/cpp/advanced_kv_entropy.cpp": "d4ab0cb9f72f935e4866f6c03463f4d274eefc740108624cbcb0330b076a46b4",
@@ -104,6 +104,12 @@
     "registry/tower.d/systems.json": "42e3a8b13d4e5774d75dea9c34d3d7c75b9e8dcc1be2ab2cd3b318ef8facaf05",
     "registry/tower.yml": "6f88048dcd505e014862e2da7db7b1ff8607377a231fd5fab97726016775c8fd",
     "src/babel_registry.py": "8e28111164bb364f1dba0a96b3b13062899d3c3d053f30ccbe0aca632b73c6ee",
+    "src/glaciereq_tower_of_babel.egg-info/PKG-INFO": "a6a991fb186a2d4d7f268bbfbbe5750e38bc2070bd09943c6223e1a9f2547164",
+    "src/glaciereq_tower_of_babel.egg-info/SOURCES.txt": "3771853fbe2414b6817aa5487d7e46ea67874af3c659abc5f852d1a63409f9f2",
+    "src/glaciereq_tower_of_babel.egg-info/dependency_links.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "src/glaciereq_tower_of_babel.egg-info/entry_points.txt": "0f45f9008209ac041ab2870715e257ed87b62e4f9041bc55d5a1c7483a3a0447",
+    "src/glaciereq_tower_of_babel.egg-info/requires.txt": "7182711cbb77f6898f0472874be257549e594ec4848aeb627a39032717a2b6fe",
+    "src/glaciereq_tower_of_babel.egg-info/top_level.txt": "427face3de91cfff25342007697ad3f00efaa38a6b47b1680e513af7711b6b62",
     "src/tower/__init__.py": "fe73cf5475892e00a4520fc1e9742626a83e6529c876529fc7d72487febdb78c",
     "src/tower/__main__.py": "79ee6f134c5c5193377cf9b189cbdcc3e2095e49ba9cec310114441c15a917c4",
     "src/tower/benchmark.py": "3b90937b132d9573a751d5f946bfeb428cf9ab7ff850d6a05a4ced6b5a96b81e",
@@ -122,7 +128,7 @@
     "src/tower/receipt.py": "9ea97bb35b6bb27c80bb2ec3aab3214746cecb1eb8f48112ba4fe33596cdd803",
     "src/tower/registry.py": "dc0214a744e3efb5f1c0118088a158d87ecdb17769397ab2ff702e995afc8bb7",
     "tests/test_flagship.py": "6f467f5638c9e729a484566bb0eb9c01da38ab0afa394b21f94e8dc6cab714c9",
-    "tests/test_tower_of_babel.py": "0367fe1eb715ab7782e7dc31e2055bef915edaada23a66d318656d9e74dfa9fd"
+    "tests/test_tower_of_babel.py": "79e0f58aefbb5874fd47fd0931d451827e05dd3c1fd83cea36500d36f65f162d"
   },
   "repo_name": "the-tower-of-babel",
   "schema_version": "1.0.0"
