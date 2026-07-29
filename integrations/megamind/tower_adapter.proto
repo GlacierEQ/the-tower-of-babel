@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package glaciereq.megamind.tower.v1;
+
+import "proto/tower.proto";
+
+message MissionTechnologyEnvelope {
+  string mission_id = 1;
+  repeated string capabilities = 2;
+  repeated string interfaces = 3;
+  string minimum_proof_class = 4;
+}
+
+message TowerActivationPlan {
+  string mission_id = 1;
+  repeated glaciereq.tower.v1.TechnologySpec technologies = 2;
+  repeated string agent_ids = 3;
+  repeated string piston_ids = 4;
+  repeated string activation_reasons = 5;
+  string tower_registry_sha256 = 6;
+}
+
+service TowerMegamindBridge {
+  rpc Plan(MissionTechnologyEnvelope) returns (TowerActivationPlan);
+}

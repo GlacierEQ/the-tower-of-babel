@@ -1,33 +1,204 @@
-"""Test suite for The Tower of Babel repository."""
+"""System tests for the governed Tower."""
+from __future__ import annotations
+
+import json
+import subprocess
 import sys
-import unittest
+from copy import deepcopy
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
-from babel_registry import BabelRegistryEngine, BABEL_REGISTRY
+import pytest
 
-class TestTowerOfBabel(unittest.TestCase):
+from integrations.megamind.adapter import TechnologyRequest, select_technologies
+from tower.benchmark import benchmark_many
+from tower.build import build_floor
+from tower.generate import build_surfaces, generate
+from tower.integrity import verify_integrity, write_manifest
+from tower.proofs import build_proof_report
+from tower.receipt import build_receipt
+from tower.registry import REPO_ROOT, TowerRegistry, load_registry, validate_registry
 
-    def setUp(self):
-        self.engine = BabelRegistryEngine()
-        self.repo_root = Path(__file__).resolve().parent.parent
-        self.languages_dir = self.repo_root / "languages"
 
-    def test_registry_count(self):
-        self.assertEqual(len(BABEL_REGISTRY), 17)
+def test_canonical_registry_governs_all_advertised_floors():
+    registry = load_registry()
+    assert len(registry.technologies) == 30
+    assert not validate_registry(registry)
+    assert {row["id"] for row in registry.technologies} >= {
+        "python", "c", "rust", "typescript", "cuda", "verilog", "r",
+        "onnx", "mlir", "flatbuffers", "capnproto",
+        "systemverilog", "vhdl", "chisel", "coq", "agda",
+    }
 
-    def test_w4h_evaluator_all(self):
-        for lang_key in BABEL_REGISTRY.keys():
-            res = self.engine.get_spec(lang_key)
-            self.assertTrue(res["ok"])
-            self.assertEqual(res["status"], "VALIDATED_W4H_SPEC")
 
-    def test_language_directories_and_exhibits_exist(self):
-        for lang_key, spec in BABEL_REGISTRY.items():
-            lang_dir = self.languages_dir / lang_key
-            self.assertTrue(lang_dir.is_dir(), f"Missing language directory: {lang_dir}")
-            files = list(lang_dir.glob(f"*{spec.extension}")) + list(lang_dir.glob("*.py")) + list(lang_dir.glob("*.proto"))
-            self.assertGreaterEqual(len(files), 2, f"Language {lang_key} must have at least easy & advanced exhibits")
+def test_every_floor_has_complete_w4h_examples_and_proof():
+    registry = load_registry()
+    for row in registry.technologies:
+        for key in ("what", "where", "when", "why", "how"):
+            assert len(row[key].strip()) >= 12, (row["id"], key)
+        assert (REPO_ROOT / row["easy_example"]).is_file()
+        assert (REPO_ROOT / row["advanced_example"]).is_file()
+        assert row["evidence_state"]
+        assert row["proof_class"]
+        assert row["toolchain"]["tool"]
+        assert row["toolchain"]["reference_pin"]
+        assert row["primary_evidence"]
 
-if __name__ == "__main__":
-    unittest.main()
+
+def test_generated_surfaces_do_not_drift():
+    assert generate(check=True) == []
+
+
+def test_generator_emits_one_build_manifest_per_floor(tmp_path, monkeypatch):
+    registry = load_registry()
+    surfaces = build_surfaces(registry)
+    floor_paths = [path for path in surfaces if "artifacts" in path.parts and "floors" in path.parts]
+    assert len(floor_paths) == len(registry.technologies)
+    payloads = [json.loads(surfaces[path]) for path in floor_paths]
+    assert {row["technology_id"] for row in payloads} == {row["id"] for row in registry.technologies}
+
+
+def test_runtime_registry_is_thin_canonical_facade():
+    import babel_registry
+
+    canonical = load_registry()
+    assert len(babel_registry.BABEL_REGISTRY) == len(canonical.technologies)
+    assert babel_registry.BabelRegistryEngine().get_spec("rust")["what"] == canonical.by_id("rust")["what"]
+
+
+def test_sidecar_has_no_hardcoded_floor_count():
+    source = (REPO_ROOT / "mastermind_sidecar.py").read_text(encoding="utf-8")
+    assert "total_technologies" in source
+    assert '"total_languages": 17' not in source
+    assert "len(technologies)" in source
+
+
+def test_weak_advanced_exhibits_are_substantive():
+    minimum_bytes = {
+        "languages/rust/advanced_safety_governor.rs": 2500,
+        "languages/typescript/advanced_mcp_gateway.ts": 2500,
+        "languages/cuda/advanced_flash_attn_kernel.cu": 2000,
+        "languages/lean4/advanced_truth_gate_proof.lean": 700,
+        "languages/protobuf/advanced_colossus_cooling.proto": 900,
+    }
+    for rel, minimum in minimum_bytes.items():
+        assert (REPO_ROOT / rel).stat().st_size >= minimum, rel
+
+
+def test_missing_toolchain_is_an_exact_blocker():
+    fake = {
+        "id": "missing",
+        "toolchain": {
+            "tool": "tower-tool-that-does-not-exist",
+            "reference_pin": "1.0",
+            "build": [],
+            "test": [],
+        },
+        "execution": {"ci_tier": "portable", "hardware_gate": ""},
+    }
+    result = build_floor(fake)
+    assert result["status"] == "BLOCKED_TOOLCHAIN"
+    assert "tower-tool-that-does-not-exist" in result["blocker"]
+
+
+def test_hardware_gate_is_not_reported_as_success(monkeypatch):
+    fake = {
+        "id": "gpu",
+        "toolchain": {"tool": sys.executable, "reference_pin": "test", "build": [], "test": []},
+        "execution": {"ci_tier": "hardware", "hardware_gate": "Example accelerator"},
+    }
+    monkeypatch.delenv("TOWER_ENABLE_GPU", raising=False)
+    result = build_floor(fake)
+    assert result == {
+        "technology_id": "gpu",
+        "status": "BLOCKED_HARDWARE",
+        "blocker": "Example accelerator",
+        "tool": sys.executable,
+        "reference_pin": "test",
+        "commands": [],
+    }
+
+
+def test_megamind_adapter_selects_technology_and_owners():
+    plan = select_technologies(
+        TechnologyRequest(
+            mission_id="m-1",
+            capabilities=("coding", "evidence", "tool"),
+            interfaces=("protobuf",),
+            minimum_proof_class="compile",
+        )
+    )
+    assert plan["mission_id"] == "m-1"
+    assert plan["technology_ids"]
+    assert len(plan["tower_registry_sha256"]) == 64
+    assert plan["agent_ids"]
+    assert plan["piston_ids"]
+
+
+def test_registry_rejects_missing_w4h():
+    registry = load_registry()
+    payload = deepcopy(registry.payload)
+    next(row for row in payload["technologies"] if row["id"] == "python")["why"] = ""
+    broken = TowerRegistry(payload=payload, source=registry.source, source_files=registry.source_files)
+    assert any("python.why" in error for error in validate_registry(broken, check_paths=False))
+
+
+def test_integrity_manifest_detects_and_clears_drift(tmp_path, monkeypatch):
+    manifest = write_manifest()
+    assert manifest["file_count"] > 30
+    assert verify_integrity()["ok"]
+
+
+def test_receipt_is_deterministic():
+    first = build_receipt({"counts": {"VERIFIED": 3}})
+    second = build_receipt({"counts": {"VERIFIED": 3}})
+    assert first == second
+    assert len(first["receipt_sha256"]) == 64
+    assert first["technology_count"] == 30
+
+
+def test_tower_proto_contains_registry_and_megamind_contracts():
+    tower_proto = (REPO_ROOT / "proto/tower.proto").read_text(encoding="utf-8")
+    bridge_proto = (REPO_ROOT / "integrations/megamind/tower_adapter.proto").read_text(encoding="utf-8")
+    assert "message TechnologySpec" in tower_proto
+    assert "service TowerAuthority" in tower_proto
+    assert "service TowerMegamindBridge" in bridge_proto
+
+
+def test_benchmark_report_is_truthful_about_missing_tools():
+    registry = load_registry()
+    report = benchmark_many(registry, ["mlir"], iterations=1)
+    assert report["results"][0]["status"] in {"BLOCKED_TOOLCHAIN", "MEASURED", "NO_RUNTIME_BENCHMARK"}
+    assert "not universal language rankings" in report["truth_note"]
+
+
+def test_proof_report_binds_declared_gate_to_build_status():
+    registry = load_registry()
+    report = build_proof_report(
+        registry,
+        {"results": [{"technology_id": "lean4", "status": "BLOCKED_TOOLCHAIN"}]},
+    )
+    lean = next(row for row in report["floors"] if row["technology_id"] == "lean4")
+    assert lean["proof_class"] == "formal"
+    assert lean["proof_status"] == "BLOCKED"
+
+
+def test_packaged_registry_is_exact_canonical_mirror():
+    canonical = load_registry(REPO_ROOT / "registry/tower.yml")
+    packaged = load_registry(REPO_ROOT / "src/tower/data/tower.yml")
+    assert packaged.payload == canonical.payload
+    assert packaged.canonical_bytes() == canonical.canonical_bytes()
+    assert len(packaged.source_files) == len(canonical.source_files)
+
+
+def test_registry_fragments_are_contained_and_unique(tmp_path):
+    index = tmp_path / "tower.yml"
+    index.write_text(
+        json.dumps({
+            "tower_id": "glaciereq.tower-of-babel.v1",
+            "governance": {"canonical_source": "registry/tower.yml"},
+            "fragments": ["../outside.json"],
+        }),
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="fragment"):
+        load_registry(index)

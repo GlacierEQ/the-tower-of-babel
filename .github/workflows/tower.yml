@@ -1,0 +1,99 @@
+name: Tower Verification
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  governance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e .[dev]
+      - run: tower validate
+      - run: tower generate --check
+      - run: pytest -q
+      - run: tower integrity verify
+      - run: tower build --all --allow-blocked --output artifacts/build-report.json
+      - run: tower generate
+      - run: tower benchmark python c cpp rust go typescript webassembly --output artifacts/benchmarks.json
+      - run: tower proof-report --build-report artifacts/build-report.json --output artifacts/proof-report.json
+      - run: tower receipt --build-report artifacts/build-report.json --output artifacts/tower_receipt.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tower-governance-receipts
+          path: |
+            artifacts/build-report.json
+            artifacts/tower_receipt.json
+            artifacts/benchmarks.json
+            artifacts/proof-report.json
+            artifacts/floors
+          if-no-files-found: error
+
+  flagship-portable:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.83.0"
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23.4"
+      - run: npm install --global typescript@5.7.2
+      - run: sudo apt-get update && sudo apt-get install -y sqlite3 wabt protobuf-compiler
+      - run: python -m pip install -e .
+      - run: python flagship/run_pipeline.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tower-polyglot-flagship
+          path: build/flagship
+          if-no-files-found: error
+
+  portable-floor-compile:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        floor: [python, c, cpp, rust, go, typescript, protobuf, webassembly]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.83.0"
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23.4"
+      - run: npm install --global typescript@5.7.2
+      - run: sudo apt-get update && sudo apt-get install -y gcc g++ protobuf-compiler wabt
+      - run: python -m pip install -e .
+      - run: tower build "${{ matrix.floor }}" --output "artifacts/${{ matrix.floor }}.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: floor-${{ matrix.floor }}
+          path: artifacts/${{ matrix.floor }}.json
+          if-no-files-found: error
