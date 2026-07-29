@@ -8,6 +8,38 @@ permissions:
   contents: read
 
 jobs:
+  sync-generated-surfaces:
+    if: github.event_name == 'push' && github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e .
+      - name: Regenerate canonical surfaces and integrity ledger
+        run: |
+          tower validate
+          tower generate
+          tower integrity generate
+      - name: Commit verified generated drift
+        run: |
+          if git diff --quiet; then
+            echo "Generated surfaces are already synchronized."
+            exit 0
+          fi
+          git config user.name "tower-governance-bot"
+          git config user.email "tower-governance-bot@users.noreply.github.com"
+          git add README.md src/babel_registry.py mastermind_sidecar.py generated src/tower/data .integrity/file_hashes.json
+          git commit -m "chore: synchronize generated Tower surfaces"
+          git push origin "HEAD:${{ github.ref_name }}"
+
   governance:
     runs-on: ubuntu-latest
     steps:
