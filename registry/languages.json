@@ -1,0 +1,1703 @@
+{
+  "$schema": "./languages.schema.json",
+  "schema_version": "1.0.0",
+  "project": {
+    "name": "The Tower of Babel",
+    "repository": "GlacierEQ/the-tower-of-babel",
+    "purpose": "Canonical polyglot capability registry for Pillars & Pistons and Spiral Engine.",
+    "canonical_source": "registry/languages.json",
+    "generated_artifacts": [
+      "README.md",
+      "src/babel_registry.py",
+      "generated/build_commands.json",
+      "generated/interfaces.json",
+      "generated/maturity.json",
+      "generated/link_library.md",
+      "generated/smithery.registry.json",
+      "generated/spiral-engine.registry.json"
+    ]
+  },
+  "policies": {
+    "maturity_levels": [
+      "concept",
+      "exhibit",
+      "integration-candidate",
+      "production"
+    ],
+    "claim_rule": "Production claims require build, native tests, cross-language contract tests, benchmark evidence, and artifact digests.",
+    "link_rule": "Every language must carry primary or official documentation and source/ecosystem references.",
+    "smithery_rule": "Declared metadata is not published registration; publication requires a real MCP package and registry receipt.",
+    "spiral_rule": "Declared capabilities are not active pistons until Spiral Engine returns a registration receipt."
+  },
+  "languages": [
+    {
+      "id": "python",
+      "name": "Python",
+      "extension": ".py",
+      "category": "Dynamic scripting and ML",
+      "primary_domain": "AI/ML pipelines, document intelligence, automation",
+      "w4h": {
+        "what": "Rapidly composes AI, data, automation, and integration workflows.",
+        "where": "Document intelligence, orchestration, model evaluation, ETL, CLI tooling.",
+        "when": "Choose when iteration speed and ecosystem breadth outweigh native-runtime constraints.",
+        "why": "Its scientific, ML, web, and automation ecosystems make it the strongest coordination language for intelligent workflows.",
+        "how": "Typed Python, asyncio, dataclasses, packaging, and native-extension boundaries."
+      },
+      "examples": {
+        "easy": "languages/python/easy_fibonacci.py",
+        "advanced": "languages/python/advanced_async_orchestrator.py"
+      },
+      "build": {
+        "toolchain": "CPython 3.12+",
+        "check": "python -m py_compile languages/python/easy_fibonacci.py languages/python/advanced_async_orchestrator.py",
+        "run_easy": "python languages/python/easy_fibonacci.py",
+        "run_advanced": "python languages/python/advanced_async_orchestrator.py",
+        "ci_tier": "portable"
+      },
+      "interfaces": [
+        "cli",
+        "stdio",
+        "http",
+        "mcp",
+        "ffi",
+        "notebook"
+      ],
+      "maturity": {
+        "level": "exhibit",
+        "status": "seeded",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      },
+      "links": [
+        {
+          "label": "Official documentation",
+          "url": "https://docs.python.org/3/",
+          "kind": "official-docs"
+        },
+        {
+          "label": "CPython source",
+          "url": "https://github.com/python/cpython",
+          "kind": "source"
+        },
+        {
+          "label": "Python Package Index",
+          "url": "https://pypi.org/",
+          "kind": "ecosystem"
+        }
+      ],
+      "smithery": {
+        "eligible": true,
+        "role": "mcp-server-runtime",
+        "transports": [
+          "stdio",
+          "streamable-http"
+        ],
+        "registration_status": "declared-not-published",
+        "capability_namespace": "babel.python"
+      },
+      "spiral_engine": {
+        "pillar": "orchestration",
+        "piston": "ai-workflow-orchestrator",
+        "capability_id": "babel.python.orchestrate",
+        "registration_status": "declared",
+        "evidence_required": [
+          "build receipt",
+          "test receipt",
+          "artifact digest"
+        ]
+      }
+    },
+    {
+      "id": "c",
+      "name": "C",
+      "extension": ".c",
+      "category": "Bare-metal systems",
+      "primary_domain": "Kernels, firmware, embedded and ABI foundations",
+      "w4h": {
+        "what": "Provides direct, portable access to memory, hardware, and stable ABIs.",
+        "where": "Firmware, kernels, drivers, embedded runtimes, FFI shims.",
+        "when": "Choose when deterministic resource control and universal toolchain support are mandatory.",
+        "why": "C remains the common denominator for operating systems, hardware interfaces, and foreign-function boundaries.",
+        "how": "Explicit memory ownership, predictable layout, compiler toolchains, and C ABI contracts."
+      },
+      "examples": {
+        "easy": "languages/c/easy_linked_list.c",
+        "advanced": "languages/c/advanced_lockfree_spsc_ring.c"
+      },
+      "build": {
+        "toolchain": "C23-capable compiler",
+        "check": "cc -std=c17 -Wall -Wextra -Werror -fsyntax-only languages/c/easy_linked_list.c languages/c/advanced_lockfree_spsc_ring.c",
+        "run_easy": "cc -std=c17 languages/c/easy_linked_list.c -o /tmp/babel-c-easy && /tmp/babel-c-easy",
+        "run_advanced": "cc -std=c17 -O2 languages/c/advanced_lockfree_spsc_ring.c -o /tmp/babel-c-advanced && /tmp/babel-c-advanced",
+        "ci_tier": "portable"
+      },
+      "interfaces": [
+        "cli",
+        "ffi",
+        "shared-library",
+        "embedded"
+      ],
+      "maturity": {
+        "level": "exhibit",
+        "status": "seeded",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      },
+      "links": [
+        {
+          "label": "WG14 C standards group",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/",
+          "kind": "standard"
+        },
+        {
+          "label": "C language project",
+          "url": "https://www.c-language.org/",
+          "kind": "official-docs"
+        },
+        {
+          "label": "GCC C dialect options",
+          "url": "https://gcc.gnu.org/onlinedocs/gcc/C-Dialect-Options.html",
+          "kind": "toolchain"
+        }
+      ],
+      "smithery": {
+        "eligible": false,
+        "role": "native-tool-backend",
+        "transports": [],
+        "registration_status": "declared-not-published",
+        "capability_namespace": "babel.c"
+      },
+      "spiral_engine": {
+        "pillar": "systems",
+        "piston": "abi-and-memory-foundation",
+        "capability_id": "babel.c.native",
+        "registration_status": "declared",
+        "evidence_required": [
+          "build receipt",
+          "test receipt",
+          "artifact digest"
+        ]
+      }
+    },
+    {
+      "id": "cpp",
+      "name": "C++",
+      "extension": ".cpp",
+      "category": "High-performance systems",
+      "primary_domain": "Low-latency compute, engines, inference and numerical kernels",
+      "w4h": {
+        "what": "Combines zero-overhead abstraction with mature systems and numerical libraries.",
+        "where": "Inference engines, real-time systems, simulation, high-performance libraries.",
+        "when": "Choose when mature native libraries, templates, SIMD, and deterministic performance are required.",
+        "why": "C++ offers unmatched production depth for performance-critical software while retaining high-level abstractions.",
+        "how": "RAII, templates, concepts, allocators, vectorization, and explicit ABI boundaries."
+      },
+      "examples": {
+        "easy": "languages/cpp/easy_vector.cpp",
+        "advanced": "languages/cpp/advanced_kv_entropy.cpp"
+      },
+      "build": {
+        "toolchain": "C++20 compiler",
+        "check": "c++ -std=c++20 -Wall -Wextra -Werror -fsyntax-only languages/cpp/easy_vector.cpp languages/cpp/advanced_kv_entropy.cpp",
+        "run_easy": "c++ -std=c++20 languages/cpp/easy_vector.cpp -o /tmp/babel-cpp-easy && /tmp/babel-cpp-easy",
+        "run_advanced": "c++ -std=c++20 -O3 languages/cpp/advanced_kv_entropy.cpp -o /tmp/babel-cpp-advanced && /tmp/babel-cpp-advanced",
+        "ci_tier": "portable"
+      },
+      "interfaces": [
+        "cli",
+        "ffi",
+        "shared-library",
+        "grpc",
+        "python-extension"
+      ],
+      "maturity": {
+        "level": "exhibit",
+        "status": "seeded",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      },
+      "links": [
+        {
+          "label": "ISO C++",
+          "url": "https://isocpp.org/",
+          "kind": "official"
+        },
+        {
+          "label": "C++ working draft source",
+          "url": "https://github.com/cplusplus/draft",
+          "kind": "standard-source"
+        },
+        {
+          "label": "LLVM documentation",
+          "url": "https://llvm.org/docs/",
+          "kind": "toolchain"
+        }
+      ],
+      "smithery": {
+        "eligible": false,
+        "role": "native-tool-backend",
+        "transports": [],
+        "registration_status": "declared-not-published",
+        "capability_namespace": "babel.cpp"
+      },
+      "spiral_engine": {
+        "pillar": "systems",
+        "piston": "high-performance-engine",
+        "capability_id": "babel.cpp.compute",
+        "registration_status": "declared",
+        "evidence_required": [
+          "build receipt",
+          "test receipt",
+          "artifact digest"
+        ]
+      }
+    },
+    {
+      "id": "rust",
+      "name": "Rust",
+      "extension": ".rs",
+      "category": "Memory-safe systems",
+      "primary_domain": "Integrity cores, policy engines, concurrency and cryptographic tooling",
+      "w4h": {
+        "what": "Delivers native performance with compile-time memory and concurrency guarantees.",
+        "where": "Trust spines, journals, cryptographic utilities, CLIs, services, and safe FFI.",
+        "when": "Choose when native performance and strong safety invariants must coexist.",
+        "why": "Ownership and the type system eliminate broad classes of memory and data-race failures before deployment.",
+        "how": "Ownership, traits, exhaustive enums, async runtimes, Cargo, and auditable unsafe boundaries."
+      },
+      "examples": {
+        "easy": "languages/rust/easy_counter.rs",
+        "advanced": "languages/rust/advanced_safety_governor.rs"
+      },
+      "build": {
+        "toolchain": "Rust stable",
+        "check": "rustc --edition 2021 languages/rust/easy_counter.rs -o /tmp/babel-rust-easy && rustc --edition 2021 --crate-type lib languages/rust/advanced_safety_governor.rs -o /tmp/libbabel_safety.rlib",
+        "run_easy": "/tmp/babel-rust-easy",
+        "run_advanced": "rustc --edition 2021 --test languages/rust/advanced_safety_governor.rs -o /tmp/babel-rust-advanced && /tmp/babel-rust-advanced",
+        "ci_tier": "portable"
+      },
+      "interfaces": [
+        "cli",
+        "ffi",
+        "wasm",
+        "grpc",
+        "mcp",
+        "static-library"
+      ],
+      "maturity": {
+        "level": "exhibit",
+        "status": "seeded",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      },
+      "links": [
+        {
+          "label": "Learn Rust",
+          "url": "https://www.rust-lang.org/learn",
+          "kind": "official-docs"
+        },
+        {
+          "label": "Rust source",
+          "url": "https://github.com/rust-lang/rust",
+          "kind": "source"
+        },
+        {
+          "label": "crates.io",
+          "url": "https://crates.io/",
+          "kind": "ecosystem"
+        }
+      ],
+      "smithery": {
+        "eligible": true,
+        "role": "mcp-server-runtime",
+        "transports": [
+          "stdio",
+          "streamable-http"
+        ],
+        "registration_status": "declared-not-published",
+        "capability_namespace": "babel.rust"
+      },
+      "spiral_engine": {
+        "pillar": "trust-spine",
+        "piston": "integrity-and-policy-core",
+        "capability_id": "babel.rust.integrity",
+        "registration_status": "declared",
+        "evidence_required": [
+          "build receipt",
+          "test receipt",
+          "artifact digest"
+        ]
+      }
+    },
+    {
+      "id": "go",
+      "name": "Go",
+      "extension": ".go",
+      "category": "Concurrent services",
+      "primary_domain": "Network services, daemons, telemetry and control-plane edges",
+      "w4h": {
+        "what": "Builds simple, statically linked concurrent services with excellent operational tooling.",
+        "where": "APIs, agents, daemons, telemetry collectors, CLIs, and distributed control services.",
+        "when": "Choose when deployment simplicity, concurrency, and network throughput matter more than maximal low-level control.",
+        "why": "Goroutines, channels, fast builds, and static binaries fit operational infrastructure exceptionally well.",
+        "how": "Interfaces, contexts, goroutines, channels, modules, profiling, and structured concurrency patterns."
+      },
+      "examples": {
+        "easy": "languages/go/easy_ping.go",
+        "advanced": "languages/go/advanced_telemetry_decoder.go"
+      },
+      "build": {
+        "toolchain": "Go 1.23+",
+        "check": "gofmt -w languages/go/easy_ping.go languages/go/advanced_telemetry_decoder.go && go test ./...",
+        "run_easy": "go run languages/go/easy_ping.go",
+        "run_advanced": "go run languages/go/advanced_telemetry_decoder.go",
+        "ci_tier": "portable"
+      },
+      "interfaces": [
+        "cli",
+        "http",
+        "grpc",
+        "protobuf",
+        "mcp",
+        "daemon"
+      ],
+      "maturity": {
+        "level": "exhibit",
+        "status": "seeded",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      },
+      "links": [
+        {
+          "label": "Go documentation",
+          "url": "https://go.dev/doc/",
+          "kind": "official-docs"
+        },
+        {
+          "label": "Go package documentation",
+          "url": "https://pkg.go.dev/",
+          "kind": "ecosystem"
+        },
+        {
+          "label": "Go source",
+          "url": "https://github.com/golang/go",
+          "kind": "source"
+        }
+      ],
+      "smithery": {
+        "eligible": true,
+        "role": "mcp-server-runtime",
+        "transports": [
+          "stdio",
+          "streamable-http"
+        ],
+        "registration_status": "declared-not-published",
+        "capability_namespace": "babel.go"
+      },
+      "spiral_engine": {
+        "pillar": "runtime-plane",
+        "piston": "service-and-daemon-edge",
+        "capability_id": "babel.go.service",
+        "registration_status": "declared",
+        "evidence_required": [
+          "build receipt",
+          "test receipt",
+          "artifact digest"
+        ]
+      }
+    },
+    {
+      "id": "typescript",
+      "name": "TypeScript",
+      "extension": ".ts",
+      "category": "Typed application orchestration",
+      "primary_domain": "MCP gateways, web interfaces, browser automation and control planes",
+      "w4h": {
+        "what": "Adds static contracts to the JavaScript ecosystem and its event-driven runtime.",
+        "where": "Web applications, MCP servers, browser agents, dashboards, CLIs, and API gateways.",
+        "when": "Choose when interoperating with web platforms, Node.js, or browser runtimes.",
+        "why": "It combines the largest application ecosystem with compile-time interface checking and excellent async I/O.",
+        "how": "Strict TypeScript, discriminated unions, async iterators, schema validation, and generated clients."
+      },
+      "examples": {
+        "easy": "languages/typescript/easy_greet.ts",
+        "advanced": "languages/typescript/advanced_mcp_gateway.ts"
+      },
+      "build": {
+        "toolchain": "Node.js 22+ and TypeScript",
+        "check": "npx --yes tsc --noEmit --target ES2022 --module NodeNext languages/typescript/easy_greet.ts languages/typescript/advanced_mcp_gateway.ts",
+        "run_easy": "npx --yes tsx languages/typescript/easy_greet.ts",
+        "run_advanced": "npx --yes tsx languages/typescript/advanced_mcp_gateway.ts",
+        "ci_tier": "portable"
+      },
+      "interfaces": [
+        "cli",
+        "stdio",
+        "http",
+        "websocket",
+        "mcp",
+        "browser"
+      ],
+      "maturity": {
+        "level": "exhibit",
+        "status": "seeded",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      },
+      "links": [
+        {
+          "label": "TypeScript documentation",
+          "url": "https://www.typescriptlang.org/docs/",
+          "kind": "official-docs"
+        },
+        {
+          "label": "TypeScript source",
+          "url": "https://github.com/microsoft/TypeScript",
+          "kind": "source"
+        },
+        {
+          "label": "TypeScript package",
+          "url": "https://www.npmjs.com/package/typescript",
+          "kind": "ecosystem"
+        }
+      ],
+      "smithery": {
+        "eligible": true,
+        "role": "mcp-server-runtime",
+        "transports": [
+          "stdio",
+          "streamable-http"
+        ],
+        "registration_status": "declared-not-published",
+        "capability_namespace": "babel.typescript"
+      },
+      "spiral_engine": {
+        "pillar": "runtime-plane",
+        "piston": "mcp-and-web-gateway",
+        "capability_id": "babel.typescript.gateway",
+        "registration_status": "declared",
+        "evidence_required": [
+          "build receipt",
+          "test receipt",
+          "artifact digest"
+        ]
+      }
+    },
+    {
+      "id": "cuda",
+      "name": "CUDA",
+      "extension": ".cu",
+      "category": "GPU systems programming",
+      "primary_domain": "NVIDIA kernels, tensor operations and accelerator extensions",
+      "w4h": {
+        "what": "Exposes NVIDIA GPU execution, memory hierarchies, and tensor hardware.",
+        "where": "Custom kernels, inference extensions, scientific computing, and performance-critical tensor paths.",
+        "when": "Choose after profiling proves a GPU kernel is the bottleneck and NVIDIA deployment is intended.",
+        "why": "CUDA provides the deepest control and widest production ecosystem for NVIDIA accelerators.",
+        "how": "Grid/block decomposition, shared memory, streams, events, occupancy analysis, and profilers."
+      },
+      "examples": {
+        "easy": "languages/cuda/easy_vector_add.cu",
+        "advanced": "languages/cuda/advanced_flash_attn_kernel.cu"
+      },
+      "build": {
+        "toolchain": "CUDA Toolkit",
+        "check": "nvcc -std=c++17 -c languages/cuda/easy_vector_add.cu -o /tmp/babel-cuda-easy.o && nvcc -std=c++17 -c languages/cuda/advanced_flash_attn_kernel.cu -o /tmp/babel-cuda-advanced.o",
+        "run_easy": "nvcc languages/cuda/easy_vector_add.cu -o /tmp/babel-cuda-easy && /tmp/babel-cuda-easy",
+        "run_advanced": "nvcc -O3 languages/cuda/advanced_flash_attn_kernel.cu -o /tmp/babel-cuda-advanced && /tmp/babel-cuda-advanced",
+        "ci_tier": "specialized"
+      },
+      "interfaces": [
+        "gpu-kernel",
+        "ffi",
+        "pytorch-extension",
+        "cuda-graph"
+      ],
+      "maturity": {
+        "level": "exhibit",
+        "status": "specialized-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      },
+      "links": [
+        {
+          "label": "CUDA Toolkit documentation",
+          "url": "https://docs.nvidia.com/cuda/",
+          "kind": "official-docs"
+        },
+        {
+          "label": "CUDA samples",
+          "url": "https://github.com/NVIDIA/cuda-samples",
+          "kind": "source"
+        },
+        {
+          "label": "NVIDIA developer portal",
+          "url": "https://developer.nvidia.com/cuda-zone",
+          "kind": "ecosystem"
+        }
+      ],
+      "smithery": {
+        "eligible": false,
+        "role": "accelerator-backend",
+        "transports": [],
+        "registration_status": "declared-not-published",
+        "capability_namespace": "babel.cuda"
+      },
+      "spiral_engine": {
+        "pillar": "compute",
+        "piston": "nvidia-kernel-accelerator",
+        "capability_id": "babel.cuda.kernel",
+        "registration_status": "declared",
+        "evidence_required": [
+          "build receipt",
+          "test receipt",
+          "artifact digest"
+        ]
+      }
+    },
+    {
+      "id": "verilog",
+      "name": "SystemVerilog / Verilog",
+      "extension": ".v",
+      "category": "Hardware description",
+      "primary_domain": "FPGA, ASIC, digital logic and accelerator datapaths",
+      "w4h": {
+        "what": "Describes synthesizable digital hardware and cycle-accurate interfaces.",
+        "where": "FPGA prototypes, ASIC blocks, custom accelerators, buses, and verification environments.",
+        "when": "Choose when the computation must become hardware rather than software.",
+        "why": "RTL gives deterministic parallelism and direct control over latency, area, and power.",
+        "how": "Modules, clocked processes, assertions, testbenches, synthesis, timing, and formal checks."
+      },
+      "examples": {
+        "easy": "languages/verilog/easy_counter.v",
+        "advanced": "languages/verilog/advanced_systolic_matmul.v"
+      },
+      "build": {
+        "toolchain": "Icarus Verilog or Verilator",
+        "check": "iverilog -g2012 -t null languages/verilog/easy_counter.v languages/verilog/advanced_systolic_matmul.v",
+        "run_easy": "iverilog -g2012 -o /tmp/babel-verilog-easy languages/verilog/easy_counter.v && vvp /tmp/babel-verilog-easy",
+        "run_advanced": "verilator --lint-only --language 1800-2023 languages/verilog/advanced_systolic_matmul.v",
+        "ci_tier": "specialized"
+      },
+      "interfaces": [
+        "rtl",
+        "axi-stream",
+        "pcie",
+        "testbench",
+        "formal"
+      ],
+      "maturity": {
+        "level": "exhibit",
+        "status": "specialized-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      },
+      "links": [
+        {
+          "label": "IEEE 1800 SystemVerilog standard",
+          "url": "https://standards.ieee.org/ieee/1800/7743/",
+          "kind": "standard"
+        },
+        {
+          "label": "Verilator guide",
+          "url": "https://verilator.org/guide/latest/",
+          "kind": "toolchain"
+        },
+        {
+          "label": "Icarus Verilog source",
+          "url": "https://github.com/steveicarus/iverilog",
+          "kind": "source"
+        }
+      ],
+      "smithery": {
+        "eligible": false,
+        "role": "hardware-backend",
+        "transports": [],
+        "registration_status": "declared-not-published",
+        "capability_namespace": "babel.verilog"
+      },
+      "spiral_engine": {
+        "pillar": "hardware",
+        "piston": "rtl-accelerator-piston",
+        "capability_id": "babel.verilog.rtl",
+        "registration_status": "declared",
+        "evidence_required": [
+          "build receipt",
+          "test receipt",
+          "artifact digest"
+        ]
+      }
+    },
+    {
+      "id": "r",
+      "name": "R",
+      "extension": ".R",
+      "category": "Statistical computing",
+      "primary_domain": "Statistical inference, experimentation, reporting and biostatistics",
+      "w4h": {
+        "what": "Provides a statistics-first language and a vast research-grade package ecosystem.",
+        "where": "A/B analysis, Bayesian modeling, econometrics, visualization, and reproducible reports.",
+        "when": "Choose when the center of gravity is statistical methodology rather than application infrastructure.",
+        "why": "R exposes mature statistical techniques and publication workflows with minimal translation overhead.",
+        "how": "Vectorized analysis, formulas, packages, reproducible scripts, tests, and report generation."
+      },
+      "examples": {
+        "easy": "languages/r/easy_statistics.R",
+        "advanced": "languages/r/advanced_bayesian_ab_test.R"
+      },
+      "build": {
+        "toolchain": "R 4.4+",
+        "check": "Rscript -e \"parse(file='languages/r/easy_statistics.R'); parse(file='languages/r/advanced_bayesian_ab_test.R')\"",
+        "run_easy": "Rscript languages/r/easy_statistics.R",
+        "run_advanced": "Rscript languages/r/advanced_bayesian_ab_test.R",
+        "ci_tier": "specialized"
+      },
+      "interfaces": [
+        "cli",
+        "notebook",
+        "report",
+        "http"
+      ],
+      "maturity": {
+        "level": "exhibit",
+        "status": "seeded",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      },
+      "links": [
+        {
+          "label": "R documentation",
+          "url": "https://www.r-project.org/other-docs.html",
+          "kind": "official-docs"
+        },
+        {
+          "label": "Comprehensive R Archive Network",
+          "url": "https://cran.r-project.org/",
+          "kind": "ecosystem"
+        },
+        {
+          "label": "R source repository",
+          "url": "https://svn.r-project.org/R/",
+          "kind": "source"
+        }
+      ],
+      "smithery": {
+        "eligible": false,
+        "role": "analysis-backend",
+        "transports": [],
+        "registration_status": "declared-not-published",
+        "capability_namespace": "babel.r"
+      },
+      "spiral_engine": {
+        "pillar": "analysis",
+        "piston": "statistical-inference-piston",
+        "capability_id": "babel.r.statistics",
+        "registration_status": "declared",
+        "evidence_required": [
+          "build receipt",
+          "test receipt",
+          "artifact digest"
+        ]
+      }
+    },
+    {
+      "id": "julia",
+      "name": "Julia",
+      "extension": ".jl",
+      "category": "Scientific computing",
+      "primary_domain": "Differential equations, numerical methods and high-performance research",
+      "w4h": {
+        "what": "Combines interactive mathematical syntax with JIT-compiled numerical performance.",
+        "where": "Simulation, optimization, scientific ML, numerical linear algebra, and research computing.",
+        "when": "Choose when domain scientists need high-level mathematical expression without abandoning performance.",
+        "why": "Multiple dispatch and a compiler-oriented ecosystem reduce the two-language problem.",
+        "how": "Multiple dispatch, typed kernels, package environments, profiling, and native-code generation."
+      },
+      "examples": {
+        "easy": "languages/julia/easy_matrix.jl",
+        "advanced": "languages/julia/advanced_orbital_differential.jl"
+      },
+      "build": {
+        "toolchain": "Julia 1.11+",
+        "check": "julia --startup-file=no -e \"include(\\\"languages/julia/easy_matrix.jl\\\"); include(\\\"languages/julia/advanced_orbital_differential.jl\\\")\"",
+        "run_easy": "julia languages/julia/easy_matrix.jl",
+        "run_advanced": "julia languages/julia/advanced_orbital_differential.jl",
+        "ci_tier": "specialized"
+      },
+      "interfaces": [
+        "cli",
+        "notebook",
+        "ffi",
+        "distributed"
+      ],
+      "maturity": {
+        "level": "exhibit",
+        "status": "specialized-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      },
+      "links": [
+        {
+          "label": "Julia documentation",
+          "url": "https://docs.julialang.org/",
+          "kind": "official-docs"
+        },
+        {
+          "label": "Julia source",
+          "url": "https://github.com/JuliaLang/julia",
+          "kind": "source"
+        },
+        {
+          "label": "Julia packages",
+          "url": "https://juliahub.com/ui/Packages",
+          "kind": "ecosystem"
+        }
+      ],
+      "smithery": {
+        "eligible": false,
+        "role": "scientific-backend",
+        "transports": [],
+        "registration_status": "declared-not-published",
+        "capability_namespace": "babel.julia"
+      },
+      "spiral_engine": {
+        "pillar": "analysis",
+        "piston": "scientific-compute-piston",
+        "capability_id": "babel.julia.science",
+        "registration_status": "declared",
+        "evidence_required": [
+          "build receipt",
+          "test receipt",
+          "artifact digest"
+        ]
+      }
+    },
+    {
+      "id": "swift",
+      "name": "Swift",
+      "extension": ".swift",
+      "category": "Apple-native systems",
+      "primary_domain": "macOS/iOS applications, Metal compute and Apple platform integration",
+      "w4h": {
+        "what": "Builds safe native software across Apple platforms with direct framework access.",
+        "where": "Apple clients, local AI applications, Metal pipelines, and device-native interfaces.",
+        "when": "Choose when first-class integration with macOS, iOS, Metal, or Swift concurrency is required.",
+        "why": "Swift provides the strongest supported path into Apple frameworks while retaining systems-level performance.",
+        "how": "Value semantics, actors, async/await, Swift Package Manager, Metal, and C interoperability."
+      },
+      "examples": {
+        "easy": "languages/swift/easy_array.swift",
+        "advanced": "languages/swift/advanced_metal_ane_engine.swift"
+      },
+      "build": {
+        "toolchain": "Swift 6+",
+        "check": "swiftc -parse languages/swift/easy_array.swift languages/swift/advanced_metal_ane_engine.swift",
+        "run_easy": "swift languages/swift/easy_array.swift",
+        "run_advanced": "swift languages/swift/advanced_metal_ane_engine.swift",
+        "ci_tier": "specialized"
+      },
+      "interfaces": [
+        "cli",
+        "swift-package",
+        "metal",
+        "ffi",
+        "apple-ui"
+      ],
+      "maturity": {
+        "level": "exhibit",
+        "status": "specialized-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      },
+      "links": [
+        {
+          "label": "Swift documentation",
+          "url": "https://www.swift.org/documentation/",
+          "kind": "official-docs"
+        },
+        {
+          "label": "The Swift Programming Language",
+          "url": "https://docs.swift.org/swift-book/documentation/the-swift-programming-language/",
+          "kind": "language-guide"
+        },
+        {
+          "label": "Swift source",
+          "url": "https://github.com/swiftlang/swift",
+          "kind": "source"
+        }
+      ],
+      "smithery": {
+        "eligible": false,
+        "role": "apple-client-runtime",
+        "transports": [],
+        "registration_status": "declared-not-published",
+        "capability_namespace": "babel.swift"
+      },
+      "spiral_engine": {
+        "pillar": "interfaces",
+        "piston": "apple-native-piston",
+        "capability_id": "babel.swift.apple",
+        "registration_status": "declared",
+        "evidence_required": [
+          "build receipt",
+          "test receipt",
+          "artifact digest"
+        ]
+      }
+    },
+    {
+      "id": "zig",
+      "name": "Zig",
+      "extension": ".zig",
+      "category": "Explicit systems programming",
+      "primary_domain": "Static utilities, C integration, cross-compilation and constrained runtimes",
+      "w4h": {
+        "what": "Offers explicit allocation, strong compile-time facilities, and first-class cross-compilation.",
+        "where": "Portable CLIs, native utilities, embedded tools, C/CUDA bridges, and WebAssembly targets.",
+        "when": "Choose when toolchain control, C interoperability, and small deterministic binaries are central.",
+        "why": "Zig treats the compiler and build system as portability infrastructure rather than incidental tooling.",
+        "how": "Explicit allocators, comptime, error unions, cross-target builds, and direct C imports."
+      },
+      "examples": {
+        "easy": "languages/zig/easy_hello.zig",
+        "advanced": "languages/zig/advanced_arena_allocator.zig"
+      },
+      "build": {
+        "toolchain": "Zig 0.14+",
+        "check": "zig build-exe languages/zig/easy_hello.zig -femit-bin=/tmp/babel-zig-easy && zig build-obj languages/zig/advanced_arena_allocator.zig -femit-bin=/tmp/babel-zig-advanced.o",
+        "run_easy": "/tmp/babel-zig-easy",
+        "run_advanced": "zig test languages/zig/advanced_arena_allocator.zig",
+        "ci_tier": "specialized"
+      },
+      "interfaces": [
+        "cli",
+        "ffi",
+        "static-library",
+        "wasm",
+        "embedded"
+      ],
+      "maturity": {
+        "level": "exhibit",
+        "status": "specialized-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      },
+      "links": [
+        {
+          "label": "Zig language reference",
+          "url": "https://ziglang.org/documentation/master/",
+          "kind": "official-docs"
+        },
+        {
+          "label": "Learn Zig",
+          "url": "https://ziglang.org/learn/",
+          "kind": "learning"
+        },
+        {
+          "label": "Zig source",
+          "url": "https://github.com/ziglang/zig",
+          "kind": "source"
+        }
+      ],
+      "smithery": {
+        "eligible": false,
+        "role": "native-tool-backend",
+        "transports": [],
+        "registration_status": "declared-not-published",
+        "capability_namespace": "babel.zig"
+      },
+      "spiral_engine": {
+        "pillar": "systems",
+        "piston": "portable-native-tooling",
+        "capability_id": "babel.zig.portable",
+        "registration_status": "declared",
+        "evidence_required": [
+          "build receipt",
+          "test receipt",
+          "artifact digest"
+        ]
+      }
+    },
+    {
+      "id": "odin",
+      "name": "Odin",
+      "extension": ".odin",
+      "category": "Data-oriented systems",
+      "primary_domain": "Real-time simulation, visualization, game-style engines and explicit data pipelines",
+      "w4h": {
+        "what": "Provides straightforward data-oriented programming with explicit memory and minimal hidden behavior.",
+        "where": "Simulation, visualization, real-time graphs, tooling, and performance-sensitive desktop systems.",
+        "when": "Choose when transparent control flow and data layout matter more than a large package ecosystem.",
+        "why": "Odin is designed around clarity, explicit context, and data-oriented systems work.",
+        "how": "Explicit allocators, arrays, structs, procedures, SIMD support, and C interoperability."
+      },
+      "examples": {
+        "easy": "languages/odin/easy_math.odin",
+        "advanced": "languages/odin/advanced_reentry_thermal.odin"
+      },
+      "build": {
+        "toolchain": "Odin compiler",
+        "check": "odin check languages/odin && odin build languages/odin -out:/tmp/babel-odin",
+        "run_easy": "odin run languages/odin/easy_math.odin -file",
+        "run_advanced": "odin run languages/odin/advanced_reentry_thermal.odin -file",
+        "ci_tier": "specialized"
+      },
+      "interfaces": [
+        "cli",
+        "ffi",
+        "static-library",
+        "visualization"
+      ],
+      "maturity": {
+        "level": "exhibit",
+        "status": "specialized-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      },
+      "links": [
+        {
+          "label": "Odin documentation",
+          "url": "https://odin-lang.org/docs/",
+          "kind": "official-docs"
+        },
+        {
+          "label": "Odin package collection",
+          "url": "https://pkg.odin-lang.org/",
+          "kind": "ecosystem"
+        },
+        {
+          "label": "Odin source",
+          "url": "https://github.com/odin-lang/Odin",
+          "kind": "source"
+        }
+      ],
+      "smithery": {
+        "eligible": false,
+        "role": "simulation-backend",
+        "transports": [],
+        "registration_status": "declared-not-published",
+        "capability_namespace": "babel.odin"
+      },
+      "spiral_engine": {
+        "pillar": "visualization",
+        "piston": "data-oriented-simulation",
+        "capability_id": "babel.odin.simulation",
+        "registration_status": "declared",
+        "evidence_required": [
+          "build receipt",
+          "test receipt",
+          "artifact digest"
+        ]
+      }
+    },
+    {
+      "id": "mojo",
+      "name": "Mojo",
+      "extension": ".mojo",
+      "category": "AI systems programming",
+      "primary_domain": "ML kernels, Python-interoperable acceleration and MLIR-oriented compute",
+      "w4h": {
+        "what": "Targets high-performance AI code while preserving a Python-adjacent development model.",
+        "where": "Tensor kernels, model-serving extensions, accelerator experiments, and Python interoperability.",
+        "when": "Choose when an AI workload needs lower-level control but benefits from Python compatibility.",
+        "why": "Mojo is positioned to bridge model research and systems performance through compiler-native abstractions.",
+        "how": "Value ownership, SIMD types, compile-time specialization, Python interop, and MLIR-backed lowering."
+      },
+      "examples": {
+        "easy": "languages/mojo/easy_simd.mojo",
+        "advanced": "languages/mojo/advanced_tpu_tensor_kernel.mojo"
+      },
+      "build": {
+        "toolchain": "Mojo toolchain",
+        "check": "mojo build languages/mojo/easy_simd.mojo -o /tmp/babel-mojo-easy && mojo build languages/mojo/advanced_tpu_tensor_kernel.mojo -o /tmp/babel-mojo-advanced",
+        "run_easy": "/tmp/babel-mojo-easy",
+        "run_advanced": "/tmp/babel-mojo-advanced",
+        "ci_tier": "specialized"
+      },
+      "interfaces": [
+        "cli",
+        "python-interop",
+        "mlir",
+        "accelerator-kernel"
+      ],
+      "maturity": {
+        "level": "exhibit",
+        "status": "experimental-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      },
+      "links": [
+        {
+          "label": "Mojo documentation",
+          "url": "https://mojolang.org/",
+          "kind": "official-docs"
+        },
+        {
+          "label": "Modular repository",
+          "url": "https://github.com/modular/modular",
+          "kind": "source"
+        },
+        {
+          "label": "Mojo examples",
+          "url": "https://github.com/modular/modular/tree/main/mojo",
+          "kind": "examples"
+        }
+      ],
+      "smithery": {
+        "eligible": false,
+        "role": "accelerator-backend",
+        "transports": [],
+        "registration_status": "declared-not-published",
+        "capability_namespace": "babel.mojo"
+      },
+      "spiral_engine": {
+        "pillar": "compute",
+        "piston": "mlir-ai-kernel-piston",
+        "capability_id": "babel.mojo.kernel",
+        "registration_status": "declared",
+        "evidence_required": [
+          "build receipt",
+          "test receipt",
+          "artifact digest"
+        ]
+      }
+    },
+    {
+      "id": "elixir",
+      "name": "Elixir",
+      "extension": ".ex",
+      "category": "Fault-tolerant distributed systems",
+      "primary_domain": "Supervision trees, messaging systems and highly concurrent services",
+      "w4h": {
+        "what": "Uses the BEAM actor model to isolate failures and supervise long-running systems.",
+        "where": "Messaging, orchestration, real-time systems, cluster supervision, and resilient APIs.",
+        "when": "Choose when availability, concurrency, and recovery semantics dominate raw per-core speed.",
+        "why": "OTP supervision and lightweight processes make failure handling a first-class architectural primitive.",
+        "how": "Processes, message passing, GenServer, supervisors, releases, clustering, and telemetry."
+      },
+      "examples": {
+        "easy": "languages/elixir/easy_actor.ex",
+        "advanced": "languages/elixir/advanced_fault_tolerant_beam.ex"
+      },
+      "build": {
+        "toolchain": "Elixir and Erlang/OTP",
+        "check": "elixirc --ignore-module-conflict -o /tmp/babel-elixir languages/elixir/easy_actor.ex languages/elixir/advanced_fault_tolerant_beam.ex",
+        "run_easy": "elixir languages/elixir/easy_actor.ex",
+        "run_advanced": "elixir languages/elixir/advanced_fault_tolerant_beam.ex",
+        "ci_tier": "specialized"
+      },
+      "interfaces": [
+        "cli",
+        "otp",
+        "http",
+        "websocket",
+        "distributed"
+      ],
+      "maturity": {
+        "level": "exhibit",
+        "status": "specialized-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      },
+      "links": [
+        {
+          "label": "Elixir documentation",
+          "url": "https://elixir-lang.org/docs.html",
+          "kind": "official-docs"
+        },
+        {
+          "label": "HexDocs",
+          "url": "https://hexdocs.pm/",
+          "kind": "ecosystem"
+        },
+        {
+          "label": "Elixir source",
+          "url": "https://github.com/elixir-lang/elixir",
+          "kind": "source"
+        }
+      ],
+      "smithery": {
+        "eligible": true,
+        "role": "distributed-runtime",
+        "transports": [
+          "streamable-http"
+        ],
+        "registration_status": "declared-not-published",
+        "capability_namespace": "babel.elixir"
+      },
+      "spiral_engine": {
+        "pillar": "runtime-plane",
+        "piston": "fault-tolerant-supervisor",
+        "capability_id": "babel.elixir.supervise",
+        "registration_status": "declared",
+        "evidence_required": [
+          "build receipt",
+          "test receipt",
+          "artifact digest"
+        ]
+      }
+    },
+    {
+      "id": "haskell",
+      "name": "Haskell",
+      "extension": ".hs",
+      "category": "Pure functional programming",
+      "primary_domain": "Compilers, DSLs, transformations and high-assurance logic",
+      "w4h": {
+        "what": "Encodes domain rules with algebraic types, purity, and powerful abstraction.",
+        "where": "Compiler passes, schema transformations, DSLs, formal-ish business logic, and research tooling.",
+        "when": "Choose when semantic precision and transformation correctness matter more than broad operational familiarity.",
+        "why": "Purity and expressive types constrain side effects and make complex transformations easier to reason about.",
+        "how": "Algebraic data types, typeclasses, property testing, monads, parsers, and totality-oriented design."
+      },
+      "examples": {
+        "easy": "languages/haskell/easy_tree.hs",
+        "advanced": "languages/haskell/advanced_ast_validator.hs"
+      },
+      "build": {
+        "toolchain": "GHC 9+",
+        "check": "ghc -fno-code languages/haskell/easy_tree.hs languages/haskell/advanced_ast_validator.hs",
+        "run_easy": "runghc languages/haskell/easy_tree.hs",
+        "run_advanced": "runghc languages/haskell/advanced_ast_validator.hs",
+        "ci_tier": "specialized"
+      },
+      "interfaces": [
+        "cli",
+        "ffi",
+        "grpc",
+        "compiler-plugin"
+      ],
+      "maturity": {
+        "level": "exhibit",
+        "status": "specialized-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      },
+      "links": [
+        {
+          "label": "Haskell documentation",
+          "url": "https://www.haskell.org/documentation/",
+          "kind": "official-docs"
+        },
+        {
+          "label": "Hackage",
+          "url": "https://hackage.haskell.org/",
+          "kind": "ecosystem"
+        },
+        {
+          "label": "GHC documentation",
+          "url": "https://downloads.haskell.org/ghc/latest/docs/",
+          "kind": "toolchain"
+        }
+      ],
+      "smithery": {
+        "eligible": false,
+        "role": "validation-backend",
+        "transports": [],
+        "registration_status": "declared-not-published",
+        "capability_namespace": "babel.haskell"
+      },
+      "spiral_engine": {
+        "pillar": "verification",
+        "piston": "typed-transformation-piston",
+        "capability_id": "babel.haskell.validate",
+        "registration_status": "declared",
+        "evidence_required": [
+          "build receipt",
+          "test receipt",
+          "artifact digest"
+        ]
+      }
+    },
+    {
+      "id": "lean4",
+      "name": "Lean 4",
+      "extension": ".lean",
+      "category": "Formal verification",
+      "primary_domain": "Proof-carrying invariants, state machines and mathematical truth gates",
+      "w4h": {
+        "what": "Expresses executable definitions and machine-checked proofs in dependent type theory.",
+        "where": "Permission invariants, state transitions, hash-chain properties, protocol models, and theorem-backed specifications.",
+        "when": "Choose when a small set of critical invariants deserves mathematical proof rather than testing alone.",
+        "why": "Lean can turn architectural claims into checked proof artifacts that fail to compile when the claims break.",
+        "how": "Inductive types, propositions, tactics, theorem libraries, extraction, and proof-aware CI."
+      },
+      "examples": {
+        "easy": "languages/lean4/easy_logic.lean",
+        "advanced": "languages/lean4/advanced_truth_gate_proof.lean"
+      },
+      "build": {
+        "toolchain": "Lean 4 and Lake",
+        "check": "lake env lean languages/lean4/easy_logic.lean && lake env lean languages/lean4/advanced_truth_gate_proof.lean",
+        "run_easy": "lake env lean languages/lean4/easy_logic.lean",
+        "run_advanced": "lake env lean languages/lean4/advanced_truth_gate_proof.lean",
+        "ci_tier": "specialized"
+      },
+      "interfaces": [
+        "proof-artifact",
+        "cli",
+        "codegen",
+        "specification"
+      ],
+      "maturity": {
+        "level": "exhibit",
+        "status": "specialized-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      },
+      "links": [
+        {
+          "label": "Lean learning resources",
+          "url": "https://lean-lang.org/documentation/",
+          "kind": "official-docs"
+        },
+        {
+          "label": "Lean 4 source",
+          "url": "https://github.com/leanprover/lean4",
+          "kind": "source"
+        },
+        {
+          "label": "mathlib documentation",
+          "url": "https://leanprover-community.github.io/mathlib4_docs/",
+          "kind": "ecosystem"
+        }
+      ],
+      "smithery": {
+        "eligible": false,
+        "role": "proof-provider",
+        "transports": [],
+        "registration_status": "declared-not-published",
+        "capability_namespace": "babel.lean4"
+      },
+      "spiral_engine": {
+        "pillar": "trust-spine",
+        "piston": "formal-invariant-proof",
+        "capability_id": "babel.lean4.prove",
+        "registration_status": "declared",
+        "evidence_required": [
+          "build receipt",
+          "test receipt",
+          "artifact digest"
+        ]
+      }
+    },
+    {
+      "id": "triton",
+      "name": "Triton",
+      "extension": ".py",
+      "category": "GPU kernel DSL",
+      "primary_domain": "Fused tensor kernels and model-specific GPU optimization",
+      "w4h": {
+        "what": "Provides a Python-embedded language for authoring high-performance GPU kernels.",
+        "where": "Fused attention, quantization, reductions, custom operators, and model-serving hot paths.",
+        "when": "Choose after profiling identifies a tensor operation that framework kernels cannot optimize sufficiently.",
+        "why": "Triton reduces CUDA boilerplate while retaining explicit control over block-level GPU execution.",
+        "how": "JIT kernels, program IDs, blocked tensor operations, autotuning, and compiler-generated GPU code."
+      },
+      "examples": {
+        "easy": "languages/triton/easy_vector_add.py",
+        "advanced": "languages/triton/advanced_fused_attention.py"
+      },
+      "build": {
+        "toolchain": "Python, PyTorch and Triton",
+        "check": "python -m py_compile languages/triton/easy_vector_add.py languages/triton/advanced_fused_attention.py",
+        "run_easy": "python languages/triton/easy_vector_add.py",
+        "run_advanced": "python languages/triton/advanced_fused_attention.py",
+        "ci_tier": "specialized"
+      },
+      "interfaces": [
+        "python-api",
+        "gpu-kernel",
+        "pytorch-extension"
+      ],
+      "maturity": {
+        "level": "exhibit",
+        "status": "specialized-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      },
+      "links": [
+        {
+          "label": "Triton documentation",
+          "url": "https://triton-lang.org/main/index.html",
+          "kind": "official-docs"
+        },
+        {
+          "label": "Triton source",
+          "url": "https://github.com/triton-lang/triton",
+          "kind": "source"
+        },
+        {
+          "label": "Triton tutorials",
+          "url": "https://triton-lang.org/main/getting-started/tutorials/index.html",
+          "kind": "tutorials"
+        }
+      ],
+      "smithery": {
+        "eligible": false,
+        "role": "accelerator-backend",
+        "transports": [],
+        "registration_status": "declared-not-published",
+        "capability_namespace": "babel.triton"
+      },
+      "spiral_engine": {
+        "pillar": "compute",
+        "piston": "fused-gpu-kernel",
+        "capability_id": "babel.triton.fuse",
+        "registration_status": "declared",
+        "evidence_required": [
+          "build receipt",
+          "test receipt",
+          "artifact digest"
+        ]
+      }
+    },
+    {
+      "id": "protobuf",
+      "name": "Protocol Buffers",
+      "extension": ".proto",
+      "category": "Serialization and IDL",
+      "primary_domain": "Canonical cross-language contracts, RPC messages and durable event schemas",
+      "w4h": {
+        "what": "Defines language-neutral schemas that generate strongly typed bindings.",
+        "where": "Service contracts, event envelopes, telemetry, mission receipts, and cross-runtime messages.",
+        "when": "Choose when multiple languages must agree on stable binary contracts and evolution rules.",
+        "why": "A shared IDL prevents each runtime from inventing incompatible representations.",
+        "how": "Proto3 schemas, field numbering discipline, compatibility checks, generated bindings, and gRPC integration."
+      },
+      "examples": {
+        "easy": "languages/protobuf/easy_user.proto",
+        "advanced": "languages/protobuf/advanced_colossus_cooling.proto"
+      },
+      "build": {
+        "toolchain": "protoc",
+        "check": "protoc --descriptor_set_out=/tmp/babel-protobuf.pb languages/protobuf/easy_user.proto languages/protobuf/advanced_colossus_cooling.proto",
+        "run_easy": "protoc --python_out=/tmp languages/protobuf/easy_user.proto",
+        "run_advanced": "protoc --python_out=/tmp languages/protobuf/advanced_colossus_cooling.proto",
+        "ci_tier": "portable"
+      },
+      "interfaces": [
+        "idl",
+        "grpc",
+        "codegen",
+        "event-schema"
+      ],
+      "maturity": {
+        "level": "exhibit",
+        "status": "seeded",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      },
+      "links": [
+        {
+          "label": "Protocol Buffers documentation",
+          "url": "https://protobuf.dev/",
+          "kind": "official-docs"
+        },
+        {
+          "label": "Protocol Buffers source",
+          "url": "https://github.com/protocolbuffers/protobuf",
+          "kind": "source"
+        },
+        {
+          "label": "Proto language guide",
+          "url": "https://protobuf.dev/programming-guides/proto3/",
+          "kind": "language-guide"
+        }
+      ],
+      "smithery": {
+        "eligible": true,
+        "role": "contract-provider",
+        "transports": [
+          "stdio",
+          "streamable-http"
+        ],
+        "registration_status": "declared-not-published",
+        "capability_namespace": "babel.protobuf"
+      },
+      "spiral_engine": {
+        "pillar": "contracts",
+        "piston": "canonical-message-schema",
+        "capability_id": "babel.protobuf.contract",
+        "registration_status": "declared",
+        "evidence_required": [
+          "build receipt",
+          "test receipt",
+          "artifact digest"
+        ]
+      }
+    },
+    {
+      "id": "sql",
+      "name": "SQL / PostgreSQL",
+      "extension": ".sql",
+      "category": "Relational and vector data",
+      "primary_domain": "Canonical state, constraints, audit queries and vector retrieval",
+      "w4h": {
+        "what": "Expresses durable data models, integrity constraints, transactions, and set-based analysis.",
+        "where": "Mission state, evidence indexes, contradiction tracking, analytics, and pgvector retrieval.",
+        "when": "Choose when data must survive processes, enforce invariants, and remain queryable across runtimes.",
+        "why": "Database constraints and transactions provide a shared source of truth that application languages cannot replace.",
+        "how": "DDL, constraints, transactions, indexes, query plans, migrations, row security, and vector extensions."
+      },
+      "examples": {
+        "easy": "languages/sql/easy_table.sql",
+        "advanced": "languages/sql/advanced_pgvector_hnsw.sql"
+      },
+      "build": {
+        "toolchain": "PostgreSQL 16+",
+        "check": "psql -v ON_ERROR_STOP=1 -f languages/sql/easy_table.sql -f languages/sql/advanced_pgvector_hnsw.sql",
+        "run_easy": "psql -v ON_ERROR_STOP=1 -f languages/sql/easy_table.sql",
+        "run_advanced": "psql -v ON_ERROR_STOP=1 -f languages/sql/advanced_pgvector_hnsw.sql",
+        "ci_tier": "portable"
+      },
+      "interfaces": [
+        "sql",
+        "postgres",
+        "vector-store",
+        "audit-log"
+      ],
+      "maturity": {
+        "level": "exhibit",
+        "status": "seeded",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      },
+      "links": [
+        {
+          "label": "PostgreSQL documentation",
+          "url": "https://www.postgresql.org/docs/current/",
+          "kind": "official-docs"
+        },
+        {
+          "label": "PostgreSQL SQL commands",
+          "url": "https://www.postgresql.org/docs/current/sql.html",
+          "kind": "language-guide"
+        },
+        {
+          "label": "pgvector source",
+          "url": "https://github.com/pgvector/pgvector",
+          "kind": "ecosystem"
+        }
+      ],
+      "smithery": {
+        "eligible": false,
+        "role": "data-backend",
+        "transports": [],
+        "registration_status": "declared-not-published",
+        "capability_namespace": "babel.sql"
+      },
+      "spiral_engine": {
+        "pillar": "canonical-data",
+        "piston": "transaction-and-vector-store",
+        "capability_id": "babel.sql.store",
+        "registration_status": "declared",
+        "evidence_required": [
+          "build receipt",
+          "test receipt",
+          "artifact digest"
+        ]
+      }
+    },
+    {
+      "id": "wat",
+      "name": "WebAssembly",
+      "extension": ".wat",
+      "category": "Sandboxed portable bytecode",
+      "primary_domain": "Zero-trust tools, portable plugins and host-constrained execution",
+      "w4h": {
+        "what": "Defines a compact portable execution target with explicit imports and exports.",
+        "where": "Plugin sandboxes, browser/edge compute, portable kernels, and capability-limited tools.",
+        "when": "Choose when code must cross language or platform boundaries without receiving ambient host authority.",
+        "why": "WebAssembly offers a standardized low-level target with strong isolation primitives and broad runtime support.",
+        "how": "Modules, linear memory, explicit imports, WASI, component interfaces, and runtime resource limits."
+      },
+      "examples": {
+        "easy": "languages/wat/easy_add.wat",
+        "advanced": "languages/wat/advanced_wasm_sandbox.wat"
+      },
+      "build": {
+        "toolchain": "WebAssembly Binary Toolkit",
+        "check": "wat2wasm languages/wat/easy_add.wat -o /tmp/babel-wat-easy.wasm && wat2wasm languages/wat/advanced_wasm_sandbox.wat -o /tmp/babel-wat-advanced.wasm",
+        "run_easy": "wasmtime /tmp/babel-wat-easy.wasm",
+        "run_advanced": "wasmtime /tmp/babel-wat-advanced.wasm",
+        "ci_tier": "specialized"
+      },
+      "interfaces": [
+        "wasm",
+        "wasi",
+        "component-model",
+        "plugin"
+      ],
+      "maturity": {
+        "level": "exhibit",
+        "status": "specialized-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      },
+      "links": [
+        {
+          "label": "WebAssembly project",
+          "url": "https://webassembly.org/",
+          "kind": "official"
+        },
+        {
+          "label": "WebAssembly core specification",
+          "url": "https://www.w3.org/TR/wasm-core-2/",
+          "kind": "standard"
+        },
+        {
+          "label": "WASI",
+          "url": "https://wasi.dev/",
+          "kind": "ecosystem"
+        }
+      ],
+      "smithery": {
+        "eligible": true,
+        "role": "sandbox-runtime",
+        "transports": [
+          "stdio"
+        ],
+        "registration_status": "declared-not-published",
+        "capability_namespace": "babel.wat"
+      },
+      "spiral_engine": {
+        "pillar": "execution-sandbox",
+        "piston": "capability-limited-tool",
+        "capability_id": "babel.wasm.sandbox",
+        "registration_status": "declared",
+        "evidence_required": [
+          "build receipt",
+          "test receipt",
+          "artifact digest"
+        ]
+      }
+    }
+  ]
+}

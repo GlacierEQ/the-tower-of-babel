@@ -1,0 +1,228 @@
+{
+  "schema_version": "1.0.0",
+  "source": "registry/languages.json",
+  "languages": [
+    {
+      "id": "python",
+      "name": "Python",
+      "interfaces": [
+        "cli",
+        "stdio",
+        "http",
+        "mcp",
+        "ffi",
+        "notebook"
+      ]
+    },
+    {
+      "id": "c",
+      "name": "C",
+      "interfaces": [
+        "cli",
+        "ffi",
+        "shared-library",
+        "embedded"
+      ]
+    },
+    {
+      "id": "cpp",
+      "name": "C++",
+      "interfaces": [
+        "cli",
+        "ffi",
+        "shared-library",
+        "grpc",
+        "python-extension"
+      ]
+    },
+    {
+      "id": "rust",
+      "name": "Rust",
+      "interfaces": [
+        "cli",
+        "ffi",
+        "wasm",
+        "grpc",
+        "mcp",
+        "static-library"
+      ]
+    },
+    {
+      "id": "go",
+      "name": "Go",
+      "interfaces": [
+        "cli",
+        "http",
+        "grpc",
+        "protobuf",
+        "mcp",
+        "daemon"
+      ]
+    },
+    {
+      "id": "typescript",
+      "name": "TypeScript",
+      "interfaces": [
+        "cli",
+        "stdio",
+        "http",
+        "websocket",
+        "mcp",
+        "browser"
+      ]
+    },
+    {
+      "id": "cuda",
+      "name": "CUDA",
+      "interfaces": [
+        "gpu-kernel",
+        "ffi",
+        "pytorch-extension",
+        "cuda-graph"
+      ]
+    },
+    {
+      "id": "verilog",
+      "name": "SystemVerilog / Verilog",
+      "interfaces": [
+        "rtl",
+        "axi-stream",
+        "pcie",
+        "testbench",
+        "formal"
+      ]
+    },
+    {
+      "id": "r",
+      "name": "R",
+      "interfaces": [
+        "cli",
+        "notebook",
+        "report",
+        "http"
+      ]
+    },
+    {
+      "id": "julia",
+      "name": "Julia",
+      "interfaces": [
+        "cli",
+        "notebook",
+        "ffi",
+        "distributed"
+      ]
+    },
+    {
+      "id": "swift",
+      "name": "Swift",
+      "interfaces": [
+        "cli",
+        "swift-package",
+        "metal",
+        "ffi",
+        "apple-ui"
+      ]
+    },
+    {
+      "id": "zig",
+      "name": "Zig",
+      "interfaces": [
+        "cli",
+        "ffi",
+        "static-library",
+        "wasm",
+        "embedded"
+      ]
+    },
+    {
+      "id": "odin",
+      "name": "Odin",
+      "interfaces": [
+        "cli",
+        "ffi",
+        "static-library",
+        "visualization"
+      ]
+    },
+    {
+      "id": "mojo",
+      "name": "Mojo",
+      "interfaces": [
+        "cli",
+        "python-interop",
+        "mlir",
+        "accelerator-kernel"
+      ]
+    },
+    {
+      "id": "elixir",
+      "name": "Elixir",
+      "interfaces": [
+        "cli",
+        "otp",
+        "http",
+        "websocket",
+        "distributed"
+      ]
+    },
+    {
+      "id": "haskell",
+      "name": "Haskell",
+      "interfaces": [
+        "cli",
+        "ffi",
+        "grpc",
+        "compiler-plugin"
+      ]
+    },
+    {
+      "id": "lean4",
+      "name": "Lean 4",
+      "interfaces": [
+        "proof-artifact",
+        "cli",
+        "codegen",
+        "specification"
+      ]
+    },
+    {
+      "id": "triton",
+      "name": "Triton",
+      "interfaces": [
+        "python-api",
+        "gpu-kernel",
+        "pytorch-extension"
+      ]
+    },
+    {
+      "id": "protobuf",
+      "name": "Protocol Buffers",
+      "interfaces": [
+        "idl",
+        "grpc",
+        "codegen",
+        "event-schema"
+      ]
+    },
+    {
+      "id": "sql",
+      "name": "SQL / PostgreSQL",
+      "interfaces": [
+        "sql",
+        "postgres",
+        "vector-store",
+        "audit-log"
+      ]
+    },
+    {
+      "id": "wat",
+      "name": "WebAssembly",
+      "interfaces": [
+        "wasm",
+        "wasi",
+        "component-model",
+        "plugin"
+      ]
+    }
+  ]
+}

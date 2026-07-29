@@ -1,0 +1,439 @@
+{
+  "schema_version": "1.0.0",
+  "source": "registry/languages.json",
+  "activation_rule": "Declared capabilities are not active pistons until Spiral Engine returns a registration receipt.",
+  "capabilities": [
+    {
+      "language_id": "python",
+      "language": "Python",
+      "pillar": "orchestration",
+      "piston": "ai-workflow-orchestrator",
+      "capability_id": "babel.python.orchestrate",
+      "registration_status": "declared",
+      "evidence_required": [
+        "build receipt",
+        "test receipt",
+        "artifact digest"
+      ],
+      "interfaces": [
+        "cli",
+        "stdio",
+        "http",
+        "mcp",
+        "ffi",
+        "notebook"
+      ],
+      "maturity": "exhibit"
+    },
+    {
+      "language_id": "c",
+      "language": "C",
+      "pillar": "systems",
+      "piston": "abi-and-memory-foundation",
+      "capability_id": "babel.c.native",
+      "registration_status": "declared",
+      "evidence_required": [
+        "build receipt",
+        "test receipt",
+        "artifact digest"
+      ],
+      "interfaces": [
+        "cli",
+        "ffi",
+        "shared-library",
+        "embedded"
+      ],
+      "maturity": "exhibit"
+    },
+    {
+      "language_id": "cpp",
+      "language": "C++",
+      "pillar": "systems",
+      "piston": "high-performance-engine",
+      "capability_id": "babel.cpp.compute",
+      "registration_status": "declared",
+      "evidence_required": [
+        "build receipt",
+        "test receipt",
+        "artifact digest"
+      ],
+      "interfaces": [
+        "cli",
+        "ffi",
+        "shared-library",
+        "grpc",
+        "python-extension"
+      ],
+      "maturity": "exhibit"
+    },
+    {
+      "language_id": "rust",
+      "language": "Rust",
+      "pillar": "trust-spine",
+      "piston": "integrity-and-policy-core",
+      "capability_id": "babel.rust.integrity",
+      "registration_status": "declared",
+      "evidence_required": [
+        "build receipt",
+        "test receipt",
+        "artifact digest"
+      ],
+      "interfaces": [
+        "cli",
+        "ffi",
+        "wasm",
+        "grpc",
+        "mcp",
+        "static-library"
+      ],
+      "maturity": "exhibit"
+    },
+    {
+      "language_id": "go",
+      "language": "Go",
+      "pillar": "runtime-plane",
+      "piston": "service-and-daemon-edge",
+      "capability_id": "babel.go.service",
+      "registration_status": "declared",
+      "evidence_required": [
+        "build receipt",
+        "test receipt",
+        "artifact digest"
+      ],
+      "interfaces": [
+        "cli",
+        "http",
+        "grpc",
+        "protobuf",
+        "mcp",
+        "daemon"
+      ],
+      "maturity": "exhibit"
+    },
+    {
+      "language_id": "typescript",
+      "language": "TypeScript",
+      "pillar": "runtime-plane",
+      "piston": "mcp-and-web-gateway",
+      "capability_id": "babel.typescript.gateway",
+      "registration_status": "declared",
+      "evidence_required": [
+        "build receipt",
+        "test receipt",
+        "artifact digest"
+      ],
+      "interfaces": [
+        "cli",
+        "stdio",
+        "http",
+        "websocket",
+        "mcp",
+        "browser"
+      ],
+      "maturity": "exhibit"
+    },
+    {
+      "language_id": "cuda",
+      "language": "CUDA",
+      "pillar": "compute",
+      "piston": "nvidia-kernel-accelerator",
+      "capability_id": "babel.cuda.kernel",
+      "registration_status": "declared",
+      "evidence_required": [
+        "build receipt",
+        "test receipt",
+        "artifact digest"
+      ],
+      "interfaces": [
+        "gpu-kernel",
+        "ffi",
+        "pytorch-extension",
+        "cuda-graph"
+      ],
+      "maturity": "exhibit"
+    },
+    {
+      "language_id": "verilog",
+      "language": "SystemVerilog / Verilog",
+      "pillar": "hardware",
+      "piston": "rtl-accelerator-piston",
+      "capability_id": "babel.verilog.rtl",
+      "registration_status": "declared",
+      "evidence_required": [
+        "build receipt",
+        "test receipt",
+        "artifact digest"
+      ],
+      "interfaces": [
+        "rtl",
+        "axi-stream",
+        "pcie",
+        "testbench",
+        "formal"
+      ],
+      "maturity": "exhibit"
+    },
+    {
+      "language_id": "r",
+      "language": "R",
+      "pillar": "analysis",
+      "piston": "statistical-inference-piston",
+      "capability_id": "babel.r.statistics",
+      "registration_status": "declared",
+      "evidence_required": [
+        "build receipt",
+        "test receipt",
+        "artifact digest"
+      ],
+      "interfaces": [
+        "cli",
+        "notebook",
+        "report",
+        "http"
+      ],
+      "maturity": "exhibit"
+    },
+    {
+      "language_id": "julia",
+      "language": "Julia",
+      "pillar": "analysis",
+      "piston": "scientific-compute-piston",
+      "capability_id": "babel.julia.science",
+      "registration_status": "declared",
+      "evidence_required": [
+        "build receipt",
+        "test receipt",
+        "artifact digest"
+      ],
+      "interfaces": [
+        "cli",
+        "notebook",
+        "ffi",
+        "distributed"
+      ],
+      "maturity": "exhibit"
+    },
+    {
+      "language_id": "swift",
+      "language": "Swift",
+      "pillar": "interfaces",
+      "piston": "apple-native-piston",
+      "capability_id": "babel.swift.apple",
+      "registration_status": "declared",
+      "evidence_required": [
+        "build receipt",
+        "test receipt",
+        "artifact digest"
+      ],
+      "interfaces": [
+        "cli",
+        "swift-package",
+        "metal",
+        "ffi",
+        "apple-ui"
+      ],
+      "maturity": "exhibit"
+    },
+    {
+      "language_id": "zig",
+      "language": "Zig",
+      "pillar": "systems",
+      "piston": "portable-native-tooling",
+      "capability_id": "babel.zig.portable",
+      "registration_status": "declared",
+      "evidence_required": [
+        "build receipt",
+        "test receipt",
+        "artifact digest"
+      ],
+      "interfaces": [
+        "cli",
+        "ffi",
+        "static-library",
+        "wasm",
+        "embedded"
+      ],
+      "maturity": "exhibit"
+    },
+    {
+      "language_id": "odin",
+      "language": "Odin",
+      "pillar": "visualization",
+      "piston": "data-oriented-simulation",
+      "capability_id": "babel.odin.simulation",
+      "registration_status": "declared",
+      "evidence_required": [
+        "build receipt",
+        "test receipt",
+        "artifact digest"
+      ],
+      "interfaces": [
+        "cli",
+        "ffi",
+        "static-library",
+        "visualization"
+      ],
+      "maturity": "exhibit"
+    },
+    {
+      "language_id": "mojo",
+      "language": "Mojo",
+      "pillar": "compute",
+      "piston": "mlir-ai-kernel-piston",
+      "capability_id": "babel.mojo.kernel",
+      "registration_status": "declared",
+      "evidence_required": [
+        "build receipt",
+        "test receipt",
+        "artifact digest"
+      ],
+      "interfaces": [
+        "cli",
+        "python-interop",
+        "mlir",
+        "accelerator-kernel"
+      ],
+      "maturity": "exhibit"
+    },
+    {
+      "language_id": "elixir",
+      "language": "Elixir",
+      "pillar": "runtime-plane",
+      "piston": "fault-tolerant-supervisor",
+      "capability_id": "babel.elixir.supervise",
+      "registration_status": "declared",
+      "evidence_required": [
+        "build receipt",
+        "test receipt",
+        "artifact digest"
+      ],
+      "interfaces": [
+        "cli",
+        "otp",
+        "http",
+        "websocket",
+        "distributed"
+      ],
+      "maturity": "exhibit"
+    },
+    {
+      "language_id": "haskell",
+      "language": "Haskell",
+      "pillar": "verification",
+      "piston": "typed-transformation-piston",
+      "capability_id": "babel.haskell.validate",
+      "registration_status": "declared",
+      "evidence_required": [
+        "build receipt",
+        "test receipt",
+        "artifact digest"
+      ],
+      "interfaces": [
+        "cli",
+        "ffi",
+        "grpc",
+        "compiler-plugin"
+      ],
+      "maturity": "exhibit"
+    },
+    {
+      "language_id": "lean4",
+      "language": "Lean 4",
+      "pillar": "trust-spine",
+      "piston": "formal-invariant-proof",
+      "capability_id": "babel.lean4.prove",
+      "registration_status": "declared",
+      "evidence_required": [
+        "build receipt",
+        "test receipt",
+        "artifact digest"
+      ],
+      "interfaces": [
+        "proof-artifact",
+        "cli",
+        "codegen",
+        "specification"
+      ],
+      "maturity": "exhibit"
+    },
+    {
+      "language_id": "triton",
+      "language": "Triton",
+      "pillar": "compute",
+      "piston": "fused-gpu-kernel",
+      "capability_id": "babel.triton.fuse",
+      "registration_status": "declared",
+      "evidence_required": [
+        "build receipt",
+        "test receipt",
+        "artifact digest"
+      ],
+      "interfaces": [
+        "python-api",
+        "gpu-kernel",
+        "pytorch-extension"
+      ],
+      "maturity": "exhibit"
+    },
+    {
+      "language_id": "protobuf",
+      "language": "Protocol Buffers",
+      "pillar": "contracts",
+      "piston": "canonical-message-schema",
+      "capability_id": "babel.protobuf.contract",
+      "registration_status": "declared",
+      "evidence_required": [
+        "build receipt",
+        "test receipt",
+        "artifact digest"
+      ],
+      "interfaces": [
+        "idl",
+        "grpc",
+        "codegen",
+        "event-schema"
+      ],
+      "maturity": "exhibit"
+    },
+    {
+      "language_id": "sql",
+      "language": "SQL / PostgreSQL",
+      "pillar": "canonical-data",
+      "piston": "transaction-and-vector-store",
+      "capability_id": "babel.sql.store",
+      "registration_status": "declared",
+      "evidence_required": [
+        "build receipt",
+        "test receipt",
+        "artifact digest"
+      ],
+      "interfaces": [
+        "sql",
+        "postgres",
+        "vector-store",
+        "audit-log"
+      ],
+      "maturity": "exhibit"
+    },
+    {
+      "language_id": "wat",
+      "language": "WebAssembly",
+      "pillar": "execution-sandbox",
+      "piston": "capability-limited-tool",
+      "capability_id": "babel.wasm.sandbox",
+      "registration_status": "declared",
+      "evidence_required": [
+        "build receipt",
+        "test receipt",
+        "artifact digest"
+      ],
+      "interfaces": [
+        "wasm",
+        "wasi",
+        "component-model",
+        "plugin"
+      ],
+      "maturity": "exhibit"
+    }
+  ]
+}

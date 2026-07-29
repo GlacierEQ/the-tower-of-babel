@@ -1,0 +1,374 @@
+{
+  "schema_version": "1.0.0",
+  "source": "registry/languages.json",
+  "publication_rule": "Declared metadata is not published registration; publication requires a real MCP package and registry receipt.",
+  "capabilities": [
+    {
+      "language_id": "python",
+      "language": "Python",
+      "eligible": true,
+      "role": "mcp-server-runtime",
+      "transports": [
+        "stdio",
+        "streamable-http"
+      ],
+      "registration_status": "declared-not-published",
+      "capability_namespace": "babel.python",
+      "interfaces": [
+        "cli",
+        "stdio",
+        "http",
+        "mcp",
+        "ffi",
+        "notebook"
+      ],
+      "build_check": "python -m py_compile languages/python/easy_fibonacci.py languages/python/advanced_async_orchestrator.py"
+    },
+    {
+      "language_id": "c",
+      "language": "C",
+      "eligible": false,
+      "role": "native-tool-backend",
+      "transports": [],
+      "registration_status": "declared-not-published",
+      "capability_namespace": "babel.c",
+      "interfaces": [
+        "cli",
+        "ffi",
+        "shared-library",
+        "embedded"
+      ],
+      "build_check": "cc -std=c17 -Wall -Wextra -Werror -fsyntax-only languages/c/easy_linked_list.c languages/c/advanced_lockfree_spsc_ring.c"
+    },
+    {
+      "language_id": "cpp",
+      "language": "C++",
+      "eligible": false,
+      "role": "native-tool-backend",
+      "transports": [],
+      "registration_status": "declared-not-published",
+      "capability_namespace": "babel.cpp",
+      "interfaces": [
+        "cli",
+        "ffi",
+        "shared-library",
+        "grpc",
+        "python-extension"
+      ],
+      "build_check": "c++ -std=c++20 -Wall -Wextra -Werror -fsyntax-only languages/cpp/easy_vector.cpp languages/cpp/advanced_kv_entropy.cpp"
+    },
+    {
+      "language_id": "rust",
+      "language": "Rust",
+      "eligible": true,
+      "role": "mcp-server-runtime",
+      "transports": [
+        "stdio",
+        "streamable-http"
+      ],
+      "registration_status": "declared-not-published",
+      "capability_namespace": "babel.rust",
+      "interfaces": [
+        "cli",
+        "ffi",
+        "wasm",
+        "grpc",
+        "mcp",
+        "static-library"
+      ],
+      "build_check": "rustc --edition 2021 languages/rust/easy_counter.rs -o /tmp/babel-rust-easy && rustc --edition 2021 --crate-type lib languages/rust/advanced_safety_governor.rs -o /tmp/libbabel_safety.rlib"
+    },
+    {
+      "language_id": "go",
+      "language": "Go",
+      "eligible": true,
+      "role": "mcp-server-runtime",
+      "transports": [
+        "stdio",
+        "streamable-http"
+      ],
+      "registration_status": "declared-not-published",
+      "capability_namespace": "babel.go",
+      "interfaces": [
+        "cli",
+        "http",
+        "grpc",
+        "protobuf",
+        "mcp",
+        "daemon"
+      ],
+      "build_check": "gofmt -w languages/go/easy_ping.go languages/go/advanced_telemetry_decoder.go && go test ./..."
+    },
+    {
+      "language_id": "typescript",
+      "language": "TypeScript",
+      "eligible": true,
+      "role": "mcp-server-runtime",
+      "transports": [
+        "stdio",
+        "streamable-http"
+      ],
+      "registration_status": "declared-not-published",
+      "capability_namespace": "babel.typescript",
+      "interfaces": [
+        "cli",
+        "stdio",
+        "http",
+        "websocket",
+        "mcp",
+        "browser"
+      ],
+      "build_check": "npx --yes tsc --noEmit --target ES2022 --module NodeNext languages/typescript/easy_greet.ts languages/typescript/advanced_mcp_gateway.ts"
+    },
+    {
+      "language_id": "cuda",
+      "language": "CUDA",
+      "eligible": false,
+      "role": "accelerator-backend",
+      "transports": [],
+      "registration_status": "declared-not-published",
+      "capability_namespace": "babel.cuda",
+      "interfaces": [
+        "gpu-kernel",
+        "ffi",
+        "pytorch-extension",
+        "cuda-graph"
+      ],
+      "build_check": "nvcc -std=c++17 -c languages/cuda/easy_vector_add.cu -o /tmp/babel-cuda-easy.o && nvcc -std=c++17 -c languages/cuda/advanced_flash_attn_kernel.cu -o /tmp/babel-cuda-advanced.o"
+    },
+    {
+      "language_id": "verilog",
+      "language": "SystemVerilog / Verilog",
+      "eligible": false,
+      "role": "hardware-backend",
+      "transports": [],
+      "registration_status": "declared-not-published",
+      "capability_namespace": "babel.verilog",
+      "interfaces": [
+        "rtl",
+        "axi-stream",
+        "pcie",
+        "testbench",
+        "formal"
+      ],
+      "build_check": "iverilog -g2012 -t null languages/verilog/easy_counter.v languages/verilog/advanced_systolic_matmul.v"
+    },
+    {
+      "language_id": "r",
+      "language": "R",
+      "eligible": false,
+      "role": "analysis-backend",
+      "transports": [],
+      "registration_status": "declared-not-published",
+      "capability_namespace": "babel.r",
+      "interfaces": [
+        "cli",
+        "notebook",
+        "report",
+        "http"
+      ],
+      "build_check": "Rscript -e \"parse(file='languages/r/easy_statistics.R'); parse(file='languages/r/advanced_bayesian_ab_test.R')\""
+    },
+    {
+      "language_id": "julia",
+      "language": "Julia",
+      "eligible": false,
+      "role": "scientific-backend",
+      "transports": [],
+      "registration_status": "declared-not-published",
+      "capability_namespace": "babel.julia",
+      "interfaces": [
+        "cli",
+        "notebook",
+        "ffi",
+        "distributed"
+      ],
+      "build_check": "julia --startup-file=no -e \"include(\\\"languages/julia/easy_matrix.jl\\\"); include(\\\"languages/julia/advanced_orbital_differential.jl\\\")\""
+    },
+    {
+      "language_id": "swift",
+      "language": "Swift",
+      "eligible": false,
+      "role": "apple-client-runtime",
+      "transports": [],
+      "registration_status": "declared-not-published",
+      "capability_namespace": "babel.swift",
+      "interfaces": [
+        "cli",
+        "swift-package",
+        "metal",
+        "ffi",
+        "apple-ui"
+      ],
+      "build_check": "swiftc -parse languages/swift/easy_array.swift languages/swift/advanced_metal_ane_engine.swift"
+    },
+    {
+      "language_id": "zig",
+      "language": "Zig",
+      "eligible": false,
+      "role": "native-tool-backend",
+      "transports": [],
+      "registration_status": "declared-not-published",
+      "capability_namespace": "babel.zig",
+      "interfaces": [
+        "cli",
+        "ffi",
+        "static-library",
+        "wasm",
+        "embedded"
+      ],
+      "build_check": "zig build-exe languages/zig/easy_hello.zig -femit-bin=/tmp/babel-zig-easy && zig build-obj languages/zig/advanced_arena_allocator.zig -femit-bin=/tmp/babel-zig-advanced.o"
+    },
+    {
+      "language_id": "odin",
+      "language": "Odin",
+      "eligible": false,
+      "role": "simulation-backend",
+      "transports": [],
+      "registration_status": "declared-not-published",
+      "capability_namespace": "babel.odin",
+      "interfaces": [
+        "cli",
+        "ffi",
+        "static-library",
+        "visualization"
+      ],
+      "build_check": "odin check languages/odin && odin build languages/odin -out:/tmp/babel-odin"
+    },
+    {
+      "language_id": "mojo",
+      "language": "Mojo",
+      "eligible": false,
+      "role": "accelerator-backend",
+      "transports": [],
+      "registration_status": "declared-not-published",
+      "capability_namespace": "babel.mojo",
+      "interfaces": [
+        "cli",
+        "python-interop",
+        "mlir",
+        "accelerator-kernel"
+      ],
+      "build_check": "mojo build languages/mojo/easy_simd.mojo -o /tmp/babel-mojo-easy && mojo build languages/mojo/advanced_tpu_tensor_kernel.mojo -o /tmp/babel-mojo-advanced"
+    },
+    {
+      "language_id": "elixir",
+      "language": "Elixir",
+      "eligible": true,
+      "role": "distributed-runtime",
+      "transports": [
+        "streamable-http"
+      ],
+      "registration_status": "declared-not-published",
+      "capability_namespace": "babel.elixir",
+      "interfaces": [
+        "cli",
+        "otp",
+        "http",
+        "websocket",
+        "distributed"
+      ],
+      "build_check": "elixirc --ignore-module-conflict -o /tmp/babel-elixir languages/elixir/easy_actor.ex languages/elixir/advanced_fault_tolerant_beam.ex"
+    },
+    {
+      "language_id": "haskell",
+      "language": "Haskell",
+      "eligible": false,
+      "role": "validation-backend",
+      "transports": [],
+      "registration_status": "declared-not-published",
+      "capability_namespace": "babel.haskell",
+      "interfaces": [
+        "cli",
+        "ffi",
+        "grpc",
+        "compiler-plugin"
+      ],
+      "build_check": "ghc -fno-code languages/haskell/easy_tree.hs languages/haskell/advanced_ast_validator.hs"
+    },
+    {
+      "language_id": "lean4",
+      "language": "Lean 4",
+      "eligible": false,
+      "role": "proof-provider",
+      "transports": [],
+      "registration_status": "declared-not-published",
+      "capability_namespace": "babel.lean4",
+      "interfaces": [
+        "proof-artifact",
+        "cli",
+        "codegen",
+        "specification"
+      ],
+      "build_check": "lake env lean languages/lean4/easy_logic.lean && lake env lean languages/lean4/advanced_truth_gate_proof.lean"
+    },
+    {
+      "language_id": "triton",
+      "language": "Triton",
+      "eligible": false,
+      "role": "accelerator-backend",
+      "transports": [],
+      "registration_status": "declared-not-published",
+      "capability_namespace": "babel.triton",
+      "interfaces": [
+        "python-api",
+        "gpu-kernel",
+        "pytorch-extension"
+      ],
+      "build_check": "python -m py_compile languages/triton/easy_vector_add.py languages/triton/advanced_fused_attention.py"
+    },
+    {
+      "language_id": "protobuf",
+      "language": "Protocol Buffers",
+      "eligible": true,
+      "role": "contract-provider",
+      "transports": [
+        "stdio",
+        "streamable-http"
+      ],
+      "registration_status": "declared-not-published",
+      "capability_namespace": "babel.protobuf",
+      "interfaces": [
+        "idl",
+        "grpc",
+        "codegen",
+        "event-schema"
+      ],
+      "build_check": "protoc --descriptor_set_out=/tmp/babel-protobuf.pb languages/protobuf/easy_user.proto languages/protobuf/advanced_colossus_cooling.proto"
+    },
+    {
+      "language_id": "sql",
+      "language": "SQL / PostgreSQL",
+      "eligible": false,
+      "role": "data-backend",
+      "transports": [],
+      "registration_status": "declared-not-published",
+      "capability_namespace": "babel.sql",
+      "interfaces": [
+        "sql",
+        "postgres",
+        "vector-store",
+        "audit-log"
+      ],
+      "build_check": "psql -v ON_ERROR_STOP=1 -f languages/sql/easy_table.sql -f languages/sql/advanced_pgvector_hnsw.sql"
+    },
+    {
+      "language_id": "wat",
+      "language": "WebAssembly",
+      "eligible": true,
+      "role": "sandbox-runtime",
+      "transports": [
+        "stdio"
+      ],
+      "registration_status": "declared-not-published",
+      "capability_namespace": "babel.wat",
+      "interfaces": [
+        "wasm",
+        "wasi",
+        "component-model",
+        "plugin"
+      ],
+      "build_check": "wat2wasm languages/wat/easy_add.wat -o /tmp/babel-wat-easy.wasm && wat2wasm languages/wat/advanced_wasm_sandbox.wat -o /tmp/babel-wat-advanced.wasm"
+    }
+  ]
+}

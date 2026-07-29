@@ -1,0 +1,343 @@
+{
+  "schema_version": "1.0.0",
+  "source": "registry/languages.json",
+  "claim_rule": "Production claims require build, native tests, cross-language contract tests, benchmark evidence, and artifact digests.",
+  "languages": [
+    {
+      "id": "python",
+      "name": "Python",
+      "maturity": {
+        "level": "exhibit",
+        "status": "seeded",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      }
+    },
+    {
+      "id": "c",
+      "name": "C",
+      "maturity": {
+        "level": "exhibit",
+        "status": "seeded",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      }
+    },
+    {
+      "id": "cpp",
+      "name": "C++",
+      "maturity": {
+        "level": "exhibit",
+        "status": "seeded",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      }
+    },
+    {
+      "id": "rust",
+      "name": "Rust",
+      "maturity": {
+        "level": "exhibit",
+        "status": "seeded",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      }
+    },
+    {
+      "id": "go",
+      "name": "Go",
+      "maturity": {
+        "level": "exhibit",
+        "status": "seeded",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      }
+    },
+    {
+      "id": "typescript",
+      "name": "TypeScript",
+      "maturity": {
+        "level": "exhibit",
+        "status": "seeded",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      }
+    },
+    {
+      "id": "cuda",
+      "name": "CUDA",
+      "maturity": {
+        "level": "exhibit",
+        "status": "specialized-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      }
+    },
+    {
+      "id": "verilog",
+      "name": "SystemVerilog / Verilog",
+      "maturity": {
+        "level": "exhibit",
+        "status": "specialized-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      }
+    },
+    {
+      "id": "r",
+      "name": "R",
+      "maturity": {
+        "level": "exhibit",
+        "status": "seeded",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      }
+    },
+    {
+      "id": "julia",
+      "name": "Julia",
+      "maturity": {
+        "level": "exhibit",
+        "status": "specialized-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      }
+    },
+    {
+      "id": "swift",
+      "name": "Swift",
+      "maturity": {
+        "level": "exhibit",
+        "status": "specialized-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      }
+    },
+    {
+      "id": "zig",
+      "name": "Zig",
+      "maturity": {
+        "level": "exhibit",
+        "status": "specialized-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      }
+    },
+    {
+      "id": "odin",
+      "name": "Odin",
+      "maturity": {
+        "level": "exhibit",
+        "status": "specialized-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      }
+    },
+    {
+      "id": "mojo",
+      "name": "Mojo",
+      "maturity": {
+        "level": "exhibit",
+        "status": "experimental-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      }
+    },
+    {
+      "id": "elixir",
+      "name": "Elixir",
+      "maturity": {
+        "level": "exhibit",
+        "status": "specialized-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      }
+    },
+    {
+      "id": "haskell",
+      "name": "Haskell",
+      "maturity": {
+        "level": "exhibit",
+        "status": "specialized-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      }
+    },
+    {
+      "id": "lean4",
+      "name": "Lean 4",
+      "maturity": {
+        "level": "exhibit",
+        "status": "specialized-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      }
+    },
+    {
+      "id": "triton",
+      "name": "Triton",
+      "maturity": {
+        "level": "exhibit",
+        "status": "specialized-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      }
+    },
+    {
+      "id": "protobuf",
+      "name": "Protocol Buffers",
+      "maturity": {
+        "level": "exhibit",
+        "status": "seeded",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      }
+    },
+    {
+      "id": "sql",
+      "name": "SQL / PostgreSQL",
+      "maturity": {
+        "level": "exhibit",
+        "status": "seeded",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      }
+    },
+    {
+      "id": "wat",
+      "name": "WebAssembly",
+      "maturity": {
+        "level": "exhibit",
+        "status": "specialized-toolchain",
+        "claim_scope": "Architecture and executable exhibit; production certification requires the listed promotion gates.",
+        "promotion_gates": [
+          "toolchain build",
+          "language-native tests",
+          "cross-language contract test",
+          "benchmark",
+          "artifact hash"
+        ]
+      }
+    }
+  ]
+}

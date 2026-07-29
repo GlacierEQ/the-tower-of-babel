@@ -1,0 +1,321 @@
+{
+  "schema_version": "1.0.0",
+  "source": "registry/languages.json",
+  "languages": [
+    {
+      "id": "python",
+      "name": "Python",
+      "build": {
+        "toolchain": "CPython 3.12+",
+        "check": "python -m py_compile languages/python/easy_fibonacci.py languages/python/advanced_async_orchestrator.py",
+        "run_easy": "python languages/python/easy_fibonacci.py",
+        "run_advanced": "python languages/python/advanced_async_orchestrator.py",
+        "ci_tier": "portable"
+      },
+      "examples": {
+        "easy": "languages/python/easy_fibonacci.py",
+        "advanced": "languages/python/advanced_async_orchestrator.py"
+      }
+    },
+    {
+      "id": "c",
+      "name": "C",
+      "build": {
+        "toolchain": "C23-capable compiler",
+        "check": "cc -std=c17 -Wall -Wextra -Werror -fsyntax-only languages/c/easy_linked_list.c languages/c/advanced_lockfree_spsc_ring.c",
+        "run_easy": "cc -std=c17 languages/c/easy_linked_list.c -o /tmp/babel-c-easy && /tmp/babel-c-easy",
+        "run_advanced": "cc -std=c17 -O2 languages/c/advanced_lockfree_spsc_ring.c -o /tmp/babel-c-advanced && /tmp/babel-c-advanced",
+        "ci_tier": "portable"
+      },
+      "examples": {
+        "easy": "languages/c/easy_linked_list.c",
+        "advanced": "languages/c/advanced_lockfree_spsc_ring.c"
+      }
+    },
+    {
+      "id": "cpp",
+      "name": "C++",
+      "build": {
+        "toolchain": "C++20 compiler",
+        "check": "c++ -std=c++20 -Wall -Wextra -Werror -fsyntax-only languages/cpp/easy_vector.cpp languages/cpp/advanced_kv_entropy.cpp",
+        "run_easy": "c++ -std=c++20 languages/cpp/easy_vector.cpp -o /tmp/babel-cpp-easy && /tmp/babel-cpp-easy",
+        "run_advanced": "c++ -std=c++20 -O3 languages/cpp/advanced_kv_entropy.cpp -o /tmp/babel-cpp-advanced && /tmp/babel-cpp-advanced",
+        "ci_tier": "portable"
+      },
+      "examples": {
+        "easy": "languages/cpp/easy_vector.cpp",
+        "advanced": "languages/cpp/advanced_kv_entropy.cpp"
+      }
+    },
+    {
+      "id": "rust",
+      "name": "Rust",
+      "build": {
+        "toolchain": "Rust stable",
+        "check": "rustc --edition 2021 languages/rust/easy_counter.rs -o /tmp/babel-rust-easy && rustc --edition 2021 --crate-type lib languages/rust/advanced_safety_governor.rs -o /tmp/libbabel_safety.rlib",
+        "run_easy": "/tmp/babel-rust-easy",
+        "run_advanced": "rustc --edition 2021 --test languages/rust/advanced_safety_governor.rs -o /tmp/babel-rust-advanced && /tmp/babel-rust-advanced",
+        "ci_tier": "portable"
+      },
+      "examples": {
+        "easy": "languages/rust/easy_counter.rs",
+        "advanced": "languages/rust/advanced_safety_governor.rs"
+      }
+    },
+    {
+      "id": "go",
+      "name": "Go",
+      "build": {
+        "toolchain": "Go 1.23+",
+        "check": "gofmt -w languages/go/easy_ping.go languages/go/advanced_telemetry_decoder.go && go test ./...",
+        "run_easy": "go run languages/go/easy_ping.go",
+        "run_advanced": "go run languages/go/advanced_telemetry_decoder.go",
+        "ci_tier": "portable"
+      },
+      "examples": {
+        "easy": "languages/go/easy_ping.go",
+        "advanced": "languages/go/advanced_telemetry_decoder.go"
+      }
+    },
+    {
+      "id": "typescript",
+      "name": "TypeScript",
+      "build": {
+        "toolchain": "Node.js 22+ and TypeScript",
+        "check": "npx --yes tsc --noEmit --target ES2022 --module NodeNext languages/typescript/easy_greet.ts languages/typescript/advanced_mcp_gateway.ts",
+        "run_easy": "npx --yes tsx languages/typescript/easy_greet.ts",
+        "run_advanced": "npx --yes tsx languages/typescript/advanced_mcp_gateway.ts",
+        "ci_tier": "portable"
+      },
+      "examples": {
+        "easy": "languages/typescript/easy_greet.ts",
+        "advanced": "languages/typescript/advanced_mcp_gateway.ts"
+      }
+    },
+    {
+      "id": "cuda",
+      "name": "CUDA",
+      "build": {
+        "toolchain": "CUDA Toolkit",
+        "check": "nvcc -std=c++17 -c languages/cuda/easy_vector_add.cu -o /tmp/babel-cuda-easy.o && nvcc -std=c++17 -c languages/cuda/advanced_flash_attn_kernel.cu -o /tmp/babel-cuda-advanced.o",
+        "run_easy": "nvcc languages/cuda/easy_vector_add.cu -o /tmp/babel-cuda-easy && /tmp/babel-cuda-easy",
+        "run_advanced": "nvcc -O3 languages/cuda/advanced_flash_attn_kernel.cu -o /tmp/babel-cuda-advanced && /tmp/babel-cuda-advanced",
+        "ci_tier": "specialized"
+      },
+      "examples": {
+        "easy": "languages/cuda/easy_vector_add.cu",
+        "advanced": "languages/cuda/advanced_flash_attn_kernel.cu"
+      }
+    },
+    {
+      "id": "verilog",
+      "name": "SystemVerilog / Verilog",
+      "build": {
+        "toolchain": "Icarus Verilog or Verilator",
+        "check": "iverilog -g2012 -t null languages/verilog/easy_counter.v languages/verilog/advanced_systolic_matmul.v",
+        "run_easy": "iverilog -g2012 -o /tmp/babel-verilog-easy languages/verilog/easy_counter.v && vvp /tmp/babel-verilog-easy",
+        "run_advanced": "verilator --lint-only --language 1800-2023 languages/verilog/advanced_systolic_matmul.v",
+        "ci_tier": "specialized"
+      },
+      "examples": {
+        "easy": "languages/verilog/easy_counter.v",
+        "advanced": "languages/verilog/advanced_systolic_matmul.v"
+      }
+    },
+    {
+      "id": "r",
+      "name": "R",
+      "build": {
+        "toolchain": "R 4.4+",
+        "check": "Rscript -e \"parse(file='languages/r/easy_statistics.R'); parse(file='languages/r/advanced_bayesian_ab_test.R')\"",
+        "run_easy": "Rscript languages/r/easy_statistics.R",
+        "run_advanced": "Rscript languages/r/advanced_bayesian_ab_test.R",
+        "ci_tier": "specialized"
+      },
+      "examples": {
+        "easy": "languages/r/easy_statistics.R",
+        "advanced": "languages/r/advanced_bayesian_ab_test.R"
+      }
+    },
+    {
+      "id": "julia",
+      "name": "Julia",
+      "build": {
+        "toolchain": "Julia 1.11+",
+        "check": "julia --startup-file=no -e \"include(\\\"languages/julia/easy_matrix.jl\\\"); include(\\\"languages/julia/advanced_orbital_differential.jl\\\")\"",
+        "run_easy": "julia languages/julia/easy_matrix.jl",
+        "run_advanced": "julia languages/julia/advanced_orbital_differential.jl",
+        "ci_tier": "specialized"
+      },
+      "examples": {
+        "easy": "languages/julia/easy_matrix.jl",
+        "advanced": "languages/julia/advanced_orbital_differential.jl"
+      }
+    },
+    {
+      "id": "swift",
+      "name": "Swift",
+      "build": {
+        "toolchain": "Swift 6+",
+        "check": "swiftc -parse languages/swift/easy_array.swift languages/swift/advanced_metal_ane_engine.swift",
+        "run_easy": "swift languages/swift/easy_array.swift",
+        "run_advanced": "swift languages/swift/advanced_metal_ane_engine.swift",
+        "ci_tier": "specialized"
+      },
+      "examples": {
+        "easy": "languages/swift/easy_array.swift",
+        "advanced": "languages/swift/advanced_metal_ane_engine.swift"
+      }
+    },
+    {
+      "id": "zig",
+      "name": "Zig",
+      "build": {
+        "toolchain": "Zig 0.14+",
+        "check": "zig build-exe languages/zig/easy_hello.zig -femit-bin=/tmp/babel-zig-easy && zig build-obj languages/zig/advanced_arena_allocator.zig -femit-bin=/tmp/babel-zig-advanced.o",
+        "run_easy": "/tmp/babel-zig-easy",
+        "run_advanced": "zig test languages/zig/advanced_arena_allocator.zig",
+        "ci_tier": "specialized"
+      },
+      "examples": {
+        "easy": "languages/zig/easy_hello.zig",
+        "advanced": "languages/zig/advanced_arena_allocator.zig"
+      }
+    },
+    {
+      "id": "odin",
+      "name": "Odin",
+      "build": {
+        "toolchain": "Odin compiler",
+        "check": "odin check languages/odin && odin build languages/odin -out:/tmp/babel-odin",
+        "run_easy": "odin run languages/odin/easy_math.odin -file",
+        "run_advanced": "odin run languages/odin/advanced_reentry_thermal.odin -file",
+        "ci_tier": "specialized"
+      },
+      "examples": {
+        "easy": "languages/odin/easy_math.odin",
+        "advanced": "languages/odin/advanced_reentry_thermal.odin"
+      }
+    },
+    {
+      "id": "mojo",
+      "name": "Mojo",
+      "build": {
+        "toolchain": "Mojo toolchain",
+        "check": "mojo build languages/mojo/easy_simd.mojo -o /tmp/babel-mojo-easy && mojo build languages/mojo/advanced_tpu_tensor_kernel.mojo -o /tmp/babel-mojo-advanced",
+        "run_easy": "/tmp/babel-mojo-easy",
+        "run_advanced": "/tmp/babel-mojo-advanced",
+        "ci_tier": "specialized"
+      },
+      "examples": {
+        "easy": "languages/mojo/easy_simd.mojo",
+        "advanced": "languages/mojo/advanced_tpu_tensor_kernel.mojo"
+      }
+    },
+    {
+      "id": "elixir",
+      "name": "Elixir",
+      "build": {
+        "toolchain": "Elixir and Erlang/OTP",
+        "check": "elixirc --ignore-module-conflict -o /tmp/babel-elixir languages/elixir/easy_actor.ex languages/elixir/advanced_fault_tolerant_beam.ex",
+        "run_easy": "elixir languages/elixir/easy_actor.ex",
+        "run_advanced": "elixir languages/elixir/advanced_fault_tolerant_beam.ex",
+        "ci_tier": "specialized"
+      },
+      "examples": {
+        "easy": "languages/elixir/easy_actor.ex",
+        "advanced": "languages/elixir/advanced_fault_tolerant_beam.ex"
+      }
+    },
+    {
+      "id": "haskell",
+      "name": "Haskell",
+      "build": {
+        "toolchain": "GHC 9+",
+        "check": "ghc -fno-code languages/haskell/easy_tree.hs languages/haskell/advanced_ast_validator.hs",
+        "run_easy": "runghc languages/haskell/easy_tree.hs",
+        "run_advanced": "runghc languages/haskell/advanced_ast_validator.hs",
+        "ci_tier": "specialized"
+      },
+      "examples": {
+        "easy": "languages/haskell/easy_tree.hs",
+        "advanced": "languages/haskell/advanced_ast_validator.hs"
+      }
+    },
+    {
+      "id": "lean4",
+      "name": "Lean 4",
+      "build": {
+        "toolchain": "Lean 4 and Lake",
+        "check": "lake env lean languages/lean4/easy_logic.lean && lake env lean languages/lean4/advanced_truth_gate_proof.lean",
+        "run_easy": "lake env lean languages/lean4/easy_logic.lean",
+        "run_advanced": "lake env lean languages/lean4/advanced_truth_gate_proof.lean",
+        "ci_tier": "specialized"
+      },
+      "examples": {
+        "easy": "languages/lean4/easy_logic.lean",
+        "advanced": "languages/lean4/advanced_truth_gate_proof.lean"
+      }
+    },
+    {
+      "id": "triton",
+      "name": "Triton",
+      "build": {
+        "toolchain": "Python, PyTorch and Triton",
+        "check": "python -m py_compile languages/triton/easy_vector_add.py languages/triton/advanced_fused_attention.py",
+        "run_easy": "python languages/triton/easy_vector_add.py",
+        "run_advanced": "python languages/triton/advanced_fused_attention.py",
+        "ci_tier": "specialized"
+      },
+      "examples": {
+        "easy": "languages/triton/easy_vector_add.py",
+        "advanced": "languages/triton/advanced_fused_attention.py"
+      }
+    },
+    {
+      "id": "protobuf",
+      "name": "Protocol Buffers",
+      "build": {
+        "toolchain": "protoc",
+        "check": "protoc --descriptor_set_out=/tmp/babel-protobuf.pb languages/protobuf/easy_user.proto languages/protobuf/advanced_colossus_cooling.proto",
+        "run_easy": "protoc --python_out=/tmp languages/protobuf/easy_user.proto",
+        "run_advanced": "protoc --python_out=/tmp languages/protobuf/advanced_colossus_cooling.proto",
+        "ci_tier": "portable"
+      },
+      "examples": {
+        "easy": "languages/protobuf/easy_user.proto",
+        "advanced": "languages/protobuf/advanced_colossus_cooling.proto"
+      }
+    },
+    {
+      "id": "sql",
+      "name": "SQL / PostgreSQL",
+      "build": {
+        "toolchain": "PostgreSQL 16+",
+        "check": "psql -v ON_ERROR_STOP=1 -f languages/sql/easy_table.sql -f languages/sql/advanced_pgvector_hnsw.sql",
+        "run_easy": "psql -v ON_ERROR_STOP=1 -f languages/sql/easy_table.sql",
+        "run_advanced": "psql -v ON_ERROR_STOP=1 -f languages/sql/advanced_pgvector_hnsw.sql",
+        "ci_tier": "portable"
+      },
+      "examples": {
+        "easy": "languages/sql/easy_table.sql",
+        "advanced": "languages/sql/advanced_pgvector_hnsw.sql"
+      }
+    },
+    {
+      "id": "wat",
+      "name": "WebAssembly",
+      "build": {
+        "toolchain": "WebAssembly Binary Toolkit",
+        "check": "wat2wasm languages/wat/easy_add.wat -o /tmp/babel-wat-easy.wasm && wat2wasm languages/wat/advanced_wasm_sandbox.wat -o /tmp/babel-wat-advanced.wasm",
+        "run_easy": "wasmtime /tmp/babel-wat-easy.wasm",
+        "run_advanced": "wasmtime /tmp/babel-wat-advanced.wasm",
+        "ci_tier": "specialized"
+      },
+      "examples": {
+        "easy": "languages/wat/easy_add.wat",
+        "advanced": "languages/wat/advanced_wasm_sandbox.wat"
+      }
+    }
+  ]
+}
