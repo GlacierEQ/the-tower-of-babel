@@ -9,7 +9,19 @@ from typing import Any
 from .registry import REPO_ROOT
 
 MANIFEST = REPO_ROOT / ".integrity" / "file_hashes.json"
-_EXCLUDED_PARTS = {".git", "__pycache__", ".pytest_cache", "build", "artifacts", "dist", "node_modules", ".venv"}
+_EXCLUDED_PARTS = {
+    ".git",
+    "__pycache__",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".mypy_cache",
+    ".tox",
+    "build",
+    "artifacts",
+    "dist",
+    "node_modules",
+    ".venv",
+}
 _EXCLUDED_FILES = {
     ".integrity/file_hashes.json",
     ".integrity/receipt.json",
@@ -22,8 +34,9 @@ def _eligible(path: Path) -> bool:
     return (
         path.is_file()
         and not any(part in _EXCLUDED_PARTS for part in path.parts)
+        and not any(part.endswith(".egg-info") for part in path.parts)
         and rel not in _EXCLUDED_FILES
-        and not rel.endswith((".pyc", ".pyo"))
+        and not rel.endswith((".pyc", ".pyo", ".coverage"))
     )
 
 
@@ -59,20 +72,40 @@ def write_manifest(path: Path = MANIFEST) -> dict[str, Any]:
 
 def verify_integrity(path: Path = MANIFEST) -> dict[str, Any]:
     if not path.is_file():
-        return {"ok": False, "status": "MISSING_MANIFEST", "missing": [], "changed": [], "unexpected": []}
+        return {
+            "ok": False,
+            "status": "MISSING_MANIFEST",
+            "missing": [],
+            "changed": [],
+            "unexpected": [],
+        }
     try:
         expected = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        return {"ok": False, "status": "INVALID_MANIFEST", "error": str(exc), "missing": [], "changed": [], "unexpected": []}
+        return {
+            "ok": False,
+            "status": "INVALID_MANIFEST",
+            "error": str(exc),
+            "missing": [],
+            "changed": [],
+            "unexpected": [],
+        }
     expected_hashes = expected.get("hashes", {})
     if not isinstance(expected_hashes, dict):
-        return {"ok": False, "status": "INVALID_MANIFEST", "missing": [], "changed": [], "unexpected": []}
+        return {
+            "ok": False,
+            "status": "INVALID_MANIFEST",
+            "missing": [],
+            "changed": [],
+            "unexpected": [],
+        }
     current = collect_hashes()
     missing = sorted(set(expected_hashes) - set(current))
     unexpected = sorted(set(current) - set(expected_hashes))
     changed = sorted(
-        path for path in set(expected_hashes) & set(current)
-        if expected_hashes[path] != current[path]
+        file_path
+        for file_path in set(expected_hashes) & set(current)
+        if expected_hashes[file_path] != current[file_path]
     )
     ok = not missing and not unexpected and not changed
     return {
