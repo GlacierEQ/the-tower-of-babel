@@ -90,7 +90,7 @@
     "languages/vhdl/advanced_fault_tolerant_voter.vhd": "7311a02f4856c26a7dd758f87b2bcdd4825c4c557aed41679e3a850cca2eea17",
     "languages/vhdl/easy_counter.vhd": "208a0e2a7776ccc023eab0630e22a110202a746954fb0cabb631b77aa4de49e1",
     "languages/wat/advanced_wasm_sandbox.wat": "90201872bfc8ca99de57f70fb41dcec157116fe4ad5e29a88cb7c20c6cd3dd83",
-    "languages/wat/easy_add.wat": "ff311d50c6f65888cf8460df4866cbe278cc843774058c4a375fa6fa753ea7d0",
+    "languages/wat/easy_add.wat": "6c0bd4703436b43fde3260bced34e8b68e76ffebf27eb875c59e288f983aa533",
     "languages/zig/advanced_arena_allocator.zig": "651f550e0f4867130148cb9ab0bfa51481a818e3ed1ad486126e19c359ea9fc1",
     "languages/zig/easy_hello.zig": "23b82ed72a9b33cd0fb1d726e57b9e4563232308cde7ab2e14a579e7e60f96fe",
     "mastermind_sidecar.py": "12c0ce4684cdaf2f39ab8a05d2a7ca20a2ebf6851aa03d0e8471419cf1353816",
