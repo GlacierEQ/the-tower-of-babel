@@ -13,13 +13,107 @@ from typing import Any, Iterable
 
 from .registry import REPO_ROOT, TowerRegistry
 
+# Registry commands are data, not ambient authority. Only recognized compiler,
+# runtime, schema, proof, and build frontends may be launched from PATH.
+_SAFE_EXECUTABLES = frozenset({
+    "Rscript",
+    "agda",
+    "cabal",
+    "capnp",
+    "cargo",
+    "clang",
+    "clang++",
+    "cmake",
+    "coqc",
+    "ctest",
+    "elixir",
+    "flatc",
+    "g++",
+    "gcc",
+    "ghc",
+    "go",
+    "iverilog",
+    "julia",
+    "lake",
+    "lean",
+    "make",
+    "mix",
+    "mlir-opt",
+    "mojo",
+    "ninja",
+    "node",
+    "nvcc",
+    "odin",
+    "opt",
+    "protoc",
+    "python",
+    "python3",
+    "rustc",
+    "sbt",
+    "scala",
+    "sqlite3",
+    "swift",
+    "swiftc",
+    "tsc",
+    "verilator",
+    "vhdl-ls",
+    "vvp",
+    "wat2wasm",
+    "wasmtime",
+    "zig",
+})
+_FORBIDDEN_EXECUTABLES = frozenset({
+    "bash",
+    "cmd",
+    "env",
+    "fish",
+    "powershell",
+    "pwsh",
+    "sh",
+    "zsh",
+})
+
 
 def _available(binary: str) -> bool:
     return shutil.which(binary) is not None
 
 
+def _validate_argv(argv: list[str]) -> str | None:
+    """Return a blocker when argv exceeds the Tower execution boundary."""
+    if not argv or not all(isinstance(part, str) and part for part in argv):
+        return "Command must be a non-empty argv string list."
+    executable = argv[0]
+    if Path(executable).name in _FORBIDDEN_EXECUTABLES:
+        return f"Shell and environment wrappers are forbidden: {executable}"
+    if "/" not in executable and "\\" not in executable:
+        if executable not in _SAFE_EXECUTABLES:
+            return f"Executable is not in the governed allowlist: {executable}"
+        return None
+    candidate = Path(executable)
+    if candidate.is_absolute():
+        return f"Absolute executable paths are forbidden: {executable}"
+    resolved = (REPO_ROOT / candidate).resolve(strict=False)
+    try:
+        relative = resolved.relative_to(REPO_ROOT)
+    except ValueError:
+        return f"Executable escapes repository root: {executable}"
+    if not relative.parts or relative.parts[0] not in {"build", "languages", "flagship"}:
+        return f"Repository executable must live under build/, languages/, or flagship/: {executable}"
+    return None
+
+
 def _run(argv: list[str], timeout_s: int = 120) -> dict[str, Any]:
-    """Run an argv-only command and return bounded evidence without throwing."""
+    """Run a governed argv-only command and return bounded evidence."""
+    policy_error = _validate_argv(argv)
+    if policy_error:
+        return {
+            "argv": argv,
+            "returncode": None,
+            "stdout": "",
+            "stderr": policy_error,
+            "duration_ms": 0.0,
+            "policy_error": True,
+        }
     start = time.monotonic()
     try:
         completed = subprocess.run(
@@ -67,7 +161,7 @@ def _invalid(technology_id: str, blocker: str, commands: list[dict[str, Any]] | 
 
 
 def _tool_version(tool: str) -> str:
-    """Capture a best-effort observed tool version without making it authoritative."""
+    """Capture a best-effort observed tool version without calling a shell."""
     for suffix in (["--version"], ["version"], ["-version"]):
         result = _run([tool, *suffix], timeout_s=15)
         if result.get("returncode") == 0:
@@ -94,6 +188,8 @@ def build_floor(tech: dict[str, Any]) -> dict[str, Any]:
     reference_pin = toolchain.get("reference_pin")
     if not isinstance(tool, str) or not tool or not isinstance(reference_pin, str) or not reference_pin:
         return _invalid(tech_id, "toolchain requires string tool and reference_pin.")
+    if tool not in _SAFE_EXECUTABLES:
+        return _invalid(tech_id, f"Primary tool is not in the governed allowlist: {tool}")
 
     gate = execution.get("hardware_gate", "")
     tier = execution.get("ci_tier", "portable")
@@ -102,9 +198,7 @@ def build_floor(tech: dict[str, Any]) -> dict[str, Any]:
     python_modules = toolchain.get("python_modules", [])
     if not isinstance(python_modules, list) or not all(isinstance(module, str) and module for module in python_modules):
         return _invalid(tech_id, "python_modules must be a list of module names.")
-    missing_modules = [
-        module for module in python_modules if importlib.util.find_spec(module) is None
-    ]
+    missing_modules = [module for module in python_modules if importlib.util.find_spec(module) is None]
     if missing_modules:
         return {
             "technology_id": tech_id,
@@ -117,7 +211,7 @@ def build_floor(tech: dict[str, Any]) -> dict[str, Any]:
 
     gate_key = re.sub(r"[^A-Z0-9]+", "_", tech_id.upper()).strip("_")
     if gate and os.environ.get(f"TOWER_ENABLE_{gate_key}") != "1":
-        status = "BLOCKED_DEPENDENCY" if tier in {"service", "specialized"} and "service" in gate.casefold() else "BLOCKED_HARDWARE"
+        status = "BLOCKED_SERVICE" if tier == "service" or "service" in gate.casefold() else "BLOCKED_HARDWARE"
         return {
             "technology_id": tech_id,
             "status": status,
@@ -147,10 +241,15 @@ def build_floor(tech: dict[str, Any]) -> dict[str, Any]:
     (REPO_ROOT / "build").mkdir(exist_ok=True)
     commands: list[dict[str, Any]] = []
     for argv in declared_commands:
-        if not isinstance(argv, list) or not argv or not all(isinstance(part, str) and part for part in argv):
-            return _invalid(tech_id, "Build/test commands must be non-empty argv string lists.", commands)
+        if not isinstance(argv, list):
+            return _invalid(tech_id, "Build/test commands must be argv lists.", commands)
+        policy_error = _validate_argv(argv)
+        if policy_error:
+            return _invalid(tech_id, policy_error, commands)
         result = _run(argv)
         commands.append(result)
+        if result.get("policy_error"):
+            return _invalid(tech_id, str(result.get("stderr", "Command policy rejected argv.")), commands)
         if result.get("spawn_error"):
             return {
                 "technology_id": tech_id,
@@ -163,8 +262,8 @@ def build_floor(tech: dict[str, Any]) -> dict[str, Any]:
         if result.get("returncode") != 0:
             return {
                 "technology_id": tech_id,
-                "status": "FAILED",
-                "blocker": "Command failed or timed out.",
+                "status": "FAILED_TIMEOUT" if result.get("timeout") else "FAILED",
+                "blocker": "Command timed out." if result.get("timeout") else "Command failed.",
                 "tool": tool,
                 "reference_pin": reference_pin,
                 "commands": commands,
