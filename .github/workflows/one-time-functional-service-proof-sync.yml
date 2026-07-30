@@ -10,15 +10,15 @@ permissions:
 
 concurrency:
   group: one-time-functional-service-proof-promotion
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   promote:
     if: >-
-      github.event.issue.title == '[tower-quality] promote Go and Haskell behavioral proof' &&
+      github.event.issue.title == '[tower-quality] promote Go and Haskell behavioral proof v2' &&
       github.event.issue.user.login == 'GlacierEQ'
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 20
     steps:
       - name: Check out the living main worker
         uses: actions/checkout@v4
@@ -35,11 +35,8 @@ jobs:
         with:
           go-version: '1.23.4'
 
-      - uses: haskell-actions/setup@v2
-        with:
-          ghc-version: '9.8.2'
-          enable-stack: false
-          cabal-update: false
+      - name: Confirm runner Haskell toolchain
+        run: ghc --version
 
       - name: Install Tower governance
         run: python -m pip install -e .[dev]
