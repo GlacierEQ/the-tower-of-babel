@@ -64,7 +64,12 @@ jobs:
       - run: tower build --all --allow-blocked --output artifacts/build-report.json
       - run: tower generate
       - run: tower benchmark python c cpp rust go typescript webassembly --output artifacts/benchmarks.json
-      - run: tower proof-report --build-report artifacts/build-report.json --output artifacts/proof-report.json
+      - run: >-
+          tower proof-report
+          --build-report artifacts/build-report.json
+          --benchmark-report artifacts/benchmarks.json
+          --allow-blocked
+          --output artifacts/proof-report.json
       - run: tower receipt --build-report artifacts/build-report.json --output artifacts/tower_receipt.json
       - uses: actions/upload-artifact@v4
         with:
