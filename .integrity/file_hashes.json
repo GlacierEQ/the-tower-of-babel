@@ -3,7 +3,7 @@
   "hash_algorithm": "sha256",
   "hashes": {
     ".github/workflows/spiral.yml": "e2544bf4285a92fadd5194aa3160337cc1e1fe514a94047c314350fd98cf0e0e",
-    ".github/workflows/tower.yml": "d075d5fb60aee67c50eb27841f7b6e105a5d5c0ccb704918952ced37189cd094",
+    ".github/workflows/tower.yml": "f884aec7e16eb13873e6ec4d1b43428496614ffc03c917f658de87bc8b7269e5",
     ".gitignore": "c6572b4405b8cf647c9da1702f7cec6a7338a4c4375ce86fbab18aacc528fbe2",
     ".integrity/watchdog_daemon.py": "5dcc60a8f0c4c18fb810a02a579952bcec45dbc2b7f7fc079322d48528e3a61c",
     "AGENTS.md": "fec8125d18e4088277551c8cd25852d062c37db3a3c864d3bc6d6dffd21fd22c",
