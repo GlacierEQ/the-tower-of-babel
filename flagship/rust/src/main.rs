@@ -9,7 +9,6 @@ struct Plan {
     tower_registry_sha256: String,
     input_sha256: String,
     maximum_action: String,
-    #[serde(default)]
     unmatched_capabilities: Vec<String>,
 }
 
@@ -27,7 +26,7 @@ struct Decision {
 }
 
 fn is_sha256(value: &str) -> bool {
-    value.len() == 64 && value.bytes().all(|byte| byte.is_ascii_hexdigit())
+    value.len() == 64 && value.bytes().all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
 }
 
 fn action_rank(value: &str) -> Option<u8> {
