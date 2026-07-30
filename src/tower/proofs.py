@@ -29,33 +29,65 @@ def _build_statuses(build_report: dict[str, Any]) -> dict[str, str]:
     return statuses
 
 
-def build_proof_report(registry: TowerRegistry, build_report: dict[str, Any]) -> dict[str, Any]:
-    """Bind each governed floor's proof state to its unique build result."""
+def _benchmark_statuses(benchmark_report: dict[str, Any] | None) -> dict[str, str]:
+    statuses: dict[str, str] = {}
+    if benchmark_report is None:
+        return statuses
+    rows = benchmark_report.get("results", [])
+    if not isinstance(rows, list):
+        raise ValueError("benchmark report results must be a list")
+    for index, row in enumerate(rows):
+        if not isinstance(row, dict):
+            raise ValueError(f"benchmark report result {index} must be an object")
+        technology_id = row.get("technology_id")
+        status = row.get("status")
+        if not isinstance(technology_id, str) or not technology_id:
+            raise ValueError(f"benchmark report result {index} requires technology_id")
+        if not isinstance(status, str) or not status:
+            raise ValueError(f"benchmark report result {technology_id} requires status")
+        if technology_id in statuses:
+            raise ValueError(f"duplicate benchmark result for technology: {technology_id}")
+        statuses[technology_id] = status
+    return statuses
+
+
+def build_proof_report(
+    registry: TowerRegistry,
+    build_report: dict[str, Any],
+    benchmark_report: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Bind each governed floor's proof state to its unique executed evidence."""
     statuses = _build_statuses(build_report)
+    benchmarks = _benchmark_statuses(benchmark_report)
     governed_ids = {technology["id"] for technology in registry.technologies}
-    unknown_ids = sorted(set(statuses) - governed_ids)
+    unknown_ids = sorted((set(statuses) | set(benchmarks)) - governed_ids)
     if unknown_ids:
-        raise ValueError(f"build report contains unknown technologies: {', '.join(unknown_ids)}")
+        raise ValueError(f"evidence report contains unknown technologies: {', '.join(unknown_ids)}")
 
     floors = []
     for tech in registry.technologies:
-        build_status = statuses.get(tech["id"], "NOT_EXECUTED")
+        tech_id = tech["id"]
+        build_status = statuses.get(tech_id, "NOT_EXECUTED")
+        benchmark_status = benchmarks.get(tech_id, "NOT_EXECUTED")
         proof_class = tech["proof_class"]
-        if build_status == "VERIFIED":
-            proof_status = "SATISFIED_FOR_DECLARED_GATE"
-        elif build_status.startswith("BLOCKED_"):
+        if build_status.startswith("BLOCKED_"):
             proof_status = "BLOCKED"
         elif build_status == "NOT_EXECUTED":
             proof_status = "NOT_EXECUTED"
-        else:
+        elif build_status != "VERIFIED":
             proof_status = "FAILED"
+        elif proof_class == "benchmark" and benchmark_status != "MEASURED":
+            proof_status = "BLOCKED" if benchmark_status.startswith("BLOCKED_") else "NOT_EXECUTED"
+        else:
+            proof_status = "SATISFIED_FOR_DECLARED_GATE"
         floors.append({
-            "technology_id": tech["id"],
+            "technology_id": tech_id,
             "easy_example": tech["easy_example"],
             "advanced_example": tech["advanced_example"],
             "evidence_state": tech["evidence_state"],
             "proof_class": proof_class,
             "build_status": build_status,
+            "benchmark_status": benchmark_status,
             "proof_status": proof_status,
             "primary_evidence": tech["primary_evidence"],
         })
