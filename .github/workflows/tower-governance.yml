@@ -1,0 +1,32 @@
+name: Tower Governance
+
+on:
+  push:
+    branches: [main, "build/**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  tower-governance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install governance CLI
+        run: python -m pip install --disable-pip-version-check -e .
+      - name: Compile governance code
+        run: python -m compileall -q src tests
+      - name: Validate canonical registry
+        run: tower validate
+      - name: Run tests
+        run: python -m unittest discover -s tests -v
+      - name: Generate derived artifacts
+        run: tower generate
+      - name: Verify integrity manifest
+        run: tower integrity verify
+      - name: Emit deterministic receipt
+        run: tower integrity receipt
