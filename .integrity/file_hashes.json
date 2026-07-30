@@ -124,7 +124,7 @@
     "src/tower/integrity.py": "1665780af43e655145885eafa89e0fc7945616b21ee41957869a119c5bcefc28",
     "src/tower/proofs.py": "53109539dee101c581eb1046183969cbd8c34177210997a72e7cbca05e780423",
     "src/tower/receipt.py": "9ea97bb35b6bb27c80bb2ec3aab3214746cecb1eb8f48112ba4fe33596cdd803",
-    "src/tower/registry.py": "dc0214a744e3efb5f1c0118088a158d87ecdb17769397ab2ff702e995afc8bb7",
+    "src/tower/registry.py": "b821db9b00a208c578aed8303def910d975d62a5551e8ffcedfdb2726517db1c",
     "tests/test_flagship.py": "6f467f5638c9e729a484566bb0eb9c01da38ab0afa394b21f94e8dc6cab714c9",
     "tests/test_release_hardening.py": "0159348cbdc73c353ca86607dad5f4a63b2218ee002ab35600655b631c39d361",
     "tests/test_tower_of_babel.py": "79e0f58aefbb5874fd47fd0931d451827e05dd3c1fd83cea36500d36f65f162d"
