@@ -1,5 +1,5 @@
 {
-  "file_count": 138,
+  "file_count": 139,
   "hash_algorithm": "sha256",
   "hashes": {
     ".github/workflows/ci.yml": "ef7f6d26ae653dad2d3c1c5992b7a866012f016dc88232650dada643fbe50914",
@@ -8,6 +8,7 @@
     ".gitignore": "c6572b4405b8cf647c9da1702f7cec6a7338a4c4375ce86fbab18aacc528fbe2",
     ".integrity/watchdog_daemon.py": "5dcc60a8f0c4c18fb810a02a579952bcec45dbc2b7f7fc079322d48528e3a61c",
     "AGENTS.md": "fec8125d18e4088277551c8cd25852d062c37db3a3c864d3bc6d6dffd21fd22c",
+    "BRANCH_POLICY.md": "bc789ba67c0e535761fd18bb37f689fc918101d04b3e49d9a98edc8d3fcc522f",
     "LICENSE": "7466596bdb65520298c2449eef8e883d9d3300f8cfac9aea893c0f572cdaeeed",
     "QUALITY_CONTRACT.md": "411bb02c7d35b59f4860ca7bffe8b24bcbfc8741139394c333a308903a4b82fb",
     "README.md": "815a47c5ab404c5522415f92b577a1bea991dc0892517b6d82ee2e9da83b8a20",
