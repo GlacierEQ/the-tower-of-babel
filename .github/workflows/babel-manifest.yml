@@ -5,6 +5,7 @@ on:
     branches:
       - feature/canonical-manifest-clean
   pull_request:
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: write
