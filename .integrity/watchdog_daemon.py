@@ -1,16 +1,22 @@
 #!/usr/bin/env python3
-"""Watchdog daemon for the-tower-of-babel repo."""
+"""Integrity watchdog backed by the real Tower hash engine."""
+from __future__ import annotations
+
 import json
 import sys
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO_ROOT / "src"))
+
+from tower.integrity import verify_integrity
+
 
 def check_integrity():
-    hashes_file = REPO_ROOT / ".integrity" / "file_hashes.json"
-    if not hashes_file.exists():
-        return {"status": "MISSING_HASHES", "ok": False}
-    return {"status": "HEALTHY", "ok": True}
+    return verify_integrity()
+
 
 if __name__ == "__main__":
-    print(json.dumps(check_integrity(), indent=2))
+    result = check_integrity()
+    print(json.dumps(result, indent=2, sort_keys=True))
+    raise SystemExit(0 if result["ok"] else 1)

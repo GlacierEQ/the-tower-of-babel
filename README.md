@@ -1,158 +1,168 @@
 # The Tower of Babel
 
-> **A polyglot systems-engineering Rosetta Stone:** 21 languages, 42 focused exhibits, one machine-readable W4H decision framework.
+> **A governed multi-language systems engineering Rosetta Stone**  
+> **30 technology floors · W4H+How placement · easy and advanced exhibits · executable proof classes**
 
-[![Languages](https://img.shields.io/badge/languages-21-2ea44f)](src/babel_registry.py)
-[![Exhibits](https://img.shields.io/badge/exhibits-42-2ea44f)](quality/exhibit_status.json)
-[![Quality Contract](https://img.shields.io/badge/advanced%20contract-enforced-6f42c1)](QUALITY_CONTRACT.md)
-[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+The Tower of Babel is the canonical authority for language, format, compiler, hardware, serialization, and formal-verification boundaries across the GlacierEQ system family.
 
-The Tower of Babel is not an argument that every problem needs another language. It demonstrates the opposite: **language choice should be deliberate, bounded, and provable.** Each language is placed where its runtime model, type system, hardware access, or ecosystem creates measurable value.
+Every floor answers:
 
----
+- **What** does this technology uniquely contribute?
+- **Where** does it belong in the architecture?
+- **When** should it be activated?
+- **Why** is it the correct boundary?
+- **How** does it achieve that result?
+- What is the **easy example**?
+- What is the **advanced example**?
+- What proof currently supports the claim?
 
-## 1. For recruiters and engineering leaders
+`registry/tower.yml` is the root authority. Its contained `tower.d/*.json` fragments and the index form one canonical registry. The README, runtime registry, sidecar counts, build manifests, interface graph, maturity report, Megamind map, mesh metadata, and integrity receipt are derived from it.
 
-This repository demonstrates three capabilities that are difficult to communicate through a conventional résumé:
-
-### Systems judgment
-
-The project explains **what, where, when, why, and how** each language belongs in a production architecture. Python handles orchestration; Rust guards privileged actions; Go decodes concurrent telemetry; TypeScript governs MCP and web protocol surfaces; C controls lock-free memory; SQL protects canonical state.
-
-### Depth without theater
-
-The repository distinguishes between:
-
-- **production-depth exhibits** that satisfy the repository’s advanced engineering contract; and
-- **promotion candidates** that are useful language demonstrations but are not yet represented as production-ready.
-
-That distinction is tracked in [`quality/exhibit_status.json`](quality/exhibit_status.json). The current baseline contains **7 production-depth advanced exhibits** and **14 candidates with explicit gaps**. The repository does not hide incomplete depth behind badges or file counts.
-
-### Architecture that can be inspected by humans and agents
-
-The README serves the human reader. The canonical registry, maturity ledger, sidecar telemetry, tests, and CI serve machines. A hiring manager can understand the thesis quickly; a senior engineer can inspect the implementation; an AI agent can query the same source of truth programmatically.
-
----
-
-## 2. For senior engineers and technical reviewers
-
-### Canonical architecture
+## Architecture
 
 ```text
-README.md                         Human impact and navigation
-QUALITY_CONTRACT.md               Definition of easy vs. advanced evidence
-src/babel_registry.py             Canonical 21-language W4H registry
-quality/exhibit_status.json       Machine-readable maturity and gaps
-mastermind_sidecar.py             Derived operational telemetry
-languages/<language>/             Easy and advanced exhibits
-tests/test_tower_of_babel.py      Repository invariants
-.github/workflows/ci.yml          Native compiler and contract validation
-.integrity/file_hashes.json       Integrity inventory
+Megamind mission and specialist selection
+                ↓
+Tower technology and proof contract
+                ↓
+Per-floor toolchain / build / blocker report
+                ↓
+Cross-language interface contract
+                ↓
+Execution evidence and deterministic receipt
 ```
 
-Counts are derived from the registry. They are not independently hard-coded into the sidecar or tests.
+## Canonical technology matrix
 
-### W4H language matrix
+| # | Technology | Class | What | Where | When | Why | Evidence | Easy | Advanced |
+|---:|---|---|---|---|---|---|---|---|---|
+| 1 | **C** `.c` | language | Provides direct memory and hardware control with a minimal runtime. | Firmware, kernels, embedded loops, lock-free primitives, and portable system libraries. | Use when deterministic layout, ABI control, or near-zero runtime overhead is mandatory. | It is the universal systems interoperability layer and maps closely to machine execution. | `compiles` / `compile` | [easy_linked_list.c](languages/c/easy_linked_list.c) | [advanced_lockfree_spsc_ring.c](languages/c/advanced_lockfree_spsc_ring.c) |
+| 2 | **C++** `.cpp` | language | Combines low-level control with zero-cost abstractions and mature numerical libraries. | Engines, inference runtimes, cache systems, geometry, simulation, and latency-sensitive services. | Use when performance and complex abstractions must coexist in one native binary. | It provides deterministic ownership patterns, templates, SIMD access, and unmatched systems-library depth. | `compiles` / `compile` | [easy_vector.cpp](languages/cpp/easy_vector.cpp) | [advanced_kv_entropy.cpp](languages/cpp/advanced_kv_entropy.cpp) |
+| 3 | **Rust** `.rs` | language | Builds native systems with compile-time ownership, thread safety, and no garbage collector. | Evidence engines, action governors, cryptographic tooling, network services, and safe concurrency. | Use when native performance and strong memory/concurrency guarantees are both non-negotiable. | The borrow checker eliminates broad classes of memory corruption and data races before execution. | `tested` / `behavioral` | [easy_counter.rs](languages/rust/easy_counter.rs) | [advanced_safety_governor.rs](languages/rust/advanced_safety_governor.rs) |
+| 4 | **Zig** `.zig` | language | Builds explicit, portable native software with compile-time metaprogramming and excellent C interop. | Portable CLIs, allocators, cross-compilation, embedded tools, and small runtime components. | Use when cross-target delivery, allocator control, or C integration dominates. | It provides explicit failure paths, no hidden allocation, and first-class cross-compilation. | `tested` / `behavioral` | [easy_hello.zig](languages/zig/easy_hello.zig) | [advanced_arena_allocator.zig](languages/zig/advanced_arena_allocator.zig) |
+| 5 | **Odin** `.odin` | language | Prioritizes data-oriented native programming with explicit memory contexts and low hidden complexity. | Game engines, physics, visualization, and deterministic real-time loops. | Use when data layout, allocator visibility, and predictable control flow are central. | It presents a simpler C-like systems model with built-in data-oriented facilities. | `toolchain_gated` / `compile` | [easy_math.odin](languages/odin/easy_math.odin) | [advanced_reentry_thermal.odin](languages/odin/advanced_reentry_thermal.odin) |
+| 6 | **Python** `.py` | language | Rapidly composes AI, automation, analysis, and control-plane workflows. | Mission orchestration, model tooling, document pipelines, tests, and integration glue. | Use when iteration speed, ecosystem breadth, and readable coordination dominate the boundary. | It offers the strongest general AI ecosystem and the lowest friction for composing heterogeneous systems. | `tested` / `behavioral` | [easy_fibonacci.py](languages/python/easy_fibonacci.py) | [advanced_async_orchestrator.py](languages/python/advanced_async_orchestrator.py) |
+| 7 | **Go** `.go` | language | Builds simple, deployable concurrent network services and telemetry processors. | Gateways, control-plane daemons, streaming telemetry, and cloud infrastructure. | Use when many I/O-bound tasks need straightforward concurrency and operational simplicity. | Goroutines, channels, static binaries, and a disciplined standard library reduce service complexity. | `compiles` / `compile` | [easy_ping.go](languages/go/easy_ping.go) | [advanced_telemetry_decoder.go](languages/go/advanced_telemetry_decoder.go) |
+| 8 | **TypeScript** `.ts` | language | Adds static contracts to JavaScript's browser, Node.js, and event-driven ecosystem. | MCP gateways, web applications, browser agents, connectors, and asynchronous control surfaces. | Use when the boundary is web-native, JSON/RPC-heavy, or shared between frontend and backend. | It catches interface drift before runtime while retaining JavaScript's deployment reach. | `tested` / `behavioral` | [easy_greet.ts](languages/typescript/easy_greet.ts) | [advanced_mcp_gateway.ts](languages/typescript/advanced_mcp_gateway.ts) |
+| 9 | **Swift** `.swift` | language | Builds safe native software for Apple platforms and interoperates with Metal. | macOS/iOS applications, Apple Silicon inference, Metal compute, and device-native interfaces. | Use when the target is Apple's runtime, UI stack, or GPU/ANE ecosystem. | It combines native performance, safety features, and first-class Apple framework access. | `hardware_gated` / `hardware` | [easy_array.swift](languages/swift/easy_array.swift) | [advanced_metal_ane_engine.swift](languages/swift/advanced_metal_ane_engine.swift) |
+| 10 | **Elixir** `.ex` | language | Runs massive numbers of isolated processes under supervision on the BEAM. | Realtime backends, event systems, self-healing clusters, and coordination services. | Use when fault isolation, uptime, and highly concurrent messaging dominate. | BEAM supervision and actor semantics make failure a managed lifecycle event. | `tested` / `behavioral` | [easy_actor.ex](languages/elixir/easy_actor.ex) | [advanced_fault_tolerant_beam.ex](languages/elixir/advanced_fault_tolerant_beam.ex) |
+| 11 | **Haskell** `.hs` | language | Expresses pure transformations and rich type-level models with controlled effects. | Compilers, DSLs, formal models, financial logic, and correctness-sensitive transformations. | Use when algebraic structure and purity simplify reasoning about complex state. | Its type system and immutable semantics make invalid transformations harder to express. | `compiles` / `compile` | [easy_tree.hs](languages/haskell/easy_tree.hs) | [advanced_ast_validator.hs](languages/haskell/advanced_ast_validator.hs) |
+| 12 | **R** `.R` | language | Provides expressive statistical modeling, inference, and visualization. | Experiments, Bayesian analysis, biostatistics, forecasting, and reproducible reports. | Use when statistical methodology and domain packages matter more than service deployment. | Its statistical ecosystem exposes mature, reviewable implementations of advanced methods. | `tested` / `behavioral` | [easy_statistics.R](languages/r/easy_statistics.R) | [advanced_bayesian_ab_test.R](languages/r/advanced_bayesian_ab_test.R) |
+| 13 | **Julia** `.jl` | language | Combines high-level mathematical syntax with JIT-compiled numerical performance. | ODE/PDE solvers, optimization, scientific machine learning, and simulation. | Use when researchers need expressive mathematics without abandoning native-speed kernels. | Multiple dispatch and LLVM compilation unify interactive modeling with high-performance methods. | `tested` / `behavioral` | [easy_matrix.jl](languages/julia/easy_matrix.jl) | [advanced_orbital_differential.jl](languages/julia/advanced_orbital_differential.jl) |
+| 14 | **SQL / pgvector** `.sql` | query_language | Declares relational transformations, constraints, transactions, and vector retrieval. | Canonical state, analytics, audit records, knowledge graphs, and embedding search. | Use when durable data relationships and set-oriented operations belong inside the database. | The query planner, transactions, indexes, and constraints centralize data correctness and performance. | `service_gated` / `integration` | [easy_table.sql](languages/sql/easy_table.sql) | [advanced_pgvector_hnsw.sql](languages/sql/advanced_pgvector_hnsw.sql) |
+| 15 | **CUDA** `.cu` | kernel_language | Expresses massively parallel kernels directly for NVIDIA GPUs. | Attention, matrix multiplication, simulation, image processing, and custom inference kernels. | Use when profiling proves GPU compute or memory movement is the dominant bottleneck. | It exposes NVIDIA execution, shared memory, warps, and Tensor Core-oriented optimization. | `hardware_gated` / `hardware` | [easy_vector_add.cu](languages/cuda/easy_vector_add.cu) | [advanced_flash_attn_kernel.cu](languages/cuda/advanced_flash_attn_kernel.cu) |
+| 16 | **Triton** `.py` | kernel_language | Defines high-throughput GPU kernels with Python syntax and compiler-managed block programming. | Fused attention, normalization, quantization, MoE routing, and custom inference operations. | Use after profiling shows framework kernels are inadequate and the target GPU is supported. | It exposes GPU performance without hand-authoring all CUDA indexing and scheduling details. | `hardware_gated` / `benchmark` | [easy_vector_add.py](languages/triton/easy_vector_add.py) | [advanced_fused_attention.py](languages/triton/advanced_fused_attention.py) |
+| 17 | **Mojo** `.mojo` | language | Combines Python-like authoring with systems-level types, ownership, and accelerator-oriented compilation. | AI kernels, SIMD tensor code, model serving components, and MLIR-backed optimization. | Use when Python ergonomics must reach native or accelerator performance in one language. | Its compiler stack targets heterogeneous AI hardware while retaining familiar syntax. | `toolchain_gated` / `compile` | [easy_simd.mojo](languages/mojo/easy_simd.mojo) | [advanced_tpu_tensor_kernel.mojo](languages/mojo/advanced_tpu_tensor_kernel.mojo) |
+| 18 | **ONNX** `.onnx` | model_format | Represents machine-learning computation as a portable typed graph independent of the training framework. | Model exchange, runtime deployment, graph inspection, optimization, and hardware-provider selection. | Use when a model must move between frameworks or run across multiple inference backends. | It separates learned graph semantics from any one training library and enables portable validation. | `tested` / `behavioral` | [easy_linear_model.py](languages/onnx/easy_linear_model.py) | [advanced_moe_router.py](languages/onnx/advanced_moe_router.py) |
+| 19 | **MLIR** `.mlir` | intermediate_representation | Provides extensible intermediate representations and dialects across abstraction levels. | Compiler pipelines, tensor lowering, accelerator backends, DSLs, and hardware-specific optimization. | Use when one operation must be progressively transformed from domain semantics to machine code. | It makes compiler passes and hardware dialect boundaries explicit and reusable. | `toolchain_gated` / `compile` | [easy_add.mlir](languages/mlir/easy_add.mlir) | [advanced_attention_pipeline.mlir](languages/mlir/advanced_attention_pipeline.mlir) |
+| 20 | **WebAssembly** `.wat` | binary_format | Provides a portable, capability-constrained bytecode target for sandboxed execution. | Browser modules, plugin systems, edge runtimes, and zero-trust agent tools. | Use when untrusted or portable code must run within explicit host capabilities. | Its validated bytecode and host-controlled imports create a small cross-platform isolation boundary. | `compiles` / `compile` | [easy_add.wat](languages/wat/easy_add.wat) | [advanced_wasm_sandbox.wat](languages/wat/advanced_wasm_sandbox.wat) |
+| 21 | **Protocol Buffers** `.proto` | idl | Defines language-neutral schemas for compact binary messages and RPC services. | Service contracts, telemetry, receipts, registries, and cross-language mission envelopes. | Use when multiple languages need one evolvable typed contract. | Field-numbered schemas preserve compatibility and generate implementations across ecosystems. | `compiles` / `compile` | [easy_user.proto](languages/protobuf/easy_user.proto) | [advanced_colossus_cooling.proto](languages/protobuf/advanced_colossus_cooling.proto) |
+| 22 | **FlatBuffers** `.fbs` | idl | Defines binary objects that can be read directly from a buffer without full unpacking. | Games, mobile state, telemetry, embedded inference, and latency-sensitive local IPC. | Use when read latency and allocation avoidance dominate and schema evolution remains required. | Generated accessors traverse the serialized buffer in place, reducing parsing and copying. | `compiles` / `compile` | [easy_user.fbs](languages/flatbuffers/easy_user.fbs) | [advanced_telemetry.fbs](languages/flatbuffers/advanced_telemetry.fbs) |
+| 23 | **Cap'n Proto** `.capnp` | idl | Combines zero-copy serialization with capability-oriented RPC. | Low-latency distributed systems, secure object capabilities, storage engines, and agent IPC. | Use when serialized messages and authority-bearing RPC references must share one model. | It reads wire-format objects directly and encodes access through explicit capabilities. | `compiles` / `compile` | [easy_user.capnp](languages/capnproto/easy_user.capnp) | [advanced_agent_mesh.capnp](languages/capnproto/advanced_agent_mesh.capnp) |
+| 24 | **Verilog** `.v` | hdl | Describes synthesizable digital logic at register-transfer level. | FPGA prototypes, ASIC blocks, counters, pipelines, and arithmetic units. | Use when the output must become gates, registers, and wires rather than software instructions. | It gives deterministic cycle-level hardware structure with broad tool support. | `compiles` / `compile` | [easy_counter.v](languages/verilog/easy_counter.v) | [advanced_systolic_matmul.v](languages/verilog/advanced_systolic_matmul.v) |
+| 25 | **SystemVerilog** `.sv` | hdl | Extends Verilog with richer RTL, interfaces, assertions, and verification constructs. | ASIC/FPGA design, protocol interfaces, constrained verification, and accelerator pipelines. | Use when hardware design needs stronger typing, interfaces, or executable assertions. | It unifies synthesizable RTL with powerful verification semantics and industry tooling. | `compiles` / `compile` | [easy_counter.sv](languages/systemverilog/easy_counter.sv) | [advanced_systolic_array.sv](languages/systemverilog/advanced_systolic_array.sv) |
+| 26 | **VHDL** `.vhd` | hdl | Describes strongly typed concurrent hardware with explicit packages and timing semantics. | Aerospace, defense, FPGA control logic, safety-critical digital systems, and reusable IP. | Use when hardware correctness, strong typing, and long-lived certification-oriented design dominate. | Its explicit type system and deterministic concurrency support highly reviewable RTL. | `compiles` / `compile` | [easy_counter.vhd](languages/vhdl/easy_counter.vhd) | [advanced_fault_tolerant_voter.vhd](languages/vhdl/advanced_fault_tolerant_voter.vhd) |
+| 27 | **Chisel** `.scala` | hdl | Uses Scala to construct parameterized hardware generators that emit synthesizable RTL. | RISC-V processors, reusable accelerators, networks-on-chip, and parameterized hardware families. | Use when hardware should be generated from reusable abstractions rather than copied RTL. | It brings types, functions, testing libraries, and parameterization to hardware construction. | `toolchain_gated` / `compile` | [easy_counter.scala](languages/chisel/easy_counter.scala) | [advanced_noc_router.scala](languages/chisel/advanced_noc_router.scala) |
+| 28 | **Lean 4** `.lean` | proof_language | Combines dependent types, executable functional programming, and machine-checked proofs. | Safety invariants, receipt-chain correctness, mathematics, and verified decision gates. | Use when a critical property must be proven rather than sampled by tests. | It produces kernel-checked proofs with explicit assumptions and reusable theorem libraries. | `formally_verified` / `formal` | [easy_logic.lean](languages/lean4/easy_logic.lean) | [advanced_truth_gate_proof.lean](languages/lean4/advanced_truth_gate_proof.lean) |
+| 29 | **Coq** `.v` | proof_language | Defines programs and machine-checked proofs in the Calculus of Inductive Constructions. | Verified compilers, protocols, cryptography, semantics, and critical algorithms. | Use when constructive proofs, extraction, or mature proof libraries fit the assurance case. | It checks every proof term with a small trusted kernel and can extract verified programs. | `formally_verified` / `formal` | [easy_logic.v](languages/coq/easy_logic.v) | [advanced_receipt_chain.v](languages/coq/advanced_receipt_chain.v) |
+| 30 | **Agda** `.agda` | proof_language | Uses dependent types for proofs and total functional programs. | Protocol models, type-safe DSLs, mathematical structures, and certified transformations. | Use when the implementation and proof should inhabit the same expressive dependent type system. | It makes invariants part of types and requires total, structurally valid definitions. | `formally_verified` / `formal` | [easy_logic.agda](languages/agda/easy_logic.agda) | [advanced_capability_lattice.agda](languages/agda/advanced_capability_lattice.agda) |
 
-| Language | Production domain | Why this language | Easy exhibit | Advanced exhibit | Current maturity |
-|---|---|---|---|---|---|
-| Python | AI orchestration and document intelligence | Ecosystem breadth and structured async integration | [Fibonacci](languages/python/easy_fibonacci.py) | [Async multi-agent orchestrator](languages/python/advanced_async_orchestrator.py) | **Production-depth** |
-| C | Firmware and real-time telemetry | Explicit memory ordering and minimal runtime overhead | [Linked list](languages/c/easy_linked_list.c) | [Lock-free SPSC ring](languages/c/advanced_lockfree_spsc_ring.c) | **Production-depth** |
-| C++ | Inference runtimes and numerical systems | RAII, contiguous storage, and zero-cost abstractions | [Vector](languages/cpp/easy_vector.cpp) | [KV entropy](languages/cpp/advanced_kv_entropy.cpp) | Candidate |
-| Rust | Safety governors and trusted CLIs | Compile-time memory safety and exhaustive policy modeling | [Counter](languages/rust/easy_counter.rs) | [Typed action governor](languages/rust/advanced_safety_governor.rs) | **Production-depth** |
-| Go | Telemetry and connector daemons | Simple concurrency and static deployment | [Ping](languages/go/easy_ping.go) | [Verified telemetry decoder](languages/go/advanced_telemetry_decoder.go) | **Production-depth** |
-| TypeScript | MCP gateways and web control planes | Typed asynchronous protocol surfaces | [Greeting](languages/typescript/easy_greet.ts) | [Governed MCP gateway](languages/typescript/advanced_mcp_gateway.ts) | **Production-depth** |
-| CUDA | GPU attention kernels | Direct control of NVIDIA execution and memory hierarchy | [Vector add](languages/cuda/easy_vector_add.cu) | [Attention kernel](languages/cuda/advanced_flash_attn_kernel.cu) | Candidate |
-| Verilog | FPGA and ASIC accelerators | Deterministic parallel circuits | [Counter](languages/verilog/easy_counter.v) | [4×4 systolic array](languages/verilog/advanced_systolic_matmul.v) | **Production-depth** |
-| R | Bayesian experimentation | First-class statistical inference and reporting | [Statistics](languages/r/easy_statistics.R) | [Bayesian A/B engine](languages/r/advanced_bayesian_ab_test.R) | **Production-depth** |
-| Julia | Orbital and differential-equation simulation | Mathematical clarity with LLVM JIT performance | [Matrix](languages/julia/easy_matrix.jl) | [Orbital integrator](languages/julia/advanced_orbital_differential.jl) | Candidate |
-| Swift | Apple-native compute and operator applications | Safe native access to Metal and platform frameworks | [Array](languages/swift/easy_array.swift) | [Metal engine](languages/swift/advanced_metal_ane_engine.swift) | Candidate |
-| Zig | Explicit resource-bounded kernels | Allocator visibility and deterministic cleanup | [Hello](languages/zig/easy_hello.zig) | [Arena allocator](languages/zig/advanced_arena_allocator.zig) | Candidate |
-| Odin | Data-oriented physics systems | Predictable layout and low hidden runtime behavior | [Math](languages/odin/easy_math.odin) | [Reentry thermal model](languages/odin/advanced_reentry_thermal.odin) | Candidate |
-| Mojo | Emerging SIMD AI systems | Python-like syntax with compiler-level vectorization | [SIMD](languages/mojo/easy_simd.mojo) | [Tensor kernel](languages/mojo/advanced_tpu_tensor_kernel.mojo) | Candidate |
-| Elixir | Fault-tolerant distributed supervision | OTP process isolation and recovery | [Actor](languages/elixir/easy_actor.ex) | [Cluster supervisor](languages/elixir/advanced_fault_tolerant_beam.ex) | Candidate |
-| Haskell | Pure AST and policy transformation | Algebraic data types and deterministic composition | [Tree](languages/haskell/easy_tree.hs) | [AST validator](languages/haskell/advanced_ast_validator.hs) | Candidate |
-| Lean 4 | Machine-checked safety claims | Proof checking against a small trusted kernel | [Logic](languages/lean4/easy_logic.lean) | [Truth-gate proof](languages/lean4/advanced_truth_gate_proof.lean) | Candidate |
-| Triton | Fused GPU kernels | Block-level GPU programming without handwritten CUDA | [Vector add](languages/triton/easy_vector_add.py) | [Fused attention](languages/triton/advanced_fused_attention.py) | Candidate |
-| Protobuf | Typed cross-language telemetry | Compact, evolvable binary contracts | [User schema](languages/protobuf/easy_user.proto) | [Cooling telemetry](languages/protobuf/advanced_colossus_cooling.proto) | Candidate |
-| SQL/pgvector | Canonical data and semantic retrieval | Transactions, constraints, policy, and vector indexing | [Table](languages/sql/easy_table.sql) | [HNSW vector store](languages/sql/advanced_pgvector_hnsw.sql) | Candidate |
-| WebAssembly text | Capability-bounded plugins | Portable linear-memory sandbox boundary | [Add](languages/wat/easy_add.wat) | [Guard sandbox](languages/wat/advanced_wasm_sandbox.wat) | Candidate |
+## Domain coverage
 
-### What “advanced” means here
+- **Ai Systems** — Mojo
+- **Apple Native** — Swift
+- **Bare Metal Systems** — C
+- **Binary Contracts** — Protocol Buffers
+- **Capability Rpc** — Cap'n Proto
+- **Compiler Ir** — MLIR
+- **Compute Graph** — ONNX
+- **Concurrent Services** — Go
+- **Data Oriented Systems** — Odin
+- **Declarative Data** — SQL / pgvector
+- **Dependent Programming** — Agda
+- **Fault Tolerant Distributed** — Elixir
+- **Formal Verification** — Lean 4, Coq
+- **Gpu Compute** — CUDA
+- **Gpu Kernel Dsl** — Triton
+- **Hardware Construction** — Chisel
+- **Hardware Description** — Verilog
+- **Hardware Verification** — SystemVerilog
+- **High Performance Systems** — C++
+- **High Reliability Hardware** — VHDL
+- **Memory Safe Systems** — Rust
+- **Orchestration And Ai** — Python
+- **Portable Systems** — Zig
+- **Pure Functional** — Haskell
+- **Sandbox Runtime** — WebAssembly
+- **Scientific Computing** — Julia
+- **Statistics** — R
+- **Typed Async Interfaces** — TypeScript
+- **Zero Copy Serialization** — FlatBuffers
 
-The full standard is defined in [`QUALITY_CONTRACT.md`](QUALITY_CONTRACT.md). An advanced exhibit must include meaningful validation, failure behavior, an invariant or policy boundary, observability, bounded resources where relevant, and a runnable demonstration or test vector. Empty bodies and unconditional-success stubs cannot be promoted.
+## Evidence states
 
-### Validation
+| State | Meaning |
+|---|---|
+| `illustrative` | Teaches syntax or the central concept. |
+| `compiles` | A pinned compiler or schema tool accepts the exhibit. |
+| `tested` | Automated behavior checks pass. |
+| `benchmark` | A reproducible performance measurement exists. |
+| `hardware_gated` | The exhibit is complete but requires declared hardware. |
+| `toolchain_gated` | The exhibit is complete but its compiler is not in the portable CI image. |
+| `service_gated` | A declared external service is required. |
+| `formally_verified` | A proof kernel accepts the theorem. |
+| `integrated` | The floor participates in the flagship polyglot system. |
+| `production_reference` | Operational failure handling, observability, and deployment evidence exist. |
 
-Baseline CI currently proves:
-
-- the registry contains exactly 21 languages;
-- the filesystem contains exactly the registered language directories and 42 registered exhibits;
-- every W4H record is complete and queryable;
-- the maturity ledger covers every language;
-- Python registry, sidecar, and repository tests execute;
-- C exhibits compile and run with warnings treated as errors;
-- C++ exhibits compile with warnings treated as errors;
-- Go exhibits are formatted and tested, including adversarial decoder cases;
-- Rust exhibits compile and the safety-governor tests pass.
-
-Specialized GPU, FPGA, theorem-prover, and emerging-language toolchains are tracked separately. The README does not describe those files as compiler-validated unless the corresponding toolchain actually ran.
-
----
-
-## 3. For AI ingestion and system-mesh integration
-
-### Stable query surface
-
-```python
-from src.babel_registry import query_babel_registry
-
-all_languages = query_babel_registry()
-rust = query_babel_registry("rust")
-```
-
-The response contains:
-
-- language identity and extension;
-- W4H selection rationale;
-- exact easy and advanced exhibit paths;
-- verification tier;
-- repository layout validation.
-
-Run it directly:
+## Commands
 
 ```bash
-python3 src/babel_registry.py
-python3 mastermind_sidecar.py
-python3 -m unittest discover -s tests -v
+python -m pip install -e .[dev]
+tower validate
+tower generate --check
+tower build --all --allow-blocked
+tower integrity verify
+tower benchmark python c cpp rust go typescript webassembly
+tower proof-report --build-report artifacts/build-report.json
+tower receipt
+tower spec rust
+tower megamind-map
+python flagship/run_pipeline.py
 ```
 
-### Mesh relationships
+## Flagship polyglot mission pipeline
 
-The repository is designed to inform—not replace—the surrounding system:
+The flagship system traverses multiple floors:
 
-- **MCP and control planes:** TypeScript gateway patterns.
-- **Evidence and privileged execution:** Rust policy governor and C integrity primitives.
-- **Connector and telemetry services:** Go concurrency and binary validation.
-- **AI/document intelligence:** Python orchestration.
-- **Canonical state and retrieval:** PostgreSQL/pgvector patterns.
-- **Future untrusted plugins:** WebAssembly capability boundaries.
-
-The intended integration path is a small MCP adapter around `query_babel_registry()`, allowing agents to ask which language belongs at a system boundary and receive the rationale plus concrete exhibit evidence.
-
----
-
-## Quick start
-
-```bash
-git clone https://github.com/GlacierEQ/the-tower-of-babel.git
-cd the-tower-of-babel
-
-python3 src/babel_registry.py
-python3 mastermind_sidecar.py
-python3 -m unittest discover -s tests -v
+```text
+TypeScript ingress
+    → ProtoJSON mission contract
+Python planner
+    → capability plan
+Rust authority governor
+    → allow/block decision
+Go telemetry emitter
+    → execution event
+SQL canonical state
+    → persisted mission
+WebAssembly sandbox
+    → constrained tool example
+Lean 4
+    → receipt-chain invariant
+Tower receipt
 ```
+
+See [`flagship/README.md`](flagship/README.md).
+
+## Governance
+
+- New technologies are added only through the canonical registry rooted at `registry/tower.yml`.
+- Generated surfaces may not be hand-edited.
+- Claims must carry an evidence state and proof class.
+- Missing toolchains and hardware produce exact blockers, never false success.
+- Cross-language contracts are versioned.
+- Megamind consumes Tower exports; it does not maintain a competing technology registry.
 
 ## License
 
-MIT. See [`LICENSE`](LICENSE).
+MIT — see [`LICENSE`](LICENSE).

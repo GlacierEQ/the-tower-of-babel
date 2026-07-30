@@ -15,49 +15,51 @@ concurrency:
 
 jobs:
   registry-contract:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: Checkout without persisted credentials
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          persist-credentials: false
-
-      - name: Compile Python sources
-        run: >-
-          python3 -m compileall -q
-          src tests mastermind_sidecar.py languages/python
-
-      - name: Run repository contract tests
-        run: python3 -m unittest discover -s tests -v
-
-      - name: Validate machine-readable registry and telemetry
-        run: |
-          set -euo pipefail
-          python3 src/babel_registry.py > /tmp/babel-registry.json
-          python3 mastermind_sidecar.py > /tmp/babel-telemetry.json
-          python3 - <<'PY'
-          import json
-          from pathlib import Path
-
-          registry = json.loads(Path('/tmp/babel-registry.json').read_text())
-          telemetry = json.loads(Path('/tmp/babel-telemetry.json').read_text())
-          assert registry['layout']['ok'] is True, registry['layout']
-          assert registry['layout']['language_count'] == 21
-          assert registry['layout']['exhibit_count'] == 42
-          assert telemetry['status'] == 'OPERATIONAL', telemetry
-          assert telemetry['total_languages'] == 21
-          assert telemetry['total_exhibits'] == 42
-          PY
-
-  native-toolchains:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - name: Checkout without persisted credentials
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install canonical Tower package
+        run: python -m pip install -e .[dev]
+
+      - name: Compile Python sources
+        run: python -m compileall -q src tests integrations mastermind_sidecar.py languages/python
+
+      - name: Validate canonical registry and generated surfaces
+        run: |
+          tower validate
+          tower generate --check
+
+      - name: Run governed repository tests
+        run: pytest -q
+
+      - name: Verify immutable integrity ledger
+        run: tower integrity verify
+
+  native-toolchains:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout without persisted credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23.4"
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.83.0"
 
       - name: Compile and run C exhibits
         run: |

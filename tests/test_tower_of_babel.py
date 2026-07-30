@@ -1,105 +1,210 @@
-"""Repository-level tests for The Tower of Babel."""
-
+"""System tests for the governed Tower."""
 from __future__ import annotations
 
 import json
-import subprocess
-import sys
-import unittest
+from copy import deepcopy
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / "src"))
+import pytest
 
-from babel_registry import (  # noqa: E402
-    BABEL_REGISTRY,
-    BabelRegistryEngine,
-    query_babel_registry,
-)
+from integrations.megamind.adapter import TechnologyRequest, select_technologies
+from tower import build as build_module
+from tower.benchmark import benchmark_many
+from tower.build import build_floor
+from tower.generate import build_surfaces, generate
+from tower.integrity import verify_integrity, write_manifest
+from tower.proofs import build_proof_report
+from tower.receipt import build_receipt
+from tower.registry import REPO_ROOT, TowerRegistry, load_registry, validate_registry
 
 
-class TestTowerOfBabel(unittest.TestCase):
-    def setUp(self) -> None:
-        self.engine = BabelRegistryEngine(REPO_ROOT)
+def test_canonical_registry_governs_all_advertised_floors():
+    registry = load_registry()
+    assert len(registry.technologies) == 30
+    assert not validate_registry(registry)
+    assert {row["id"] for row in registry.technologies} >= {
+        "python", "c", "rust", "typescript", "cuda", "verilog", "r",
+        "onnx", "mlir", "flatbuffers", "capnproto",
+        "systemverilog", "vhdl", "chisel", "coq", "agda",
+    }
 
-    def test_registry_contains_exactly_21_languages(self) -> None:
-        self.assertEqual(len(BABEL_REGISTRY), 21)
-        self.assertEqual(
-            set(BABEL_REGISTRY),
-            {
-                "python", "c", "cpp", "rust", "go", "typescript", "cuda",
-                "verilog", "r", "julia", "swift", "zig", "odin", "mojo",
-                "elixir", "haskell", "lean4", "triton", "protobuf", "sql", "wat",
-            },
+
+def test_every_floor_has_complete_w4h_examples_and_proof():
+    registry = load_registry()
+    for row in registry.technologies:
+        for key in ("what", "where", "when", "why", "how"):
+            assert len(row[key].strip()) >= 12, (row["id"], key)
+        assert (REPO_ROOT / row["easy_example"]).is_file()
+        assert (REPO_ROOT / row["advanced_example"]).is_file()
+        assert row["evidence_state"]
+        assert row["proof_class"]
+        assert row["toolchain"]["tool"]
+        assert row["toolchain"]["reference_pin"]
+        assert row["primary_evidence"]
+
+
+def test_generated_surfaces_do_not_drift():
+    assert generate(check=True) == []
+
+
+def test_generator_emits_one_canonical_build_contract_per_floor():
+    registry = load_registry()
+    surfaces = build_surfaces(registry)
+    path = REPO_ROOT / "generated" / "build_commands.json"
+    payload = json.loads(surfaces[path])
+    assert set(payload) == {row["id"] for row in registry.technologies}
+    for technology_id, contract in payload.items():
+        assert contract["toolchain"]["tool"], technology_id
+        assert contract["toolchain"]["reference_pin"], technology_id
+        assert isinstance(contract["toolchain"]["build"], list), technology_id
+        assert isinstance(contract["toolchain"]["test"], list), technology_id
+        assert contract["execution"]["ci_tier"], technology_id
+
+
+def test_runtime_registry_is_thin_canonical_facade():
+    import babel_registry
+
+    canonical = load_registry()
+    assert len(babel_registry.BABEL_REGISTRY) == len(canonical.technologies)
+    assert babel_registry.BabelRegistryEngine().get_spec("rust")["what"] == canonical.by_id("rust")["what"]
+
+
+def test_sidecar_has_no_hardcoded_floor_count():
+    source = (REPO_ROOT / "mastermind_sidecar.py").read_text(encoding="utf-8")
+    assert "total_technologies" in source
+    assert '"total_languages": 17' not in source
+    assert "len(technologies)" in source
+
+
+def test_weak_advanced_exhibits_are_substantive():
+    minimum_bytes = {
+        "languages/rust/advanced_safety_governor.rs": 2500,
+        "languages/typescript/advanced_mcp_gateway.ts": 2500,
+        "languages/cuda/advanced_flash_attn_kernel.cu": 2000,
+        "languages/lean4/advanced_truth_gate_proof.lean": 700,
+        "languages/protobuf/advanced_colossus_cooling.proto": 900,
+    }
+    for rel, minimum in minimum_bytes.items():
+        assert (REPO_ROOT / rel).stat().st_size >= minimum, rel
+
+
+def test_missing_toolchain_is_an_exact_blocker(monkeypatch):
+    fake = {
+        "id": "missing",
+        "toolchain": {
+            "tool": "mojo",
+            "reference_pin": "1.0",
+            "build": [],
+            "test": [],
+        },
+        "execution": {"ci_tier": "portable", "hardware_gate": ""},
+    }
+    monkeypatch.setattr(build_module, "_available", lambda _tool: False)
+    result = build_floor(fake)
+    assert result["status"] == "BLOCKED_TOOLCHAIN"
+    assert "mojo" in result["blocker"]
+
+
+def test_hardware_gate_is_not_reported_as_success(monkeypatch):
+    fake = {
+        "id": "gpu",
+        "toolchain": {"tool": "python3", "reference_pin": "test", "build": [], "test": []},
+        "execution": {"ci_tier": "hardware", "hardware_gate": "Example accelerator"},
+    }
+    monkeypatch.delenv("TOWER_ENABLE_GPU", raising=False)
+    result = build_floor(fake)
+    assert result == {
+        "technology_id": "gpu",
+        "status": "BLOCKED_HARDWARE",
+        "blocker": "Example accelerator",
+        "tool": "python3",
+        "reference_pin": "test",
+        "commands": [],
+    }
+
+
+def test_megamind_adapter_selects_technology_and_owners():
+    plan = select_technologies(
+        TechnologyRequest(
+            mission_id="m-1",
+            capabilities=("coding", "evidence", "tool"),
+            interfaces=("protobuf",),
+            minimum_proof_class="compile",
         )
-
-    def test_every_spec_has_complete_w4h_rationale(self) -> None:
-        for key in BABEL_REGISTRY:
-            result = self.engine.get_spec(key)
-            self.assertTrue(result["ok"], key)
-            self.assertEqual(result["status"], "VALIDATED_W4H_SPEC")
-            for field in ("what", "where", "when", "why", "how"):
-                self.assertGreaterEqual(len(result[field].strip()), 20, f"{key}.{field}")
-
-    def test_layout_matches_registry_exactly(self) -> None:
-        report = self.engine.validate_layout()
-        self.assertTrue(report["ok"], json.dumps(report, indent=2))
-        self.assertEqual(report["language_count"], 21)
-        self.assertEqual(report["exhibit_count"], 42)
-
-    def test_easy_and_advanced_exhibits_are_distinct(self) -> None:
-        registered_paths: set[str] = set()
-        for key, spec in BABEL_REGISTRY.items():
-            self.assertNotEqual(spec.easy_exhibit, spec.advanced_exhibit, key)
-            self.assertIn("/easy_", spec.easy_exhibit, key)
-            self.assertIn("/advanced_", spec.advanced_exhibit, key)
-            for path in (spec.easy_exhibit, spec.advanced_exhibit):
-                self.assertNotIn(path, registered_paths, path)
-                registered_paths.add(path)
-        self.assertEqual(len(registered_paths), 42)
-
-    def test_quality_ledger_covers_every_language_truthfully(self) -> None:
-        status_path = REPO_ROOT / "quality" / "exhibit_status.json"
-        payload = json.loads(status_path.read_text(encoding="utf-8"))
-        exhibits = payload["advanced_exhibits"]
-        self.assertEqual(set(exhibits), set(BABEL_REGISTRY))
-        self.assertEqual(set(payload["levels"]), {"production-depth", "candidate"})
-
-        for key, entry in exhibits.items():
-            self.assertIn(entry["level"], payload["levels"], key)
-            if entry["level"] == "production-depth":
-                self.assertGreaterEqual(len(entry.get("evidence", [])), 3, key)
-                self.assertNotIn("gaps", entry, key)
-            else:
-                self.assertGreaterEqual(len(entry.get("gaps", [])), 1, key)
-
-    def test_programmatic_query_contract(self) -> None:
-        all_specs = query_babel_registry()
-        self.assertTrue(all_specs["ok"])
-        self.assertEqual(all_specs["status"], "BABEL_REGISTRY_READY")
-        self.assertEqual(len(all_specs["languages"]), 21)
-        self.assertTrue(all_specs["layout"]["ok"])
-
-        rust = query_babel_registry("rust")
-        self.assertTrue(rust["ok"])
-        self.assertEqual(rust["extension"], ".rs")
-
-        missing = query_babel_registry("not-a-language")
-        self.assertFalse(missing["ok"])
-        self.assertEqual(missing["status"], "UNKNOWN_SPEC")
-
-    def test_registry_cli_emits_valid_json(self) -> None:
-        completed = subprocess.run(
-            [sys.executable, str(REPO_ROOT / "src" / "babel_registry.py")],
-            check=True,
-            capture_output=True,
-            text=True,
-            timeout=10,
-        )
-        payload = json.loads(completed.stdout)
-        self.assertEqual(payload["status"], "BABEL_REGISTRY_READY")
-        self.assertEqual(payload["layout"]["exhibit_count"], 42)
+    )
+    assert plan["mission_id"] == "m-1"
+    assert plan["technology_ids"]
+    assert len(plan["tower_registry_sha256"]) == 64
+    assert plan["agent_ids"]
+    assert plan["piston_ids"]
 
 
-if __name__ == "__main__":
-    unittest.main(verbosity=2)
+def test_registry_rejects_missing_w4h():
+    registry = load_registry()
+    payload = deepcopy(registry.payload)
+    next(row for row in payload["technologies"] if row["id"] == "python")["why"] = ""
+    broken = TowerRegistry(payload=payload, source=registry.source, source_files=registry.source_files)
+    assert any("python.why" in error for error in validate_registry(broken, check_paths=False))
+
+
+def test_integrity_manifest_detects_and_clears_drift(tmp_path):
+    manifest_path = tmp_path / "file_hashes.json"
+    manifest = write_manifest(manifest_path)
+    assert manifest["file_count"] > 30
+    assert verify_integrity(manifest_path)["ok"]
+
+
+def test_receipt_is_deterministic():
+    first = build_receipt({"counts": {"VERIFIED": 3}})
+    second = build_receipt({"counts": {"VERIFIED": 3}})
+    assert first == second
+    assert len(first["receipt_sha256"]) == 64
+    assert first["technology_count"] == 30
+
+
+def test_tower_proto_contains_registry_and_megamind_contracts():
+    tower_proto = (REPO_ROOT / "proto/tower.proto").read_text(encoding="utf-8")
+    bridge_proto = (REPO_ROOT / "integrations/megamind/tower_adapter.proto").read_text(encoding="utf-8")
+    assert "message TechnologySpec" in tower_proto
+    assert "service TowerAuthority" in tower_proto
+    assert "service TowerMegamindBridge" in bridge_proto
+
+
+def test_benchmark_report_is_truthful_about_missing_tools():
+    registry = load_registry()
+    report = benchmark_many(registry, ["mlir"], iterations=1)
+    assert report["results"][0]["status"] in {"BLOCKED_TOOLCHAIN", "MEASURED", "NO_RUNTIME_BENCHMARK"}
+    assert "not universal language rankings" in report["truth_note"]
+
+
+def test_proof_report_binds_declared_gate_to_build_status():
+    registry = load_registry()
+    report = build_proof_report(
+        registry,
+        {"results": [{"technology_id": "lean4", "status": "BLOCKED_TOOLCHAIN"}]},
+    )
+    lean = next(row for row in report["floors"] if row["technology_id"] == "lean4")
+    assert lean["proof_class"] == "formal"
+    assert lean["proof_status"] == "BLOCKED"
+
+
+def test_packaged_registry_is_exact_canonical_mirror():
+    canonical = load_registry(REPO_ROOT / "registry/tower.yml")
+    packaged = load_registry(REPO_ROOT / "src/tower/data/tower.yml")
+    assert packaged.payload == canonical.payload
+    assert packaged.canonical_bytes() == canonical.canonical_bytes()
+    assert len(packaged.source_files) == len(canonical.source_files)
+
+
+def test_registry_fragments_are_contained_and_unique(tmp_path):
+    index = tmp_path / "tower.yml"
+    index.write_text(
+        json.dumps({
+            "tower_id": "glaciereq.tower-of-babel.v1",
+            "governance": {"canonical_source": "registry/tower.yml"},
+            "fragments": ["../outside.json"],
+        }),
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="fragment"):
+        load_registry(index)

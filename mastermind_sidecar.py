@@ -1,38 +1,24 @@
 #!/usr/bin/env python3
-"""Truthful telemetry sidecar for The Tower of Babel.
-
-The sidecar derives counts and readiness from the canonical registry instead of
-hard-coded values, so mesh consumers cannot receive stale portfolio claims.
-"""
-
-from __future__ import annotations
-
+"""Tower sidecar: derived telemetry, never hard-coded counts."""
 import json
-import sys
 import time
-from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parent
-sys.path.insert(0, str(REPO_ROOT / "src"))
-
-from babel_registry import BABEL_REGISTRY, BabelRegistryEngine  # noqa: E402
+from tower.integrity import verify_integrity
+from tower.registry import load_registry
 
 
-def get_telemetry() -> dict[str, object]:
-    validation = BabelRegistryEngine(REPO_ROOT).validate_layout()
-    integrity_path = REPO_ROOT / ".integrity" / "file_hashes.json"
-    watchdog_path = REPO_ROOT / ".integrity" / "watchdog_daemon.py"
-
+def get_telemetry():
+    registry = load_registry()
+    integrity = verify_integrity()
+    technologies = registry.technologies
     return {
-        "schema_version": 2,
         "repo_name": "the-tower-of-babel",
-        "status": "OPERATIONAL" if validation["ok"] else "DEGRADED",
+        "status": "OPERATIONAL" if integrity["ok"] else "DEGRADED",
         "timestamp": time.time(),
-        "integrity_manifest_present": integrity_path.is_file(),
-        "watchdog_daemon_present": watchdog_path.is_file(),
-        "total_languages": len(BABEL_REGISTRY),
-        "total_exhibits": len(BABEL_REGISTRY) * 2,
-        "layout_validation": validation,
+        "integrity": integrity,
+        "total_technologies": len(technologies),
+        "total_exhibits": len(technologies) * 2,
+        "evidence_states": sorted({row["evidence_state"] for row in technologies}),
         "version": "1.1.0",
     }
 

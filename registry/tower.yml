@@ -1,0 +1,56 @@
+{
+  "as_of": "2026-07-29",
+  "fragments": [
+    "tower.d/systems.json",
+    "tower.d/orchestration-runtime.json",
+    "tower.d/science-data.json",
+    "tower.d/compute-graphs.json",
+    "tower.d/contracts-hardware.json",
+    "tower.d/formal.json"
+  ],
+  "governance": {
+    "addition_rule": "No technology is advertised or integrated outside this registry.",
+    "canonical_model": "indexed_registry",
+    "canonical_source": "registry/tower.yml",
+    "evidence_states": [
+      "illustrative",
+      "compiles",
+      "tested",
+      "benchmark",
+      "hardware_gated",
+      "toolchain_gated",
+      "service_gated",
+      "formally_verified",
+      "integrated",
+      "production_reference"
+    ],
+    "fragment_rule": "All technology records live in contained fragments named by registry/tower.yml; the index and fragments form one canonical registry.",
+    "generated_surfaces": [
+      "README.md",
+      "src/babel_registry.py",
+      "mastermind_sidecar.py",
+      ".integrity/file_hashes.json",
+      "src/tower/data/tower.yml",
+      "src/tower/data/tower.d/<fragment>.json",
+      "generated/build_commands.json",
+      "generated/interfaces.json",
+      "generated/link_library.md",
+      "generated/maturity.json",
+      "generated/megamind.technology-map.json",
+      "generated/smithery.registry.json",
+      "generated/spiral-engine.registry.json"
+    ],
+    "proof_classes": [
+      "illustrative",
+      "compile",
+      "behavioral",
+      "benchmark",
+      "hardware",
+      "integration",
+      "formal"
+    ]
+  },
+  "schema_version": "1.0.0",
+  "title": "The Tower of Babel",
+  "tower_id": "glaciereq.tower-of-babel.v1"
+}

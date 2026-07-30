@@ -1,51 +1,55 @@
 # Tower of Babel Quality Contract
 
-This repository is a portfolio system, not a file-extension collection. Every exhibit must be truthful about what it proves.
+The Tower is a governed systems portfolio, not a file-extension collection. Every exhibit must state truthfully what it proves, which toolchain evaluated it, and which limitations remain.
 
-## Two exhibit levels
+## Canonical authority
+
+`registry/tower.yml` and its contained `registry/tower.d/*.json` fragments are the sole authored technology authority. Generated maturity, interface, build, Smithery, Spiral, and Megamind surfaces derive from that registry. This document defines quality expectations; it does not maintain a competing technology list or maturity ledger.
+
+## Exhibit levels
 
 ### Easy
 
-An easy exhibit teaches one language-specific concept with minimal ceremony. It must:
+An easy exhibit teaches one technology-specific concept with minimal ceremony. It must:
 
-- parse or compile with the documented toolchain;
-- be deterministic and safe for its demonstrated input;
+- parse, compile, or execute with its documented toolchain when that toolchain is available;
+- be deterministic and safe for the demonstrated input;
 - contain enough context to run or inspect independently;
 - avoid claiming production readiness.
 
 ### Advanced
 
-An advanced exhibit demonstrates a credible production boundary. It must include:
+An advanced exhibit demonstrates a credible engineering boundary. It must include:
 
-1. **W4H rationale** — what, where, when, why, and how.
+1. **W4H+How rationale** — what, where, when, why, and how.
 2. **Typed or explicit inputs and outputs.**
 3. **Validation and failure behavior** for malformed, missing, or unsafe input.
 4. **A meaningful invariant or policy boundary.**
 5. **Observability** through metrics, receipts, diagnostics, or a structured report.
-6. **A runnable demonstration or test vector.**
+6. **A runnable demonstration, proof, benchmark, or test vector.**
 7. **No placeholders** such as empty bodies, unconditional success, `pass`, or identity stubs.
-8. **Bounded resource behavior** where concurrency, memory, network, or untrusted input is involved.
+8. **Bounded resource behavior** where concurrency, memory, network, hardware, or untrusted input is involved.
 
-An advanced exhibit does not need to be a complete product. It must, however, be honest evidence of the language capability named in the README.
+An advanced exhibit need not be a complete product. It must be honest evidence of the capability named in the canonical registry.
 
-## Validation tiers
+## Evidence and blockers
 
-- **native-ci** — validated on every GitHub Actions run with a compiler, interpreter, or repository test.
-- **optional-ci** — validated when a commonly available optional toolchain is present.
-- **specialized-toolchain** — structure and contract are validated in baseline CI; full compilation requires specialized hardware or language tooling.
+- `tested`, `compiles`, `benchmark`, `formally_verified`, and stronger states require corresponding execution evidence.
+- Missing toolchains, services, dependencies, or hardware produce exact blockers, never false success.
+- Structural presence is not compiler proof, and compiler proof is not production proof.
+- `generated/maturity.json` is the generated maturity surface; `quality/exhibit_status.json` may add review notes but cannot override it.
 
 ## Repository invariants
 
-The canonical registry at `src/babel_registry.py` is the source of truth. CI fails when:
+CI fails when:
 
-- the registry does not contain exactly 21 languages;
-- a language directory is missing or unexpected;
-- an easy or advanced exhibit is missing, empty, duplicated, or has the wrong extension;
-- the programmatic registry contract stops returning machine-readable results;
-- the Python registry, sidecar, or tests fail to execute.
-
-Compiler coverage is reported separately from structural coverage. A file is never described as compiler-validated unless the corresponding toolchain actually ran successfully.
+- the canonical registry is invalid or its fragments escape their governed boundary;
+- generated surfaces drift from the registry;
+- an easy or advanced exhibit is missing or malformed;
+- native portable checks fail;
+- a declared proof state conflicts with execution evidence;
+- the immutable integrity ledger does not match the governed tree.
 
 ## Promotion rule
 
-A placeholder or concept sketch may remain in the repository only while it is clearly labeled as such. It must not be called an advanced production exhibit until it satisfies this contract.
+A capability becomes active only after its declared evidence gate succeeds and the Spiral Engine returns a valid admission receipt. Branch completion is not promotion: exact-head verification and integration into `main` are required.
