@@ -32,7 +32,8 @@ class TowerRegistry:
 
     @property
     def technologies(self) -> list[dict[str, Any]]:
-        return list(self.payload.get("technologies", []))
+        rows = self.payload.get("technologies", [])
+        return list(rows) if isinstance(rows, list) else []
 
     @property
     def fragment_files(self) -> tuple[Path, ...]:
@@ -44,19 +45,33 @@ class TowerRegistry:
             self.payload,
             separators=(",", ":"),
             sort_keys=True,
+            ensure_ascii=False,
         ).encode("utf-8")
 
     def by_id(self, technology_id: str) -> dict[str, Any] | None:
+        """Return a case-insensitive ID/name match without trusting malformed rows."""
         key = technology_id.casefold()
         for row in self.technologies:
-            if row["id"].casefold() == key or row["name"].casefold() == key:
+            if not isinstance(row, dict):
+                continue
+            row_id = row.get("id")
+            row_name = row.get("name")
+            if (isinstance(row_id, str) and row_id.casefold() == key) or (
+                isinstance(row_name, str) and row_name.casefold() == key
+            ):
                 return row
         return None
 
     def iter_interfaces(self) -> Iterable[tuple[str, str]]:
         for row in self.technologies:
-            for interface in row.get("interfaces", []):
-                yield row["id"], interface
+            if not isinstance(row, dict) or not isinstance(row.get("id"), str):
+                continue
+            interfaces = row.get("interfaces", [])
+            if not isinstance(interfaces, list):
+                continue
+            for interface in interfaces:
+                if isinstance(interface, str):
+                    yield row["id"], interface
 
 
 def _read_object(path: Path, label: str) -> dict[str, Any]:
@@ -78,9 +93,13 @@ def _contained_fragment(index: Path, relative: str) -> Path:
     if rel.is_absolute() or ".." in rel.parts:
         raise ValueError(f"Tower fragment must stay inside registry root: {relative}")
     root = index.parent.resolve()
-    candidate = (root / rel).resolve()
-    if candidate != root and root not in candidate.parents:
-        raise ValueError(f"Tower fragment escapes registry root: {relative}")
+    candidate = (root / rel).resolve(strict=False)
+    try:
+        candidate.relative_to(root)
+    except ValueError:
+        raise ValueError(f"Tower fragment escapes registry root: {relative}") from None
+    if candidate == root:
+        raise ValueError(f"Tower fragment must name a file below registry root: {relative}")
     return candidate
 
 
@@ -91,11 +110,14 @@ def load_registry(path: Path | str | None = None) -> TowerRegistry:
     inline = index.get("technologies", [])
     source_files: list[Path] = [source]
 
+    if not isinstance(fragments, list) or not all(isinstance(item, str) for item in fragments):
+        raise ValueError("Tower registry fragments must be a list of relative paths")
+    if not isinstance(inline, list):
+        raise ValueError("Tower registry technologies must be a list")
+
     if fragments:
         if inline:
             raise ValueError("Tower registry cannot mix inline technologies and fragments")
-        if not isinstance(fragments, list) or not all(isinstance(item, str) for item in fragments):
-            raise ValueError("Tower registry fragments must be a list of relative paths")
         technologies: list[dict[str, Any]] = []
         seen: set[str] = set()
         for relative in fragments:
@@ -108,16 +130,15 @@ def load_registry(path: Path | str | None = None) -> TowerRegistry:
                 if not isinstance(row, dict):
                     raise ValueError(f"Tower fragment record must be an object: {relative}")
                 technology_id = row.get("id")
-                if isinstance(technology_id, str) and technology_id in seen:
-                    raise ValueError(f"duplicate technology id across fragments: {technology_id}")
                 if isinstance(technology_id, str):
-                    seen.add(technology_id)
+                    normalized_id = technology_id.casefold()
+                    if normalized_id in seen:
+                        raise ValueError(f"duplicate technology id across fragments: {technology_id}")
+                    seen.add(normalized_id)
                 technologies.append(row)
             source_files.append(fragment_path)
         payload = {**index, "technologies": technologies}
     else:
-        if not isinstance(inline, list):
-            raise ValueError("Tower registry technologies must be a list")
         payload = index
 
     return TowerRegistry(
@@ -132,9 +153,16 @@ def validate_registry(registry: TowerRegistry, *, check_paths: bool = True) -> l
     payload = registry.payload
     if payload.get("tower_id") != "glaciereq.tower-of-babel.v1":
         errors.append("tower_id must be glaciereq.tower-of-babel.v1")
-    if payload.get("governance", {}).get("canonical_source") != "registry/tower.yml":
+    governance = payload.get("governance")
+    if not isinstance(governance, dict):
+        errors.append("governance must be an object")
+        governance = {}
+    if governance.get("canonical_source") != "registry/tower.yml":
         errors.append("governance.canonical_source must be registry/tower.yml")
     fragments = payload.get("fragments", [])
+    if not isinstance(fragments, list):
+        errors.append("fragments must be a list")
+        fragments = []
     if fragments and len(registry.source_files) != len(fragments) + 1:
         errors.append("every declared Tower fragment must be loaded")
     technologies = payload.get("technologies")
@@ -143,8 +171,11 @@ def validate_registry(registry: TowerRegistry, *, check_paths: bool = True) -> l
 
     ids: set[str] = set()
     names: set[str] = set()
-    allowed_states = set(payload.get("governance", {}).get("evidence_states", []))
-    allowed_proofs = set(payload.get("governance", {}).get("proof_classes", []))
+    allowed_states = set(governance.get("evidence_states", []))
+    allowed_proofs = set(governance.get("proof_classes", []))
+    repository_examples_available = (REPO_ROOT / "languages").is_dir()
+    should_check_paths = check_paths and repository_examples_available
+
     for index, row in enumerate(technologies):
         label = f"technology[{index}]"
         if not isinstance(row, dict):
@@ -154,16 +185,21 @@ def validate_registry(registry: TowerRegistry, *, check_paths: bool = True) -> l
         if missing:
             errors.append(f"{label} missing fields: {', '.join(missing)}")
             continue
-        tech_id = row["id"]
-        if not isinstance(tech_id, str) or not tech_id:
+        tech_id = row.get("id")
+        name = row.get("name")
+        if not isinstance(tech_id, str) or not tech_id.strip():
             errors.append(f"{label}.id must be a non-empty string")
             continue
-        if tech_id in ids:
+        if not isinstance(name, str) or not name.strip():
+            errors.append(f"{tech_id}.name must be a non-empty string")
+            continue
+        normalized_id = tech_id.casefold()
+        normalized_name = name.casefold()
+        if normalized_id in ids:
             errors.append(f"duplicate technology id: {tech_id}")
-        ids.add(tech_id)
-        normalized_name = str(row["name"]).casefold()
+        ids.add(normalized_id)
         if normalized_name in names:
-            errors.append(f"duplicate technology name: {row['name']}")
+            errors.append(f"duplicate technology name: {name}")
         names.add(normalized_name)
 
         for key in ("what", "where", "when", "why", "how"):
@@ -174,13 +210,14 @@ def validate_registry(registry: TowerRegistry, *, check_paths: bool = True) -> l
         if row.get("proof_class") not in allowed_proofs:
             errors.append(f"{tech_id}.proof_class is not governed")
         toolchain = row.get("toolchain")
-        if not isinstance(toolchain, dict) or not toolchain.get("tool") or not toolchain.get("reference_pin"):
-            errors.append(f"{tech_id}.toolchain requires tool and reference_pin")
+        if not isinstance(toolchain, dict) or not isinstance(toolchain.get("tool"), str) or not toolchain.get("tool") or not isinstance(toolchain.get("reference_pin"), str) or not toolchain.get("reference_pin"):
+            errors.append(f"{tech_id}.toolchain requires string tool and reference_pin")
         execution = row.get("execution")
-        if not isinstance(execution, dict) or not execution.get("ci_tier"):
+        if not isinstance(execution, dict) or not isinstance(execution.get("ci_tier"), str) or not execution.get("ci_tier"):
             errors.append(f"{tech_id}.execution requires ci_tier")
-        if not isinstance(row.get("interfaces"), list):
-            errors.append(f"{tech_id}.interfaces must be a list")
+        interfaces = row.get("interfaces")
+        if not isinstance(interfaces, list) or not all(isinstance(item, str) for item in interfaces):
+            errors.append(f"{tech_id}.interfaces must be a string list")
         ownership = row.get("megamind")
         if not isinstance(ownership, dict) or not isinstance(ownership.get("agents"), list) or not isinstance(ownership.get("pistons"), list):
             errors.append(f"{tech_id}.megamind requires agent and piston lists")
@@ -192,9 +229,13 @@ def validate_registry(registry: TowerRegistry, *, check_paths: bool = True) -> l
                 if not isinstance(uri, str) or not uri.startswith("https://"):
                     errors.append(f"{tech_id}.primary_evidence must contain HTTPS URLs")
 
-        if check_paths:
+        if should_check_paths:
             for key in ("easy_example", "advanced_example"):
-                rel = Path(row[key])
+                value = row.get(key)
+                if not isinstance(value, str) or not value:
+                    errors.append(f"{tech_id}.{key} must be a non-empty path")
+                    continue
+                rel = Path(value)
                 if rel.is_absolute() or ".." in rel.parts:
                     errors.append(f"{tech_id}.{key} must stay inside the repository")
                 elif not (REPO_ROOT / rel).is_file():
