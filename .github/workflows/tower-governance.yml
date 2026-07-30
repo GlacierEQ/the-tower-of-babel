@@ -26,6 +26,8 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Generate derived artifacts
         run: tower generate
+      - name: Generate integrity manifest
+        run: tower integrity generate
       - name: Verify integrity manifest
         run: tower integrity verify
       - name: Emit deterministic receipt
