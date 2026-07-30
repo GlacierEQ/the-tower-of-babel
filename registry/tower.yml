@@ -1,0 +1,839 @@
+{
+  "schema_version": "tower-registry/1",
+  "repository": "GlacierEQ/the-tower-of-babel",
+  "tower": {
+    "name": "The Tower of Babel",
+    "mission": "Canonical multi-language systems engineering registry and proof surface.",
+    "expected_technologies": 21,
+    "source_of_truth": "registry/tower.yml",
+    "generated_outputs": [
+      "README matrix",
+      "Python runtime registry",
+      "Mastermind sidecar totals",
+      "Integrity manifest",
+      "CI build matrix",
+      "Megamind technology graph",
+      "Machine-readable release artifact"
+    ]
+  },
+  "evidence_states": {
+    "illustrative": "Teaches syntax or a central concept; no automated proof is claimed.",
+    "compiles": "Built with a pinned toolchain.",
+    "tested": "Behavior verified with automated tests.",
+    "benchmarked": "Performance claim measured reproducibly.",
+    "formally_verified": "Declared properties proved.",
+    "hardware_verified": "Executed on the required accelerator or device.",
+    "integrated": "Participates in a cross-language system.",
+    "production_reference": "Error handling, observability, and operational documentation complete."
+  },
+  "technology_types": [
+    "general-purpose language",
+    "systems language",
+    "compute-kernel language",
+    "intermediate representation",
+    "serialization IDL",
+    "hardware description language",
+    "proof language",
+    "sandbox/runtime format"
+  ],
+  "technologies": [
+    {
+      "ordinal": 1,
+      "id": "python",
+      "name": "Python",
+      "extension": ".py",
+      "technology_type": "general-purpose language",
+      "category": "Dynamic Scripting & ML",
+      "primary_domain": "AI/ML Pipelines & Automation",
+      "w4h": {
+        "what": "Dynamic Scripting & ML",
+        "where": "AI/ML Pipelines & Automation",
+        "when": "Use Python when the boundary requires ai/ml pipelines & automation rather than generic implementation convenience.",
+        "why": "The universal language of AI: orchestration, automation, ML, data preparation, glue code.",
+        "how": "Use the easy exhibit for the core syntax pattern and the advanced exhibit for the governed system boundary: languages/python/advanced_async_orchestrator.py."
+      },
+      "examples": {
+        "easy": {
+          "path": "languages/python/easy_fibonacci.py",
+          "evidence_state": "illustrative"
+        },
+        "advanced": {
+          "path": "languages/python/advanced_async_orchestrator.py",
+          "evidence_state": "tested",
+          "upgrade_notes": "Substantial orchestrator; classified as tested only after automated Python tests execute."
+        }
+      },
+      "toolchain": {
+        "version": "unpinned",
+        "build_command": null,
+        "test_command": null,
+        "formatter": null,
+        "linter": null,
+        "expected_hardware": "none",
+        "hardware_unavailable_behavior": "not_applicable"
+      },
+      "interop_contracts": [],
+      "status": "registered"
+    },
+    {
+      "ordinal": 2,
+      "id": "c",
+      "name": "C",
+      "extension": ".c",
+      "technology_type": "systems language",
+      "category": "Bare-Metal Systems",
+      "primary_domain": "Kernels, Firmware, Embedded",
+      "w4h": {
+        "what": "Bare-Metal Systems",
+        "where": "Kernels, Firmware, Embedded",
+        "when": "Use C when the boundary requires kernels, firmware, embedded rather than generic implementation convenience.",
+        "why": "Direct hardware control, predictable memory layout, and minimal runtime surface.",
+        "how": "Use the easy exhibit for the core syntax pattern and the advanced exhibit for the governed system boundary: languages/c/advanced_lockfree_spsc_ring.c."
+      },
+      "examples": {
+        "easy": {
+          "path": "languages/c/easy_linked_list.c",
+          "evidence_state": "illustrative"
+        },
+        "advanced": {
+          "path": "languages/c/advanced_lockfree_spsc_ring.c",
+          "evidence_state": "illustrative",
+          "upgrade_notes": "Governed in registry; compiler gate pending."
+        }
+      },
+      "toolchain": {
+        "version": "unpinned",
+        "build_command": null,
+        "test_command": null,
+        "formatter": null,
+        "linter": null,
+        "expected_hardware": "none",
+        "hardware_unavailable_behavior": "not_applicable"
+      },
+      "interop_contracts": [],
+      "status": "registered"
+    },
+    {
+      "ordinal": 3,
+      "id": "cpp",
+      "name": "C++",
+      "extension": ".cpp",
+      "technology_type": "systems language",
+      "category": "High-Performance STL",
+      "primary_domain": "KV-Cache & Orbital Math",
+      "w4h": {
+        "what": "High-Performance STL",
+        "where": "KV-Cache & Orbital Math",
+        "when": "Use C++ when the boundary requires kv-cache & orbital math rather than generic implementation convenience.",
+        "why": "High-throughput numeric and systems work where RAII, templates, and direct memory control matter.",
+        "how": "Use the easy exhibit for the core syntax pattern and the advanced exhibit for the governed system boundary: languages/cpp/advanced_kv_entropy.cpp."
+      },
+      "examples": {
+        "easy": {
+          "path": "languages/cpp/easy_vector.cpp",
+          "evidence_state": "illustrative"
+        },
+        "advanced": {
+          "path": "languages/cpp/advanced_kv_entropy.cpp",
+          "evidence_state": "illustrative",
+          "upgrade_notes": "Compiler gate pending."
+        }
+      },
+      "toolchain": {
+        "version": "unpinned",
+        "build_command": null,
+        "test_command": null,
+        "formatter": null,
+        "linter": null,
+        "expected_hardware": "none",
+        "hardware_unavailable_behavior": "not_applicable"
+      },
+      "interop_contracts": [],
+      "status": "registered"
+    },
+    {
+      "ordinal": 4,
+      "id": "rust",
+      "name": "Rust",
+      "extension": ".rs",
+      "technology_type": "systems language",
+      "category": "Memory-Safe Systems",
+      "primary_domain": "Action Safety Governors",
+      "w4h": {
+        "what": "Memory-Safe Systems",
+        "where": "Action Safety Governors",
+        "when": "Use Rust when the boundary requires action safety governors rather than generic implementation convenience.",
+        "why": "Ownership and borrowing enforce memory and thread-safety boundaries at compile time.",
+        "how": "Use the easy exhibit for the core syntax pattern and the advanced exhibit for the governed system boundary: languages/rust/advanced_safety_governor.rs."
+      },
+      "examples": {
+        "easy": {
+          "path": "languages/rust/easy_counter.rs",
+          "evidence_state": "illustrative"
+        },
+        "advanced": {
+          "path": "languages/rust/advanced_safety_governor.rs",
+          "evidence_state": "illustrative",
+          "upgrade_notes": "Weak advanced exhibit flagged for P1 upgrade."
+        }
+      },
+      "toolchain": {
+        "version": "unpinned",
+        "build_command": null,
+        "test_command": null,
+        "formatter": null,
+        "linter": null,
+        "expected_hardware": "none",
+        "hardware_unavailable_behavior": "not_applicable"
+      },
+      "interop_contracts": [],
+      "status": "registered"
+    },
+    {
+      "ordinal": 5,
+      "id": "go",
+      "name": "Go",
+      "extension": ".go",
+      "technology_type": "general-purpose language",
+      "category": "Low-Latency Concurrent",
+      "primary_domain": "Flight Telemetry Decoders",
+      "w4h": {
+        "what": "Low-Latency Concurrent",
+        "where": "Flight Telemetry Decoders",
+        "when": "Use Go when the boundary requires flight telemetry decoders rather than generic implementation convenience.",
+        "why": "Goroutines and channels make network and telemetry services simple to operate.",
+        "how": "Use the easy exhibit for the core syntax pattern and the advanced exhibit for the governed system boundary: languages/go/advanced_telemetry_decoder.go."
+      },
+      "examples": {
+        "easy": {
+          "path": "languages/go/easy_ping.go",
+          "evidence_state": "illustrative"
+        },
+        "advanced": {
+          "path": "languages/go/advanced_telemetry_decoder.go",
+          "evidence_state": "illustrative",
+          "upgrade_notes": "Compiler gate pending."
+        }
+      },
+      "toolchain": {
+        "version": "unpinned",
+        "build_command": null,
+        "test_command": null,
+        "formatter": null,
+        "linter": null,
+        "expected_hardware": "none",
+        "hardware_unavailable_behavior": "not_applicable"
+      },
+      "interop_contracts": [],
+      "status": "registered"
+    },
+    {
+      "ordinal": 6,
+      "id": "typescript",
+      "name": "TypeScript",
+      "extension": ".ts",
+      "technology_type": "general-purpose language",
+      "category": "Typed Async V8",
+      "primary_domain": "MCP Gateways & DOM Bridges",
+      "w4h": {
+        "what": "Typed Async V8",
+        "where": "MCP Gateways & DOM Bridges",
+        "when": "Use TypeScript when the boundary requires mcp gateways & dom bridges rather than generic implementation convenience.",
+        "why": "Typed async interfaces reduce boundary mistakes in web, MCP, and RPC systems.",
+        "how": "Use the easy exhibit for the core syntax pattern and the advanced exhibit for the governed system boundary: languages/typescript/advanced_mcp_gateway.ts."
+      },
+      "examples": {
+        "easy": {
+          "path": "languages/typescript/easy_greet.ts",
+          "evidence_state": "illustrative"
+        },
+        "advanced": {
+          "path": "languages/typescript/advanced_mcp_gateway.ts",
+          "evidence_state": "illustrative",
+          "upgrade_notes": "Weak advanced exhibit flagged for P1 upgrade."
+        }
+      },
+      "toolchain": {
+        "version": "unpinned",
+        "build_command": null,
+        "test_command": null,
+        "formatter": null,
+        "linter": null,
+        "expected_hardware": "none",
+        "hardware_unavailable_behavior": "not_applicable"
+      },
+      "interop_contracts": [],
+      "status": "registered"
+    },
+    {
+      "ordinal": 7,
+      "id": "cuda",
+      "name": "CUDA",
+      "extension": ".cu",
+      "technology_type": "compute-kernel language",
+      "category": "Parallel GPU Compute",
+      "primary_domain": "Attention Matrix Kernels",
+      "w4h": {
+        "what": "Parallel GPU Compute",
+        "where": "Attention Matrix Kernels",
+        "when": "Use CUDA when the boundary requires attention matrix kernels rather than generic implementation convenience.",
+        "why": "Direct NVIDIA GPU kernels for data-parallel math and accelerator experiments.",
+        "how": "Use the easy exhibit for the core syntax pattern and the advanced exhibit for the governed system boundary: languages/cuda/advanced_flash_attn_kernel.cu."
+      },
+      "examples": {
+        "easy": {
+          "path": "languages/cuda/easy_vector_add.cu",
+          "evidence_state": "illustrative"
+        },
+        "advanced": {
+          "path": "languages/cuda/advanced_flash_attn_kernel.cu",
+          "evidence_state": "illustrative",
+          "upgrade_notes": "Advanced exhibit name overclaims FlashAttention; flagged for P1 replacement/benchmark."
+        }
+      },
+      "toolchain": {
+        "version": "unpinned",
+        "build_command": null,
+        "test_command": null,
+        "formatter": null,
+        "linter": null,
+        "expected_hardware": "none",
+        "hardware_unavailable_behavior": "not_applicable"
+      },
+      "interop_contracts": [],
+      "status": "registered"
+    },
+    {
+      "ordinal": 8,
+      "id": "verilog",
+      "name": "Verilog",
+      "extension": ".v",
+      "technology_type": "hardware description language",
+      "category": "Hardware Description",
+      "primary_domain": "FPGA/ASIC Digital Logic",
+      "w4h": {
+        "what": "Hardware Description",
+        "where": "FPGA/ASIC Digital Logic",
+        "when": "Use Verilog when the boundary requires fpga/asic digital logic rather than generic implementation convenience.",
+        "why": "RTL expression of clocked hardware and accelerator data paths.",
+        "how": "Use the easy exhibit for the core syntax pattern and the advanced exhibit for the governed system boundary: languages/verilog/advanced_systolic_matmul.v."
+      },
+      "examples": {
+        "easy": {
+          "path": "languages/verilog/easy_counter.v",
+          "evidence_state": "illustrative"
+        },
+        "advanced": {
+          "path": "languages/verilog/advanced_systolic_matmul.v",
+          "evidence_state": "illustrative",
+          "upgrade_notes": "Governed in registry; synthesis/formal gate pending."
+        }
+      },
+      "toolchain": {
+        "version": "unpinned",
+        "build_command": null,
+        "test_command": null,
+        "formatter": null,
+        "linter": null,
+        "expected_hardware": "none",
+        "hardware_unavailable_behavior": "not_applicable"
+      },
+      "interop_contracts": [],
+      "status": "registered"
+    },
+    {
+      "ordinal": 9,
+      "id": "r",
+      "name": "R",
+      "extension": ".R",
+      "technology_type": "general-purpose language",
+      "category": "Statistical Computing",
+      "primary_domain": "Bayesian Analysis & BioStats",
+      "w4h": {
+        "what": "Statistical Computing",
+        "where": "Bayesian Analysis & BioStats",
+        "when": "Use R when the boundary requires bayesian analysis & biostats rather than generic implementation convenience.",
+        "why": "Statistical modeling, exploratory analysis, and reproducible analytic reports.",
+        "how": "Use the easy exhibit for the core syntax pattern and the advanced exhibit for the governed system boundary: languages/r/advanced_bayesian_ab_test.R."
+      },
+      "examples": {
+        "easy": {
+          "path": "languages/r/easy_statistics.R",
+          "evidence_state": "illustrative"
+        },
+        "advanced": {
+          "path": "languages/r/advanced_bayesian_ab_test.R",
+          "evidence_state": "illustrative",
+          "upgrade_notes": "Governed in registry; Rscript gate pending."
+        }
+      },
+      "toolchain": {
+        "version": "unpinned",
+        "build_command": null,
+        "test_command": null,
+        "formatter": null,
+        "linter": null,
+        "expected_hardware": "none",
+        "hardware_unavailable_behavior": "not_applicable"
+      },
+      "interop_contracts": [],
+      "status": "registered"
+    },
+    {
+      "ordinal": 10,
+      "id": "julia",
+      "name": "Julia",
+      "extension": ".jl",
+      "technology_type": "general-purpose language",
+      "category": "Scientific Compute",
+      "primary_domain": "Orbital Trajectory ODEs",
+      "w4h": {
+        "what": "Scientific Compute",
+        "where": "Orbital Trajectory ODEs",
+        "when": "Use Julia when the boundary requires orbital trajectory odes rather than generic implementation convenience.",
+        "why": "JIT numeric computing for mathematical models and differential equations.",
+        "how": "Use the easy exhibit for the core syntax pattern and the advanced exhibit for the governed system boundary: languages/julia/advanced_orbital_differential.jl."
+      },
+      "examples": {
+        "easy": {
+          "path": "languages/julia/easy_matrix.jl",
+          "evidence_state": "illustrative"
+        },
+        "advanced": {
+          "path": "languages/julia/advanced_orbital_differential.jl",
+          "evidence_state": "illustrative",
+          "upgrade_notes": "Runtime gate pending."
+        }
+      },
+      "toolchain": {
+        "version": "unpinned",
+        "build_command": null,
+        "test_command": null,
+        "formatter": null,
+        "linter": null,
+        "expected_hardware": "none",
+        "hardware_unavailable_behavior": "not_applicable"
+      },
+      "interop_contracts": [],
+      "status": "registered"
+    },
+    {
+      "ordinal": 11,
+      "id": "swift",
+      "name": "Swift",
+      "extension": ".swift",
+      "technology_type": "general-purpose language",
+      "category": "Apple Systems Native",
+      "primary_domain": "Metal & ANE Acceleration",
+      "w4h": {
+        "what": "Apple Systems Native",
+        "where": "Metal & ANE Acceleration",
+        "when": "Use Swift when the boundary requires metal & ane acceleration rather than generic implementation convenience.",
+        "why": "Native Apple platform integration, Metal compute, and app/system boundaries.",
+        "how": "Use the easy exhibit for the core syntax pattern and the advanced exhibit for the governed system boundary: languages/swift/advanced_metal_ane_engine.swift."
+      },
+      "examples": {
+        "easy": {
+          "path": "languages/swift/easy_array.swift",
+          "evidence_state": "illustrative"
+        },
+        "advanced": {
+          "path": "languages/swift/advanced_metal_ane_engine.swift",
+          "evidence_state": "illustrative",
+          "upgrade_notes": "Compiler/Metal gate pending."
+        }
+      },
+      "toolchain": {
+        "version": "unpinned",
+        "build_command": null,
+        "test_command": null,
+        "formatter": null,
+        "linter": null,
+        "expected_hardware": "none",
+        "hardware_unavailable_behavior": "not_applicable"
+      },
+      "interop_contracts": [],
+      "status": "registered"
+    },
+    {
+      "ordinal": 12,
+      "id": "zig",
+      "name": "Zig",
+      "extension": ".zig",
+      "technology_type": "systems language",
+      "category": "Bare-Metal Memory",
+      "primary_domain": "Agent Kernel Allocators",
+      "w4h": {
+        "what": "Bare-Metal Memory",
+        "where": "Agent Kernel Allocators",
+        "when": "Use Zig when the boundary requires agent kernel allocators rather than generic implementation convenience.",
+        "why": "Explicit allocation, cross-compilation, and low-level control without hidden runtime behavior.",
+        "how": "Use the easy exhibit for the core syntax pattern and the advanced exhibit for the governed system boundary: languages/zig/advanced_arena_allocator.zig."
+      },
+      "examples": {
+        "easy": {
+          "path": "languages/zig/easy_hello.zig",
+          "evidence_state": "illustrative"
+        },
+        "advanced": {
+          "path": "languages/zig/advanced_arena_allocator.zig",
+          "evidence_state": "illustrative",
+          "upgrade_notes": "Compiler gate pending."
+        }
+      },
+      "toolchain": {
+        "version": "unpinned",
+        "build_command": null,
+        "test_command": null,
+        "formatter": null,
+        "linter": null,
+        "expected_hardware": "none",
+        "hardware_unavailable_behavior": "not_applicable"
+      },
+      "interop_contracts": [],
+      "status": "registered"
+    },
+    {
+      "ordinal": 13,
+      "id": "odin",
+      "name": "Odin",
+      "extension": ".odin",
+      "technology_type": "systems language",
+      "category": "Data-Oriented Systems",
+      "primary_domain": "Aerospace Reentry Physics",
+      "w4h": {
+        "what": "Data-Oriented Systems",
+        "where": "Aerospace Reentry Physics",
+        "when": "Use Odin when the boundary requires aerospace reentry physics rather than generic implementation convenience.",
+        "why": "Data-oriented systems work with explicit memory and low ceremony.",
+        "how": "Use the easy exhibit for the core syntax pattern and the advanced exhibit for the governed system boundary: languages/odin/advanced_reentry_thermal.odin."
+      },
+      "examples": {
+        "easy": {
+          "path": "languages/odin/easy_math.odin",
+          "evidence_state": "illustrative"
+        },
+        "advanced": {
+          "path": "languages/odin/advanced_reentry_thermal.odin",
+          "evidence_state": "illustrative",
+          "upgrade_notes": "Compiler gate pending."
+        }
+      },
+      "toolchain": {
+        "version": "unpinned",
+        "build_command": null,
+        "test_command": null,
+        "formatter": null,
+        "linter": null,
+        "expected_hardware": "none",
+        "hardware_unavailable_behavior": "not_applicable"
+      },
+      "interop_contracts": [],
+      "status": "registered"
+    },
+    {
+      "ordinal": 14,
+      "id": "mojo",
+      "name": "Mojo",
+      "extension": ".mojo",
+      "technology_type": "compute-kernel language",
+      "category": "AI Systems Compiler",
+      "primary_domain": "TPU SIMD Vectorization",
+      "w4h": {
+        "what": "AI Systems Compiler",
+        "where": "TPU SIMD Vectorization",
+        "when": "Use Mojo when the boundary requires tpu simd vectorization rather than generic implementation convenience.",
+        "why": "Python-like syntax aimed at high-performance ML systems and compiler-aware kernels.",
+        "how": "Use the easy exhibit for the core syntax pattern and the advanced exhibit for the governed system boundary: languages/mojo/advanced_tpu_tensor_kernel.mojo."
+      },
+      "examples": {
+        "easy": {
+          "path": "languages/mojo/easy_simd.mojo",
+          "evidence_state": "illustrative"
+        },
+        "advanced": {
+          "path": "languages/mojo/advanced_tpu_tensor_kernel.mojo",
+          "evidence_state": "illustrative",
+          "upgrade_notes": "Runtime gate pending."
+        }
+      },
+      "toolchain": {
+        "version": "unpinned",
+        "build_command": null,
+        "test_command": null,
+        "formatter": null,
+        "linter": null,
+        "expected_hardware": "none",
+        "hardware_unavailable_behavior": "not_applicable"
+      },
+      "interop_contracts": [],
+      "status": "registered"
+    },
+    {
+      "ordinal": 15,
+      "id": "elixir",
+      "name": "Elixir",
+      "extension": ".ex",
+      "technology_type": "general-purpose language",
+      "category": "BEAM Actor Model",
+      "primary_domain": "Fault-Tolerant Clusters",
+      "w4h": {
+        "what": "BEAM Actor Model",
+        "where": "Fault-Tolerant Clusters",
+        "when": "Use Elixir when the boundary requires fault-tolerant clusters rather than generic implementation convenience.",
+        "why": "Actor supervision and fault-tolerance for highly concurrent services.",
+        "how": "Use the easy exhibit for the core syntax pattern and the advanced exhibit for the governed system boundary: languages/elixir/advanced_fault_tolerant_beam.ex."
+      },
+      "examples": {
+        "easy": {
+          "path": "languages/elixir/easy_actor.ex",
+          "evidence_state": "illustrative"
+        },
+        "advanced": {
+          "path": "languages/elixir/advanced_fault_tolerant_beam.ex",
+          "evidence_state": "illustrative",
+          "upgrade_notes": "Runtime gate pending."
+        }
+      },
+      "toolchain": {
+        "version": "unpinned",
+        "build_command": null,
+        "test_command": null,
+        "formatter": null,
+        "linter": null,
+        "expected_hardware": "none",
+        "hardware_unavailable_behavior": "not_applicable"
+      },
+      "interop_contracts": [],
+      "status": "registered"
+    },
+    {
+      "ordinal": 16,
+      "id": "haskell",
+      "name": "Haskell",
+      "extension": ".hs",
+      "technology_type": "general-purpose language",
+      "category": "Pure Functional",
+      "primary_domain": "AST Validation",
+      "w4h": {
+        "what": "Pure Functional",
+        "where": "AST Validation",
+        "when": "Use Haskell when the boundary requires ast validation rather than generic implementation convenience.",
+        "why": "Strong types and pure functions for compiler, parser, and state-machine reasoning.",
+        "how": "Use the easy exhibit for the core syntax pattern and the advanced exhibit for the governed system boundary: languages/haskell/advanced_ast_validator.hs."
+      },
+      "examples": {
+        "easy": {
+          "path": "languages/haskell/easy_tree.hs",
+          "evidence_state": "illustrative"
+        },
+        "advanced": {
+          "path": "languages/haskell/advanced_ast_validator.hs",
+          "evidence_state": "illustrative",
+          "upgrade_notes": "Compiler gate pending."
+        }
+      },
+      "toolchain": {
+        "version": "unpinned",
+        "build_command": null,
+        "test_command": null,
+        "formatter": null,
+        "linter": null,
+        "expected_hardware": "none",
+        "hardware_unavailable_behavior": "not_applicable"
+      },
+      "interop_contracts": [],
+      "status": "registered"
+    },
+    {
+      "ordinal": 17,
+      "id": "lean4",
+      "name": "Lean 4",
+      "extension": ".lean",
+      "technology_type": "proof language",
+      "category": "Theorem Prover",
+      "primary_domain": "Operator Truth Gates",
+      "w4h": {
+        "what": "Theorem Prover",
+        "where": "Operator Truth Gates",
+        "when": "Use Lean 4 when the boundary requires operator truth gates rather than generic implementation convenience.",
+        "why": "Dependent type proofs for explicit correctness and safety properties.",
+        "how": "Use the easy exhibit for the core syntax pattern and the advanced exhibit for the governed system boundary: languages/lean4/advanced_truth_gate_proof.lean."
+      },
+      "examples": {
+        "easy": {
+          "path": "languages/lean4/easy_logic.lean",
+          "evidence_state": "illustrative"
+        },
+        "advanced": {
+          "path": "languages/lean4/advanced_truth_gate_proof.lean",
+          "evidence_state": "illustrative",
+          "upgrade_notes": "Weak proof flagged for P1 upgrade into meaningful invariant."
+        }
+      },
+      "toolchain": {
+        "version": "unpinned",
+        "build_command": null,
+        "test_command": null,
+        "formatter": null,
+        "linter": null,
+        "expected_hardware": "none",
+        "hardware_unavailable_behavior": "not_applicable"
+      },
+      "interop_contracts": [],
+      "status": "registered"
+    },
+    {
+      "ordinal": 18,
+      "id": "triton",
+      "name": "Triton",
+      "extension": ".py",
+      "technology_type": "compute-kernel language",
+      "category": "Fused GPU Programming",
+      "primary_domain": "OpenAI Attention Kernels",
+      "w4h": {
+        "what": "Fused GPU Programming",
+        "where": "OpenAI Attention Kernels",
+        "when": "Use Triton when the boundary requires openai attention kernels rather than generic implementation convenience.",
+        "why": "Pythonic GPU kernel DSL for fused accelerator routines.",
+        "how": "Use the easy exhibit for the core syntax pattern and the advanced exhibit for the governed system boundary: languages/triton/advanced_fused_attention.py."
+      },
+      "examples": {
+        "easy": {
+          "path": "languages/triton/easy_vector_add.py",
+          "evidence_state": "illustrative"
+        },
+        "advanced": {
+          "path": "languages/triton/advanced_fused_attention.py",
+          "evidence_state": "illustrative",
+          "upgrade_notes": "Hardware and Triton runtime gate pending."
+        }
+      },
+      "toolchain": {
+        "version": "unpinned",
+        "build_command": null,
+        "test_command": null,
+        "formatter": null,
+        "linter": null,
+        "expected_hardware": "none",
+        "hardware_unavailable_behavior": "not_applicable"
+      },
+      "interop_contracts": [],
+      "status": "registered"
+    },
+    {
+      "ordinal": 19,
+      "id": "protobuf",
+      "name": "Protobuf",
+      "extension": ".proto",
+      "technology_type": "serialization IDL",
+      "category": "Zero-Copy IDL",
+      "primary_domain": "100k GPU Telemetry RPCs",
+      "w4h": {
+        "what": "Zero-Copy IDL",
+        "where": "100k GPU Telemetry RPCs",
+        "when": "Use Protobuf when the boundary requires 100k gpu telemetry rpcs rather than generic implementation convenience.",
+        "why": "Language-neutral binary contracts for typed microservice and agent boundaries.",
+        "how": "Use the easy exhibit for the core syntax pattern and the advanced exhibit for the governed system boundary: languages/protobuf/advanced_colossus_cooling.proto."
+      },
+      "examples": {
+        "easy": {
+          "path": "languages/protobuf/easy_user.proto",
+          "evidence_state": "illustrative"
+        },
+        "advanced": {
+          "path": "languages/protobuf/advanced_colossus_cooling.proto",
+          "evidence_state": "illustrative",
+          "upgrade_notes": "Weak advanced contract flagged for P1 expansion."
+        }
+      },
+      "toolchain": {
+        "version": "unpinned",
+        "build_command": null,
+        "test_command": null,
+        "formatter": null,
+        "linter": null,
+        "expected_hardware": "none",
+        "hardware_unavailable_behavior": "not_applicable"
+      },
+      "interop_contracts": [],
+      "status": "registered"
+    },
+    {
+      "ordinal": 20,
+      "id": "sql",
+      "name": "SQL",
+      "extension": ".sql",
+      "technology_type": "general-purpose language",
+      "category": "Relational & Vector",
+      "primary_domain": "HNSW Vector Similarity",
+      "w4h": {
+        "what": "Relational & Vector",
+        "where": "HNSW Vector Similarity",
+        "when": "Use SQL when the boundary requires hnsw vector similarity rather than generic implementation convenience.",
+        "why": "Canonical state, relational constraints, and vector search through database engines.",
+        "how": "Use the easy exhibit for the core syntax pattern and the advanced exhibit for the governed system boundary: languages/sql/advanced_pgvector_hnsw.sql."
+      },
+      "examples": {
+        "easy": {
+          "path": "languages/sql/easy_table.sql",
+          "evidence_state": "illustrative"
+        },
+        "advanced": {
+          "path": "languages/sql/advanced_pgvector_hnsw.sql",
+          "evidence_state": "illustrative",
+          "upgrade_notes": "Database gate pending."
+        }
+      },
+      "toolchain": {
+        "version": "unpinned",
+        "build_command": null,
+        "test_command": null,
+        "formatter": null,
+        "linter": null,
+        "expected_hardware": "none",
+        "hardware_unavailable_behavior": "not_applicable"
+      },
+      "interop_contracts": [],
+      "status": "registered"
+    },
+    {
+      "ordinal": 21,
+      "id": "wat",
+      "name": "WebAssembly",
+      "extension": ".wat",
+      "technology_type": "sandbox/runtime format",
+      "category": "Sandboxed Bytecode",
+      "primary_domain": "Zero-Trust Tool Sandbox",
+      "w4h": {
+        "what": "Sandboxed Bytecode",
+        "where": "Zero-Trust Tool Sandbox",
+        "when": "Use WebAssembly when the boundary requires zero-trust tool sandbox rather than generic implementation convenience.",
+        "why": "Portable bytecode and capability boundaries for sandboxed tool execution.",
+        "how": "Use the easy exhibit for the core syntax pattern and the advanced exhibit for the governed system boundary: languages/wat/advanced_wasm_sandbox.wat."
+      },
+      "examples": {
+        "easy": {
+          "path": "languages/wat/easy_add.wat",
+          "evidence_state": "illustrative"
+        },
+        "advanced": {
+          "path": "languages/wat/advanced_wasm_sandbox.wat",
+          "evidence_state": "illustrative",
+          "upgrade_notes": "WASM runtime gate pending."
+        }
+      },
+      "toolchain": {
+        "version": "unpinned",
+        "build_command": null,
+        "test_command": null,
+        "formatter": null,
+        "linter": null,
+        "expected_hardware": "none",
+        "hardware_unavailable_behavior": "not_applicable"
+      },
+      "interop_contracts": [],
+      "status": "registered"
+    }
+  ]
+}
