@@ -23,20 +23,24 @@ def test_proof_statuses_reject_duplicate_technology_rows():
 
 
 def test_flagship_sql_persists_and_reads_back_the_real_chain(tmp_path):
+    input_sha256 = "d" * 64
     mission = {
         "mission_id": "mission-test-001",
         "objective": "prove the SQL persistence boundary",
+        "input_sha256": input_sha256,
     }
     plan = {
         "mission_id": mission["mission_id"],
         "technology_ids": ["sql"],
         "tower_registry_sha256": "a" * 64,
+        "input_sha256": input_sha256,
     }
     decision = {
         "mission_id": mission["mission_id"],
         "allowed": True,
         "reason": "verified",
         "plan_sha256": "b" * 64,
+        "observed_input_sha256": input_sha256,
     }
     event = {
         "mission_id": mission["mission_id"],
@@ -76,6 +80,7 @@ def test_flagship_sql_persists_and_reads_back_the_real_chain(tmp_path):
     readback = json.loads(output.read_text(encoding="utf-8"))
     assert readback["mission_id"] == mission["mission_id"]
     assert readback["authority_status"] == "SUCCEEDED"
+    assert readback["input_sha256"] == input_sha256
     assert readback["plan_sha256"] == decision["plan_sha256"]
     assert readback["evidence_sha256"] == event["evidence_sha256"]
 
@@ -83,6 +88,7 @@ def test_flagship_sql_persists_and_reads_back_the_real_chain(tmp_path):
 def test_rust_authority_compares_observed_and_expected_registry_hashes():
     source = (REPO_ROOT / "flagship/rust/src/main.rs").read_text(encoding="utf-8")
     assert "expected_registry_sha256 == observed_registry_sha256" in source
+    assert "expected_input_sha256 == observed_input_sha256" in source
     assert "process::exit(3)" in source
 
 
