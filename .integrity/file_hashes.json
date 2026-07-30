@@ -69,7 +69,7 @@
     "languages/mojo/easy_simd.mojo": "6ae26f597bd634d500404e5d34b7b60d88aa608b1699ff65e369970ee04a3809",
     "languages/odin/advanced_reentry_thermal.odin": "a8c328e274ccf705821fdd2eb4ea7fa897d742a53153a8c79732f719c735a038",
     "languages/odin/easy_math.odin": "594a4e9fb52b323947565ba37f8a4268dd32a041d616b512ef0dc75e898c989f",
-    "languages/onnx/advanced_moe_router.py": "055556b149cc30a2ace3e71443a427aaf9b133cebe59b3c039535b18529e2dc4",
+    "languages/onnx/advanced_moe_router.py": "c0434b29e44e7e77ed7a871ba87c2f4f2c8694d4339bf4bc1ffd499ce2148ca9",
     "languages/onnx/easy_linear_model.py": "2d5a6cb0192047ed69c246798fd2c2ceb8a1bd480a2859571079e0b3e5c8ae59",
     "languages/protobuf/advanced_colossus_cooling.proto": "3070fffcd8d28e2fe1410a6c9443c0035fe68d5d65c931919ac2988d609ddaa9",
     "languages/protobuf/easy_user.proto": "bfe3a8f4cbaaf00d59a9fe3dc1a37292da5daf21ca380cfb9931db01b8379237",
