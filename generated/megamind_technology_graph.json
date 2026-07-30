@@ -1,0 +1,28 @@
+{
+  "edges": [],
+  "nodes": [
+    {"domain": "AI/ML Pipelines & Automation", "evidence_state": "tested", "id": "python", "label": "Python", "type": "general-purpose language"},
+    {"domain": "Kernels, Firmware, Embedded", "evidence_state": "illustrative", "id": "c", "label": "C", "type": "systems language"},
+    {"domain": "KV-Cache & Orbital Math", "evidence_state": "illustrative", "id": "cpp", "label": "C++", "type": "systems language"},
+    {"domain": "Action Safety Governors", "evidence_state": "illustrative", "id": "rust", "label": "Rust", "type": "systems language"},
+    {"domain": "Flight Telemetry Decoders", "evidence_state": "illustrative", "id": "go", "label": "Go", "type": "general-purpose language"},
+    {"domain": "MCP Gateways & DOM Bridges", "evidence_state": "illustrative", "id": "typescript", "label": "TypeScript", "type": "general-purpose language"},
+    {"domain": "Attention Matrix Kernels", "evidence_state": "illustrative", "id": "cuda", "label": "CUDA", "type": "compute-kernel language"},
+    {"domain": "FPGA/ASIC Digital Logic", "evidence_state": "illustrative", "id": "verilog", "label": "Verilog", "type": "hardware description language"},
+    {"domain": "Bayesian Analysis & BioStats", "evidence_state": "illustrative", "id": "r", "label": "R", "type": "general-purpose language"},
+    {"domain": "Orbital Trajectory ODEs", "evidence_state": "illustrative", "id": "julia", "label": "Julia", "type": "general-purpose language"},
+    {"domain": "Metal & ANE Acceleration", "evidence_state": "illustrative", "id": "swift", "label": "Swift", "type": "general-purpose language"},
+    {"domain": "Agent Kernel Allocators", "evidence_state": "illustrative", "id": "zig", "label": "Zig", "type": "systems language"},
+    {"domain": "Aerospace Reentry Physics", "evidence_state": "illustrative", "id": "odin", "label": "Odin", "type": "systems language"},
+    {"domain": "TPU SIMD Vectorization", "evidence_state": "illustrative", "id": "mojo", "label": "Mojo", "type": "compute-kernel language"},
+    {"domain": "Fault-Tolerant Clusters", "evidence_state": "illustrative", "id": "elixir", "label": "Elixir", "type": "general-purpose language"},
+    {"domain": "AST Validation", "evidence_state": "illustrative", "id": "haskell", "label": "Haskell", "type": "general-purpose language"},
+    {"domain": "Operator Truth Gates", "evidence_state": "illustrative", "id": "lean4", "label": "Lean 4", "type": "proof language"},
+    {"domain": "OpenAI Attention Kernels", "evidence_state": "illustrative", "id": "triton", "label": "Triton", "type": "compute-kernel language"},
+    {"domain": "100k GPU Telemetry RPCs", "evidence_state": "illustrative", "id": "protobuf", "label": "Protobuf", "type": "serialization IDL"},
+    {"domain": "HNSW Vector Similarity", "evidence_state": "illustrative", "id": "sql", "label": "SQL", "type": "general-purpose language"},
+    {"domain": "Zero-Trust Tool Sandbox", "evidence_state": "illustrative", "id": "wat", "label": "WebAssembly", "type": "sandbox/runtime format"}
+  ],
+  "schema_version": "tower-megamind-technology-graph/1",
+  "source_registry": "registry/tower.yml"
+}
