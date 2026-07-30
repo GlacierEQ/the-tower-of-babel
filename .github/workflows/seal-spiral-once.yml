@@ -1,0 +1,35 @@
+name: Seal Spiral Integrity Once
+
+on:
+  push:
+    branches:
+      - dev/spiral-civilization-scale
+
+permissions:
+  contents: write
+
+jobs:
+  seal-and-remove:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Tower
+        run: python -m pip install -e .
+      - name: Remove bootstrap and generate final ledger
+        run: |
+          rm .github/workflows/seal-spiral-once.yml
+          tower integrity generate
+          tower integrity verify
+      - name: Commit exact final state
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A .github/workflows/seal-spiral-once.yml .integrity/file_hashes.json
+          git commit -m "chore(spiral): seal final read-only integrity state"
+          git push origin HEAD:dev/spiral-civilization-scale
