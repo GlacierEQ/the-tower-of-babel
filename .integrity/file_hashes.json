@@ -126,7 +126,7 @@
     "src/tower/receipt.py": "9ea97bb35b6bb27c80bb2ec3aab3214746cecb1eb8f48112ba4fe33596cdd803",
     "src/tower/registry.py": "dc0214a744e3efb5f1c0118088a158d87ecdb17769397ab2ff702e995afc8bb7",
     "tests/test_flagship.py": "6f467f5638c9e729a484566bb0eb9c01da38ab0afa394b21f94e8dc6cab714c9",
-    "tests/test_release_hardening.py": "ca0168cb4bd21c8510d06768bfc6bda0c0af823cf5b9daad628aaa9b848705bf",
+    "tests/test_release_hardening.py": "0159348cbdc73c353ca86607dad5f4a63b2218ee002ab35600655b631c39d361",
     "tests/test_tower_of_babel.py": "79e0f58aefbb5874fd47fd0931d451827e05dd3c1fd83cea36500d36f65f162d"
   },
   "repo_name": "the-tower-of-babel",
