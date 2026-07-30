@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -12,6 +13,7 @@ MANIFEST = REPO_ROOT / ".integrity" / "file_hashes.json"
 _EXCLUDED_PARTS = {
     ".git",
     ".lake",
+    "target",
     "__pycache__",
     ".pytest_cache",
     ".ruff_cache",
@@ -28,6 +30,7 @@ _EXCLUDED_FILES = {
     ".integrity/receipt.json",
     "artifacts/tower_receipt.json",
 }
+_SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
 
 def _eligible(path: Path) -> bool:
@@ -75,36 +78,55 @@ def write_manifest(path: Path = MANIFEST) -> dict[str, Any]:
     return payload
 
 
+def _invalid_manifest(error: str, manifest_sha256: str = "") -> dict[str, Any]:
+    return {
+        "ok": False,
+        "status": "INVALID_MANIFEST",
+        "error": error,
+        "manifest_sha256": manifest_sha256,
+        "missing": [],
+        "changed": [],
+        "unexpected": [],
+    }
+
+
 def verify_integrity(path: Path = MANIFEST) -> dict[str, Any]:
-    """Verify governed artifacts while ignoring reproducible runtime caches."""
+    """Verify one immutable manifest snapshot against governed artifacts."""
     if not path.is_file():
         return {
             "ok": False,
             "status": "MISSING_MANIFEST",
+            "manifest_sha256": "",
             "missing": [],
             "changed": [],
             "unexpected": [],
         }
     try:
-        expected = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
-        return {
-            "ok": False,
-            "status": "INVALID_MANIFEST",
-            "error": str(exc),
-            "missing": [],
-            "changed": [],
-            "unexpected": [],
-        }
-    expected_hashes = expected.get("hashes", {})
+        manifest_bytes = path.read_bytes()
+    except OSError as exc:
+        return _invalid_manifest(str(exc))
+    manifest_sha256 = hashlib.sha256(manifest_bytes).hexdigest()
+    try:
+        expected = json.loads(manifest_bytes.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        return _invalid_manifest(str(exc), manifest_sha256)
+    if not isinstance(expected, dict):
+        return _invalid_manifest("manifest root must be an object", manifest_sha256)
+    if expected.get("schema_version") != "1.0.0":
+        return _invalid_manifest("schema_version must be 1.0.0", manifest_sha256)
+    if expected.get("repo_name") != "the-tower-of-babel":
+        return _invalid_manifest("repo_name must be the-tower-of-babel", manifest_sha256)
+    if expected.get("hash_algorithm") != "sha256":
+        return _invalid_manifest("hash_algorithm must be sha256", manifest_sha256)
+    expected_hashes = expected.get("hashes")
     if not isinstance(expected_hashes, dict):
-        return {
-            "ok": False,
-            "status": "INVALID_MANIFEST",
-            "missing": [],
-            "changed": [],
-            "unexpected": [],
-        }
+        return _invalid_manifest("hashes must be an object", manifest_sha256)
+    if expected.get("file_count") != len(expected_hashes):
+        return _invalid_manifest("file_count does not match hashes", manifest_sha256)
+    for file_path, digest in expected_hashes.items():
+        if not isinstance(file_path, str) or not file_path or not isinstance(digest, str) or not _SHA256_RE.fullmatch(digest):
+            return _invalid_manifest(f"invalid hash entry: {file_path!r}", manifest_sha256)
+
     current = collect_hashes()
     missing = sorted(set(expected_hashes) - set(current))
     unexpected = sorted(set(current) - set(expected_hashes))
@@ -117,6 +139,7 @@ def verify_integrity(path: Path = MANIFEST) -> dict[str, Any]:
     return {
         "ok": ok,
         "status": "VERIFIED" if ok else "DRIFT",
+        "manifest_sha256": manifest_sha256,
         "file_count": len(current),
         "missing": missing,
         "changed": changed,
