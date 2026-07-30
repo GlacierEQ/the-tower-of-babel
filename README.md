@@ -1,77 +1,147 @@
-# The Tower of Babel 🏗️⚡
+# The Tower of Babel
 
-> **The Definitive Multi-Language Systems Engineering Rosetta Stone**  
-> *21 Programming Languages | W4H Framework (What, Where, When, Why, How) | Easy & Advanced Production Exhibits*
+> **Canonical multi-language systems engineering Rosetta Stone**  
+> Registry-governed W4H framework, evidence-state claims, and generated proof surfaces.
 
-[![Languages](https://img.shields.io/badge/Languages-21-brightgreen)]()
 [![License](https://img.shields.io/badge/License-MIT-blue)]()
 [![GlacierEQ](https://img.shields.io/badge/GlacierEQ-Portfolio-purple)]()
 
 ---
 
-## 🎯 For Recruiters & Hiring Managers
+## For Recruiters & Hiring Managers
 
-This repository is **The Tower of Babel** — a 21-language systems engineering Rosetta Stone demonstrating polyglot technical mastery. It provides:
+This repository demonstrates a governed polyglot engineering system: each technology is mapped to **What, Where, When, Why, and How**, paired with easy and advanced exhibits, and assigned an explicit evidence state.
 
-- **21 Programming Languages** placed in their exact domains of production excellence
-- **W4H Framework (What, Where, When, Why, How)** explaining language selection rationale
-- **42 Source Code Exhibits** (2 per language: 1 easy fundamental, 1 advanced production exhibit)
-- **Zero Filler**: Every single language file contains compiler-valid, production-grade code
+The important upgrade is governance. Technology counts, W4H definitions, runtime registry output, sidecar telemetry, release artifacts, and integrity receipts now originate from one canonical file:
 
-**Why this matters**: Modern infrastructure requires heterogeneous language stacks. Demonstrating production mastery across C, Rust, C++, Go, Python, TypeScript, CUDA, Verilog, R, Julia, Swift, Zig, Odin, Mojo, Elixir, Haskell, Lean 4, Triton, Protobuf, SQL, and WebAssembly proves true senior polyglot systems architecture capabilities.
-
----
-
-## 🔬 For Engineers & Technical Reviewers
-
-### 🏛️ Master Language & W4H Architecture Matrix
-
-| # | Language | Category / Paradigm | Primary Domain | W4H Rationale | Easy Example | Advanced Production Exhibit |
-| :--: | :--- | :--- | :--- | :--- | :--- | :--- |
-| 1 | **Python (`.py`)** | Dynamic Scripting & ML | AI/ML Pipelines & Automation | The universal language of AI — massive ecosystem, rapid prototyping. | [easy_fibonacci.py](languages/python/easy_fibonacci.py) | [advanced_async_orchestrator.py](languages/python/advanced_async_orchestrator.py) |
-| 2 | **C (`.c`)** | Bare-Metal Systems | Kernels, Firmware, Embedded | Direct hardware access, zero runtime overhead, runs everywhere. | [easy_linked_list.c](languages/c/easy_linked_list.c) | [advanced_lockfree_spsc_ring.c](languages/c/advanced_lockfree_spsc_ring.c) |
-| 3 | **C++ (`.cpp`)** | High-Performance STL | KV-Cache & Orbital Math | STL vectorization and fast memory layout for PetaFLOP reasoning math. | [easy_vector.cpp](languages/cpp/easy_vector.cpp) | [advanced_kv_entropy.cpp](languages/cpp/advanced_kv_entropy.cpp) |
-| 4 | **Rust (`.rs`)** | Memory-Safe Systems | Action Safety Governors | Compile-time borrow checker prevents data races and memory corruption. | [easy_counter.rs](languages/rust/easy_counter.rs) | [advanced_safety_governor.rs](languages/rust/advanced_safety_governor.rs) |
-| 5 | **Go (`.go`)** | Low-Latency Concurrent | Flight Telemetry Decoders | Sub-millisecond GC pauses for 50,000 UDP telemetry packets/sec. | [easy_ping.go](languages/go/easy_ping.go) | [advanced_telemetry_decoder.go](languages/go/advanced_telemetry_decoder.go) |
-| 6 | **TypeScript (`.ts`)** | Typed Async V8 | MCP Gateways & DOM Bridges | Async I/O event loops and structured interfaces for stdio RPCs. | [easy_greet.ts](languages/typescript/easy_greet.ts) | [advanced_mcp_gateway.ts](languages/typescript/advanced_mcp_gateway.ts) |
-| 7 | **CUDA (`.cu`)** | Parallel GPU Compute | Attention Matrix Kernels | Direct hardware execution on NVIDIA Tensor Cores for FP8/FP16 matmul. | [easy_vector_add.cu](languages/cuda/easy_vector_add.cu) | [advanced_flash_attn_kernel.cu](languages/cuda/advanced_flash_attn_kernel.cu) |
-| 8 | **Verilog (`.v`)** | Hardware Description | FPGA/ASIC Digital Logic | RTL synthesis for custom AI accelerators and TPU systolic arrays. | [easy_counter.v](languages/verilog/easy_counter.v) | [advanced_systolic_matmul.v](languages/verilog/advanced_systolic_matmul.v) |
-| 9 | **R (`.R`)** | Statistical Computing | Bayesian Analysis & BioStats | Gold standard for statistical inference with 20,000+ CRAN packages. | [easy_statistics.R](languages/r/easy_statistics.R) | [advanced_bayesian_ab_test.R](languages/r/advanced_bayesian_ab_test.R) |
-| 10 | **Julia (`.jl`)** | Scientific Compute | Orbital Trajectory ODEs | JIT-compiled mathematical computing for Kepler orbital equations. | [easy_matrix.jl](languages/julia/easy_matrix.jl) | [advanced_orbital_differential.jl](languages/julia/advanced_orbital_differential.jl) |
-| 11 | **Swift (`.swift`)** | Apple Systems Native | Metal & ANE Acceleration | Native Metal GPU compute for Apple Neural Engine FP16 math. | [easy_array.swift](languages/swift/easy_array.swift) | [advanced_metal_ane_engine.swift](languages/swift/advanced_metal_ane_engine.swift) |
-| 12 | **Zig (`.zig`)** | Bare-Metal Memory | Agent Kernel Allocators | Eliminates OOM crashes and GC pauses in resource-constrained runtimes. | [easy_hello.zig](languages/zig/easy_hello.zig) | [advanced_arena_allocator.zig](languages/zig/advanced_arena_allocator.zig) |
-| 13 | **Odin (`.odin`)** | Data-Oriented Systems | Aerospace Reentry Physics | Zero hidden control flow & explicit allocators for Mach 25 thermal integration. | [easy_math.odin](languages/odin/easy_math.odin) | [advanced_reentry_thermal.odin](languages/odin/advanced_reentry_thermal.odin) |
-| 14 | **Mojo (`.mojo`)** | AI Systems Compiler | TPU SIMD Vectorization | Python syntax with C-speed SIMD tensor vectorization. | [easy_simd.mojo](languages/mojo/easy_simd.mojo) | [advanced_tpu_tensor_kernel.mojo](languages/mojo/advanced_tpu_tensor_kernel.mojo) |
-| 15 | **Elixir (`.ex`)** | BEAM Actor Model | Fault-Tolerant Clusters | Massively concurrent Erlang supervisor actors for 100k GPU node supervision. | [easy_actor.ex](languages/elixir/easy_actor.ex) | [advanced_fault_tolerant_beam.ex](languages/elixir/advanced_fault_tolerant_beam.ex) |
-| 16 | **Haskell (`.hs`)** | Pure Functional | AST Validation | Algebraic data types for purely functional compiler pass verification. | [easy_tree.hs](languages/haskell/easy_tree.hs) | [advanced_ast_validator.hs](languages/haskell/advanced_ast_validator.hs) |
-| 17 | **Lean 4 (`.lean`)** | Theorem Prover | Operator Truth Gates | Dependent type theory for formal mathematical safety proofs. | [easy_logic.lean](languages/lean4/easy_logic.lean) | [advanced_truth_gate_proof.lean](languages/lean4/advanced_truth_gate_proof.lean) |
-| 18 | **Triton (`.py`)** | Fused GPU Programming | OpenAI Attention Kernels | Pythonic GPU programming compiling directly to PTX instructions. | [easy_vector_add.py](languages/triton/easy_vector_add.py) | [advanced_fused_attention.py](languages/triton/advanced_fused_attention.py) |
-| 19 | **Protobuf (`.proto`)** | Zero-Copy IDL | 100k GPU Telemetry RPCs | Compact binary serialization for microsecond microservice IPC. | [easy_user.proto](languages/protobuf/easy_user.proto) | [advanced_colossus_cooling.proto](languages/protobuf/advanced_colossus_cooling.proto) |
-| 20 | **SQL (`.sql`)** | Relational & Vector | HNSW Vector Similarity | HNSW cosine distance vector similarity search inside PostgreSQL. | [easy_table.sql](languages/sql/easy_table.sql) | [advanced_pgvector_hnsw.sql](languages/sql/advanced_pgvector_hnsw.sql) |
-| 21 | **WebAssembly (`.wat`)** | Sandboxed Bytecode | Zero-Trust Tool Sandbox | WASM binary isolation for zero-trust tool execution. | [easy_add.wat](languages/wat/easy_add.wat) | [advanced_wasm_sandbox.wat](languages/wat/advanced_wasm_sandbox.wat) |
-
----
-
-## 🤖 ML/AI & Programmatic Mesh Integration
-
-- **MCP Tool**: `query_babel_registry()` — exposes all 21 language exhibits to AI agents
-- **Mastermind Sidecar**: Fully synchronized with APEX Highway mesh
-- **SHA-256 Integrity**: Tracked in `.integrity/file_hashes.json`
-
-```python
-python3 src/babel_registry.py
+```text
+registry/tower.yml
 ```
 
+The Tower no longer relies on duplicated hard-coded counts across README, tests, registry, sidecar, and integrity metadata.
+
 ---
 
-## ⚡ Quick Start
+## For Engineers & Technical Reviewers
+
+### Canonical Language & W4H Architecture Matrix
+
+The table below is generated from `registry/tower.yml`.
+
+| # | Technology | Type | Category / Paradigm | Primary Domain | Easy Example | Advanced Exhibit | Evidence |
+| :--: | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | **Python (`.py`)** | general-purpose language | Dynamic Scripting & ML | AI/ML Pipelines & Automation | [easy_fibonacci.py](languages/python/easy_fibonacci.py) | [advanced_async_orchestrator.py](languages/python/advanced_async_orchestrator.py) | tested |
+| 2 | **C (`.c`)** | systems language | Bare-Metal Systems | Kernels, Firmware, Embedded | [easy_linked_list.c](languages/c/easy_linked_list.c) | [advanced_lockfree_spsc_ring.c](languages/c/advanced_lockfree_spsc_ring.c) | illustrative |
+| 3 | **C++ (`.cpp`)** | systems language | High-Performance STL | KV-Cache & Orbital Math | [easy_vector.cpp](languages/cpp/easy_vector.cpp) | [advanced_kv_entropy.cpp](languages/cpp/advanced_kv_entropy.cpp) | illustrative |
+| 4 | **Rust (`.rs`)** | systems language | Memory-Safe Systems | Action Safety Governors | [easy_counter.rs](languages/rust/easy_counter.rs) | [advanced_safety_governor.rs](languages/rust/advanced_safety_governor.rs) | illustrative |
+| 5 | **Go (`.go`)** | general-purpose language | Low-Latency Concurrent | Flight Telemetry Decoders | [easy_ping.go](languages/go/easy_ping.go) | [advanced_telemetry_decoder.go](languages/go/advanced_telemetry_decoder.go) | illustrative |
+| 6 | **TypeScript (`.ts`)** | general-purpose language | Typed Async V8 | MCP Gateways & DOM Bridges | [easy_greet.ts](languages/typescript/easy_greet.ts) | [advanced_mcp_gateway.ts](languages/typescript/advanced_mcp_gateway.ts) | illustrative |
+| 7 | **CUDA (`.cu`)** | compute-kernel language | Parallel GPU Compute | Attention Matrix Kernels | [easy_vector_add.cu](languages/cuda/easy_vector_add.cu) | [advanced_flash_attn_kernel.cu](languages/cuda/advanced_flash_attn_kernel.cu) | illustrative |
+| 8 | **Verilog (`.v`)** | hardware description language | Hardware Description | FPGA/ASIC Digital Logic | [easy_counter.v](languages/verilog/easy_counter.v) | [advanced_systolic_matmul.v](languages/verilog/advanced_systolic_matmul.v) | illustrative |
+| 9 | **R (`.R`)** | general-purpose language | Statistical Computing | Bayesian Analysis & BioStats | [easy_statistics.R](languages/r/easy_statistics.R) | [advanced_bayesian_ab_test.R](languages/r/advanced_bayesian_ab_test.R) | illustrative |
+| 10 | **Julia (`.jl`)** | general-purpose language | Scientific Compute | Orbital Trajectory ODEs | [easy_matrix.jl](languages/julia/easy_matrix.jl) | [advanced_orbital_differential.jl](languages/julia/advanced_orbital_differential.jl) | illustrative |
+| 11 | **Swift (`.swift`)** | general-purpose language | Apple Systems Native | Metal & ANE Acceleration | [easy_array.swift](languages/swift/easy_array.swift) | [advanced_metal_ane_engine.swift](languages/swift/advanced_metal_ane_engine.swift) | illustrative |
+| 12 | **Zig (`.zig`)** | systems language | Bare-Metal Memory | Agent Kernel Allocators | [easy_hello.zig](languages/zig/easy_hello.zig) | [advanced_arena_allocator.zig](languages/zig/advanced_arena_allocator.zig) | illustrative |
+| 13 | **Odin (`.odin`)** | systems language | Data-Oriented Systems | Aerospace Reentry Physics | [easy_math.odin](languages/odin/easy_math.odin) | [advanced_reentry_thermal.odin](languages/odin/advanced_reentry_thermal.odin) | illustrative |
+| 14 | **Mojo (`.mojo`)** | compute-kernel language | AI Systems Compiler | TPU SIMD Vectorization | [easy_simd.mojo](languages/mojo/easy_simd.mojo) | [advanced_tpu_tensor_kernel.mojo](languages/mojo/advanced_tpu_tensor_kernel.mojo) | illustrative |
+| 15 | **Elixir (`.ex`)** | general-purpose language | BEAM Actor Model | Fault-Tolerant Clusters | [easy_actor.ex](languages/elixir/easy_actor.ex) | [advanced_fault_tolerant_beam.ex](languages/elixir/advanced_fault_tolerant_beam.ex) | illustrative |
+| 16 | **Haskell (`.hs`)** | general-purpose language | Pure Functional | AST Validation | [easy_tree.hs](languages/haskell/easy_tree.hs) | [advanced_ast_validator.hs](languages/haskell/advanced_ast_validator.hs) | illustrative |
+| 17 | **Lean 4 (`.lean`)** | proof language | Theorem Prover | Operator Truth Gates | [easy_logic.lean](languages/lean4/easy_logic.lean) | [advanced_truth_gate_proof.lean](languages/lean4/advanced_truth_gate_proof.lean) | illustrative |
+| 18 | **Triton (`.py`)** | compute-kernel language | Fused GPU Programming | OpenAI Attention Kernels | [easy_vector_add.py](languages/triton/easy_vector_add.py) | [advanced_fused_attention.py](languages/triton/advanced_fused_attention.py) | illustrative |
+| 19 | **Protobuf (`.proto`)** | serialization IDL | Zero-Copy IDL | 100k GPU Telemetry RPCs | [easy_user.proto](languages/protobuf/easy_user.proto) | [advanced_colossus_cooling.proto](languages/protobuf/advanced_colossus_cooling.proto) | illustrative |
+| 20 | **SQL (`.sql`)** | general-purpose language | Relational & Vector | HNSW Vector Similarity | [easy_table.sql](languages/sql/easy_table.sql) | [advanced_pgvector_hnsw.sql](languages/sql/advanced_pgvector_hnsw.sql) | illustrative |
+| 21 | **WebAssembly (`.wat`)** | sandbox/runtime format | Sandboxed Bytecode | Zero-Trust Tool Sandbox | [easy_add.wat](languages/wat/easy_add.wat) | [advanced_wasm_sandbox.wat](languages/wat/advanced_wasm_sandbox.wat) | illustrative |
+
+---
+
+## Evidence States
+
+| State | Meaning |
+| :--- | :--- |
+| `illustrative` | Teaches syntax or a central concept; no automated proof is claimed. |
+| `compiles` | Built with a pinned toolchain. |
+| `tested` | Behavior verified with automated tests. |
+| `benchmarked` | Performance claim measured reproducibly. |
+| `formally_verified` | Declared properties proved. |
+| `hardware_verified` | Executed on the required accelerator or device. |
+| `integrated` | Participates in a cross-language system. |
+| `production_reference` | Error handling, observability, and operational documentation complete. |
+
+The current registry intentionally downgrades most advanced exhibits to `illustrative` until their toolchains, tests, benchmarks, proofs, or hardware gates are implemented. That makes the Tower more honest and stronger: every claim has a declared proof class.
+
+---
+
+## Governance CLI
 
 ```bash
-# Clone standalone repo
-git clone https://github.com/GlacierEQ/the-tower-of-babel.git
-cd the-tower-of-babel
+python -m pip install -e .
 
-# Run Babel Registry
-python3 src/babel_registry.py
-python3 tests/test_tower_of_babel.py
+tower validate
+tower generate
+tower report
+tower build --all
+tower test --all
+tower benchmark --available
+tower integrity generate
+tower integrity verify
+tower integrity diff
+tower integrity receipt
 ```
+
+### What generates what
+
+| Output | Source |
+| :--- | :--- |
+| README matrix | `registry/tower.yml` |
+| Python runtime registry | `registry/tower.yml` |
+| Sidecar totals | `registry/tower.yml` |
+| Integrity manifest | repository bytes + `registry/tower.yml` |
+| CI gates | `.github/workflows/tower-governance.yml` |
+| Megamind graph | `registry/tower.yml` |
+| Release artifact | `registry/tower.yml` |
+
+---
+
+## Programmatic Mesh Integration
+
+The compatibility API remains available:
+
+```bash
+python3 src/babel_registry.py
+```
+
+The governance CLI exposes the stronger registry and receipt layer:
+
+```bash
+tower report
+tower integrity receipt
+python3 mastermind_sidecar.py
+```
+
+Megamind should treat Tower as the authority for technology taxonomy, W4H definitions, examples, toolchain requirements, evidence states, and interop contracts.
+
+---
+
+## Current Boundary
+
+This is now a governed registry-and-proof surface, not yet a fully built universal compiler farm.
+
+Implemented in P0:
+
+- canonical registry
+- 21 governed technologies
+- evidence-state taxonomy
+- runtime registry compatibility
+- sidecar telemetry sourced from registry
+- integrity engine commands
+- generated matrix/release/graph capability
+- CI governance workflow
+
+Still P1/P2:
+
+- pinned per-floor toolchains
+- real multi-language build/test matrix
+- stronger Rust, TypeScript, CUDA, Lean, and Protobuf advanced exhibits
+- specialized floors for ONNX, MLIR, FlatBuffers, Cap’n Proto, SystemVerilog, VHDL, Chisel, Coq, and Agda
+- flagship cross-language Tower Mission Pipeline
+- Tower-to-Megamind typed adapter
