@@ -13,17 +13,38 @@ from .registry import REPO_ROOT, TowerRegistry
 
 
 def _measure(argv: list[str], iterations: int) -> dict[str, Any]:
+    if iterations < 1:
+        return {
+            "status": "INVALID_BENCHMARK",
+            "argv": argv,
+            "error": "iterations must be at least 1",
+        }
     samples: list[float] = []
     for _ in range(iterations):
         start = time.perf_counter()
-        completed = subprocess.run(
-            argv,
-            cwd=REPO_ROOT,
-            text=True,
-            capture_output=True,
-            timeout=120,
-            check=False,
-        )
+        try:
+            completed = subprocess.run(
+                argv,
+                cwd=REPO_ROOT,
+                text=True,
+                capture_output=True,
+                timeout=120,
+                check=False,
+            )
+        except subprocess.TimeoutExpired as exc:
+            return {
+                "status": "FAILED_TIMEOUT",
+                "argv": argv,
+                "returncode": None,
+                "stderr": (exc.stderr or "")[-2000:] if isinstance(exc.stderr, str) else "",
+            }
+        except OSError as exc:
+            return {
+                "status": "BLOCKED_TOOLCHAIN",
+                "argv": argv,
+                "returncode": None,
+                "stderr": str(exc),
+            }
         elapsed = (time.perf_counter() - start) * 1000
         if completed.returncode != 0:
             return {
@@ -50,10 +71,24 @@ def benchmark_many(
     *,
     iterations: int = 3,
 ) -> dict[str, Any]:
-    requested = set(technology_ids)
-    results = []
-    for tech in registry.technologies:
-        if tech["id"] not in requested:
+    requested_list = list(technology_ids)
+    requested = {value.casefold() for value in requested_list}
+    known = {
+        tech.get("id", "").casefold(): tech
+        for tech in registry.technologies
+        if isinstance(tech, dict) and isinstance(tech.get("id"), str)
+    }
+    results: list[dict[str, Any]] = []
+    for normalized_id in sorted(requested):
+        tech = known.get(normalized_id)
+        if tech is None:
+            original = next(value for value in requested_list if value.casefold() == normalized_id)
+            results.append({
+                "technology_id": original,
+                "status": "INVALID_MANIFEST",
+                "build_status": "INVALID_MANIFEST",
+                "blocker": f"Unknown technology requested: {original}",
+            })
             continue
         build = build_floor(tech)
         row: dict[str, Any] = {
@@ -69,6 +104,9 @@ def benchmark_many(
             tests = tech["toolchain"].get("test", [])
             if not tests:
                 row["status"] = "NO_RUNTIME_BENCHMARK"
+            elif iterations < 1:
+                row["status"] = "INVALID_BENCHMARK"
+                row["blocker"] = "iterations must be at least 1"
             else:
                 row["measurement"] = _measure(tests[-1], iterations)
                 row["status"] = row["measurement"]["status"]
@@ -76,6 +114,7 @@ def benchmark_many(
     return {
         "benchmark_id": "tower-portable-benchmark-v1",
         "iterations": iterations,
+        "requested_technology_ids": requested_list,
         "results": results,
         "truth_note": "Measurements are local process timings for the declared exhibit commands, not universal language rankings.",
     }
