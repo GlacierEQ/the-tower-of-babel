@@ -16,25 +16,44 @@ type Decision struct {
 }
 
 type Event struct {
-	MissionID       string `json:"mission_id"`
-	Stage           string `json:"stage"`
-	Status          string `json:"status"`
-	EvidenceSHA256  string `json:"evidence_sha256"`
+	MissionID      string `json:"mission_id"`
+	Stage          string `json:"stage"`
+	Status         string `json:"status"`
+	EvidenceSHA256 string `json:"evidence_sha256"`
+}
+
+func fail(err error) {
+	fmt.Fprintln(os.Stderr, err)
+	os.Exit(1)
 }
 
 func main() {
 	if len(os.Args) != 3 {
-		panic("usage: telemetry <decision.json> <event.json>")
+		fail(fmt.Errorf("usage: telemetry <decision.json> <event.json>"))
 	}
 	raw, err := os.ReadFile(os.Args[1])
-	if err != nil { panic(err) }
+	if err != nil {
+		fail(err)
+	}
 	var decision Decision
-	if err := json.Unmarshal(raw, &decision); err != nil { panic(err) }
+	if err := json.Unmarshal(raw, &decision); err != nil {
+		fail(err)
+	}
+	if decision.MissionID == "" || decision.PlanSHA256 == "" {
+		fail(fmt.Errorf("decision is missing mission_id or plan_sha256"))
+	}
 	sum := sha256.Sum256(raw)
 	status := "BLOCKED"
-	if decision.Allowed { status = "SUCCEEDED" }
+	if decision.Allowed {
+		status = "SUCCEEDED"
+	}
 	event := Event{decision.MissionID, "authority", status, hex.EncodeToString(sum[:])}
-	out, _ := json.MarshalIndent(event, "", "  ")
-	if err := os.WriteFile(os.Args[2], append(out, '\n'), 0644); err != nil { panic(err) }
+	out, err := json.MarshalIndent(event, "", "  ")
+	if err != nil {
+		fail(err)
+	}
+	if err := os.WriteFile(os.Args[2], append(out, '\n'), 0o644); err != nil {
+		fail(err)
+	}
 	fmt.Println(string(out))
 }
