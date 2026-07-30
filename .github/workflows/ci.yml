@@ -31,7 +31,7 @@ jobs:
         run: python -m pip install -e .[dev]
 
       - name: Compile Python sources
-        run: python -m compileall -q src tests integrations mastermind_sidecar.py languages/python
+        run: python -m compileall -q src tests integrations mastermind_sidecar.py languages/python languages/protobuf
 
       - name: Validate canonical registry and generated surfaces
         run: |
@@ -57,6 +57,12 @@ jobs:
         with:
           go-version: "1.23.4"
 
+      - uses: haskell-actions/setup@v2
+        with:
+          ghc-version: "9.8.2"
+          enable-stack: false
+          cabal-update: false
+
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: "1.83.0"
@@ -81,7 +87,15 @@ jobs:
         run: |
           set -euo pipefail
           test -z "$(gofmt -l languages/go)"
-          GO111MODULE=off go test ./languages/go -v
+          go test ./languages/go -v
+
+      - name: Compile and run Haskell exhibits
+        run: |
+          set -euo pipefail
+          ghc -O2 -Wall -Werror -outputdir /tmp/babel-ghc-easy languages/haskell/easy_tree.hs -o /tmp/babel-haskell-easy
+          ghc -O2 -Wall -Werror -outputdir /tmp/babel-ghc-advanced languages/haskell/advanced_ast_validator.hs -o /tmp/babel-haskell-advanced
+          /tmp/babel-haskell-easy
+          /tmp/babel-haskell-advanced
 
       - name: Compile and test Rust exhibits
         run: |
