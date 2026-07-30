@@ -117,16 +117,17 @@ Execution evidence and deterministic receipt
 ## Commands
 
 ```bash
-python3 -m tower.cli validate
-python3 -m tower.cli generate --check
-python3 -m tower.cli build --all --allow-blocked
-python3 -m tower.cli integrity verify
-python3 -m tower.cli benchmark python c cpp rust go typescript webassembly
-python3 -m tower.cli proof-report --build-report artifacts/build-report.json
-python3 -m tower.cli receipt
-python3 -m tower.cli spec rust
-python3 -m tower.cli megamind-map
-python3 flagship/run_pipeline.py
+python -m pip install -e .[dev]
+tower validate
+tower generate --check
+tower build --all --allow-blocked
+tower integrity verify
+tower benchmark python c cpp rust go typescript webassembly
+tower proof-report --build-report artifacts/build-report.json
+tower receipt
+tower spec rust
+tower megamind-map
+python flagship/run_pipeline.py
 ```
 
 ## Flagship polyglot mission pipeline
