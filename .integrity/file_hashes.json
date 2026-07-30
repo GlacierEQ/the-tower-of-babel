@@ -1,8 +1,13 @@
 {
-  "file_count": 47,
+  "file_count": 54,
+  "generated_by": "tower integrity generate",
   "hashes": {
+    ".github/workflows/tower-governance.yml": "8e32d8faae98dc901622b7a13aa2d49bbd0697a3b4137031951c2e8de6190e2a",
     "LICENSE": "7466596bdb65520298c2449eef8e883d9d3300f8cfac9aea893c0f572cdaeeed",
-    "README.md": "2dc33e6a8cc400b41d4c48cd7e56788038b994a84b80472267a1fc08359ec404",
+    "README.md": "47e1a82b1b10012fc15f402a8bf5938ad6182e0942e45d569e48bbf569993fa3",
+    "generated/megamind_technology_graph.json": "56dc0345d4041835879c1261609f3b165118cbe6038a8c0f0cea99d1b27ffd75",
+    "generated/tower_matrix.md": "246f83f42d342068f699c77c67b9a357d15316c219004a77db145070c2c1f64f",
+    "generated/tower_release.json": "04d751ae30ea3d8556f7ff8cb9e5cb7865477e9ad7c2b1981f6b179d624e2230",
     "languages/c/advanced_lockfree_spsc_ring.c": "2c61ead2e01c61c7f84b0083b09f539819329a2d7ad54a734ab0226321430012",
     "languages/c/easy_linked_list.c": "0ad7bd8b518d7725909540329d65f2d1605204633d52b5a74fdc053ce0dcedaf",
     "languages/cpp/advanced_kv_entropy.cpp": "d4ab0cb9f72f935e4866f6c03463f4d274eefc740108624cbcb0330b076a46b4",
@@ -45,8 +50,14 @@
     "languages/wat/easy_add.wat": "ff311d50c6f65888cf8460df4866cbe278cc843774058c4a375fa6fa753ea7d0",
     "languages/zig/advanced_arena_allocator.zig": "651f550e0f4867130148cb9ab0bfa51481a818e3ed1ad486126e19c359ea9fc1",
     "languages/zig/easy_hello.zig": "23b82ed72a9b33cd0fb1d726e57b9e4563232308cde7ab2e14a579e7e60f96fe",
-    "mastermind_sidecar.py": "9e18d5290cf90be6385faf897333fe9d85c4bd8169493e9b53e845232a36d631",
-    "src/babel_registry.py": "dfdc267fc8ec288e995e9c5c511d2fd3b2d3dbfd33c17477013af905519f9387",
-    "tests/test_tower_of_babel.py": "e054a96f714d7ba1ff7e26fe7c611eca9c862b1a7df91d8011a9fc47ebefe869"
-  }
+    "mastermind_sidecar.py": "327ed1cd10b2e2755db1d4df832ca315ef80954e3e70ec0ab10a35d252d7ea73",
+    "pyproject.toml": "f36666093ada3a6d41549972dea77d82f2d52213c8b54fab3688a80179e3c6e1",
+    "registry/tower.yml": "8ea5ec6e6e57ae75ca6f281a655f1e2568c06e27cf3875c00081ae5f0597ea42",
+    "src/babel_registry.py": "0164fa5bc076df8542085996f752c1495a394f2efc0b1d0891f296ccd424b52c",
+    "src/tower_registry.py": "42b825e1767dd68ef46f62c90b33358138b508153d2a5bc18e640a40b47340b6",
+    "tests/test_tower_of_babel.py": "772ea5c552c67a5c60173dc1386c843a17eda0be5640876288940994be9e68bb"
+  },
+  "registry_sha256": "8ea5ec6e6e57ae75ca6f281a655f1e2568c06e27cf3875c00081ae5f0597ea42",
+  "registry_source": "registry/tower.yml",
+  "schema_version": "tower-integrity/1"
 }
