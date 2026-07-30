@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 
+from tower import integrity as integrity_module
 from tower.proofs import _build_statuses
 from tower.registry import REPO_ROOT
 
@@ -91,3 +92,14 @@ def test_flagship_is_strict_by_default_and_executes_contracts():
     assert '"protobuf_contracts"' in source
     assert '"sql_state"' in source
     assert "return 1 if blocked or nonverified else 0" in source
+
+
+def test_integrity_ignores_reproducible_lake_cache(tmp_path, monkeypatch):
+    governed = tmp_path / "lean-toolchain"
+    governed.write_text("leanprover/lean4:v4.15.0\n", encoding="utf-8")
+    cache = tmp_path / ".lake" / "lakefile.olean"
+    cache.parent.mkdir(parents=True)
+    cache.write_bytes(b"reproducible compiler cache")
+    monkeypatch.setattr(integrity_module, "REPO_ROOT", tmp_path)
+    hashes = integrity_module.collect_hashes()
+    assert hashes == {"lean-toolchain": integrity_module.hash_file(governed)}
