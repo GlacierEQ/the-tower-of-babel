@@ -1,3 +1,7 @@
 package main
+
 import "fmt"
-func main() { fmt.Println("Go Ping: OK") }
+
+func main() {
+	fmt.Println("Go Ping: OK")
+}
