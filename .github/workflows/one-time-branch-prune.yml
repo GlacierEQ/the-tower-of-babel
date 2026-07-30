@@ -1,0 +1,116 @@
+name: One-time Branch Policy and Prune
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: one-time-tower-branch-prune
+  cancel-in-progress: false
+
+jobs:
+  prune:
+    if: >-
+      github.event.issue.title == '[tower-maintenance] prune obsolete branches' &&
+      github.event.issue.user.login == 'GlacierEQ'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out main with maintenance authority
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Configure maintenance identity
+        run: |
+          git config user.name "GlacierEQ maintenance bot"
+          git config user.email "actions@users.noreply.github.com"
+
+      - name: Install permanent branch policy and remove bootstrap workflow
+        run: |
+          cat > BRANCH_POLICY.md <<'EOF'
+          # Branch Policy — `main` Is the Worker
+
+          `main` is the living integration branch, the only long-lived branch, and the source of truth for the Tower.
+
+          ## Operating rules
+
+          1. **Completed work belongs on `main`.** A function is not complete while it exists only on a side branch.
+          2. **Branches are disposable workspaces.** Start from current `main`, keep the scope narrow, merge after exact-head verification, then delete the branch immediately.
+          3. **Normal branch count: zero or one active feature branch.** Two active branches is the hard operational ceiling and requires genuinely independent work.
+          4. **No stacked pull requests by default.** A temporary stack requires an explicit dependency record and must collapse into `main` as soon as its lower layer is ready.
+          5. **No stale preservation branches.** Git history, tags, releases, receipts, and artifacts preserve completed states; branches do not serve as archives.
+          6. **Exact-head evidence is mandatory.** Registry validation, generated-surface checks, tests, integrity verification, and relevant build gates must pass on the precise commit being merged.
+          7. **`main` must remain usable.** Broken or incomplete integration is repaired immediately or reverted; it is never hidden indefinitely behind another branch.
+
+          ## Lifecycle
+
+          ```text
+          current main
+              → short-lived function branch
+              → exact-head verification
+              → merge into main
+              → verify main tree
+              → delete function branch
+          ```
+
+          Exceptions must state the owner, dependency, exit condition, and deletion deadline in the pull request.
+          EOF
+
+          rm -f .github/workflows/one-time-branch-prune.yml
+
+      - name: Regenerate and verify the governed tree
+        run: |
+          python -m pip install -e .[dev]
+          tower generate
+          tower integrity generate
+          tower validate
+          tower generate --check
+          pytest -q
+          tower integrity verify
+          git diff --check
+
+      - name: Commit permanent policy and exact integrity ledger
+        run: |
+          git add -A
+          git commit -m "chore: establish main-worker branch policy"
+          git push origin HEAD:main
+
+      - name: Delete completed and superseded branches
+        env:
+          OBSOLETE_BRANCHES: >-
+            dev/spiral-civilization-scale
+            build/canonical-executable-tower
+            build/p0-truth-convergence
+            feature/canonical-manifest-clean
+            verification/tower-sealed-base
+        run: |
+          set -euo pipefail
+          failures=0
+          for branch in $OBSOLETE_BRANCHES; do
+            if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+              if git push origin --delete "$branch"; then
+                echo "Deleted $branch"
+              else
+                echo "Failed to delete $branch" >&2
+                failures=$((failures + 1))
+              fi
+            else
+              echo "Already absent: $branch"
+            fi
+          done
+          test "$failures" -eq 0
+
+      - name: Close maintenance issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --comment "Branch policy committed, integrity resealed, bootstrap workflow removed, and obsolete branches pruned."
