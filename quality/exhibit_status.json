@@ -1,10 +1,29 @@
 {
-  "schema_version": 2,
   "authority": "registry/tower.yml",
   "generated_maturity_surface": "generated/maturity.json",
-  "role": "non-authoritative review notes for selected strengthened exhibits",
-  "override_allowed": false,
   "notes": {
+    "c": {
+      "advanced_exhibit": "languages/c/advanced_lockfree_spsc_ring.c",
+      "observed_evidence": [
+        "bounded power-of-two queue",
+        "acquire/release memory ordering",
+        "capacity and overflow rejection",
+        "100000-frame concurrent handoff",
+        "FIFO sequence verification",
+        "structured execution receipt"
+      ]
+    },
+    "cpp": {
+      "advanced_exhibit": "languages/cpp/advanced_kv_entropy.cpp",
+      "observed_evidence": [
+        "validated probability distributions",
+        "deterministic entropy-aware pruning",
+        "pinned-block capacity policy",
+        "complete decision accounting",
+        "malformed-input rejection",
+        "structured decision receipt"
+      ]
+    },
     "go": {
       "advanced_exhibit": "languages/go/advanced_telemetry_decoder.go",
       "observed_evidence": [
@@ -35,5 +54,8 @@
         "typed tool registry"
       ]
     }
-  }
+  },
+  "override_allowed": false,
+  "role": "non-authoritative review notes for selected strengthened exhibits",
+  "schema_version": 2
 }
