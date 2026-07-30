@@ -31,6 +31,13 @@ def _read_json_object(path: Path, label: str) -> dict[str, Any]:
     return payload
 
 
+def _status_count(counts: dict[str, Any], predicate) -> int:
+    return sum(
+        count for status, count in counts.items()
+        if isinstance(status, str) and isinstance(count, int) and predicate(status)
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(prog="tower")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -49,6 +56,7 @@ def main() -> int:
     benchmark = sub.add_parser("benchmark")
     benchmark.add_argument("technologies", nargs="+")
     benchmark.add_argument("--iterations", type=int, default=3)
+    benchmark.add_argument("--allow-blocked", action="store_true")
     benchmark.add_argument("--output", default="artifacts/benchmarks.json")
     proof = sub.add_parser("proof-report")
     proof.add_argument("--build-report", default="artifacts/build-report.json")
@@ -83,9 +91,10 @@ def main() -> int:
             report = build_many(registry, selected)
             write_report(report, Path(args.output))
             _print(report)
-            bad = report["counts"].get("FAILED", 0) + report["counts"].get("INVALID_MANIFEST", 0)
-            blocked = sum(count for status, count in report["counts"].items() if status.startswith("BLOCKED_"))
-            if bad:
+            counts = report.get("counts", {})
+            failed = _status_count(counts, lambda status: status in {"FAILED", "FAILED_TIMEOUT", "INVALID_MANIFEST"})
+            blocked = _status_count(counts, lambda status: status.startswith("BLOCKED_"))
+            if failed:
                 return 1
             if blocked and not args.allow_blocked:
                 return 2
@@ -94,8 +103,12 @@ def main() -> int:
             report = benchmark_many(registry, args.technologies, iterations=args.iterations)
             write_benchmark(report, Path(args.output))
             _print(report)
-            fatal = {"FAILED", "FAILED_TIMEOUT", "INVALID_BENCHMARK", "INVALID_MANIFEST"}
-            return 1 if any(row.get("status") in fatal for row in report["results"]) else 0
+            statuses = {str(row.get("status", "")) for row in report.get("results", []) if isinstance(row, dict)}
+            if statuses & {"FAILED", "FAILED_TIMEOUT", "INVALID_BENCHMARK", "INVALID_MANIFEST"}:
+                return 1
+            if any(status.startswith("BLOCKED_") for status in statuses) and not args.allow_blocked:
+                return 2
+            return 0
         if args.command == "proof-report":
             build_report = _read_json_object(Path(args.build_report), "build report")
             benchmark_path = Path(args.benchmark_report)
@@ -103,9 +116,10 @@ def main() -> int:
             report = build_proof_report(registry, build_report, benchmark_report)
             write_proof_report(report, Path(args.output))
             _print(report)
-            if report["counts"].get("FAILED", 0):
+            counts = report.get("counts", {})
+            if counts.get("FAILED", 0):
                 return 1
-            incomplete = report["counts"].get("BLOCKED", 0) + report["counts"].get("NOT_EXECUTED", 0)
+            incomplete = counts.get("BLOCKED", 0) + counts.get("NOT_EXECUTED", 0)
             return 0 if args.allow_blocked or not incomplete else 2
         if args.command == "integrity":
             if args.action == "generate":
