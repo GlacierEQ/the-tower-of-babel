@@ -1,5 +1,5 @@
 {
-  "file_count": 121,
+  "file_count": 122,
   "hash_algorithm": "sha256",
   "hashes": {
     ".github/workflows/tower.yml": "b2b7e866bf2bdad444923782f801ee7d69e62d0fc572be3c92429bfd4512269e",
@@ -12,11 +12,12 @@
     "docs/BUILD_ORDER.md": "c836b724c3f274ff531260a79c6d95a9e007361d98d89f6e8bce01122f3eb538",
     "flagship/README.md": "d46528d580e331aa2174a6ffd539f72d621f7b062cdb4f95786764f465102c45",
     "flagship/contracts/mission.proto": "5baf1d7db6ae780c2193c610b15375d345aebff1198324ea5c03715e5e70eb49",
-    "flagship/go/telemetry.go": "0d99241833606d03306ce507657d918fb559a50d492253ff3d2bea7ae539437f",
+    "flagship/go/telemetry.go": "e66dfbe3d19eb79bdd6caee284316ef45d988a4c23872e594eb03330709da985",
     "flagship/lean4/invariant.lean": "ca1c42e3c739f552177ca4716a2d342208f966aa37a906550b9a00ea3820459c",
     "flagship/mission.input.json": "a6cff985b59219e60250505ad2349c7632864703a920a12f8963e4530f06b0dd",
+    "flagship/python/persist_state.py": "182b3661f188692dd7062181f8c99b56d6d3b0e3b5fcca12ec7a44a86610c82a",
     "flagship/python/planner.py": "7e02c5ac79c8ec95b24f7b79e0aedcb9dada2b0da84fc07793b442d6807b8788",
-    "flagship/run_pipeline.py": "b3c4df3394e74f201288d1f8e4e98e90e46eac06e0f07480e485404fb81b4991",
+    "flagship/run_pipeline.py": "b24247fe4fb3efbe699605af7c7c815e0cc0c5833a19adff8eecd7f484e7ac8d",
     "flagship/rust/Cargo.toml": "7893e0325027fc0a5a99bb384d848393325c800ebb1793fb6196da50fcb62273",
     "flagship/rust/src/main.rs": "56bc49c8f3144dcd93d3c5214d0c41088cb51a6709a8d723a8f2c16f7a125429",
     "flagship/sql/state.sql": "371f59b59608cb4484c76620f756d4816a702ee7b41555c7bff40f139299c688",
