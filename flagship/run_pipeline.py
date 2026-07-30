@@ -10,10 +10,20 @@ import subprocess
 import sys
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
+sys.path.insert(0, str(ROOT))
+
 from tower.registry import load_registry
 
-ROOT = Path(__file__).resolve().parents[1]
 WORK = ROOT / "build" / "flagship"
+MISSION_FIELDS = {
+    "mission_id",
+    "objective",
+    "required_capabilities",
+    "preferred_interfaces",
+    "maximum_action",
+}
 REQUIRED_STAGES = {
     "typescript_compile",
     "typescript_ingress",
@@ -77,12 +87,49 @@ def dependency_block(stage: str, dependency: str) -> dict:
     }
 
 
-def canonical_json_sha256(payload: dict) -> str:
+def _require_string(payload: dict, field: str) -> str:
+    value = payload.get(field)
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"mission.{field} must be a non-empty string")
+    return value.strip()
+
+
+def _require_string_list(payload: dict, field: str) -> list[str]:
+    value = payload.get(field)
+    if not isinstance(value, list) or not value or not all(
+        isinstance(item, str) and item.strip() for item in value
+    ):
+        raise ValueError(f"mission.{field} must be a non-empty string list")
+    return [item.strip() for item in value]
+
+
+def canonical_mission(payload: dict) -> dict:
+    """Validate and normalize the cross-language mission hash contract."""
     unsigned = dict(payload)
     unsigned.pop("input_sha256", None)
+    unknown = sorted(set(unsigned) - MISSION_FIELDS)
+    missing = sorted(MISSION_FIELDS - set(unsigned))
+    if unknown:
+        raise ValueError("mission contains unsupported fields: " + ", ".join(unknown))
+    if missing:
+        raise ValueError("mission is missing required fields: " + ", ".join(missing))
+    maximum_action = _require_string(unsigned, "maximum_action")
+    if maximum_action not in {"read", "plan", "write_internal", "external"}:
+        raise ValueError("mission.maximum_action is unsupported")
+    # The explicit field order and compact separators match the TypeScript
+    # ingress implementation byte-for-byte for UTF-8 mission content.
+    return {
+        "maximum_action": maximum_action,
+        "mission_id": _require_string(unsigned, "mission_id"),
+        "objective": _require_string(unsigned, "objective"),
+        "preferred_interfaces": _require_string_list(unsigned, "preferred_interfaces"),
+        "required_capabilities": _require_string_list(unsigned, "required_capabilities"),
+    }
+
+
+def canonical_json_sha256(payload: dict) -> str:
     canonical = json.dumps(
-        unsigned,
-        sort_keys=True,
+        canonical_mission(payload),
         separators=(",", ":"),
         ensure_ascii=False,
     ).encode("utf-8")
@@ -94,8 +141,12 @@ def write_fallback_mission(source: Path, mission: Path) -> None:
     payload = json.loads(source.read_text(encoding="utf-8"))
     if not isinstance(payload, dict):
         raise ValueError("mission input must be an object")
-    payload["input_sha256"] = canonical_json_sha256(payload)
-    mission.write_text(json.dumps(payload, indent=2, sort_keys=True, ensure_ascii=False) + "\n", encoding="utf-8")
+    canonical = canonical_mission(payload)
+    canonical["input_sha256"] = canonical_json_sha256(canonical)
+    mission.write_text(
+        json.dumps(canonical, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
 
 
 def parse_args() -> argparse.Namespace:
@@ -121,7 +172,7 @@ def main() -> int:
     if not isinstance(source_payload, dict):
         raise ValueError("mission input must be an object")
     expected_input_sha256 = canonical_json_sha256(source_payload)
-    expected_maximum_action = str(source_payload.get("maximum_action", ""))
+    expected_maximum_action = canonical_mission(source_payload)["maximum_action"]
 
     registry = load_registry()
     expected_registry_sha256 = hashlib.sha256(registry.canonical_bytes()).hexdigest()
@@ -161,7 +212,7 @@ def main() -> int:
 
     if mission.is_file():
         mission_payload = json.loads(mission.read_text(encoding="utf-8"))
-        if mission_payload.get("input_sha256") != expected_input_sha256:
+        if not isinstance(mission_payload, dict) or mission_payload.get("input_sha256") != expected_input_sha256:
             planner = {
                 "stage": "python_planner",
                 "status": "FAILED",
@@ -257,14 +308,14 @@ def main() -> int:
     mission_payload = json.loads(mission.read_text(encoding="utf-8")) if mission.is_file() else {}
     report = {
         "pipeline_id": "tower-polyglot-mission-v1",
-        "mission_id": mission_payload.get("mission_id", "unavailable"),
+        "mission_id": mission_payload.get("mission_id", "unavailable") if isinstance(mission_payload, dict) else "unavailable",
         "expected_registry_sha256": expected_registry_sha256,
         "expected_input_sha256": expected_input_sha256,
         "expected_maximum_action": expected_maximum_action,
         "strict": not args.allow_blocked,
         "results": results,
     }
-    report_bytes = json.dumps(report, indent=2, sort_keys=True).encode()
+    report_bytes = json.dumps(report, separators=(",", ":"), sort_keys=True).encode("utf-8")
     report["report_sha256"] = hashlib.sha256(report_bytes).hexdigest()
     (WORK / "pipeline.report.json").write_text(
         json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8"
