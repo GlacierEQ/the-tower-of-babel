@@ -36,6 +36,10 @@ class SecurityBoundaryTests(unittest.TestCase):
         self.assertIsNone(build._validate_argv(["python3", "-m", "compileall", "src"]))
         self.assertIsNone(build._validate_argv(["build/generated-test-binary"]))
 
+    def test_command_policy_admits_declared_database_and_hdl_compilers(self) -> None:
+        self.assertIsNone(build._validate_argv(["psql", "--version"]))
+        self.assertIsNone(build._validate_argv(["ghdl", "--version"]))
+
     def test_build_floor_rejects_unapproved_primary_tool(self) -> None:
         result = build.build_floor({
             "id": "unsafe",
