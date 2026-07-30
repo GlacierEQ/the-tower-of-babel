@@ -8,7 +8,7 @@ import sqlite3
 import sys
 from pathlib import Path
 
-_SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
+_SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
 
 def read_object(path: Path, label: str) -> dict:
@@ -30,8 +30,8 @@ def require_string(payload: dict, field: str, label: str) -> str:
 def require_sha256(payload: dict, field: str, label: str) -> str:
     value = require_string(payload, field, label)
     if not _SHA256_RE.fullmatch(value):
-        raise ValueError(f"{label}.{field} must contain 64 hexadecimal characters")
-    return value.lower()
+        raise ValueError(f"{label}.{field} must be a lowercase SHA-256 digest")
+    return value
 
 
 def main() -> int:
