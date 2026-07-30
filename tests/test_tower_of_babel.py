@@ -2,14 +2,13 @@
 from __future__ import annotations
 
 import json
-import subprocess
-import sys
 from copy import deepcopy
 from pathlib import Path
 
 import pytest
 
 from integrations.megamind.adapter import TechnologyRequest, select_technologies
+from tower import build as build_module
 from tower.benchmark import benchmark_many
 from tower.build import build_floor
 from tower.generate import build_surfaces, generate
@@ -48,13 +47,18 @@ def test_generated_surfaces_do_not_drift():
     assert generate(check=True) == []
 
 
-def test_generator_emits_one_build_manifest_per_floor(tmp_path, monkeypatch):
+def test_generator_emits_one_canonical_build_contract_per_floor():
     registry = load_registry()
     surfaces = build_surfaces(registry)
-    floor_paths = [path for path in surfaces if "artifacts" in path.parts and "floors" in path.parts]
-    assert len(floor_paths) == len(registry.technologies)
-    payloads = [json.loads(surfaces[path]) for path in floor_paths]
-    assert {row["technology_id"] for row in payloads} == {row["id"] for row in registry.technologies}
+    path = REPO_ROOT / "generated" / "build_commands.json"
+    payload = json.loads(surfaces[path])
+    assert set(payload) == {row["id"] for row in registry.technologies}
+    for technology_id, contract in payload.items():
+        assert contract["toolchain"]["tool"], technology_id
+        assert contract["toolchain"]["reference_pin"], technology_id
+        assert isinstance(contract["toolchain"]["build"], list), technology_id
+        assert isinstance(contract["toolchain"]["test"], list), technology_id
+        assert contract["execution"]["ci_tier"], technology_id
 
 
 def test_runtime_registry_is_thin_canonical_facade():
@@ -84,26 +88,27 @@ def test_weak_advanced_exhibits_are_substantive():
         assert (REPO_ROOT / rel).stat().st_size >= minimum, rel
 
 
-def test_missing_toolchain_is_an_exact_blocker():
+def test_missing_toolchain_is_an_exact_blocker(monkeypatch):
     fake = {
         "id": "missing",
         "toolchain": {
-            "tool": "tower-tool-that-does-not-exist",
+            "tool": "mojo",
             "reference_pin": "1.0",
             "build": [],
             "test": [],
         },
         "execution": {"ci_tier": "portable", "hardware_gate": ""},
     }
+    monkeypatch.setattr(build_module, "_available", lambda _tool: False)
     result = build_floor(fake)
     assert result["status"] == "BLOCKED_TOOLCHAIN"
-    assert "tower-tool-that-does-not-exist" in result["blocker"]
+    assert "mojo" in result["blocker"]
 
 
 def test_hardware_gate_is_not_reported_as_success(monkeypatch):
     fake = {
         "id": "gpu",
-        "toolchain": {"tool": sys.executable, "reference_pin": "test", "build": [], "test": []},
+        "toolchain": {"tool": "python3", "reference_pin": "test", "build": [], "test": []},
         "execution": {"ci_tier": "hardware", "hardware_gate": "Example accelerator"},
     }
     monkeypatch.delenv("TOWER_ENABLE_GPU", raising=False)
@@ -112,7 +117,7 @@ def test_hardware_gate_is_not_reported_as_success(monkeypatch):
         "technology_id": "gpu",
         "status": "BLOCKED_HARDWARE",
         "blocker": "Example accelerator",
-        "tool": sys.executable,
+        "tool": "python3",
         "reference_pin": "test",
         "commands": [],
     }
@@ -142,10 +147,11 @@ def test_registry_rejects_missing_w4h():
     assert any("python.why" in error for error in validate_registry(broken, check_paths=False))
 
 
-def test_integrity_manifest_detects_and_clears_drift(tmp_path, monkeypatch):
-    manifest = write_manifest()
+def test_integrity_manifest_detects_and_clears_drift(tmp_path):
+    manifest_path = tmp_path / "file_hashes.json"
+    manifest = write_manifest(manifest_path)
     assert manifest["file_count"] > 30
-    assert verify_integrity()["ok"]
+    assert verify_integrity(manifest_path)["ok"]
 
 
 def test_receipt_is_deterministic():
