@@ -49,6 +49,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
       - uses: leanprover/lean-action@v1
         with:
           auto-config: false
@@ -59,7 +62,7 @@ jobs:
       - name: Install Tower
         run: python -m pip install -e .[dev]
       - name: Install declared portable benchmark tools
-        run: sudo apt-get update && sudo apt-get install -y wabt
+        run: sudo apt-get update && sudo apt-get install -y protobuf-compiler wabt
       - name: Validate canonical registry
         run: tower validate
       - name: Reject generated-surface drift
