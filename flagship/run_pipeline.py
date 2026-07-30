@@ -49,6 +49,14 @@ def run(argv: list[str], *, cwd: Path = ROOT) -> dict:
             "stderr": (exc.stderr or "")[-3000:] if isinstance(exc.stderr, str) else "",
             "status": "FAILED_TIMEOUT",
         }
+    except OSError as exc:
+        return {
+            "argv": argv,
+            "returncode": None,
+            "stdout": "",
+            "stderr": str(exc),
+            "status": "FAILED_SPAWN",
+        }
 
 
 def blocker(tool: str, stage: str) -> dict:
@@ -69,18 +77,25 @@ def dependency_block(stage: str, dependency: str) -> dict:
     }
 
 
-def canonical_registry_sha256() -> str:
-    """Hash the independently loaded canonical Tower registry."""
-    return hashlib.sha256(load_registry().canonical_bytes()).hexdigest()
+def canonical_json_sha256(payload: dict) -> str:
+    unsigned = dict(payload)
+    unsigned.pop("input_sha256", None)
+    canonical = json.dumps(
+        unsigned,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    ).encode("utf-8")
+    return hashlib.sha256(canonical).hexdigest()
 
 
 def write_fallback_mission(source: Path, mission: Path) -> None:
     """Create an explicitly labeled Python fallback for diagnostic runs only."""
     payload = json.loads(source.read_text(encoding="utf-8"))
-    payload.pop("input_sha256", None)
-    canonical = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
-    payload["input_sha256"] = hashlib.sha256(canonical).hexdigest()
-    mission.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    if not isinstance(payload, dict):
+        raise ValueError("mission input must be an object")
+    payload["input_sha256"] = canonical_json_sha256(payload)
+    mission.write_text(json.dumps(payload, indent=2, sort_keys=True, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
 def parse_args() -> argparse.Namespace:
@@ -95,11 +110,23 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> int:
-    """Run all declared floors and require a fully verified chain by default."""
+    """Run all declared floors from a clean work directory."""
     args = parse_args()
-    WORK.mkdir(parents=True, exist_ok=True)
+    if WORK.exists():
+        shutil.rmtree(WORK)
+    WORK.mkdir(parents=True)
     results: list[dict] = []
     source = ROOT / "flagship" / "mission.input.json"
+    source_payload = json.loads(source.read_text(encoding="utf-8"))
+    if not isinstance(source_payload, dict):
+        raise ValueError("mission input must be an object")
+    expected_input_sha256 = canonical_json_sha256(source_payload)
+    expected_maximum_action = str(source_payload.get("maximum_action", ""))
+
+    registry = load_registry()
+    expected_registry_sha256 = hashlib.sha256(registry.canonical_bytes()).hexdigest()
+    allowed_technology_ids = ",".join(sorted(technology["id"] for technology in registry.technologies))
+
     mission = WORK / "mission.json"
     plan = WORK / "plan.json"
     decision = WORK / "decision.json"
@@ -109,7 +136,7 @@ def main() -> int:
 
     if shutil.which("tsc") and shutil.which("node"):
         ts_out = WORK / "typescript"
-        ts_out.mkdir(exist_ok=True)
+        ts_out.mkdir()
         compile_result = run([
             "tsc", "--strict", "--target", "ES2022", "--module", "commonjs",
             "--outDir", str(ts_out), "flagship/typescript/ingress.ts",
@@ -133,18 +160,27 @@ def main() -> int:
         results.append({"stage": "python_ingress_fallback", "status": "FALLBACK"})
 
     if mission.is_file():
-        planner = run([sys.executable, "flagship/python/planner.py", str(mission), str(plan)])
-        planner["stage"] = "python_planner"
-        results.append(planner)
+        mission_payload = json.loads(mission.read_text(encoding="utf-8"))
+        if mission_payload.get("input_sha256") != expected_input_sha256:
+            planner = {
+                "stage": "python_planner",
+                "status": "FAILED",
+                "blocker": "TypeScript ingress hash does not match the canonical source mission",
+            }
+            results.append(planner)
+        else:
+            planner = run([sys.executable, "flagship/python/planner.py", str(mission), str(plan)])
+            planner["stage"] = "python_planner"
+            results.append(planner)
     else:
         planner = dependency_block("python_planner", "mission.json")
         results.append(planner)
 
-    expected_registry_sha256 = canonical_registry_sha256()
     if plan.is_file() and planner["status"] == "VERIFIED" and shutil.which("cargo"):
         authority = run([
             "cargo", "run", "--quiet", "--manifest-path", "flagship/rust/Cargo.toml",
             "--", str(plan), str(decision), expected_registry_sha256,
+            expected_input_sha256, expected_maximum_action, allowed_technology_ids,
         ])
         authority["stage"] = "rust_authority"
         results.append(authority)
@@ -153,22 +189,21 @@ def main() -> int:
     else:
         results.append(dependency_block("rust_authority", "verified plan.json"))
 
-    if decision.is_file() and shutil.which("go"):
-        go_binary = WORK / "tower-telemetry"
+    go_binary = WORK / "tower-telemetry"
+    if shutil.which("go"):
         compile_go = run(["go", "build", "-o", str(go_binary), "flagship/go/telemetry.go"])
         compile_go["stage"] = "go_compile"
         results.append(compile_go)
-        if compile_go["status"] == "VERIFIED":
-            telemetry = run([str(go_binary), str(decision), str(event)])
-            telemetry["stage"] = "go_telemetry"
-            results.append(telemetry)
-        else:
-            results.append(dependency_block("go_telemetry", "go_compile"))
-    elif decision.is_file():
-        results.append(blocker("go", "go_compile"))
+    else:
+        compile_go = blocker("go", "go_compile")
+        results.append(compile_go)
+    if compile_go["status"] == "VERIFIED" and decision.is_file():
+        telemetry = run([str(go_binary), str(decision), str(event)])
+        telemetry["stage"] = "go_telemetry"
+        results.append(telemetry)
+    elif compile_go["status"] != "VERIFIED":
         results.append(dependency_block("go_telemetry", "go_compile"))
     else:
-        results.append(dependency_block("go_compile", "decision.json"))
         results.append(dependency_block("go_telemetry", "decision.json"))
 
     if all(path.is_file() for path in (mission, plan, decision, event)):
@@ -197,13 +232,12 @@ def main() -> int:
     else:
         results.append(blocker("wat2wasm", "wasm_sandbox"))
 
-    lean_tool = shutil.which("lean")
-    if lean_tool:
-        lean = run([lean_tool, "flagship/lean4/invariant.lean"])
+    if shutil.which("lake"):
+        lean = run(["lake", "env", "lean", "flagship/lean4/invariant.lean"])
         lean["stage"] = "lean_invariant"
         results.append(lean)
     else:
-        results.append(blocker("lean", "lean_invariant"))
+        results.append(blocker("lake", "lean_invariant"))
 
     if shutil.which("protoc"):
         descriptor = WORK / "tower-contracts.pb"
@@ -225,6 +259,8 @@ def main() -> int:
         "pipeline_id": "tower-polyglot-mission-v1",
         "mission_id": mission_payload.get("mission_id", "unavailable"),
         "expected_registry_sha256": expected_registry_sha256,
+        "expected_input_sha256": expected_input_sha256,
+        "expected_maximum_action": expected_maximum_action,
         "strict": not args.allow_blocked,
         "results": results,
     }
