@@ -104,7 +104,7 @@ def _contained_fragment(index: Path, relative: str) -> Path:
 
 
 def load_registry(path: Path | str | None = None) -> TowerRegistry:
-    source = Path(path) if path is not None else DEFAULT_REGISTRY
+    source = Path(path).resolve() if path is not None else DEFAULT_REGISTRY.resolve()
     index = _read_object(source, "Tower registry")
     fragments = index.get("fragments", [])
     inline = index.get("technologies", [])

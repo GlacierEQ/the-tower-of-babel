@@ -208,3 +208,22 @@ def test_registry_fragments_are_contained_and_unique(tmp_path):
     )
     with pytest.raises(ValueError, match="fragment"):
         load_registry(index)
+
+
+def test_babel_registry_engine_accepts_repo_root():
+    from babel_registry import BabelRegistryEngine
+    engine = BabelRegistryEngine(repo_root=REPO_ROOT)
+    assert engine.get_spec("python")["ok"]
+
+
+def test_megamind_adapter_short_capability_not_displaced_by_prefix():
+    req = TechnologyRequest(mission_id="m1", capabilities=("go",))
+    res = select_technologies(req)
+    assert "go" in res["technology_ids"]
+
+
+def test_receipt_has_body_sha256():
+    rec = build_receipt({"counts": {"VERIFIED": 1}})
+    assert "body_sha256" in rec
+    assert rec["body_sha256"] == rec["receipt_sha256"]
+

@@ -53,7 +53,7 @@ def _capability_matches(capability: str, tokens: set[str]) -> bool:
     candidates = _CAPABILITY_ALIASES.get(normalized, {normalized})
     return any(
         candidate in tokens
-        or any(token.startswith(candidate) or candidate.startswith(token) for token in tokens if len(token) >= 4)
+        or (len(candidate) >= 4 and any(token.startswith(candidate) or candidate.startswith(token) for token in tokens if len(token) >= 4))
         for candidate in candidates
     )
 
@@ -103,7 +103,7 @@ def select_technologies(
     selected: list[tuple[int, dict, list[str], set[str]]] = []
     uncovered = set(required)
     remaining = list(ranked)
-    while uncovered and remaining and len(selected) < 5:
+    while uncovered and remaining:
         remaining.sort(
             key=lambda item: (
                 -len(item[3] & uncovered),

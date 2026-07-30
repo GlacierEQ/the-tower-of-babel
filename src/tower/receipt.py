@@ -71,6 +71,7 @@ def build_receipt(build_report: dict[str, Any]) -> dict[str, Any]:
     return {
         **body,
         "receipt_id": f"tower-{registry_sha[:12]}-{manifest_sha[:12]}-{build_sha[:12]}",
+        "body_sha256": body_sha,
         "receipt_sha256": body_sha,
     }
 

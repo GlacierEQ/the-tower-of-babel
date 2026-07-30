@@ -28,12 +28,13 @@ _EXCLUDED_PARTS = {
 _EXCLUDED_FILES = {
     ".integrity/file_hashes.json",
     ".integrity/receipt.json",
+    ".integrity/ci-trigger.json",
     "artifacts/tower_receipt.json",
 }
 _SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
 
-def _eligible(path: Path) -> bool:
+def _eligible(path: Path, manifest_path: Path | None = None) -> bool:
     """Return whether a repository-contained path belongs to the governed domain.
 
     Eligibility is evaluated only from repository-relative components. Absolute
@@ -46,11 +47,18 @@ def _eligible(path: Path) -> bool:
         return False
     rel = relative.as_posix()
     parts = relative.parts
+    excluded_manifest = None
+    if manifest_path is not None:
+        try:
+            excluded_manifest = manifest_path.resolve().relative_to(REPO_ROOT).as_posix()
+        except ValueError:
+            pass
     return (
         path.is_file()
         and not any(part in _EXCLUDED_PARTS for part in parts)
         and not any(part.endswith(".egg-info") for part in parts)
         and rel not in _EXCLUDED_FILES
+        and (excluded_manifest is None or rel != excluded_manifest)
         and not rel.endswith((".pyc", ".pyo", ".coverage"))
     )
 
@@ -64,12 +72,12 @@ def hash_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def collect_hashes() -> dict[str, str]:
+def collect_hashes(manifest_path: Path | None = None) -> dict[str, str]:
     """Collect deterministic hashes for all governed repository artifacts."""
     return {
         path.relative_to(REPO_ROOT).as_posix(): hash_file(path)
         for path in sorted(REPO_ROOT.rglob("*"))
-        if _eligible(path)
+        if _eligible(path, manifest_path=manifest_path)
     }
 
 
@@ -79,7 +87,7 @@ def write_manifest(path: Path = MANIFEST) -> dict[str, Any]:
     The manifest deliberately excludes itself to avoid a circular digest. Its
     trust anchor is the reviewed Git commit plus the receipt's manifest digest.
     """
-    hashes = collect_hashes()
+    hashes = collect_hashes(manifest_path=path)
     payload = {
         "schema_version": "1.0.0",
         "repo_name": "the-tower-of-babel",

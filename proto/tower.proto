@@ -103,8 +103,8 @@ message TowerReceipt {
   string registry_sha256 = 2;
   string integrity_manifest_sha256 = 3;
   string build_report_sha256 = 4;
-  // SHA-256 of the canonical receipt body before receipt_sha256 is added.
-  string receipt_sha256 = 5;
+  // SHA-256 of the canonical receipt body before body_sha256 is added.
+  string body_sha256 = 5;
   repeated BuildResult results = 6;
 }
 

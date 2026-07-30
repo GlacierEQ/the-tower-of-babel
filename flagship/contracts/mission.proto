@@ -33,9 +33,29 @@ message AuthorityDecision {
   string maximum_action = 9;
 }
 
+enum PipelineStage {
+  STAGE_UNSPECIFIED = 0;
+  INGRESS = 1;
+  PLANNING = 2;
+  AUTHORITY = 3;
+  TELEMETRY = 4;
+  STATE = 5;
+  SANDBOX = 6;
+  INVARIANT = 7;
+}
+
+enum EventStatus {
+  STATUS_UNSPECIFIED = 0;
+  VERIFIED = 1;
+  FAILED = 2;
+  BLOCKED = 3;
+}
+
 message TelemetryEvent {
   string mission_id = 1;
   string stage = 2;
   string status = 3;
   string evidence_sha256 = 4;
+  PipelineStage stage_enum = 5;
+  EventStatus status_enum = 6;
 }
