@@ -13,6 +13,13 @@ from .integrity import verify_integrity, write_manifest
 from .proofs import build_proof_report, write_proof_report
 from .receipt import write_receipt
 from .registry import load_registry, validate_registry
+from .spiral import (
+    build_admission_receipt,
+    generate_civilization_question,
+    read_json_object,
+    verify_admission_receipt,
+    write_json,
+)
 
 
 def _print(value: Any) -> None:
@@ -66,6 +73,21 @@ def main() -> int:
     receipt = sub.add_parser("receipt")
     receipt.add_argument("--build-report", default="artifacts/build-report.json")
     receipt.add_argument("--output", default="artifacts/tower_receipt.json")
+
+    spiral = sub.add_parser("spiral")
+    spiral_sub = spiral.add_subparsers(dest="spiral_action", required=True)
+    spiral_question = spiral_sub.add_parser("question")
+    spiral_question.add_argument("--seed")
+    spiral_question.add_argument("--output")
+    spiral_admit = spiral_sub.add_parser("admit")
+    spiral_admit.add_argument("candidate")
+    spiral_admit.add_argument(
+        "--output",
+        default="artifacts/spiral-admission-receipt.json",
+    )
+    spiral_verify = spiral_sub.add_parser("verify")
+    spiral_verify.add_argument("receipt")
+
     sub.add_parser("report")
     sub.add_parser("megamind-map")
     args = parser.parse_args()
@@ -134,6 +156,24 @@ def main() -> int:
             _print(payload)
             valid = payload["registry_valid"] and payload["integrity_valid"] and payload["build_report_valid"]
             return 0 if valid else 1
+        if args.command == "spiral":
+            if args.spiral_action == "question":
+                payload = generate_civilization_question(args.seed)
+                if args.output:
+                    write_json(Path(args.output), payload)
+                _print(payload)
+                return 0
+            if args.spiral_action == "admit":
+                candidate = read_json_object(Path(args.candidate))
+                payload = build_admission_receipt(candidate)
+                write_json(Path(args.output), payload)
+                _print(payload)
+                return 0 if payload["decision"] == "ADMIT" else 2
+            if args.spiral_action == "verify":
+                payload = read_json_object(Path(args.receipt))
+                result = verify_admission_receipt(payload)
+                _print(result)
+                return 0 if result["ok"] else 1
         if args.command == "report":
             _print(_read_json_object(Path("generated/maturity.json"), "maturity report"))
             return 0
