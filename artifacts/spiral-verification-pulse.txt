@@ -1,0 +1,1 @@
+This temporary excluded artifact exists only to trigger human-authored verification of the sealed Spiral Engine tree.
