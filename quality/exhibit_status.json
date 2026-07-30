@@ -34,6 +34,17 @@
         "adversarial tests"
       ]
     },
+    "protobuf": {
+      "advanced_exhibit": "languages/protobuf/advanced_colossus_cooling.proto",
+      "observed_evidence": [
+        "generated Python bindings",
+        "validated telemetry invariants",
+        "authority SHA-256 enforcement",
+        "deterministic binary serialization",
+        "binary round-trip equality",
+        "structured command receipt"
+      ]
+    },
     "rust": {
       "advanced_exhibit": "languages/rust/advanced_safety_governor.rs",
       "observed_evidence": [
@@ -52,6 +63,17 @@
         "bounded rate limits",
         "privacy-preserving receipts",
         "typed tool registry"
+      ]
+    },
+    "webassembly": {
+      "advanced_exhibit": "languages/wat/advanced_wasm_sandbox.wat",
+      "observed_evidence": [
+        "single-page bounded linear memory",
+        "capability bitmask enforcement",
+        "fuel exhaustion rejection",
+        "out-of-bounds rejection",
+        "denied-operation immutability",
+        "observable audit counters"
       ]
     }
   },
