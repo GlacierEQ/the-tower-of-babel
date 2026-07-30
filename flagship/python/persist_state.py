@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 import json
+import re
 import sqlite3
 import sys
 from pathlib import Path
+
+_SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 
 
 def read_object(path: Path, label: str) -> dict:
@@ -22,6 +25,13 @@ def require_string(payload: dict, field: str, label: str) -> str:
     if not isinstance(value, str) or not value.strip():
         raise ValueError(f"{label}.{field} must be a non-empty string")
     return value
+
+
+def require_sha256(payload: dict, field: str, label: str) -> str:
+    value = require_string(payload, field, label)
+    if not _SHA256_RE.fullmatch(value):
+        raise ValueError(f"{label}.{field} must contain 64 hexadecimal characters")
+    return value.lower()
 
 
 def main() -> int:
@@ -47,11 +57,16 @@ def main() -> int:
     if require_string(plan, "mission_id", "plan") != mission_id:
         raise ValueError("plan mission_id does not match mission")
 
+    input_sha256 = require_sha256(mission, "input_sha256", "mission")
+    if require_sha256(plan, "input_sha256", "plan") != input_sha256:
+        raise ValueError("plan input_sha256 does not match mission")
+    observed_input = decision.get("observed_input_sha256")
+    if observed_input is not None and require_sha256(decision, "observed_input_sha256", "decision") != input_sha256:
+        raise ValueError("decision observed_input_sha256 does not match mission")
+
     authority_status = "SUCCEEDED" if decision.get("allowed") is True else "BLOCKED"
-    plan_sha256 = require_string(decision, "plan_sha256", "decision")
-    evidence_sha256 = require_string(event, "evidence_sha256", "event")
-    if len(plan_sha256) != 64 or len(evidence_sha256) != 64:
-        raise ValueError("receipt hashes must contain 64 hexadecimal characters")
+    plan_sha256 = require_sha256(decision, "plan_sha256", "decision")
+    evidence_sha256 = require_sha256(event, "evidence_sha256", "event")
 
     connection = sqlite3.connect(db_path)
     try:
@@ -60,18 +75,27 @@ def main() -> int:
         with connection:
             connection.execute(
                 """
-                INSERT INTO tower_mission(mission_id, objective, plan_sha256, authority_status)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO tower_mission(
+                  mission_id, objective, input_sha256, plan_sha256, authority_status
+                ) VALUES (?, ?, ?, ?, ?)
                 ON CONFLICT(mission_id) DO UPDATE SET
                   objective = excluded.objective,
+                  input_sha256 = excluded.input_sha256,
                   plan_sha256 = excluded.plan_sha256,
                   authority_status = excluded.authority_status
                 """,
-                (mission_id, require_string(mission, "objective", "mission"), plan_sha256, authority_status),
+                (
+                    mission_id,
+                    require_string(mission, "objective", "mission"),
+                    input_sha256,
+                    plan_sha256,
+                    authority_status,
+                ),
             )
+            stage = require_string(event, "stage", "event")
             connection.execute(
                 "DELETE FROM tower_event WHERE mission_id = ? AND stage = ?",
-                (mission_id, require_string(event, "stage", "event")),
+                (mission_id, stage),
             )
             connection.execute(
                 """
@@ -80,15 +104,15 @@ def main() -> int:
                 """,
                 (
                     mission_id,
-                    require_string(event, "stage", "event"),
+                    stage,
                     require_string(event, "status", "event"),
                     evidence_sha256,
                 ),
             )
         row = connection.execute(
             """
-            SELECT m.mission_id, m.objective, m.plan_sha256, m.authority_status,
-                   e.stage, e.status, e.evidence_sha256
+            SELECT m.mission_id, m.objective, m.input_sha256, m.plan_sha256,
+                   m.authority_status, e.stage, e.status, e.evidence_sha256
             FROM tower_mission AS m
             JOIN tower_event AS e ON e.mission_id = m.mission_id
             WHERE m.mission_id = ?
@@ -104,11 +128,12 @@ def main() -> int:
     readback = {
         "mission_id": row[0],
         "objective": row[1],
-        "plan_sha256": row[2],
-        "authority_status": row[3],
-        "stage": row[4],
-        "status": row[5],
-        "evidence_sha256": row[6],
+        "input_sha256": row[2],
+        "plan_sha256": row[3],
+        "authority_status": row[4],
+        "stage": row[5],
+        "status": row[6],
+        "evidence_sha256": row[7],
     }
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(readback, indent=2, sort_keys=True) + "\n", encoding="utf-8")
