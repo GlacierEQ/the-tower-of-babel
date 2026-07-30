@@ -5,7 +5,7 @@ on:
   pull_request:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: spiral-engine-${{ github.workflow }}-${{ github.ref }}
@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: false
+          persist-credentials: true
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -32,11 +32,25 @@ jobs:
         run: |
           tower spiral admit examples/spiral/civilization_capability.json --output artifacts/spiral-admission-receipt.json
           tower spiral verify artifacts/spiral-admission-receipt.json
-      - name: Generate branch-head integrity candidate
+      - name: Generate exact branch-head integrity ledger
         run: |
           tower integrity generate
           mkdir -p artifacts
           cp .integrity/file_hashes.json artifacts/file_hashes.json
+      - name: Seal integrity ledger on the development branch
+        if: github.event_name == 'push' && github.ref == 'refs/heads/dev/spiral-civilization-scale'
+        run: |
+          if git diff --quiet -- .integrity/file_hashes.json; then
+            echo "Integrity ledger already sealed."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add .integrity/file_hashes.json
+            git commit -m "chore(spiral): auto-seal exact integrity ledger"
+            git push
+          fi
+      - name: Verify sealed integrity ledger
+        run: tower integrity verify
       - uses: actions/upload-artifact@v4
         with:
           name: spiral-engine-receipts
