@@ -1,5 +1,5 @@
 {
-  "file_count": 122,
+  "file_count": 124,
   "hash_algorithm": "sha256",
   "hashes": {
     ".github/workflows/tower.yml": "b2b7e866bf2bdad444923782f801ee7d69e62d0fc572be3c92429bfd4512269e",
@@ -34,6 +34,7 @@
     "integrations/megamind/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "integrations/megamind/adapter.py": "7e796770b07dc0d78ffb2a3be0696bad48fd4c85479d9542a219832077ce7e33",
     "integrations/megamind/tower_adapter.proto": "afe81987839e0077e9a138ac7786c4c22b33fe4e484df60cbf34efb7dcee6a29",
+    "lakefile.lean": "2c6aaf8490856f7463cf578bae221079a03166a62cdb498c25029e74ea1b5c8d",
     "languages/agda/advanced_capability_lattice.agda": "10711c4144664bcb1ecae6b1067d989fe850528c73f424887423ce562a361963",
     "languages/agda/easy_logic.agda": "6a653c6fa16a1a01f55d651ed3750644862c47f65513b947fef732880606a00e",
     "languages/c/advanced_lockfree_spsc_ring.c": "2c61ead2e01c61c7f84b0083b09f539819329a2d7ad54a734ab0226321430012",
@@ -94,6 +95,7 @@
     "languages/wat/easy_add.wat": "6c0bd4703436b43fde3260bced34e8b68e76ffebf27eb875c59e288f983aa533",
     "languages/zig/advanced_arena_allocator.zig": "651f550e0f4867130148cb9ab0bfa51481a818e3ed1ad486126e19c359ea9fc1",
     "languages/zig/easy_hello.zig": "23b82ed72a9b33cd0fb1d726e57b9e4563232308cde7ab2e14a579e7e60f96fe",
+    "lean-toolchain": "aff3a276fcd1daa6f311e07baf168d5c0c89a3ddad4cd4e8de3e2ec779504e46",
     "mastermind_sidecar.py": "12c0ce4684cdaf2f39ab8a05d2a7ca20a2ebf6851aa03d0e8471419cf1353816",
     "proto/tower.proto": "9736d7141649f99eb2aa7c7d6474cdf9ff8fb9ead6639977321a271e049b16b0",
     "pyproject.toml": "507f1e41905a2ad8ac25970493a7baf28af8e9de76dd5bf640d6145cf31fb487",
