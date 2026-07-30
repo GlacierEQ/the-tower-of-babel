@@ -1,0 +1,48 @@
+name: Spiral Engine Verification
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: spiral-engine-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  civilization-scale:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Tower
+        run: python -m pip install -e .[dev]
+      - name: Run Spiral tests
+        run: pytest -q tests/test_spiral_engine.py
+      - name: Exercise civilization question
+        run: tower spiral question --seed civilization --output artifacts/civilization-question.json
+      - name: Exercise admission and verification
+        run: |
+          tower spiral admit examples/spiral/civilization_capability.json --output artifacts/spiral-admission-receipt.json
+          tower spiral verify artifacts/spiral-admission-receipt.json
+      - name: Generate branch-head integrity candidate
+        run: |
+          tower integrity generate
+          mkdir -p artifacts
+          cp .integrity/file_hashes.json artifacts/file_hashes.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: spiral-engine-receipts
+          path: |
+            artifacts/civilization-question.json
+            artifacts/spiral-admission-receipt.json
+            artifacts/file_hashes.json
+          if-no-files-found: error
+          retention-days: 14
