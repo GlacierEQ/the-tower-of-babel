@@ -30,13 +30,15 @@
       "src/babel_registry.py",
       "mastermind_sidecar.py",
       ".integrity/file_hashes.json",
+      "src/tower/data/tower.yml",
+      "src/tower/data/tower.d/<fragment>.json",
       "generated/build_commands.json",
       "generated/interfaces.json",
+      "generated/link_library.md",
       "generated/maturity.json",
       "generated/megamind.technology-map.json",
       "generated/smithery.registry.json",
-      "generated/spiral-engine.registry.json",
-      "artifacts/floors/<technology>.json"
+      "generated/spiral-engine.registry.json"
     ],
     "proof_classes": [
       "illustrative",
