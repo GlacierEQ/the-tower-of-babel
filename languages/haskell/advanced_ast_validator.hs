@@ -1,10 +1,21 @@
 module Main where
 
 import Data.Char (ord)
-import Data.List (intercalate)
+import Data.List (intercalate, isPrefixOf)
 import Numeric (showHex)
 
--- A small policy AST for capability-bound agent execution.
+-- Haskell — Advanced Example: Pure Capability-Policy AST Validator
+--
+-- What: Validates a typed action plan against explicit read, write, tool,
+--       network, and destructive-action policy.
+-- Where: Compilers, workflow planners, agent admission gates, and financial or
+--        safety-sensitive transformation systems.
+-- When: Use when the decision boundary benefits from immutable data,
+--       exhaustive pattern matching, and deterministic pure evaluation.
+-- Why: Algebraic data types make every action and rejection reason explicit.
+-- How: Lexically safe relative paths, exact allowlists, pure validation, and a
+--      dependency-free deterministic demonstration receipt.
+
 data Action
   = ReadArtifact FilePath
   | WriteInternal FilePath
@@ -16,16 +27,20 @@ data Action
 data Policy = Policy
   { allowedTools :: [String]
   , allowedDomains :: [String]
+  , readableRoots :: [FilePath]
   , writableRoots :: [FilePath]
   , destructiveAllowed :: Bool
   }
   deriving (Eq, Show)
 
 data ValidationError
-  = EmptyIdentifier String
+  = EmptyPlan
+  | EmptyIdentifier String
+  | UnsafeRelativePath FilePath
+  | ReadOutsideRoot FilePath
+  | WriteOutsideRoot FilePath
   | ToolNotAllowed String
   | DomainNotAllowed String
-  | WriteOutsideRoot FilePath
   | DestructiveActionDenied FilePath
   deriving (Eq, Show)
 
@@ -37,20 +52,48 @@ data Decision = Decision
   }
   deriving (Eq, Show)
 
-nonEmpty :: String -> Either ValidationError String
-nonEmpty value
-  | null value = Left (EmptyIdentifier "action field")
-  | otherwise = Right value
+splitOnSlash :: String -> [String]
+splitOnSlash value = go value [] []
+  where
+    go [] current parts = reverse (reverse current : parts)
+    go ('/' : rest) current parts = go rest [] (reverse current : parts)
+    go (char : rest) current parts = go rest (char : current) parts
 
-isPrefixOfPath :: FilePath -> FilePath -> Bool
-isPrefixOfPath root path = take (length root) path == root
+safeRelativePath :: FilePath -> Either ValidationError FilePath
+safeRelativePath path
+  | null path = Left (EmptyIdentifier "path")
+  | head path == '/' = Left (UnsafeRelativePath path)
+  | '\\' `elem` path = Left (UnsafeRelativePath path)
+  | any invalidSegment segments = Left (UnsafeRelativePath path)
+  | otherwise = Right (intercalate "/" segments)
+  where
+    segments = splitOnSlash path
+    invalidSegment segment = null segment || segment == "." || segment == ".."
+
+withinRoots :: [FilePath] -> FilePath -> Bool
+withinRoots roots path = any matches roots
+  where
+    matches root = root `isPrefixOf` path
+
+validateRead :: Policy -> FilePath -> [ValidationError]
+validateRead policy path =
+  case safeRelativePath path of
+    Left err -> [err]
+    Right safePath
+      | withinRoots (readableRoots policy) safePath -> []
+      | otherwise -> [ReadOutsideRoot safePath]
+
+validateWrite :: Policy -> FilePath -> [ValidationError]
+validateWrite policy path =
+  case safeRelativePath path of
+    Left err -> [err]
+    Right safePath
+      | withinRoots (writableRoots policy) safePath -> []
+      | otherwise -> [WriteOutsideRoot safePath]
 
 validateAction :: Policy -> Action -> [ValidationError]
-validateAction _ (ReadArtifact path) = either (: []) (const []) (nonEmpty path)
-validateAction policy (WriteInternal path)
-  | null path = [EmptyIdentifier "write path"]
-  | any (`isPrefixOfPath` path) (writableRoots policy) = []
-  | otherwise = [WriteOutsideRoot path]
+validateAction policy (ReadArtifact path) = validateRead policy path
+validateAction policy (WriteInternal path) = validateWrite policy path
 validateAction policy (InvokeTool tool)
   | null tool = [EmptyIdentifier "tool"]
   | tool `elem` allowedTools policy = []
@@ -59,10 +102,12 @@ validateAction policy (ExternalCall domain)
   | null domain = [EmptyIdentifier "domain"]
   | domain `elem` allowedDomains policy = []
   | otherwise = [DomainNotAllowed domain]
-validateAction policy (DeleteArtifact path)
-  | null path = [EmptyIdentifier "delete path"]
-  | destructiveAllowed policy = []
-  | otherwise = [DestructiveActionDenied path]
+validateAction policy (DeleteArtifact path) =
+  case safeRelativePath path of
+    Left err -> [err]
+    Right safePath
+      | destructiveAllowed policy -> []
+      | otherwise -> [DestructiveActionDenied safePath]
 
 -- Deterministic demonstration hash. Production Tower receipts use SHA-256;
 -- this exhibit keeps the algorithm dependency-free while preserving the
@@ -85,10 +130,11 @@ canonicalAction (DeleteArtifact path) = "delete:" ++ path
 
 validatePlan :: Policy -> [Action] -> Decision
 validatePlan policy actions =
-  let discoveredErrors = concatMap (validateAction policy) actions
+  let planErrors = if null actions then [EmptyPlan] else []
+      discoveredErrors = planErrors ++ concatMap (validateAction policy) actions
       canonical = intercalate "|" (map canonicalAction actions)
    in Decision
-        { accepted = null discoveredErrors && not (null actions)
+        { accepted = null discoveredErrors
         , actionCount = length actions
         , errors = discoveredErrors
         , receiptHash = stableHash canonical
@@ -106,6 +152,7 @@ main = do
         Policy
           { allowedTools = ["tower.validate", "tower.receipt"]
           , allowedDomains = ["api.github.com"]
+          , readableRoots = ["registry/", "generated/", "docs/"]
           , writableRoots = ["build/", "artifacts/"]
           , destructiveAllowed = False
           }
@@ -117,16 +164,24 @@ main = do
         ]
       forbidden =
         [ InvokeTool "shell.unbounded"
-        , WriteInternal "/etc/passwd"
+        , WriteInternal "build/../secrets.txt"
+        , WriteInternal "build-evil/output.txt"
+        , ReadArtifact "/etc/passwd"
         , DeleteArtifact "registry/tower.yml"
         ]
       permittedDecision = validatePlan policy permitted
       forbiddenDecision = validatePlan policy forbidden
+      emptyDecision = validatePlan policy []
 
   assert "permitted plan accepted" (accepted permittedDecision)
   assert "permitted action count" (actionCount permittedDecision == 4)
   assert "receipt is deterministic" (receiptHash permittedDecision == receiptHash (validatePlan policy permitted))
   assert "forbidden plan rejected" (not (accepted forbiddenDecision))
-  assert "all forbidden actions explained" (length (errors forbiddenDecision) == 3)
+  assert "all forbidden actions explained" (length (errors forbiddenDecision) == 5)
+  assert "lexical traversal rejected" (UnsafeRelativePath "build/../secrets.txt" `elem` errors forbiddenDecision)
+  assert "sibling prefix rejected" (WriteOutsideRoot "build-evil/output.txt" `elem` errors forbiddenDecision)
+  assert "absolute read rejected" (UnsafeRelativePath "/etc/passwd" `elem` errors forbiddenDecision)
+  assert "empty plan rejected with reason" (errors emptyDecision == [EmptyPlan])
   print permittedDecision
   print forbiddenDecision
+  print emptyDecision
