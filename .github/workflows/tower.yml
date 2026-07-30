@@ -7,41 +7,14 @@ on:
 permissions:
   contents: read
 
-jobs:
-  sync-generated-surfaces:
-    if: github.event_name == 'push' && github.ref != 'refs/heads/main'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref_name }}
-          fetch-depth: 0
-          persist-credentials: true
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - run: python -m pip install -e .
-      - name: Regenerate canonical surfaces and integrity ledger
-        run: |
-          tower validate
-          tower generate
-          tower integrity generate
-      - name: Commit verified generated drift
-        run: |
-          if git diff --quiet; then
-            echo "Generated surfaces are already synchronized."
-            exit 0
-          fi
-          git config user.name "tower-governance-bot"
-          git config user.email "tower-governance-bot@users.noreply.github.com"
-          git add README.md src/babel_registry.py mastermind_sidecar.py generated src/tower/data .integrity/file_hashes.json
-          git commit -m "chore: synchronize generated Tower surfaces"
-          git push origin "HEAD:${{ github.ref_name }}"
+concurrency:
+  group: tower-verification-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
+jobs:
   governance:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
@@ -56,21 +29,29 @@ jobs:
           test: false
           lint: false
           use-mathlib-cache: false
-      - run: python -m pip install -e .[dev]
-      - run: tower validate
-      - run: tower generate --check
-      - run: pytest -q
-      - run: tower integrity verify
-      - run: tower build --all --allow-blocked --output artifacts/build-report.json
-      - run: tower generate
-      - run: tower benchmark python c cpp rust go typescript webassembly --output artifacts/benchmarks.json
-      - run: >-
+      - name: Install Tower
+        run: python -m pip install -e .[dev]
+      - name: Validate canonical registry
+        run: tower validate
+      - name: Reject generated-surface drift
+        run: tower generate --check
+      - name: Run Python governance tests
+        run: pytest -q
+      - name: Verify immutable integrity ledger
+        run: tower integrity verify
+      - name: Build governed floors with explicit blockers
+        run: tower build --all --allow-blocked --output artifacts/build-report.json
+      - name: Benchmark portable floors
+        run: tower benchmark python c cpp rust go typescript webassembly --output artifacts/benchmarks.json
+      - name: Bind proof state to build and benchmark evidence
+        run: >-
           tower proof-report
           --build-report artifacts/build-report.json
           --benchmark-report artifacts/benchmarks.json
           --allow-blocked
           --output artifacts/proof-report.json
-      - run: tower receipt --build-report artifacts/build-report.json --output artifacts/tower_receipt.json
+      - name: Emit deterministic release receipt
+        run: tower receipt --build-report artifacts/build-report.json --output artifacts/tower_receipt.json
       - uses: actions/upload-artifact@v4
         with:
           name: tower-governance-receipts
@@ -79,11 +60,14 @@ jobs:
             artifacts/tower_receipt.json
             artifacts/benchmarks.json
             artifacts/proof-report.json
-            artifacts/floors
           if-no-files-found: error
+          retention-days: 14
 
   flagship-portable:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CARGO_TARGET_DIR: ${{ github.workspace }}/build/flagship-rust-target
     steps:
       - uses: actions/checkout@v4
         with:
@@ -110,15 +94,18 @@ jobs:
       - run: npm install --global typescript@5.7.2
       - run: sudo apt-get update && sudo apt-get install -y sqlite3 wabt protobuf-compiler
       - run: python -m pip install -e .
-      - run: python flagship/run_pipeline.py
+      - name: Execute strict polyglot mission pipeline
+        run: python flagship/run_pipeline.py
       - uses: actions/upload-artifact@v4
         with:
           name: tower-polyglot-flagship
           path: build/flagship
           if-no-files-found: error
+          retention-days: 14
 
   portable-floor-compile:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -148,3 +135,4 @@ jobs:
           name: floor-${{ matrix.floor }}
           path: artifacts/${{ matrix.floor }}.json
           if-no-files-found: error
+          retention-days: 14
