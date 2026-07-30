@@ -1,31 +1,39 @@
 {
-  "schema_version": 1,
-  "updated_for_commit_intent": "21-language truthful quality baseline",
-  "levels": {
-    "production-depth": "Satisfies the advanced-exhibit quality contract and has meaningful validation or a runnable demonstration.",
-    "candidate": "Valid language exhibit that still requires deeper implementation, tests, or toolchain proof before production-depth promotion."
-  },
-  "advanced_exhibits": {
-    "python": {"level": "production-depth", "evidence": ["structured concurrency", "backpressure", "circuit breaker", "metrics", "runnable demonstration"]},
-    "c": {"level": "production-depth", "evidence": ["C11 atomics", "acquire-release ordering", "cache-line alignment", "statistics", "standalone test"]},
-    "cpp": {"level": "candidate", "gaps": ["entropy implementation is not yet a complete KV-cache pruning system", "missing tests and bounded-input behavior"]},
-    "rust": {"level": "production-depth", "evidence": ["typed policy decisions", "path-boundary enforcement", "bounded inputs", "explicit approvals", "embedded tests"]},
-    "go": {"level": "production-depth", "evidence": ["versioned binary format", "CRC validation", "sequence-gap detection", "context cancellation", "adversarial tests"]},
-    "typescript": {"level": "production-depth", "evidence": ["runtime JSON-RPC validation", "mutation policy", "bounded rate limits", "privacy-preserving receipts", "typed tool registry"]},
-    "cuda": {"level": "candidate", "gaps": ["kernel is elementwise multiplication rather than flash attention", "missing tiling, stable softmax, bounds checks, and host verification"]},
-    "verilog": {"level": "production-depth", "evidence": ["processing element", "generated 4x4 array", "reset and weight-loading logic", "simulation testbench"]},
-    "r": {"level": "production-depth", "evidence": ["Beta-Binomial posterior", "credible intervals", "ROPE decision", "expected loss", "runnable report"]},
-    "julia": {"level": "candidate", "gaps": ["integrator currently returns the input state", "missing dynamics, invariants, and simulation tests"]},
-    "swift": {"level": "candidate", "gaps": ["Metal engine currently has no device, pipeline, validation, or fallback behavior"]},
-    "zig": {"level": "candidate", "gaps": ["arena wrapper lacks lifecycle, bounded allocations, errors, and tests"]},
-    "odin": {"level": "candidate", "gaps": ["thermal model lacks validation, integration stability, material properties, and test vectors"]},
-    "mojo": {"level": "candidate", "gaps": ["advanced function is empty", "missing SIMD implementation and reference validation"]},
-    "elixir": {"level": "candidate", "gaps": ["single GenServer is not a supervision tree", "missing recovery, backoff, monitoring, and tests"]},
-    "haskell": {"level": "candidate", "gaps": ["single DELETE comparison is not a typed AST validation pass", "missing accumulated errors and transformations"]},
-    "lean4": {"level": "candidate", "gaps": ["proof is reflexive over floating-point comparison", "missing meaningful safety model and compositional theorem"]},
-    "triton": {"level": "candidate", "gaps": ["kernel body is empty", "missing masked loads, stable reductions, and reference checks"]},
-    "protobuf": {"level": "candidate", "gaps": ["schema lacks units, timestamps, evolution rules, streaming direction, and service error model"]},
-    "sql": {"level": "candidate", "gaps": ["schema lacks metadata, constraints, query function, row security, and maintenance guidance"]},
-    "wat": {"level": "candidate", "gaps": ["single guard function does not establish a memory- or capability-bounded sandbox contract"]}
+  "schema_version": 2,
+  "authority": "registry/tower.yml",
+  "generated_maturity_surface": "generated/maturity.json",
+  "role": "non-authoritative review notes for selected strengthened exhibits",
+  "override_allowed": false,
+  "notes": {
+    "go": {
+      "advanced_exhibit": "languages/go/advanced_telemetry_decoder.go",
+      "observed_evidence": [
+        "versioned binary format",
+        "CRC validation",
+        "sequence-gap detection",
+        "context cancellation",
+        "adversarial tests"
+      ]
+    },
+    "rust": {
+      "advanced_exhibit": "languages/rust/advanced_safety_governor.rs",
+      "observed_evidence": [
+        "typed policy decisions",
+        "path-boundary enforcement",
+        "bounded inputs",
+        "explicit approvals",
+        "embedded tests"
+      ]
+    },
+    "typescript": {
+      "advanced_exhibit": "languages/typescript/advanced_mcp_gateway.ts",
+      "observed_evidence": [
+        "runtime JSON-RPC validation",
+        "mutation policy",
+        "bounded rate limits",
+        "privacy-preserving receipts",
+        "typed tool registry"
+      ]
+    }
   }
 }
