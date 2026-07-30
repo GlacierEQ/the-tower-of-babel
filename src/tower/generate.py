@@ -1,4 +1,4 @@
-"""Generate all derived Tower surfaces from the canonical registry."""
+'''Generate all derived Tower surfaces from the canonical registry.'''
 from __future__ import annotations
 
 import argparse
@@ -102,16 +102,17 @@ Execution evidence and deterministic receipt
 ## Commands
 
 ```bash
-python3 -m tower.cli validate
-python3 -m tower.cli generate --check
-python3 -m tower.cli build --all --allow-blocked
-python3 -m tower.cli integrity verify
-python3 -m tower.cli benchmark python c cpp rust go typescript webassembly
-python3 -m tower.cli proof-report --build-report artifacts/build-report.json
-python3 -m tower.cli receipt
-python3 -m tower.cli spec rust
-python3 -m tower.cli megamind-map
-python3 flagship/run_pipeline.py
+python -m pip install -e .[dev]
+tower validate
+tower generate --check
+tower build --all --allow-blocked
+tower integrity verify
+tower benchmark python c cpp rust go typescript webassembly
+tower proof-report --build-report artifacts/build-report.json
+tower receipt
+tower spec rust
+tower megamind-map
+python flagship/run_pipeline.py
 ```
 
 ## Flagship polyglot mission pipeline
@@ -155,13 +156,21 @@ MIT — see [`LICENSE`](LICENSE).
 
 def render_runtime_registry(registry: TowerRegistry) -> str:
     return '''#!/usr/bin/env python3
-\"\"\"Compatibility facade generated from registry/tower.yml.\"\"\"
+"""Compatibility facade generated from registry/tower.yml."""
 from tower.registry import load_registry, validate_registry
+
+
+def _validated_registry():
+    registry = load_registry()
+    errors = validate_registry(registry)
+    if errors:
+        raise RuntimeError("Invalid Tower registry: " + "; ".join(errors))
+    return registry
 
 
 class BabelRegistryEngine:
     def __init__(self):
-        self.registry = load_registry()
+        self.registry = _validated_registry()
 
     def get_spec(self, lang_key: str):
         row = self.registry.by_id(lang_key)
@@ -170,21 +179,18 @@ class BabelRegistryEngine:
         return {**row, "status": "VALIDATED_W4H_SPEC", "ok": True}
 
 
-BABEL_REGISTRY = {row["id"]: row for row in load_registry().technologies}
+_REGISTRY = _validated_registry()
+BABEL_REGISTRY = {row["id"]: row for row in _REGISTRY.technologies}
 
 
 if __name__ == "__main__":
-    registry = load_registry()
-    errors = validate_registry(registry)
-    print(f"Tower of Babel Registry Initialized: {len(registry.technologies)} Technologies Registered.")
-    if errors:
-        raise SystemExit("\\n".join(errors))
+    print(f"Tower of Babel Registry Initialized: {len(_REGISTRY.technologies)} Technologies Registered.")
 '''
 
 
 def render_sidecar() -> str:
     return '''#!/usr/bin/env python3
-\"\"\"Tower sidecar: derived telemetry, never hard-coded counts.\"\"\"
+"""Tower sidecar: derived telemetry, never hard-coded counts."""
 import json
 import time
 
@@ -218,13 +224,9 @@ def build_surfaces(registry: TowerRegistry) -> dict[Path, bytes]:
     interfaces: dict[str, list[str]] = {}
     maturity = {}
     megamind = {"tower_id": registry.payload["tower_id"], "technologies": {}}
-    floors: dict[str, dict[str, Any]] = {}
     for tech in registry.technologies:
         tech_id = tech["id"]
-        commands[tech_id] = {
-            "toolchain": tech["toolchain"],
-            "execution": tech["execution"],
-        }
+        commands[tech_id] = {"toolchain": tech["toolchain"], "execution": tech["execution"]}
         interfaces[tech_id] = list(tech["interfaces"])
         maturity[tech_id] = {
             "evidence_state": tech["evidence_state"],
@@ -239,31 +241,12 @@ def build_surfaces(registry: TowerRegistry) -> dict[Path, bytes]:
             "activation_when": tech["when"],
             "proof_class": tech["proof_class"],
         }
-        floors[tech_id] = {
-            "technology_id": tech_id,
-            "name": tech["name"],
-            "what": tech["what"],
-            "where": tech["where"],
-            "when": tech["when"],
-            "why": tech["why"],
-            "how": tech["how"],
-            "toolchain": tech["toolchain"],
-            "execution": tech["execution"],
-            "interfaces": tech["interfaces"],
-            "examples": {
-                "easy": tech["easy_example"],
-                "advanced": tech["advanced_example"],
-            },
-            "evidence": {
-                "state": tech["evidence_state"],
-                "proof_class": tech["proof_class"],
-                "sources": tech["primary_evidence"],
-            },
-        }
 
     smithery = {
         "name": "tower-of-babel",
         "version": "1.1.0",
+        "publication_status": "declared-not-published",
+        "publication_rule": "Publication requires an MCP package plus an external registry receipt.",
         "capabilities": [f"technology:{row['id']}" for row in registry.technologies],
         "commands": ["validate", "build", "benchmark", "proof-report", "spec", "receipt", "megamind-map"],
         "source": "registry/tower.yml",
@@ -271,6 +254,8 @@ def build_surfaces(registry: TowerRegistry) -> dict[Path, bytes]:
     spiral = {
         "family": "tower-of-babel",
         "role": "canonical-technology-authority",
+        "activation_status": "declared",
+        "activation_rule": "A capability becomes active only after Spiral Engine returns an admission receipt.",
         "nodes": [row["id"] for row in registry.technologies],
         "edges": [
             {"from": tech_id, "to": interface, "type": "exposes_interface"}
@@ -300,8 +285,6 @@ def build_surfaces(registry: TowerRegistry) -> dict[Path, bytes]:
     for fragment in registry.fragment_files:
         relative = fragment.relative_to(registry.source.parent)
         surfaces[REPO_ROOT / "src" / "tower" / "data" / relative] = fragment.read_bytes()
-    for tech_id, floor in floors.items():
-        surfaces[REPO_ROOT / "artifacts" / "floors" / f"{tech_id}.json"] = _json_bytes(floor)
     return surfaces
 
 
@@ -313,7 +296,7 @@ def generate(*, check: bool = False) -> list[str]:
     drift: list[str] = []
     for path, content in build_surfaces(registry).items():
         if check:
-            if "artifacts" not in path.parts and (not path.is_file() or path.read_bytes() != content):
+            if not path.is_file() or path.read_bytes() != content:
                 drift.append(str(path.relative_to(REPO_ROOT)))
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
