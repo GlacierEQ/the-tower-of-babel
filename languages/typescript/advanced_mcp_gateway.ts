@@ -2,12 +2,12 @@
  * TypeScript — Advanced Example: Governed MCP JSON-RPC Gateway
  *
  * What: Typed MCP/JSON-RPC dispatch with runtime validation, mutation policy,
- *       bounded rate limits, structured errors, and privacy-preserving receipts.
- * Where: MCP control planes, connector gateways, browser bridges, edge workers.
- * When: Agents can invoke tools but must not bypass authorization or leak inputs.
- * Why: TypeScript combines protocol-level types with portable asynchronous I/O.
- * How: Discriminated unions, explicit policy decisions, Web Crypto hashing, and
- *      an allowlisted handler registry that never persists raw tool arguments.
+ * bounded rate limits, structured failures, and privacy-preserving receipts.
+ * Where: MCP control planes, connector gateways, browser bridges, and edge workers.
+ * When: Agents may invoke tools but must not bypass authorization or persist inputs.
+ * Why: TypeScript combines protocol contracts with portable asynchronous execution.
+ * How: Discriminated response guards, explicit policy checks, Web Crypto hashing,
+ * and an allowlisted tool registry produce bounded, auditable behavior.
  */
 
 export type JsonRpcId = string | number | null;
@@ -88,7 +88,7 @@ class SlidingWindowRateLimiter {
     private readonly windowMs: number,
   ) {
     if (!Number.isInteger(maxRequests) || maxRequests < 1 || windowMs < 1) {
-      throw new Error("Rate limiter requires positive bounds");
+      throw new Error("Rate limiter requires positive integer bounds");
     }
   }
 
@@ -109,6 +109,10 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
+function isFailure<T>(response: JsonRpcResponse<T>): response is JsonRpcFailure {
+  return "error" in response;
+}
+
 function validateRequest(value: unknown): JsonRpcRequest {
   if (!isRecord(value) || value.jsonrpc !== "2.0") {
     throw new GatewayFault(-32600, "Invalid JSON-RPC request");
@@ -116,8 +120,12 @@ function validateRequest(value: unknown): JsonRpcRequest {
   if (typeof value.method !== "string" || value.method.trim().length === 0) {
     throw new GatewayFault(-32600, "Request method must be a non-empty string");
   }
-  if (value.id !== undefined && value.id !== null &&
-      typeof value.id !== "string" && typeof value.id !== "number") {
+  if (
+    value.id !== undefined &&
+    value.id !== null &&
+    typeof value.id !== "string" &&
+    typeof value.id !== "number"
+  ) {
     throw new GatewayFault(-32600, "Request id must be a string, number, or null");
   }
   return {
@@ -129,12 +137,14 @@ function validateRequest(value: unknown): JsonRpcRequest {
 }
 
 function canonicalize(value: unknown): string {
+  if (value === undefined) return "undefined";
   if (value === null || typeof value !== "object") return JSON.stringify(value);
   if (Array.isArray(value)) return `[${value.map(canonicalize).join(",")}]`;
   const record = value as Record<string, unknown>;
-  return `{${Object.keys(record).sort().map(
-    (key) => `${JSON.stringify(key)}:${canonicalize(record[key])}`,
-  ).join(",")}}`;
+  const fields = Object.keys(record)
+    .sort()
+    .map((key) => `${JSON.stringify(key)}:${canonicalize(record[key])}`);
+  return `{${fields.join(",")}}`;
 }
 
 async function sha256(value: unknown): Promise<string> {
@@ -147,7 +157,17 @@ async function sha256(value: unknown): Promise<string> {
 
 function randomReceiptId(): string {
   const bytes = crypto.getRandomValues(new Uint8Array(16));
-  return [...bytes].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+  return [...bytes]
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+function responseId(input: unknown): JsonRpcId {
+  if (!isRecord(input)) return null;
+  const id = input.id;
+  return typeof id === "string" || typeof id === "number" || id === null
+    ? id
+    : null;
 }
 
 export class McpGateway {
@@ -171,7 +191,6 @@ export class McpGateway {
 
   async handle(input: unknown, context: GatewayContext): Promise<GatewayResult> {
     const started = performance.now();
-    const completedAt = () => new Date().toISOString();
     let method = "<invalid>";
     let mutating = false;
     let authorized = false;
@@ -188,11 +207,15 @@ export class McpGateway {
       method = request.method;
       paramsHash = await sha256(request.params ?? null);
       const tool = this.tools.get(method);
-      if (!tool) throw new GatewayFault(-32601, "Method not found", { method });
+      if (!tool) {
+        throw new GatewayFault(-32601, "Method not found", { method });
+      }
 
       mutating = tool.mutating;
-      if (tool.mutating && context.approvedMutation !== true) {
-        throw new GatewayFault(-32003, "Mutation requires explicit approval", { method });
+      if (mutating && context.approvedMutation !== true) {
+        throw new GatewayFault(-32003, "Mutation requires explicit approval", {
+          method,
+        });
       }
       authorized = true;
 
@@ -205,15 +228,17 @@ export class McpGateway {
         : new GatewayFault(-32603, "Internal gateway error");
       response = {
         jsonrpc: "2.0",
-        id: isRecord(input) && (typeof input.id === "string" ||
-          typeof input.id === "number" || input.id === null)
-          ? input.id
-          : null,
-        error: { code: fault.code, message: fault.message, data: fault.data },
+        id: responseId(input),
+        error: {
+          code: fault.code,
+          message: fault.message,
+          data: fault.data,
+        },
       };
     }
 
-    const success = "result" in response;
+    const errorCode = isFailure(response) ? response.error.code : undefined;
+    const success = errorCode === undefined;
     return {
       response,
       receipt: {
@@ -225,9 +250,12 @@ export class McpGateway {
         authorized,
         success,
         paramsHash,
-        durationMs: Math.max(0, Math.round((performance.now() - started) * 100) / 100),
-        completedAt: completedAt(),
-        ...(success ? {} : { errorCode: response.error.code }),
+        durationMs: Math.max(
+          0,
+          Math.round((performance.now() - started) * 100) / 100,
+        ),
+        completedAt: new Date().toISOString(),
+        ...(errorCode === undefined ? {} : { errorCode }),
       },
     };
   }
@@ -254,8 +282,11 @@ export function createDemonstrationGateway(): McpGateway {
     method: "repository.publish",
     mutating: true,
     validate(params) {
-      if (!isRecord(params) || typeof params.repository !== "string" ||
-          !/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(params.repository)) {
+      if (
+        !isRecord(params) ||
+        typeof params.repository !== "string" ||
+        !/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(params.repository)
+      ) {
         throw new GatewayFault(-32602, "repository must use owner/name format");
       }
       return { repository: params.repository };
