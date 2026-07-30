@@ -51,6 +51,16 @@ def _benchmark_statuses(benchmark_report: dict[str, Any] | None) -> dict[str, st
     return statuses
 
 
+def _benchmark_proof_status(status: str) -> str:
+    if status == "MEASURED":
+        return "SATISFIED_FOR_DECLARED_GATE"
+    if status.startswith("BLOCKED_"):
+        return "BLOCKED"
+    if status in {"NOT_EXECUTED", "NO_RUNTIME_BENCHMARK"}:
+        return "NOT_EXECUTED"
+    return "FAILED"
+
+
 def build_proof_report(
     registry: TowerRegistry,
     build_report: dict[str, Any],
@@ -76,8 +86,8 @@ def build_proof_report(
             proof_status = "NOT_EXECUTED"
         elif build_status != "VERIFIED":
             proof_status = "FAILED"
-        elif proof_class == "benchmark" and benchmark_status != "MEASURED":
-            proof_status = "BLOCKED" if benchmark_status.startswith("BLOCKED_") else "NOT_EXECUTED"
+        elif proof_class == "benchmark":
+            proof_status = _benchmark_proof_status(benchmark_status)
         else:
             proof_status = "SATISFIED_FOR_DECLARED_GATE"
         floors.append({
