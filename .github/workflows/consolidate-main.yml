@@ -1,8 +1,9 @@
 name: One-time Tower Main Consolidation
 
 on:
-  pull_request:
-    types: [reopened]
+  push:
+    branches:
+      - dev/spiral-civilization-scale
 
 permissions:
   contents: write
@@ -13,7 +14,7 @@ concurrency:
 
 jobs:
   consolidate:
-    if: github.event.pull_request.head.ref == 'dev/spiral-civilization-scale'
+    if: github.ref == 'refs/heads/dev/spiral-civilization-scale'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
