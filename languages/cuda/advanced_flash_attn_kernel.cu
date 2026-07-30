@@ -5,6 +5,7 @@
 #include <cuda_runtime.h>
 #include <cmath>
 #include <cstdio>
+#include <cstdlib>
 #include <vector>
 
 __global__ void reference_attention(
@@ -40,20 +41,48 @@ __global__ void reference_attention(
     }
 }
 
+static bool cuda_ok(cudaError_t status, const char* operation) {
+    if (status == cudaSuccess) return true;
+    std::fprintf(stderr, "%s failed: %s\n", operation, cudaGetErrorString(status));
+    return false;
+}
+
 int main() {
     constexpr int sequence = 4;
     constexpr int dimension = 4;
     std::vector<float> host(sequence * dimension, 0.25f);
-    float *q, *k, *v, *out;
+    float *q = nullptr, *k = nullptr, *v = nullptr, *out = nullptr;
     const size_t bytes = host.size() * sizeof(float);
-    cudaMalloc(&q, bytes); cudaMalloc(&k, bytes); cudaMalloc(&v, bytes); cudaMalloc(&out, bytes);
-    cudaMemcpy(q, host.data(), bytes, cudaMemcpyHostToDevice);
-    cudaMemcpy(k, host.data(), bytes, cudaMemcpyHostToDevice);
-    cudaMemcpy(v, host.data(), bytes, cudaMemcpyHostToDevice);
-    reference_attention<<<sequence, 1, sequence * sizeof(float)>>>(q, k, v, out, sequence, dimension);
-    cudaDeviceSynchronize();
-    cudaMemcpy(host.data(), out, bytes, cudaMemcpyDeviceToHost);
-    printf("attention[0]=%.6f\n", host[0]);
-    cudaFree(q); cudaFree(k); cudaFree(v); cudaFree(out);
-    return 0;
+    int exit_code = EXIT_FAILURE;
+
+    if (!cuda_ok(cudaMalloc(&q, bytes), "cudaMalloc(q)")) goto cleanup;
+    if (!cuda_ok(cudaMalloc(&k, bytes), "cudaMalloc(k)")) goto cleanup;
+    if (!cuda_ok(cudaMalloc(&v, bytes), "cudaMalloc(v)")) goto cleanup;
+    if (!cuda_ok(cudaMalloc(&out, bytes), "cudaMalloc(out)")) goto cleanup;
+    if (!cuda_ok(cudaMemcpy(q, host.data(), bytes, cudaMemcpyHostToDevice), "cudaMemcpy(q)")) goto cleanup;
+    if (!cuda_ok(cudaMemcpy(k, host.data(), bytes, cudaMemcpyHostToDevice), "cudaMemcpy(k)")) goto cleanup;
+    if (!cuda_ok(cudaMemcpy(v, host.data(), bytes, cudaMemcpyHostToDevice), "cudaMemcpy(v)")) goto cleanup;
+
+    reference_attention<<<sequence, 1, sequence * sizeof(float)>>>(
+        q, k, v, out, sequence, dimension
+    );
+    if (!cuda_ok(cudaGetLastError(), "reference_attention launch")) goto cleanup;
+    if (!cuda_ok(cudaDeviceSynchronize(), "reference_attention execution")) goto cleanup;
+    if (!cuda_ok(cudaMemcpy(host.data(), out, bytes, cudaMemcpyDeviceToHost), "cudaMemcpy(out)")) goto cleanup;
+
+    for (float value : host) {
+        if (!std::isfinite(value) || std::fabs(value - 0.25f) > 1e-5f) {
+            std::fprintf(stderr, "attention output validation failed: %.9f\n", value);
+            goto cleanup;
+        }
+    }
+    std::printf("attention[0]=%.6f verified\n", host[0]);
+    exit_code = EXIT_SUCCESS;
+
+cleanup:
+    if (q != nullptr) cudaFree(q);
+    if (k != nullptr) cudaFree(k);
+    if (v != nullptr) cudaFree(v);
+    if (out != nullptr) cudaFree(out);
+    return exit_code;
 }
