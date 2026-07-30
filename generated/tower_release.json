@@ -1,0 +1,62 @@
+{
+  "evidence_state_counts": {
+    "illustrative": 20,
+    "tested": 1
+  },
+  "exhibit_count": 42,
+  "generated_at": "deterministic-from-registry",
+  "registry_sha256": "8ea5ec6e6e57ae75ca6f281a655f1e2568c06e27cf3875c00081ae5f0597ea42",
+  "repository": "GlacierEQ/the-tower-of-babel",
+  "schema_version": "tower-release/1",
+  "technology_count": 21,
+  "technology_ids": [
+    "python",
+    "c",
+    "cpp",
+    "rust",
+    "go",
+    "typescript",
+    "cuda",
+    "verilog",
+    "r",
+    "julia",
+    "swift",
+    "zig",
+    "odin",
+    "mojo",
+    "elixir",
+    "haskell",
+    "lean4",
+    "triton",
+    "protobuf",
+    "sql",
+    "wat"
+  ],
+  "validation": {
+    "errors": [],
+    "ok": true,
+    "warnings": [
+      "python: toolchain version is not pinned yet",
+      "c: toolchain version is not pinned yet",
+      "cpp: toolchain version is not pinned yet",
+      "rust: toolchain version is not pinned yet",
+      "go: toolchain version is not pinned yet",
+      "typescript: toolchain version is not pinned yet",
+      "cuda: toolchain version is not pinned yet",
+      "verilog: toolchain version is not pinned yet",
+      "r: toolchain version is not pinned yet",
+      "julia: toolchain version is not pinned yet",
+      "swift: toolchain version is not pinned yet",
+      "zig: toolchain version is not pinned yet",
+      "odin: toolchain version is not pinned yet",
+      "mojo: toolchain version is not pinned yet",
+      "elixir: toolchain version is not pinned yet",
+      "haskell: toolchain version is not pinned yet",
+      "lean4: toolchain version is not pinned yet",
+      "triton: toolchain version is not pinned yet",
+      "protobuf: toolchain version is not pinned yet",
+      "sql: toolchain version is not pinned yet",
+      "wat: toolchain version is not pinned yet"
+    ]
+  }
+}
