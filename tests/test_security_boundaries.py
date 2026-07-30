@@ -1,7 +1,6 @@
 """Executable regression tests for Tower trust and process boundaries."""
 from __future__ import annotations
 
-import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -59,9 +58,11 @@ class SecurityBoundaryTests(unittest.TestCase):
             "proof_class": "benchmark",
             "primary_evidence": ["https://example.invalid/evidence"],
         }
+        source = Path("registry/tower.yml")
         registry = TowerRegistry(
             payload={"tower_id": "test", "technologies": [technology]},
-            source=Path("registry/tower.yml"),
+            source=source,
+            source_files=(source,),
         )
         report = build_proof_report(
             registry,
