@@ -59,6 +59,8 @@ jobs:
           use-mathlib-cache: false
       - name: Install Tower
         run: python -m pip install -e .[dev]
+      - name: Install declared portable benchmark tools
+        run: sudo apt-get update && sudo apt-get install -y wabt
       - name: Validate canonical registry
         run: tower validate
       - name: Reject generated-surface drift
