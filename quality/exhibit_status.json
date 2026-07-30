@@ -27,11 +27,12 @@
     "go": {
       "advanced_exhibit": "languages/go/advanced_telemetry_decoder.go",
       "observed_evidence": [
-        "versioned binary format",
-        "CRC validation",
+        "versioned binary frame format",
+        "CRC-32 rejection",
         "sequence-gap detection",
+        "non-finite measurement rejection",
         "context cancellation",
-        "adversarial tests"
+        "atomic operational metrics"
       ]
     },
     "protobuf": {
