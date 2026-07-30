@@ -1,0 +1,165 @@
+name: One-time Functional and Service Proof Promotion
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: one-time-functional-service-proof-promotion
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    if: >-
+      github.event.issue.title == '[tower-quality] promote Go and Haskell behavioral proof' &&
+      github.event.issue.user.login == 'GlacierEQ'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Check out the living main worker
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.4'
+
+      - uses: haskell-actions/setup@v2
+        with:
+          ghc-version: '9.8.2'
+          enable-stack: false
+          cabal-update: false
+
+      - name: Install Tower governance
+        run: python -m pip install -e .[dev]
+
+      - name: Promote only behaviorally executed Go and Haskell floors
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          registry_paths = [
+              Path('registry/tower.d/orchestration-runtime.json'),
+              Path('src/tower/data/tower.d/orchestration-runtime.json'),
+          ]
+          canonical = json.loads(registry_paths[0].read_text(encoding='utf-8'))
+          by_id = {row['id']: row for row in canonical['technologies']}
+
+          go = by_id['go']
+          go['evidence_state'] = 'tested'
+          go['proof_class'] = 'behavioral'
+          go['toolchain']['build'] = [[
+              'go', 'build', '-o', 'build/go_easy', 'languages/go/easy_ping.go',
+          ]]
+          go['toolchain']['test'] = [
+              ['build/go_easy'],
+              ['go', 'test', './languages/go', '-v'],
+          ]
+
+          haskell = by_id['haskell']
+          haskell['evidence_state'] = 'tested'
+          haskell['proof_class'] = 'behavioral'
+          haskell['toolchain']['build'] = [
+              [
+                  'ghc', '-O2', '-Wall', '-Werror', '-outputdir', 'build/ghc',
+                  'languages/haskell/easy_tree.hs', '-o', 'build/haskell_easy',
+              ],
+              [
+                  'ghc', '-O2', '-Wall', '-Werror', '-outputdir', 'build/ghc2',
+                  'languages/haskell/advanced_ast_validator.hs', '-o', 'build/haskell_advanced',
+              ],
+          ]
+          haskell['toolchain']['test'] = [
+              ['build/haskell_easy'],
+              ['build/haskell_advanced'],
+          ]
+
+          rendered = json.dumps(canonical, sort_keys=True, separators=(',', ':')) + '\n'
+          for path in registry_paths:
+              path.write_text(rendered, encoding='utf-8')
+
+          status_path = Path('quality/exhibit_status.json')
+          status = json.loads(status_path.read_text(encoding='utf-8'))
+          status['notes']['go'] = {
+              'advanced_exhibit': 'languages/go/advanced_telemetry_decoder.go',
+              'observed_evidence': [
+                  'versioned binary frame format',
+                  'CRC-32 rejection',
+                  'sequence-gap detection',
+                  'non-finite measurement rejection',
+                  'context cancellation',
+                  'atomic operational metrics',
+              ],
+          }
+          status['notes']['haskell'] = {
+              'advanced_exhibit': 'languages/haskell/advanced_ast_validator.hs',
+              'observed_evidence': [
+                  'typed capability-policy AST',
+                  'pure deterministic decisions',
+                  'absolute-path rejection',
+                  'lexical traversal rejection',
+                  'sibling-prefix rejection',
+                  'empty-plan and destructive-action rejection',
+              ],
+          }
+          status_path.write_text(
+              json.dumps(status, indent=2, sort_keys=True) + '\n', encoding='utf-8'
+          )
+          PY
+
+      - name: Regenerate all canonical projections
+        run: tower generate
+
+      - name: Compile and execute promoted floors
+        run: |
+          set -euo pipefail
+          mkdir -p build/ghc build/ghc2
+          test -z "$(gofmt -l languages/go)"
+          go build -o build/go_easy languages/go/easy_ping.go
+          build/go_easy
+          go test ./languages/go -v
+          ghc -O2 -Wall -Werror -outputdir build/ghc languages/haskell/easy_tree.hs -o build/haskell_easy
+          ghc -O2 -Wall -Werror -outputdir build/ghc2 languages/haskell/advanced_ast_validator.hs -o build/haskell_advanced
+          build/haskell_easy
+          build/haskell_advanced
+
+      - name: Remove bootstrap workflow and reseal integrity
+        run: |
+          rm -f .github/workflows/one-time-functional-service-proof-sync.yml
+          tower integrity generate
+
+      - name: Verify the exact final tree
+        run: |
+          tower validate
+          tower generate --check
+          pytest -q
+          tower integrity verify
+          git diff --check
+
+      - name: Commit governed proof promotion
+        run: |
+          git config user.name 'GlacierEQ governance bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -A
+          git commit -m 'quality: promote Go and Haskell with behavioral proof'
+          git push origin HEAD:main
+
+      - name: Close maintenance issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue close "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --comment "Go and Haskell were compiled and executed with their behavioral test contracts, generated projections were synchronized, the integrity ledger was resealed, and the temporary workflow removed."
