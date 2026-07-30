@@ -89,11 +89,15 @@ def _normalized_domains(raw: Any) -> tuple[list[str], list[str]]:
     return normalized, unknown
 
 
-def generate_civilization_question(seed: str | int | None = None) -> dict[str, Any]:
+def generate_civilization_question(
+    seed: str | int | None = None,
+    prompt_hint: str | None = None,
+) -> dict[str, Any]:
     """Generate one en-US question spanning every civilization domain.
 
     Supplying a seed makes the result reproducible. Omitting it creates a fresh
-    seed while still returning that seed in the envelope for replay.
+    seed while still returning that seed in the envelope for replay. An optional
+    prompt_hint integrates model synthesis focus into the envelope.
     """
     effective_seed = str(seed) if seed is not None else secrets.token_hex(16)
     rng = random.Random(effective_seed)
@@ -102,12 +106,19 @@ def generate_civilization_question(seed: str | int | None = None) -> dict[str, A
     lens = rng.choice(_QUESTION_LENSES)
     horizon = rng.choice(_TIME_HORIZONS)
     domain_phrase = ", ".join(domains[:-1]) + f", and {domains[-1]}"
-    question = (
+    
+    base_question = (
         f"Across {domain_phrase}, which intervention is most likely to {lens} "
         f"over {horizon}, what evidence would falsify it, and how would you prevent "
         "its benefits from shifting hidden costs to another domain, population, or generation?"
     )
-    envelope = {
+    
+    if prompt_hint and prompt_hint.strip():
+        question = f"[Focus: {prompt_hint.strip()}] {base_question}"
+    else:
+        question = base_question
+
+    envelope: dict[str, Any] = {
         "schema": QUESTION_SCHEMA,
         "engine_version": ENGINE_VERSION,
         "locale": "en-US",
@@ -116,6 +127,9 @@ def generate_civilization_question(seed: str | int | None = None) -> dict[str, A
         "domains": domains,
         "question": question,
     }
+    if prompt_hint and prompt_hint.strip():
+        envelope["prompt_hint"] = prompt_hint.strip()
+
     envelope["question_sha256"] = _sha256(envelope)
     return envelope
 

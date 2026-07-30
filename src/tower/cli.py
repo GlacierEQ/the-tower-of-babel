@@ -78,6 +78,7 @@ def main() -> int:
     spiral_sub = spiral.add_subparsers(dest="spiral_action", required=True)
     spiral_question = spiral_sub.add_parser("question")
     spiral_question.add_argument("--seed")
+    spiral_question.add_argument("--prompt-hint")
     spiral_question.add_argument("--output")
     spiral_admit = spiral_sub.add_parser("admit")
     spiral_admit.add_argument("candidate")
@@ -158,7 +159,7 @@ def main() -> int:
             return 0 if valid else 1
         if args.command == "spiral":
             if args.spiral_action == "question":
-                payload = generate_civilization_question(args.seed)
+                payload = generate_civilization_question(args.seed, prompt_hint=args.prompt_hint)
                 if args.output:
                     write_json(Path(args.output), payload)
                 _print(payload)

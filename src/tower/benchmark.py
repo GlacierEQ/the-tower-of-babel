@@ -72,6 +72,8 @@ def benchmark_many(
     iterations: int = 3,
 ) -> dict[str, Any]:
     requested_list = list(technology_ids)
+    if not requested_list or (len(requested_list) == 1 and requested_list[0].casefold() == "all"):
+        requested_list = [tech["id"] for tech in registry.technologies]
     requested = {value.casefold() for value in requested_list}
     known = {
         tech.get("id", "").casefold(): tech
