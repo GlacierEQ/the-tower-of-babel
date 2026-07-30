@@ -64,17 +64,18 @@ jobs:
       - name: Compile and run C exhibits
         run: |
           set -euo pipefail
-          cc -std=c11 -O2 -Wall -Wextra -Werror languages/c/easy_linked_list.c -o /tmp/babel-c-easy
-          cc -std=c11 -O2 -Wall -Wextra -Werror languages/c/advanced_lockfree_spsc_ring.c -o /tmp/babel-c-advanced
+          cc -std=c17 -O2 -Wall -Wextra -Werror languages/c/easy_linked_list.c -o /tmp/babel-c-easy
+          cc -std=c17 -O2 -Wall -Wextra -Werror -pthread languages/c/advanced_lockfree_spsc_ring.c -o /tmp/babel-c-advanced
           /tmp/babel-c-easy
           /tmp/babel-c-advanced
 
-      - name: Compile C++ exhibits
+      - name: Compile and run C++ exhibits
         run: |
           set -euo pipefail
           c++ -std=c++20 -O2 -Wall -Wextra -Werror languages/cpp/easy_vector.cpp -o /tmp/babel-cpp-easy
-          c++ -std=c++20 -O2 -Wall -Wextra -Werror -c languages/cpp/advanced_kv_entropy.cpp -o /tmp/babel-cpp-advanced.o
+          c++ -std=c++20 -O2 -Wall -Wextra -Werror languages/cpp/advanced_kv_entropy.cpp -o /tmp/babel-cpp-advanced
           /tmp/babel-cpp-easy
+          /tmp/babel-cpp-advanced
 
       - name: Format and test Go exhibits
         run: |
