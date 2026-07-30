@@ -34,12 +34,22 @@ _SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
 
 def _eligible(path: Path) -> bool:
-    """Return whether a path belongs to the governed source/evidence domain."""
-    rel = path.relative_to(REPO_ROOT).as_posix()
+    """Return whether a repository-contained path belongs to the governed domain.
+
+    Eligibility is evaluated only from repository-relative components. Absolute
+    ancestor names must never suppress governance merely because a checkout
+    happens to live below a directory named ``build`` or ``target``.
+    """
+    try:
+        relative = path.relative_to(REPO_ROOT)
+    except ValueError:
+        return False
+    rel = relative.as_posix()
+    parts = relative.parts
     return (
         path.is_file()
-        and not any(part in _EXCLUDED_PARTS for part in path.parts)
-        and not any(part.endswith(".egg-info") for part in path.parts)
+        and not any(part in _EXCLUDED_PARTS for part in parts)
+        and not any(part.endswith(".egg-info") for part in parts)
         and rel not in _EXCLUDED_FILES
         and not rel.endswith((".pyc", ".pyo", ".coverage"))
     )
@@ -64,7 +74,11 @@ def collect_hashes() -> dict[str, str]:
 
 
 def write_manifest(path: Path = MANIFEST) -> dict[str, Any]:
-    """Write the canonical integrity manifest."""
+    """Write the canonical integrity manifest.
+
+    The manifest deliberately excludes itself to avoid a circular digest. Its
+    trust anchor is the reviewed Git commit plus the receipt's manifest digest.
+    """
     hashes = collect_hashes()
     payload = {
         "schema_version": "1.0.0",
@@ -124,7 +138,12 @@ def verify_integrity(path: Path = MANIFEST) -> dict[str, Any]:
     if expected.get("file_count") != len(expected_hashes):
         return _invalid_manifest("file_count does not match hashes", manifest_sha256)
     for file_path, digest in expected_hashes.items():
-        if not isinstance(file_path, str) or not file_path or not isinstance(digest, str) or not _SHA256_RE.fullmatch(digest):
+        if (
+            not isinstance(file_path, str)
+            or not file_path
+            or not isinstance(digest, str)
+            or not _SHA256_RE.fullmatch(digest)
+        ):
             return _invalid_manifest(f"invalid hash entry: {file_path!r}", manifest_sha256)
 
     current = collect_hashes()
