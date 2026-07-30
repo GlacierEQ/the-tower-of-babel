@@ -58,6 +58,21 @@ class TestTowerOfBabel(unittest.TestCase):
                 registered_paths.add(path)
         self.assertEqual(len(registered_paths), 42)
 
+    def test_quality_ledger_covers_every_language_truthfully(self) -> None:
+        status_path = REPO_ROOT / "quality" / "exhibit_status.json"
+        payload = json.loads(status_path.read_text(encoding="utf-8"))
+        exhibits = payload["advanced_exhibits"]
+        self.assertEqual(set(exhibits), set(BABEL_REGISTRY))
+        self.assertEqual(set(payload["levels"]), {"production-depth", "candidate"})
+
+        for key, entry in exhibits.items():
+            self.assertIn(entry["level"], payload["levels"], key)
+            if entry["level"] == "production-depth":
+                self.assertGreaterEqual(len(entry.get("evidence", [])), 3, key)
+                self.assertNotIn("gaps", entry, key)
+            else:
+                self.assertGreaterEqual(len(entry.get("gaps", [])), 1, key)
+
     def test_programmatic_query_contract(self) -> None:
         all_specs = query_babel_registry()
         self.assertTrue(all_specs["ok"])
