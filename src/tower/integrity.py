@@ -11,6 +11,7 @@ from .registry import REPO_ROOT
 MANIFEST = REPO_ROOT / ".integrity" / "file_hashes.json"
 _EXCLUDED_PARTS = {
     ".git",
+    ".lake",
     "__pycache__",
     ".pytest_cache",
     ".ruff_cache",
@@ -30,6 +31,7 @@ _EXCLUDED_FILES = {
 
 
 def _eligible(path: Path) -> bool:
+    """Return whether a path belongs to the governed source/evidence domain."""
     rel = path.relative_to(REPO_ROOT).as_posix()
     return (
         path.is_file()
@@ -41,6 +43,7 @@ def _eligible(path: Path) -> bool:
 
 
 def hash_file(path: Path) -> str:
+    """Hash one artifact without loading the entire file into memory."""
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
@@ -49,6 +52,7 @@ def hash_file(path: Path) -> str:
 
 
 def collect_hashes() -> dict[str, str]:
+    """Collect deterministic hashes for all governed repository artifacts."""
     return {
         path.relative_to(REPO_ROOT).as_posix(): hash_file(path)
         for path in sorted(REPO_ROOT.rglob("*"))
@@ -57,6 +61,7 @@ def collect_hashes() -> dict[str, str]:
 
 
 def write_manifest(path: Path = MANIFEST) -> dict[str, Any]:
+    """Write the canonical integrity manifest."""
     hashes = collect_hashes()
     payload = {
         "schema_version": "1.0.0",
@@ -71,6 +76,7 @@ def write_manifest(path: Path = MANIFEST) -> dict[str, Any]:
 
 
 def verify_integrity(path: Path = MANIFEST) -> dict[str, Any]:
+    """Verify governed artifacts while ignoring reproducible runtime caches."""
     if not path.is_file():
         return {
             "ok": False,
