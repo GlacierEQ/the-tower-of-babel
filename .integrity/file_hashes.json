@@ -111,7 +111,7 @@
     "src/tower/__init__.py": "fe73cf5475892e00a4520fc1e9742626a83e6529c876529fc7d72487febdb78c",
     "src/tower/__main__.py": "79ee6f134c5c5193377cf9b189cbdcc3e2095e49ba9cec310114441c15a917c4",
     "src/tower/benchmark.py": "3b90937b132d9573a751d5f946bfeb428cf9ab7ff850d6a05a4ced6b5a96b81e",
-    "src/tower/build.py": "29749dd4affbf2a68b3b7ef780e9ae38d1be8ff44061babcd6618a43cb383daa",
+    "src/tower/build.py": "f78ebe479890ebaa131b95a5b3e1e0e75213d8c91c849967802a8d91986a015b",
     "src/tower/cli.py": "f5171864d103ff03808c1b904b724b8465318afff4085730fbe2416f4c85cc70",
     "src/tower/data/tower.d/compute-graphs.json": "dd10a8bedebc887bd5ad5376fd4d57b2e8640a156642c305ca527bb950d61faa",
     "src/tower/data/tower.d/contracts-hardware.json": "44c02c38e671e0de4fbef30020379d513e52032604f56c49d129aeb8d82aed32",
