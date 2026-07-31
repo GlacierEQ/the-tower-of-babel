@@ -156,7 +156,7 @@
     "src/tower/data/tower.d/systems.json": "1a7d15b412f76d3a73da9b6b3044fa7575cf4f15a7a681c179303279178038e5",
     "src/tower/data/tower.yml": "aece123108861be32d95fde0f471a72343a9931b7eeafc16943aab5b19b495ee",
     "src/tower/generate.py": "8259143916c2b40633536aa5664c2cf6b88820e3289438a35bdf6cc405ba3d84",
-    "src/tower/integrity.py": "7573cc0a7fa06583c4f8f3c667ec373dff9c06d769c47a43ff33f2ad80a29812",
+    "src/tower/integrity.py": "cdb699c2fc09618b29e68c418b8fcecad5c1e17ff5cfb87072dc548d730aeb48",
     "src/tower/proofs.py": "3fed0c0b7abf6be82b50ace36d7b0f841a7fb4093cc00011ccc74188ccae105f",
     "src/tower/receipt.py": "cbc441f5f412685e9f246955e6b2cfa7ac33acad032b5fd4d3312789d34a9585",
     "src/tower/registry.py": "0c30252d1930ad0522a790dee356160dff9164f3f8b90540f6652e23173341b2",

@@ -30,6 +30,7 @@ _EXCLUDED_FILES = {
     ".integrity/receipt.json",
     ".integrity/ci-trigger.json",
     "artifacts/tower_receipt.json",
+    "generated/benchmarks.json",
 }
 _SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
