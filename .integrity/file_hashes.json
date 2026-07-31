@@ -1,9 +1,10 @@
 {
-  "file_count": 146,
+  "file_count": 147,
   "hash_algorithm": "sha256",
   "hashes": {
     ".github/workflows/branch-hygiene.yml": "f2dffa42c0c873065a88a763621f02df2583d82fc6df9ac0ef044e02d6587509",
     ".github/workflows/ci.yml": "199b0c7ac338d01734269d3b33897e5a19596193eff07ba2d57375e7ef5408a4",
+    ".github/workflows/nervous-system-contract.yml": "5a7f773932fb47233d1f2ef2d69cd6479006e8d8494021d24980fce65926447c",
     ".github/workflows/spiral.yml": "e2544bf4285a92fadd5194aa3160337cc1e1fe514a94047c314350fd98cf0e0e",
     ".github/workflows/tower.yml": "d0f3631fc40f6e4e08da79df71001e07af6be8232ec55335930dfc46440f1a71",
     ".gitignore": "c6572b4405b8cf647c9da1702f7cec6a7338a4c4375ce86fbab18aacc528fbe2",
