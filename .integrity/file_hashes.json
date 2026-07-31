@@ -1,5 +1,5 @@
 {
-  "file_count": 143,
+  "file_count": 144,
   "hash_algorithm": "sha256",
   "hashes": {
     ".github/workflows/branch-hygiene.yml": "f2dffa42c0c873065a88a763621f02df2583d82fc6df9ac0ef044e02d6587509",
@@ -11,6 +11,7 @@
     "AGENTS.md": "fec8125d18e4088277551c8cd25852d062c37db3a3c864d3bc6d6dffd21fd22c",
     "BRANCH_POLICY.md": "bc789ba67c0e535761fd18bb37f689fc918101d04b3e49d9a98edc8d3fcc522f",
     "LICENSE": "7466596bdb65520298c2449eef8e883d9d3300f8cfac9aea893c0f572cdaeeed",
+    "NERVOUS_SYSTEM.md": "0e84c3e457a38f6c7b8d1112e03a54e1fee76af723eb39e4c918acb4b491990e",
     "QUALITY_CONTRACT.md": "411bb02c7d35b59f4860ca7bffe8b24bcbfc8741139394c333a308903a4b82fb",
     "README.md": "a7437edea24b93f2b236f520f2c7c6fba056c248847d123db696219fd68922a3",
     "build.sbt": "bdb0c62227449451d3729206cb31a3e9576b1840f85a0433b96b2e7c50457398",
