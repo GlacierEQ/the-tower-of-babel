@@ -3,41 +3,7 @@ name: Advanced Exhibit Gate
 on:
   push:
     branches: [main]
-    paths:
-      - "languages/**"
-      - "registry/**"
-      - "requirements/**"
-      - "src/tower/generate.py"
-      - "src/tower/registry.py"
-      - "tools/audit_advanced_exhibits.py"
-      - "tests/test_advanced_exhibits.py"
-      - "tests/test_claim_contracts.py"
-      - "tests/test_nervous_system_contract.py"
-      - "ADVANCED_EXHIBITS.md"
-      - "quality/advanced_exhibit_atlas.json"
-      - "governance/akos-nervous-system.v1.json"
-      - ".glaciereq/nervous-system.node.json"
-      - "scripts/validate_nervous_system.py"
-      - ".github/workflows/advanced-exhibits.yml"
-      - ".github/workflows/nervous-system-contract.yml"
   pull_request:
-    paths:
-      - "languages/**"
-      - "registry/**"
-      - "requirements/**"
-      - "src/tower/generate.py"
-      - "src/tower/registry.py"
-      - "tools/audit_advanced_exhibits.py"
-      - "tests/test_advanced_exhibits.py"
-      - "tests/test_claim_contracts.py"
-      - "tests/test_nervous_system_contract.py"
-      - "ADVANCED_EXHIBITS.md"
-      - "quality/advanced_exhibit_atlas.json"
-      - "governance/akos-nervous-system.v1.json"
-      - ".glaciereq/nervous-system.node.json"
-      - "scripts/validate_nervous_system.py"
-      - ".github/workflows/advanced-exhibits.yml"
-      - ".github/workflows/nervous-system-contract.yml"
   workflow_dispatch:
 
 permissions:
