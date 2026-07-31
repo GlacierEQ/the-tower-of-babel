@@ -227,3 +227,23 @@ def test_receipt_has_body_sha256():
     assert "body_sha256" in rec
     assert rec["body_sha256"] == rec["receipt_sha256"]
 
+
+def test_topology_graph_and_dot_render():
+    from tower.visualize import build_topology_graph, render_dot_graph
+    registry = load_registry()
+    graph = build_topology_graph(registry)
+    assert graph["node_count"] == 30
+    assert len(graph["nodes"]) == 30
+    dot = render_dot_graph(registry)
+    assert "digraph TowerOfBabel" in dot
+    assert 'node [shape=box' in dot
+
+
+def test_registry_search():
+    from tower.visualize import search_registry
+    registry = load_registry()
+    python_matches = search_registry(registry, "python")
+    assert any(tech["id"] == "python" for tech in python_matches)
+    verilog_matches = search_registry(registry, "hardware")
+    assert len(verilog_matches) > 0
+

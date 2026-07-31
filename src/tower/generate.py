@@ -449,6 +449,8 @@ def build_surfaces(registry: TowerRegistry) -> dict[Path, bytes]:
         links.extend(f"- {uri}" for uri in tech["primary_evidence"])
         links.append("")
 
+    from .visualize import build_topology_graph, render_dot_graph
+
     surfaces: dict[Path, bytes] = {
         REPO_ROOT / "README.md": render_readme(registry).encode(),
         REPO_ROOT / "src" / "babel_registry.py": render_runtime_registry(registry).encode(),
@@ -461,6 +463,8 @@ def build_surfaces(registry: TowerRegistry) -> dict[Path, bytes]:
         GENERATED_DIR / "smithery.registry.json": _json_bytes(smithery),
         GENERATED_DIR / "spiral-engine.registry.json": _json_bytes(spiral),
         GENERATED_DIR / "link_library.md": ("\n".join(links) + "\n").encode(),
+        GENERATED_DIR / "tower_topology.json": _json_bytes(build_topology_graph(registry)),
+        GENERATED_DIR / "tower_interface_graph.dot": render_dot_graph(registry).encode(),
     }
     for fragment in registry.fragment_files:
         relative = fragment.relative_to(registry.source.parent)

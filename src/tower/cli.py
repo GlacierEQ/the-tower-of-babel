@@ -91,6 +91,13 @@ def main() -> int:
 
     sub.add_parser("report")
     sub.add_parser("megamind-map")
+
+    search_parser = sub.add_parser("search")
+    search_parser.add_argument("query")
+
+    visualize_parser = sub.add_parser("visualize")
+    visualize_parser.add_argument("--format", choices=["json", "dot"], default="json")
+
     args = parser.parse_args()
 
     try:
@@ -180,6 +187,18 @@ def main() -> int:
             return 0
         if args.command == "megamind-map":
             _print(_read_json_object(Path("generated/megamind.technology-map.json"), "Megamind map"))
+            return 0
+        if args.command == "search":
+            from .visualize import search_registry
+            results = search_registry(registry, args.query)
+            _print({"query": args.query, "count": len(results), "matches": results})
+            return 0
+        if args.command == "visualize":
+            from .visualize import build_topology_graph, render_dot_graph
+            if args.format == "dot":
+                print(render_dot_graph(registry))
+            else:
+                _print(build_topology_graph(registry))
             return 0
     except ValueError as exc:
         _print({"error": type(exc).__name__, "message": str(exc)})
