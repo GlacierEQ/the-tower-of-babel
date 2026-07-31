@@ -1,4 +1,4 @@
-# Retry after repairing the standalone Go telemetry exhibit.
+# Final gate: README, generator, Go executables, canonical registry, and receipts.
 name: README Masterclass Upgrade
 
 on:
@@ -29,8 +29,10 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Apply generator-owned README upgrade
-        run: python .github/scripts/apply_readme_masterclass.py
+      - name: Apply generator and canonical test-contract upgrades
+        run: |
+          python .github/scripts/apply_readme_masterclass.py
+          python .github/scripts/fix_go_contract.py
 
       - name: Install Tower
         run: python -m pip install -e .[dev]
@@ -41,6 +43,7 @@ jobs:
           python -m tower.generate
           rm .github/workflows/readme-masterclass.yml
           rm .github/scripts/apply_readme_masterclass.py
+          rm .github/scripts/fix_go_contract.py
           python - <<'PY'
           from tower.integrity import write_manifest
           write_manifest()
@@ -57,7 +60,7 @@ jobs:
         run: |
           git config user.name "GlacierEQ Tower Automation"
           git config user.email "actions@users.noreply.github.com"
-          git add README.md src/tower/generate.py .integrity/file_hashes.json languages/go/advanced_telemetry_decoder.go .github/workflows/readme-masterclass.yml .github/scripts/apply_readme_masterclass.py
+          git add -A
           git diff --cached --check
           if git diff --cached --quiet; then
             echo "No README upgrade drift remained."
