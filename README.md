@@ -96,10 +96,10 @@ tower receipt \
 
 ## Inside the engine
 
-`registry/tower.yml` is the root authority. It indexes governed `registry/tower.d/*.json` fragments; the README and every machine-readable projection are derived from that source.
+`registry/tower.yml` is the root authority. It indexes governed `registry/tower.d/*.json` technology fragments and `registry/advanced-claim-contracts.json`; the README, Atlas, and every machine-readable projection are derived from that combined authority.
 
 ```text
-registry/tower.yml + tower.d fragments
+registry/tower.yml + tower.d fragments + advanced claim contracts
                   │
                   ▼
         validation and path containment
@@ -127,7 +127,8 @@ A technology is admitted only when the registry establishes:
 - a pinned toolchain reference, build/test commands, and execution tier;
 - hardware, service, and toolchain constraints;
 - cross-language interfaces and owning Megamind agents/pistons;
-- an evidence state and proof class matching checked-in verification.
+- an evidence state and proof class matching checked-in verification;
+- a registry-owned semantic claim contract with source assertions, failure cases, receipt fields, and prohibited overclaims.
 
 Working components are extended rather than rewritten for novelty. A new language must provide measurable value at a clear boundary without duplicating a component that already works.
 
@@ -263,6 +264,7 @@ An AI system should treat the Tower as an authority service, not prose to imitat
 | Surface | Role | Status |
 |---|---|---|
 | [`registry/tower.yml`](registry/tower.yml) | Canonical index and governance root | **Authored authority** |
+| [`registry/advanced-claim-contracts.json`](registry/advanced-claim-contracts.json) | Source assertions, failure obligations, receipt fields, and truthful claim boundaries | **Authored authority** |
 | [`generated/build_commands.json`](generated/build_commands.json) | Toolchains, pins, build/test commands, and execution tiers | Generated |
 | [`generated/interfaces.json`](generated/interfaces.json) | Cross-language interface graph | Generated |
 | [`generated/maturity.json`](generated/maturity.json) | Evidence state, proof class, and exhibit locations | Generated |
@@ -273,6 +275,7 @@ An AI system should treat the Tower as an authority service, not prose to imitat
 | [`generated/smithery.registry.json`](generated/smithery.registry.json) | Smithery capability and publication contract | **Declared, not published** |
 | [`generated/link_library.md`](generated/link_library.md) | Curated primary evidence for every floor | Generated library |
 | [`.integrity/file_hashes.json`](.integrity/file_hashes.json) | SHA-256 ledger for governed artifacts | Sealed surface |
+| [`docs/SUPPLY_CHAIN_AND_PROTECTION.md`](docs/SUPPLY_CHAIN_AND_PROTECTION.md) | Hash-locked CI, OIDC attestations, ruleset verification, and deletion receipts | Operational contract |
 
 ### Portfolio mesh
 
@@ -296,13 +299,13 @@ External links describe curated portfolio relationships, not a claim that every 
 
 - `main` is the living worker; completed functionality lands there.
 - Generated surfaces are never hand-edited; `tower generate --check` rejects drift.
-- Every claim carries an evidence state and proof class.
+- Every claim carries an evidence state, proof class, and registry-owned semantic claim contract.
 - Blocked hardware, tools, and services remain visible and machine-readable.
 - Cross-language interfaces are explicit and versioned.
 - Megamind consumes Tower exports and does not maintain a competing registry.
 - Smithery remains `declared-not-published` until an MCP package and external publication receipt exist.
 - The Spiral runtime is executable; registry activation remains `declared` until governed promotion.
-- Integrity, build evidence, proof reports, and receipts remain deterministic review surfaces.
+- Integrity, build evidence, proof reports, and receipts remain deterministic review surfaces; `main` receipts additionally receive OIDC-bound Sigstore provenance.
 
 ```text
 edit canonical fragment
