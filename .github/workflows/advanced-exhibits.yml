@@ -17,6 +17,7 @@ on:
       - "registry/**"
       - "src/tower/generate.py"
       - "tools/audit_advanced_exhibits.py"
+      - "tools/promote_registry_and_cleanup.py"
       - "tests/test_advanced_exhibits.py"
       - ".github/workflows/advanced-exhibits.yml"
   workflow_dispatch:
@@ -47,7 +48,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [[ -f tools/promote_registry_and_cleanup.py && "${GITHUB_EVENT_NAME}" != "pull_request" ]]; then
+          if [[ -f tools/promote_registry_and_cleanup.py ]]; then
             python tools/promote_registry_and_cleanup.py
             rm tools/promote_registry_and_cleanup.py
             echo "applied=true" >> "${GITHUB_OUTPUT}"
@@ -85,13 +86,11 @@ jobs:
           set -euo pipefail
           if [[ "${{ steps.promotion.outputs.applied }}" == "true" ]]; then
             tower integrity generate
-            tower integrity verify
-          else
-            tower integrity verify
           fi
+          tower integrity verify
 
       - name: Promote generated hardening commit
-        if: steps.promotion.outputs.applied == 'true'
+        if: steps.promotion.outputs.applied == 'true' && github.event_name != 'pull_request'
         shell: bash
         run: |
           set -euo pipefail
@@ -99,4 +98,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           git commit -m "feat: harden and expose all advanced Tower exhibits"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
