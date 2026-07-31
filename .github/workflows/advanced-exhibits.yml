@@ -6,9 +6,12 @@ on:
     paths:
       - "languages/**"
       - "registry/**"
+      - "requirements/**"
       - "src/tower/generate.py"
+      - "src/tower/registry.py"
       - "tools/audit_advanced_exhibits.py"
       - "tests/test_advanced_exhibits.py"
+      - "tests/test_claim_contracts.py"
       - "tests/test_nervous_system_contract.py"
       - "ADVANCED_EXHIBITS.md"
       - "quality/advanced_exhibit_atlas.json"
@@ -21,9 +24,12 @@ on:
     paths:
       - "languages/**"
       - "registry/**"
+      - "requirements/**"
       - "src/tower/generate.py"
+      - "src/tower/registry.py"
       - "tools/audit_advanced_exhibits.py"
       - "tests/test_advanced_exhibits.py"
+      - "tests/test_claim_contracts.py"
       - "tests/test_nervous_system_contract.py"
       - "ADVANCED_EXHIBITS.md"
       - "quality/advanced_exhibit_atlas.json"
@@ -47,7 +53,7 @@ jobs:
     timeout-minutes: 25
     steps:
       - name: Checkout exact head without persisted credentials
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -57,8 +63,10 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install Tower
-        run: python -m pip install -e .[dev]
+      - name: Install hash-locked Tower environment
+        run: |
+          python -m pip install --require-hashes -r requirements/ci.lock
+          python -m pip install --no-deps --no-build-isolation -e .
 
       - name: Validate canonical authority
         run: tower validate
@@ -80,3 +88,12 @@ jobs:
 
       - name: Verify immutable integrity
         run: tower integrity verify
+
+  required-advanced-exhibit-gate:
+    name: required-advanced-exhibit-gate
+    if: always()
+    needs: [verify]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Require Advanced Exhibit verification
+        run: test "${{ needs.verify.result }}" = "success"
