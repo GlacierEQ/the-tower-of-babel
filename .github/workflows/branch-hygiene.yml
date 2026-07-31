@@ -1,0 +1,68 @@
+name: Branch Hygiene
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [closed]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: branch-hygiene
+  cancel-in-progress: false
+
+jobs:
+  converge-branches:
+    if: github.event_name != 'pull_request' || github.event.pull_request.merged == true
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout canonical main
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Remove merged and explicitly obsolete remote branches
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BRANCH: ${{ github.event.pull_request.head.ref || '' }}
+          PR_HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name || '' }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          delete_branch() {
+            local branch="$1"
+            if [[ -z "${branch}" || "${branch}" == "main" || "${branch}" == "HEAD" ]]; then
+              return 0
+            fi
+            git check-ref-format --branch "${branch}" >/dev/null
+            if git ls-remote --exit-code --heads origin "refs/heads/${branch}" >/dev/null 2>&1; then
+              git push origin --delete "${branch}"
+            fi
+          }
+
+          if [[ "${EVENT_NAME}" == "pull_request" && "${PR_HEAD_REPO}" == "${REPOSITORY}" ]]; then
+            delete_branch "${PR_BRANCH}"
+          fi
+
+          git fetch --prune origin
+          while IFS= read -r branch; do
+            delete_branch "${branch}"
+          done < <(git branch -r --merged origin/main --format='%(refname:strip=3)')
+
+          # One-time convergence for superseded pre-canonical branches. Keeping
+          # these names here is harmless and prevents accidental resurrection.
+          delete_branch "feature/canonical-language-manifest"
+          delete_branch "feature/canonical-language-manifest-v2"
+
+      - name: Verify canonical topology
+        run: |
+          set -euo pipefail
+          test -n "$(git ls-remote --heads origin refs/heads/main)"
+          test -z "$(git ls-remote --heads origin refs/heads/feature/canonical-language-manifest)"
+          test -z "$(git ls-remote --heads origin refs/heads/feature/canonical-language-manifest-v2)"
