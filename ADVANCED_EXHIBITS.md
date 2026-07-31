@@ -1,8 +1,8 @@
 # Advanced Exhibit Atlas
 
-> A generated map of the engineering boundary, proof surface, and truthful claim limit for every advanced Tower exhibit.
+> A generated map of the engineering boundary, source assertions, failure cases, proof surface, and truthful claim limit for every advanced Tower exhibit.
 
-The Atlas exposes distinctive implementation choices without converting them into unsupported novelty or production claims. The canonical technology authority remains `registry/tower.yml`.
+The Atlas is generated from `registry/tower.yml` and `registry/advanced-claim-contracts.json`. It exposes distinctive implementation choices without converting them into unsupported novelty or production claims.
 
 | Technology | Signature engineering move | Evidence | Advanced exhibit |
 |---|---|---|---|
@@ -36,6 +36,10 @@ The Atlas exposes distinctive implementation choices without converting them int
 | **Lean 4** | Monotone authority and receipt proofs — kernel-checked action ordering and non-regressing sequence property | `formally_verified` / `formal` | [`advanced_truth_gate_proof.lean`](languages/lean4/advanced_truth_gate_proof.lean) |
 | **Coq** | Linked receipt-chain ordering proof — constructive chain-step and ordered-list invariants | `formally_verified` / `formal` | [`advanced_receipt_chain.v`](languages/coq/advanced_receipt_chain.v) |
 | **Agda** | Dependent capability lattice — total transitivity proof and impossible destructive downgrade case | `formally_verified` / `formal` | [`advanced_capability_lattice.agda`](languages/agda/advanced_capability_lattice.agda) |
+
+## Machine-enforced claim contract
+
+Every row is backed by registry-owned source patterns, expected failure cases, required receipt fields, and forbidden positive claims. The audit checks the source patterns and rejects unsupported positive claims while permitting explicit disclaimers and claim boundaries.
 
 ## Promotion standard
 
