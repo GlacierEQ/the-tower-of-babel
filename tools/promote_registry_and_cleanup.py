@@ -52,6 +52,15 @@ staging = ROOT / "tools/promotion_parts"
 if staging.exists():
     shutil.rmtree(staging)
 
+# Keep legacy quality checks tied to the canonical path rather than a superseded filename.
+test_path = ROOT / "tests/test_tower_of_babel.py"
+test_source = test_path.read_text(encoding="utf-8")
+test_source = test_source.replace(
+    "languages/cuda/advanced_flash_attn_kernel.cu",
+    "languages/cuda/advanced_reference_attention.cu",
+)
+test_path.write_text(test_source, encoding="utf-8")
+
 generator = ROOT / "src/tower/generate.py"
 source = generator.read_text(encoding="utf-8")
 needle = "## The thirty-floor map\n\nThe matrix is generated from the canonical registry."
