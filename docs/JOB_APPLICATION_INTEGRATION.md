@@ -36,10 +36,6 @@ The hardened package projects Tower into:
 
 The projection preserves Tower evidence states and blockers. It does not convert repository source into deployment proof or silently promote gated exhibits.
 
-## Verification discipline
-
-This integration is promoted only from a self-consistent branch head. The integration document, machine contract, and immutable integrity ledger are reviewed together; Tower validation, generated-surface drift checks, Python governance tests, integrity verification, portable floor compilation, flagship execution, and quality gates must report their actual outcomes before merge. A failed or missing gate remains visible rather than being described as success.
-
 ## Non-claims
 
 This integration does not establish:
