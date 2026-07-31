@@ -276,6 +276,14 @@ digraph TowerOfBabel {
     "datalog" [label="Soufflé Datalog\n[compile]", fillcolor="#e3f2fd"];
   }
 
+  subgraph cluster_quantization_and_compression {
+    label = "Quantization And Compression";
+    style = "filled";
+    color = "lightgrey";
+    fillcolor = "#f8f9fa";
+    "rhl_quant" [label="RHL-Quant (1.58b Ternary Quantization Flagship)\n[behavioral]", fillcolor="#e3f2fd"];
+  }
+
   "cpp" -> "protobuf" [label="protobuf"];
   "rust" -> "protobuf" [label="protobuf"];
   "python" -> "protobuf" [label="protobuf"];

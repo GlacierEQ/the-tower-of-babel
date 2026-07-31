@@ -1,5 +1,5 @@
 {
-  "advanced_exhibit_count": 35,
+  "advanced_exhibit_count": 36,
   "all_claim_contracts_present": true,
   "all_profiles_present": true,
   "authority": [
@@ -1258,6 +1258,43 @@
         "source|sink"
       ],
       "technology": "Souffl\u00e9 Datalog"
+    },
+    {
+      "activation_condition": "Use when fitting massive MoE or dense LLMs onto minimal GPU VRAM hardware without perplexity degradation.",
+      "advanced_exhibit": "languages/rhl_quant/advanced_rhl_quant_engine.py",
+      "architectural_role": "Frontier LLM deployment, VRAM constrained edge clusters, bitwise GPU matrix multiplication, and ultra-low memory inference.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
+      "evidence_state": "production_reference",
+      "expected_failure_cases": [
+        "outlier overflow",
+        "zero scale factor",
+        "shape mismatch"
+      ],
+      "forbidden_claim_patterns": [
+        "hardware ASIC tapeout",
+        "zero latency loss"
+      ],
+      "id": "rhl_quant",
+      "interfaces": [
+        "python_api",
+        "quantization_mesh"
+      ],
+      "maturity_tier": "proof-grade",
+      "proof_class": "behavioral",
+      "proof_surface": "1.58-bit Base Ternary Lattice with 2-bit Sparse Delta HLO Outlier Mesh",
+      "required_receipt_fields": [
+        "status",
+        "flagship_tier",
+        "novel_quantization",
+        "quant_metrics",
+        "performance"
+      ],
+      "signature_innovation": "Residual HLO-Lattice Quantization (RHL-Quant)",
+      "source_assertions": [
+        "quantize_weight_tensor",
+        "dequantize_and_matmul"
+      ],
+      "technology": "RHL-Quant (1.58b Ternary Quantization Flagship)"
     }
   ],
   "generated_by": "tools/audit_advanced_exhibits.py",

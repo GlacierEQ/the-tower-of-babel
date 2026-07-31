@@ -813,6 +813,30 @@
         "FlashAttentionConfig"
       ],
       "signature_innovation": "NVIDIA FlashAttention-v2 GPU kernel"
+    },
+    "rhl_quant": {
+      "expected_failure_cases": [
+        "outlier overflow",
+        "zero scale factor",
+        "shape mismatch"
+      ],
+      "forbidden_claim_patterns": [
+        "hardware ASIC tapeout",
+        "zero latency loss"
+      ],
+      "proof_surface": "1.58-bit Base Ternary Lattice with 2-bit Sparse Delta HLO Outlier Mesh",
+      "required_receipt_fields": [
+        "status",
+        "flagship_tier",
+        "novel_quantization",
+        "quant_metrics",
+        "performance"
+      ],
+      "required_source_patterns": [
+        "quantize_weight_tensor",
+        "dequantize_and_matmul"
+      ],
+      "signature_innovation": "Residual HLO-Lattice Quantization (RHL-Quant)"
     }
   },
   "global_claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",

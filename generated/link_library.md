@@ -108,3 +108,7 @@
 ## Soufflé Datalog
 - https://souffle-lang.github.io/
 
+## RHL-Quant (1.58b Ternary Quantization Flagship)
+- https://github.com/GlacierEQ/residual-lattice-quantization
+- https://arxiv.org/abs/2402.17764
+

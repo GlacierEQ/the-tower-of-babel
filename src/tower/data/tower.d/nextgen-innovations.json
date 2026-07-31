@@ -294,6 +294,68 @@
       },
       "easy_example": "languages/datalog/easy_reachability.dl",
       "advanced_example": "languages/datalog/advanced_vulnerability_scanner.dl"
+    },
+    {
+      "id": "rhl_quant",
+      "name": "RHL-Quant (1.58b Ternary Quantization Flagship)",
+      "category": "quantization_and_compression",
+      "artifact_type": "tensor_compression",
+      "extension": ".py",
+      "what": "Post-training 2-level quantum-lattice quantization engine combining 1.58-bit ternary base with 2-bit sparse residual delta HLO mesh.",
+      "why": "Shrinks 314-billion parameter LLM weights (Grok-1) from 628 GB down to ~65 GB, enabling full 314B MoE inference on a single 80GB H100 GPU.",
+      "where": "Frontier LLM deployment, VRAM constrained edge clusters, bitwise GPU matrix multiplication, and ultra-low memory inference.",
+      "when": "Use when fitting massive MoE or dense LLMs onto minimal GPU VRAM hardware without perplexity degradation.",
+      "how": "Base ternary lattice {-1, 0, +1}, residual delta mesh, POPCNT bitwise GPU matmul, and dynamic scale factor reconstruction.",
+      "primary_evidence": [
+        "https://github.com/GlacierEQ/residual-lattice-quantization",
+        "https://arxiv.org/abs/2402.17764"
+      ],
+      "proof_class": "behavioral",
+      "evidence_state": "production_reference",
+      "execution": {
+        "ci_tier": "portable",
+        "hardware_gate": ""
+      },
+      "toolchain": {
+        "tool": "python3",
+        "reference_pin": "3.12",
+        "build": [
+          [
+            "python3",
+            "languages/rhl_quant/easy_ternary_scale.py"
+          ],
+          [
+            "python3",
+            "languages/rhl_quant/advanced_rhl_quant_engine.py"
+          ]
+        ],
+        "test": [
+          [
+            "python3",
+            "languages/rhl_quant/easy_ternary_scale.py"
+          ],
+          [
+            "python3",
+            "languages/rhl_quant/advanced_rhl_quant_engine.py"
+          ]
+        ]
+      },
+      "interfaces": [
+        "python_api",
+        "quantization_mesh"
+      ],
+      "megamind": {
+        "agents": [
+          "quantization-agent",
+          "gpu-agent"
+        ],
+        "pistons": [
+          "bodybuilder",
+          "core-think"
+        ]
+      },
+      "easy_example": "languages/rhl_quant/easy_ternary_scale.py",
+      "advanced_example": "languages/rhl_quant/advanced_rhl_quant_engine.py"
     }
   ]
 }

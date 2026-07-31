@@ -41,6 +41,7 @@ The Atlas is generated from `registry/tower.yml` and `registry/advanced-claim-co
 | **Cairo** | STARK-provable state governor — STARK state governor receipt verification | `toolchain_gated` / `compile` | [`advanced_stark_governor.cairo`](languages/cairo/advanced_stark_governor.cairo) |
 | **JAX (xAI Grok Flagship)** | Grok-3 JAX distributed LLM mesh — Grok-3 distributed LLM mesh with RoPE attention, KV-caching, and sharding | `production_reference` / `behavioral` | [`advanced_grok_distributed_mesh.py`](languages/jax/advanced_grok_distributed_mesh.py) |
 | **Soufflé Datalog** | Declarative static security scanner — declarative vulnerability taint flow | `compiles` / `compile` | [`advanced_vulnerability_scanner.dl`](languages/datalog/advanced_vulnerability_scanner.dl) |
+| **RHL-Quant (1.58b Ternary Quantization Flagship)** | Residual HLO-Lattice Quantization (RHL-Quant) — 1.58-bit Base Ternary Lattice with 2-bit Sparse Delta HLO Outlier Mesh | `production_reference` / `behavioral` | [`advanced_rhl_quant_engine.py`](languages/rhl_quant/advanced_rhl_quant_engine.py) |
 
 ## Machine-enforced claim contract
 

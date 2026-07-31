@@ -8,7 +8,7 @@
 
 The Tower of Babel **decides where a technology belongs, explains why it belongs there, shows how it works, verifies the claim at the strongest available proof level, and exports the result for humans, software, and AI agents**.
 
-It is not a language collection built for display. It is a governed engineering map: **35 technology floors**, **70 linked exhibits**, versioned interface contracts, explicit blockers, executable build gates, and deterministic receipts. A floor earns its role through runtime behavior, safety, performance, hardware fit, or interoperability—not decorative polyglot signaling.
+It is not a language collection built for display. It is a governed engineering map: **36 technology floors**, **72 linked exhibits**, versioned interface contracts, explicit blockers, executable build gates, and deterministic receipts. A floor earns its role through runtime behavior, safety, performance, hardware fit, or interoperability—not decorative polyglot signaling.
 
 ## The system in one minute
 
@@ -23,9 +23,9 @@ It is not a language collection built for display. It is a governed engineering 
 
 | Governed surface | Count |
 |---|---:|
-| Technology floors | **35** |
-| Easy + advanced exhibits | **70** |
-| Behavioral proof floors | **15** |
+| Technology floors | **36** |
+| Easy + advanced exhibits | **72** |
+| Behavioral proof floors | **16** |
 | Formal proof floors | **3** |
 | Explicitly gated floors | **9** |
 
@@ -171,7 +171,7 @@ See [`flagship/README.md`](flagship/README.md) and run `python flagship/run_pipe
 
 ## Advanced Exhibit Atlas
 
-The easy exhibit teaches the technology. The advanced exhibit must own a real engineering boundary, expose failure behavior, and terminate in proof or an exact blocker. [`ADVANCED_EXHIBITS.md`](ADVANCED_EXHIBITS.md) publishes the signature engineering move and claim boundary for all 35 floors; [`quality/advanced_exhibit_atlas.json`](quality/advanced_exhibit_atlas.json) provides the same map to agents and automation.
+The easy exhibit teaches the technology. The advanced exhibit must own a real engineering boundary, expose failure behavior, and terminate in proof or an exact blocker. [`ADVANCED_EXHIBITS.md`](ADVANCED_EXHIBITS.md) publishes the signature engineering move and claim boundary for all 36 floors; [`quality/advanced_exhibit_atlas.json`](quality/advanced_exhibit_atlas.json) provides the same map to agents and automation.
 
 ## The thirty-floor map
 
@@ -217,6 +217,7 @@ The matrix is generated from the canonical registry. Change the registry and exh
 | 33 | **Cairo** `.cairo` | turing_complete_zk | A Turing-complete language for writing STARK-provable programs and zero-knowledge verification logic. | Starknet, STARK-based L2 rollups, verifiable AI inference, and privacy-preserving audit ledgers. | Use when off-chain state execution must produce cryptographically verifiable proof of correctness. | It allows complex off-chain execution to be mathematically proven on-chain via succinct cryptographic receipts. | `toolchain_gated` / `compile` | [easy_fib_proof.cairo](languages/cairo/easy_fib_proof.cairo) | [advanced_stark_governor.cairo](languages/cairo/advanced_stark_governor.cairo) |
 | 34 | **JAX (xAI Grok Flagship)** `.py` | tensor_autodiff | Autograd and XLA compiler framework for high-performance functional neural network compute. | Grok LLM training pipelines, xAI cluster orchestration, TPU/GPU distributed attention, and neural dynamics. | Use when building high-performance LLMs (Grok-scale), custom automatic differentiation, or XLA-compiled tensor transforms. | Powering Grok (xAI) and Gemini models with functional purity, automatic differentiation, and XLA kernel compilation. | `production_reference` / `behavioral` | [easy_grad_jit.py](languages/jax/easy_grad_jit.py) | [advanced_grok_distributed_mesh.py](languages/jax/advanced_grok_distributed_mesh.py) |
 | 35 | **Soufflé Datalog** `.dl` | logic_rules | Declarative logic programming language for high-speed static code analysis and security verification. | Vulnerability scanning, compiler program analysis, access control evaluation, and static call graph analysis. | Use when declarative rule-based query evaluation across large code graphs is required. | It resolves complex graph reachability, pointer analysis, and security policy rules in parallel C++ code. | `compiles` / `compile` | [easy_reachability.dl](languages/datalog/easy_reachability.dl) | [advanced_vulnerability_scanner.dl](languages/datalog/advanced_vulnerability_scanner.dl) |
+| 36 | **RHL-Quant (1.58b Ternary Quantization Flagship)** `.py` | tensor_compression | Post-training 2-level quantum-lattice quantization engine combining 1.58-bit ternary base with 2-bit sparse residual delta HLO mesh. | Frontier LLM deployment, VRAM constrained edge clusters, bitwise GPU matrix multiplication, and ultra-low memory inference. | Use when fitting massive MoE or dense LLMs onto minimal GPU VRAM hardware without perplexity degradation. | Shrinks 314-billion parameter LLM weights (Grok-1) from 628 GB down to ~65 GB, enabling full 314B MoE inference on a single 80GB H100 GPU. | `production_reference` / `behavioral` | [easy_ternary_scale.py](languages/rhl_quant/easy_ternary_scale.py) | [advanced_rhl_quant_engine.py](languages/rhl_quant/advanced_rhl_quant_engine.py) |
 
 </details>
 
@@ -249,6 +250,7 @@ The matrix is generated from the canonical registry. Change the registry and exh
 - **Orchestration And Ai** — Python
 - **Portable Systems** — Zig
 - **Pure Functional** — Haskell
+- **Quantization And Compression** — RHL-Quant (1.58b Ternary Quantization Flagship)
 - **Quantum Compute** — OpenQASM 3.0
 - **Sandbox Runtime** — WebAssembly
 - **Scientific Computing** — Julia

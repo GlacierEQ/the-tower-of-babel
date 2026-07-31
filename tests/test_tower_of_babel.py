@@ -20,14 +20,14 @@ from tower.registry import REPO_ROOT, TowerRegistry, load_registry, validate_reg
 
 def test_canonical_registry_governs_all_advertised_floors():
     registry = load_registry()
-    assert len(registry.technologies) == 35
+    assert len(registry.technologies) == 36
 
 def test_receipt_is_deterministic():
     first = build_receipt({"counts": {"VERIFIED": 3}})
     second = build_receipt({"counts": {"VERIFIED": 3}})
     assert first == second
     assert len(first["receipt_sha256"]) == 64
-    assert first["technology_count"] == 35
+    assert first["technology_count"] == 36
     assert not validate_registry(registry)
     assert {row["id"] for row in registry.technologies} >= {
         "python", "c", "rust", "typescript", "cuda", "verilog", "r",
@@ -166,7 +166,7 @@ def test_receipt_is_deterministic():
     second = build_receipt({"counts": {"VERIFIED": 3}})
     assert first == second
     assert len(first["receipt_sha256"]) == 64
-    assert first["technology_count"] == 35
+    assert first["technology_count"] == 36
 
 
 def test_tower_proto_contains_registry_and_megamind_contracts():
@@ -239,8 +239,8 @@ def test_topology_graph_and_dot_render():
     from tower.visualize import build_topology_graph, render_dot_graph
     registry = load_registry()
     graph = build_topology_graph(registry)
-    assert graph["node_count"] == 35
-    assert len(graph["nodes"]) == 35
+    assert graph["node_count"] == 36
+    assert len(graph["nodes"]) == 36
     dot = render_dot_graph(registry)
     assert "digraph TowerOfBabel" in dot
     assert 'node [shape=box' in dot
