@@ -2,7 +2,7 @@
   "file_count": 154,
   "hash_algorithm": "sha256",
   "hashes": {
-    ".github/workflows/advanced-exhibits.yml": "42ba2ea3147bdc875827ccdd9cdf3902d4600015d5dbbc1f01d515d719bd3da4",
+    ".github/workflows/advanced-exhibits.yml": "4748b5f8d7745601a141ecf10652027b9f7350c52546181719b508e63e541d55",
     ".github/workflows/branch-hygiene.yml": "a7e491e93d458cb13b4bcce1b2376a3dbd5969b7975bffbdd536f46a4206f0af",
     ".github/workflows/ci.yml": "199b0c7ac338d01734269d3b33897e5a19596193eff07ba2d57375e7ef5408a4",
     ".github/workflows/nervous-system-contract.yml": "da342c5fc8dd1402de23fa470f4a5a4f5013f95d0d50f941edf4faabe246a47e",
