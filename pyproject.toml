@@ -23,4 +23,4 @@ pythonpath = ["src", "."]
 testpaths = ["tests"]
 
 [tool.setuptools.package-data]
-tower = ["data/*.yml", "data/tower.d/*.json"]
+tower = ["data/*.yml", "data/*.json", "data/tower.d/*.json"]
