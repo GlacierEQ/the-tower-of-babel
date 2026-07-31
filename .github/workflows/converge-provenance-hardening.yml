@@ -33,12 +33,14 @@ jobs:
           python -m pip install --require-hashes -r requirements/ci.lock
           python -m pip install --no-deps --no-build-isolation -e .
 
-      - name: Apply one-time source-grounded contract corrections
+      - name: Apply one-time source-grounded corrections
         run: |
-          if [[ -f tools/patch_claim_contracts_once.py ]]; then
-            python tools/patch_claim_contracts_once.py
-            rm tools/patch_claim_contracts_once.py
-          fi
+          for helper in tools/patch_claim_contracts_once.py tools/patch_readme_generation_once.py; do
+            if [[ -f "${helper}" ]]; then
+              python "${helper}"
+              rm "${helper}"
+            fi
+          done
 
       - name: Generate and test canonical surfaces
         run: |
@@ -58,6 +60,6 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "chore: converge claim-contract generated surfaces"
+          git commit -m "chore: expose semantic claims and provenance surfaces"
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
