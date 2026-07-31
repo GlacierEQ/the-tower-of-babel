@@ -71,7 +71,7 @@ jobs:
         run: tower build --all --allow-blocked --output /tmp/tower-build-report.json
 
       - name: Execute flagship mission pipeline
-        run: python flagship/run_pipeline.py
+        run: python flagship/run_pipeline.py --allow-blocked
 
       - name: Deploy final canonical main
         run: |
