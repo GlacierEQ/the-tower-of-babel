@@ -1,3 +1,4 @@
+# Retry after repairing the standalone Go telemetry exhibit.
 name: README Masterclass Upgrade
 
 on:
@@ -56,7 +57,7 @@ jobs:
         run: |
           git config user.name "GlacierEQ Tower Automation"
           git config user.email "actions@users.noreply.github.com"
-          git add README.md src/tower/generate.py .integrity/file_hashes.json .github/workflows/readme-masterclass.yml .github/scripts/apply_readme_masterclass.py
+          git add README.md src/tower/generate.py .integrity/file_hashes.json languages/go/advanced_telemetry_decoder.go .github/workflows/readme-masterclass.yml .github/scripts/apply_readme_masterclass.py
           git diff --cached --check
           if git diff --cached --quiet; then
             echo "No README upgrade drift remained."
