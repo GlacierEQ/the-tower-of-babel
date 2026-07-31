@@ -1,103 +1,78 @@
 name: Branch Hygiene
 
 on:
-  push:
-    branches: [main]
   pull_request:
     types: [closed]
-  workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: branch-hygiene
+  group: branch-hygiene-${{ github.event.pull_request.number }}
   cancel-in-progress: false
 
 jobs:
-  converge-branches:
-    if: github.event_name != 'pull_request' || github.event.pull_request.merged == true
+  delete-merged-pr-head:
+    if: >-
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPOSITORY: ${{ github.repository }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      BRANCH: ${{ github.event.pull_request.head.ref }}
+      EXPECTED_SHA: ${{ github.event.pull_request.head.sha }}
     steps:
-      - name: Checkout canonical main
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-        with:
-          ref: main
-          fetch-depth: 0
-          persist-credentials: true
-
-      - name: Detect pending canonical convergence
-        id: promotion
+      - name: Verify and delete only the exact merged PR head
         shell: bash
         run: |
-          if [[ -f tools/promote_registry_and_cleanup.py || -f tools/finalize_advanced_nervous_merge.py ]]; then
-            echo "pending=true" >> "${GITHUB_OUTPUT}"
-            echo "Advanced Exhibit Gate owns the one-time convergence; branch hygiene will resume on its clean commit."
+          set -euo pipefail
+          mkdir -p artifacts
+
+          case "${BRANCH}" in
+            feature/*|fix/*|chore/*|docs/*|hardening/*|release/*|dependabot/*|renovate/*)
+              ;;
+            *)
+              echo "Refusing unapproved branch prefix: ${BRANCH}" >&2
+              exit 1
+              ;;
+          esac
+
+          if [[ "${BRANCH}" == "main" || "${BRANCH}" == "HEAD" ]]; then
+            echo "Refusing protected branch: ${BRANCH}" >&2
+            exit 1
+          fi
+
+          status="deleted"
+          remote_sha=""
+          if remote_sha=$(gh api "repos/${REPOSITORY}/git/ref/heads/${BRANCH}" --jq '.object.sha' 2>/dev/null); then
+            if [[ "${remote_sha}" != "${EXPECTED_SHA}" ]]; then
+              echo "Remote branch moved after merge; refusing deletion." >&2
+              echo "expected=${EXPECTED_SHA} observed=${remote_sha}" >&2
+              exit 1
+            fi
+            gh api --method DELETE "repos/${REPOSITORY}/git/refs/heads/${BRANCH}"
           else
-            echo "pending=false" >> "${GITHUB_OUTPUT}"
+            status="already_absent"
           fi
 
-      - uses: actions/setup-python@v5
-        if: steps.promotion.outputs.pending != 'true'
+          jq -n \
+            --arg schema "glaciereq.branch-hygiene.receipt.v1" \
+            --arg repository "${REPOSITORY}" \
+            --arg pr_number "${PR_NUMBER}" \
+            --arg branch "${BRANCH}" \
+            --arg expected_sha "${EXPECTED_SHA}" \
+            --arg observed_sha "${remote_sha}" \
+            --arg status "${status}" \
+            '{schema:$schema,repository:$repository,pr_number:($pr_number|tonumber),branch:$branch,expected_sha:$expected_sha,observed_sha:$observed_sha,status:$status}' \
+            > artifacts/branch-hygiene-receipt.json
+
+      - name: Upload branch-deletion receipt
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          python-version: "3.12"
-
-      - name: Remove merged and explicitly obsolete remote branches
-        if: steps.promotion.outputs.pending != 'true'
-        env:
-          EVENT_NAME: ${{ github.event_name }}
-          PR_BRANCH: ${{ github.event.pull_request.head.ref || '' }}
-          PR_HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name || '' }}
-          REPOSITORY: ${{ github.repository }}
-        run: |
-          set -euo pipefail
-
-          delete_branch() {
-            local branch="$1"
-            if [[ -z "${branch}" || "${branch}" == "main" || "${branch}" == "HEAD" ]]; then
-              return 0
-            fi
-            git check-ref-format --branch "${branch}" >/dev/null
-            if git ls-remote --exit-code --heads origin "refs/heads/${branch}" >/dev/null 2>&1; then
-              git push origin --delete "${branch}"
-            fi
-          }
-
-          if [[ "${EVENT_NAME}" == "pull_request" && "${PR_HEAD_REPO}" == "${REPOSITORY}" ]]; then
-            delete_branch "${PR_BRANCH}"
-          fi
-
-          git fetch --prune origin
-          while IFS= read -r branch; do
-            delete_branch "${branch}"
-          done < <(git branch -r --merged origin/main --format='%(refname:strip=3)')
-
-          delete_branch "feature/canonical-language-manifest"
-          delete_branch "feature/canonical-language-manifest-v2"
-
-      - name: Reseal and verify canonical main
-        if: steps.promotion.outputs.pending != 'true'
-        run: |
-          set -euo pipefail
-          python -m pip install -e .[dev]
-          tower integrity generate
-          tower validate
-          tower generate --check
-          pytest -q
-          tower integrity verify
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .integrity/file_hashes.json
-          if ! git diff --cached --quiet; then
-            git commit -m "chore: reseal canonical main integrity"
-            git push origin HEAD:main
-          fi
-
-      - name: Verify canonical topology
-        if: steps.promotion.outputs.pending != 'true'
-        run: |
-          set -euo pipefail
-          test -n "$(git ls-remote --heads origin refs/heads/main)"
-          test -z "$(git ls-remote --heads origin refs/heads/feature/canonical-language-manifest)"
-          test -z "$(git ls-remote --heads origin refs/heads/feature/canonical-language-manifest-v2)"
+          name: branch-hygiene-pr-${{ github.event.pull_request.number }}
+          path: artifacts/branch-hygiene-receipt.json
+          if-no-files-found: error
+          retention-days: 30

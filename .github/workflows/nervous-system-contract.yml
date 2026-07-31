@@ -3,23 +3,7 @@ name: Nervous System Contract
 on:
   push:
     branches: [main]
-    paths:
-      - README.md
-      - src/tower/generate.py
-      - governance/akos-nervous-system.v1.json
-      - .glaciereq/nervous-system.node.json
-      - scripts/validate_nervous_system.py
-      - tests/test_nervous_system_contract.py
-      - .github/workflows/nervous-system-contract.yml
   pull_request:
-    paths:
-      - README.md
-      - src/tower/generate.py
-      - governance/akos-nervous-system.v1.json
-      - .glaciereq/nervous-system.node.json
-      - scripts/validate_nervous_system.py
-      - tests/test_nervous_system_contract.py
-      - .github/workflows/nervous-system-contract.yml
   workflow_dispatch:
 
 permissions:
@@ -34,9 +18,10 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - name: Checkout exact head without persisted credentials
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Checkout literal head without persisted credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
 
       - name: Set up Python
@@ -44,14 +29,25 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install Tower
-        run: python -m pip install -e .
+      - name: Install hash-locked Tower environment
+        run: |
+          python -m pip install --require-hashes -r requirements/ci.lock
+          python -m pip install --no-deps --no-build-isolation -e .
 
       - name: Materialize and reject generated-surface drift
         run: |
           set -euo pipefail
           tower generate
-          git diff --exit-code -- README.md generated/ src/babel_registry.py mastermind_sidecar.py
+          git diff --exit-code -- README.md generated/ src/babel_registry.py mastermind_sidecar.py src/tower/data
 
       - name: Validate pinned nervous-system contract
         run: python scripts/validate_nervous_system.py --verify-remote --freshness
+
+  required-nervous-system-contract:
+    name: required-nervous-system-contract
+    if: always()
+    needs: [validate]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Require nervous-system validation
+        run: test "${{ needs.validate.result }}" = "success"

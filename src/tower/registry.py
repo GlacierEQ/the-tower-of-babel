@@ -1,12 +1,13 @@
 """Canonical Tower registry loader.
 
-``registry/tower.yml`` is the root authority. It may contain technology records
-inline or reference contained ``tower.d/*.json`` fragments. The index and every
-listed fragment form one canonical registry and one deterministic identity.
+``registry/tower.yml`` is the root authority. It references contained technology
+fragments and one contained advanced-claim contract fragment. Together they form
+one canonical registry, one deterministic identity, and one receipt boundary.
 """
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
@@ -22,6 +23,14 @@ _REQUIRED_TECH_FIELDS = {
     "easy_example", "advanced_example", "evidence_state", "proof_class",
     "toolchain", "execution", "interfaces", "megamind", "primary_evidence",
 }
+_REQUIRED_CLAIM_FIELDS = {
+    "signature_innovation",
+    "proof_surface",
+    "required_source_patterns",
+    "expected_failure_cases",
+    "required_receipt_fields",
+    "forbidden_claim_patterns",
+}
 
 
 @dataclass(frozen=True)
@@ -34,6 +43,16 @@ class TowerRegistry:
     def technologies(self) -> list[dict[str, Any]]:
         rows = self.payload.get("technologies", [])
         return list(rows) if isinstance(rows, list) else []
+
+    @property
+    def claim_contracts(self) -> dict[str, dict[str, Any]]:
+        rows = self.payload.get("claim_contracts", {})
+        return dict(rows) if isinstance(rows, dict) else {}
+
+    @property
+    def claim_contract_metadata(self) -> dict[str, Any]:
+        value = self.payload.get("claim_contract_metadata", {})
+        return dict(value) if isinstance(value, dict) else {}
 
     @property
     def fragment_files(self) -> tuple[Path, ...]:
@@ -60,6 +79,13 @@ class TowerRegistry:
                 isinstance(row_name, str) and row_name.casefold() == key
             ):
                 return row
+        return None
+
+    def claim_contract_for(self, technology_id: str) -> dict[str, Any] | None:
+        key = technology_id.casefold()
+        for contract_id, contract in self.claim_contracts.items():
+            if isinstance(contract_id, str) and contract_id.casefold() == key and isinstance(contract, dict):
+                return dict(contract)
         return None
 
     def iter_interfaces(self) -> Iterable[tuple[str, str]]:
@@ -137,15 +163,39 @@ def load_registry(path: Path | str | None = None) -> TowerRegistry:
                     seen.add(normalized_id)
                 technologies.append(row)
             source_files.append(fragment_path)
-        payload = {**index, "technologies": technologies}
+        payload: dict[str, Any] = {**index, "technologies": technologies}
     else:
-        payload = index
+        payload = dict(index)
+
+    contract_relative = index.get("claim_contracts")
+    if not isinstance(contract_relative, str) or not contract_relative:
+        raise ValueError("Tower registry claim_contracts must name a contained contract fragment")
+    contract_path = _contained_fragment(source, contract_relative)
+    contract_payload = _read_object(contract_path, "Tower advanced claim contracts")
+    contracts = contract_payload.get("contracts")
+    if not isinstance(contracts, dict):
+        raise ValueError("Tower advanced claim contracts must contain a contracts object")
+    source_files.append(contract_path)
+    payload["claim_contract_source"] = contract_relative
+    payload["claim_contracts"] = contracts
+    payload["claim_contract_metadata"] = {
+        key: value for key, value in contract_payload.items() if key != "contracts"
+    }
 
     return TowerRegistry(
         payload=payload,
         source=source,
         source_files=tuple(source_files),
     )
+
+
+def _validate_string_list(value: Any, label: str, errors: list[str], *, nonempty: bool = True) -> list[str]:
+    if not isinstance(value, list) or not all(isinstance(item, str) and item.strip() for item in value):
+        errors.append(f"{label} must be a list of non-empty strings")
+        return []
+    if nonempty and not value:
+        errors.append(f"{label} must not be empty")
+    return value
 
 
 def validate_registry(registry: TowerRegistry, *, check_paths: bool = True) -> list[str]:
@@ -163,8 +213,8 @@ def validate_registry(registry: TowerRegistry, *, check_paths: bool = True) -> l
     if not isinstance(fragments, list):
         errors.append("fragments must be a list")
         fragments = []
-    if fragments and len(registry.source_files) != len(fragments) + 1:
-        errors.append("every declared Tower fragment must be loaded")
+    if fragments and len(registry.source_files) != len(fragments) + 2:
+        errors.append("every declared Tower technology and claim-contract fragment must be loaded")
     technologies = payload.get("technologies")
     if not isinstance(technologies, list) or not technologies:
         return errors + ["technologies must be a non-empty list"]
@@ -240,5 +290,51 @@ def validate_registry(registry: TowerRegistry, *, check_paths: bool = True) -> l
                     errors.append(f"{tech_id}.{key} must stay inside the repository")
                 elif not (REPO_ROOT / rel).is_file():
                     errors.append(f"{tech_id}.{key} missing: {rel}")
+
+    contracts = registry.claim_contracts
+    normalized_contract_ids = {
+        key.casefold() for key in contracts if isinstance(key, str)
+    }
+    if normalized_contract_ids != ids:
+        missing = sorted(ids - normalized_contract_ids)
+        extra = sorted(normalized_contract_ids - ids)
+        if missing:
+            errors.append("missing advanced claim contracts: " + ", ".join(missing))
+        if extra:
+            errors.append("orphan advanced claim contracts: " + ", ".join(extra))
+
+    metadata = registry.claim_contract_metadata
+    if metadata.get("authority") != "registry/tower.yml":
+        errors.append("advanced claim contract authority must be registry/tower.yml")
+    if metadata.get("contract_type") != "advanced_exhibit_semantic_claims":
+        errors.append("advanced claim contract type is invalid")
+    if not isinstance(metadata.get("global_claim_boundary"), str) or len(metadata["global_claim_boundary"].strip()) < 40:
+        errors.append("advanced claim contracts require a substantive global_claim_boundary")
+
+    for contract_id, contract in contracts.items():
+        label = f"claim_contract[{contract_id}]"
+        if not isinstance(contract_id, str) or not isinstance(contract, dict):
+            errors.append(f"{label} must be an object keyed by technology id")
+            continue
+        missing = sorted(_REQUIRED_CLAIM_FIELDS - set(contract))
+        if missing:
+            errors.append(f"{label} missing fields: {', '.join(missing)}")
+            continue
+        for key in ("signature_innovation", "proof_surface"):
+            if not isinstance(contract.get(key), str) or len(contract[key].strip()) < 12:
+                errors.append(f"{label}.{key} must be a substantive string")
+        for key in (
+            "required_source_patterns",
+            "expected_failure_cases",
+            "required_receipt_fields",
+            "forbidden_claim_patterns",
+        ):
+            values = _validate_string_list(contract.get(key), f"{label}.{key}", errors)
+            if key.endswith("patterns"):
+                for pattern in values:
+                    try:
+                        re.compile(pattern, re.IGNORECASE)
+                    except re.error as exc:
+                        errors.append(f"{label}.{key} contains invalid regex {pattern!r}: {exc}")
 
     return errors
