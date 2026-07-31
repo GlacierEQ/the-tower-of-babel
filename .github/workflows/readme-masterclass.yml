@@ -38,7 +38,7 @@ jobs:
           start = source.index("def render_readme(registry: TowerRegistry) -> str:")
           end = source.index("\ndef render_runtime_registry", start)
 
-          replacement = r'''def render_readme(registry: TowerRegistry) -> str:
+          replacement = r"""def render_readme(registry: TowerRegistry) -> str:
               count = len(registry.technologies)
               exhibit_count = count * 2
               behavioral_count = sum(
@@ -48,8 +48,10 @@ jobs:
                   1 for tech in registry.technologies if tech["proof_class"] == "formal"
               )
               gated_count = sum(
-                  1 for tech in registry.technologies
-                  if tech["evidence_state"] in {"hardware_gated", "toolchain_gated", "service_gated"}
+                  1
+                  for tech in registry.technologies
+                  if tech["evidence_state"]
+                  in {"hardware_gated", "toolchain_gated", "service_gated"}
               )
               categories: dict[str, list[str]] = {}
               for tech in registry.technologies:
@@ -68,20 +70,20 @@ jobs:
 
 The Tower of Babel **decides where a technology belongs, explains why it belongs there, shows how it works, verifies the claim at the strongest available proof level, and exports the result for humans, software, and AI agents**.
 
-This is not a collection of languages arranged for display. It is a governed engineering map: {count} technology floors, {exhibit_count} linked exhibits, versioned interface contracts, explicit blockers, executable build gates, and deterministic receipts. A floor is activated because its runtime behavior, safety model, hardware relationship, or interoperability boundary earns the role—not because another language looks impressive in a repository graph.
+It is not a language collection built for display. It is a governed engineering map: **{count} technology floors**, **{exhibit_count} linked exhibits**, versioned interface contracts, explicit blockers, executable build gates, and deterministic receipts. A floor earns its role through runtime behavior, safety, performance, hardware fit, or interoperability—not decorative polyglot signaling.
 
 ## The system in one minute
 
-| Capability | What the Tower actually does |
+| Capability | What the Tower does |
 |---|---|
 | **Technology placement** | Records the What, Where, When, Why, and How for every admitted language, format, compiler layer, HDL, and proof system. |
 | **Executable learning path** | Pairs each floor with an approachable exhibit and a substantive advanced implementation. |
-| **Truthful verification** | Compiles, tests, benchmarks, integrates, or formally verifies a claim; unavailable hardware, tools, and services return exact blockers instead of false success. |
-| **Cross-language composition** | Publishes versioned interface edges so components can cooperate without duplicating responsibility. |
-| **Agent-readable authority** | Generates machine contracts for Megamind, Spiral Engine, Smithery publication metadata, build orchestration, maturity, and integration planning. |
+| **Truthful verification** | Compiles, tests, benchmarks, integrates, or formally verifies a claim; unavailable dependencies return exact blockers instead of false success. |
+| **Cross-language composition** | Publishes versioned interfaces so components cooperate without duplicating responsibility. |
+| **Agent-readable authority** | Generates contracts for Megamind, Spiral Engine, Smithery publication metadata, build orchestration, maturity, and integration planning. |
 | **Deterministic evidence** | Seals governed files and emits reproducible proof and release receipts. |
 
-| Current governed surface | Count |
+| Governed surface | Count |
 |---|---:|
 | Technology floors | **{count}** |
 | Easy + advanced exhibits | **{exhibit_count}** |
@@ -92,17 +94,17 @@ This is not a collection of languages arranged for display. It is a governed eng
 ## From mission to receipt
 
 ```text
-Human objective / agent mission / system requirement
+human objective / agent mission / system requirement
                          │
                          ▼
               Spiral or Megamind request
                          │
                          ▼
-          Canonical Tower technology contract
+          canonical Tower technology contract
        placement · interfaces · owners · proof gate
                          │
                          ▼
-         Build / test / benchmark / formal check
+         build / test / benchmark / formal check
                          │
           ┌──────────────┴──────────────┐
           ▼                             ▼
@@ -115,49 +117,48 @@ Human objective / agent mission / system requirement
  deterministic evidence receipt
 ```
 
-The result is reviewable at every boundary. A recruiter can see what the system accomplishes. An engineer can inspect the execution and failure semantics. An agent can initialize from the same canonical contracts without inventing a second architecture.
+A recruiter can see what the system accomplishes. An engineer can inspect execution and failure semantics. An agent initializes from the same canonical contracts without inventing a competing architecture.
 
 ## Start the Tower
 
 ```bash
 python -m pip install -e .[dev]
 
-# Confirm the canonical registry and all generated projections agree.
 tower validate
 tower generate --check
 tower integrity verify
 
-# Inspect, build, and measure one governed floor.
 tower spec rust
 tower build rust
 tower benchmark rust
-
-# Export agent ownership and technology-selection metadata.
 tower megamind-map
 
-# Generate a replayable cross-domain question with an explicit focus.
-tower spiral question --seed tower-demo --prompt-hint "safe multi-agent legal automation"
+tower spiral question \
+  --seed tower-demo \
+  --prompt-hint "safe multi-agent legal automation"
 
-# Run the strict multi-language reference pipeline.
 python flagship/run_pipeline.py
 ```
 
-A complete portable governance pass is available through:
+Run a complete portable governance pass:
 
 ```bash
 tower build --all --allow-blocked --output artifacts/build-report.json
-tower benchmark python c cpp rust go typescript webassembly --output artifacts/benchmarks.json
+tower benchmark python c cpp rust go typescript webassembly \
+  --output artifacts/benchmarks.json
 tower proof-report \
   --build-report artifacts/build-report.json \
   --benchmark-report artifacts/benchmarks.json \
   --allow-blocked \
   --output artifacts/proof-report.json
-tower receipt --build-report artifacts/build-report.json --output artifacts/tower_receipt.json
+tower receipt \
+  --build-report artifacts/build-report.json \
+  --output artifacts/tower_receipt.json
 ```
 
 ## Inside the engine
 
-`registry/tower.yml` is the root authority. It indexes the governed `registry/tower.d/*.json` fragments; every public and machine-readable projection is derived from that source.
+`registry/tower.yml` is the root authority. It indexes governed `registry/tower.d/*.json` fragments; the README and every machine-readable projection are derived from that source.
 
 ```text
 registry/tower.yml + tower.d fragments
@@ -175,7 +176,7 @@ registry/tower.yml + tower.d fragments
         └─────────┴─────────┴──────────┴───────────┘
                   │
                   ▼
-       build, benchmark, proof, receipt
+       build · benchmark · proof · receipt
 ```
 
 ### The engineering contract
@@ -183,18 +184,16 @@ registry/tower.yml + tower.d fragments
 A technology is admitted only when the registry establishes:
 
 - its unique responsibility and architectural boundary;
-- the conditions that activate it and the reasons another floor should not own that work;
+- its activation conditions and the reason another floor should not own the work;
 - an easy exhibit and an advanced exhibit;
 - a pinned toolchain reference, build/test commands, and execution tier;
-- hardware, service, or toolchain constraints;
+- hardware, service, and toolchain constraints;
 - cross-language interfaces and owning Megamind agents/pistons;
-- an evidence state and proof class that match checked-in verification.
+- an evidence state and proof class matching checked-in verification.
 
-Working components are extended rather than rewritten for novelty. The Tower rejects decorative polyglot design: a new language must provide measurable value at a clear boundary without duplicating a component that already works.
+Working components are extended rather than rewritten for novelty. A new language must provide measurable value at a clear boundary without duplicating a component that already works.
 
 ### Flagship polyglot mission
-
-The reference pipeline demonstrates composition rather than isolated syntax:
 
 ```text
 TypeScript ingress
@@ -214,18 +213,18 @@ Lean 4
 Tower receipt
 ```
 
-See [`flagship/README.md`](flagship/README.md) and execute it with `python flagship/run_pipeline.py`.
+See [`flagship/README.md`](flagship/README.md) and run `python flagship/run_pipeline.py`.
 
 ### Proof before promotion
 
 | Evidence state | Meaning |
 |---|---|
-| `illustrative` | The exhibit teaches syntax or the central concept; no stronger runtime claim is made. |
+| `illustrative` | Teaches syntax or the central concept; no stronger runtime claim is made. |
 | `compiles` | A pinned compiler or schema tool accepts the exhibit. |
 | `tested` | Automated behavioral checks pass. |
 | `benchmark` | A reproducible performance measurement exists. |
 | `hardware_gated` | The implementation is present but requires declared hardware. |
-| `toolchain_gated` | The implementation is present but its compiler is not in the portable CI image. |
+| `toolchain_gated` | The implementation is present but its compiler is absent from portable CI. |
 | `service_gated` | A declared external service is required. |
 | `formally_verified` | A proof kernel accepts the theorem. |
 | `integrated` | The floor participates in the flagship multi-language system. |
@@ -233,10 +232,10 @@ See [`flagship/README.md`](flagship/README.md) and execute it with `python flags
 
 ## The thirty-floor map
 
-The table is generated from the canonical registry. Edit the registry and its exhibits—not this README—to change a floor.
+The matrix is generated from the canonical registry. Change the registry and exhibits—not this README—to change a floor.
 
 <details>
-<summary><strong>Open the complete technology, placement, proof, and exhibit matrix</strong></summary>
+<summary><strong>Open the complete placement, proof, and exhibit matrix</strong></summary>
 
 {_markdown_table(registry)}
 
@@ -248,59 +247,57 @@ The table is generated from the canonical registry. Edit the registry and its ex
 
 ## Machine entrypoint
 
-An AI system should treat the Tower as an authority service, not as prose to imitate.
+An AI system should treat the Tower as an authority service, not prose to imitate.
 
 1. **Initialize** from `registry/tower.yml` or the generated Megamind map.
-2. **Resolve** a mission into required capabilities and interfaces.
+2. **Resolve** a mission into capabilities and interfaces.
 3. **Select** floors whose activation conditions and proof class satisfy the mission.
 4. **Reject** duplicated ownership, missing evidence, and undeclared interfaces.
-5. **Execute** through the generated build contract or a governed adapter.
-6. **Preserve** blockers, hashes, proof state, and receipts in downstream artifacts.
+5. **Execute** through generated build contracts or governed adapters.
+6. **Preserve** blockers, hashes, proof state, and receipts downstream.
 7. **Promote** capability only through an explicit admission or evidence update.
 
 ### Generated contract library
 
-| Surface | Role | Authority status |
+| Surface | Role | Status |
 |---|---|---|
 | [`registry/tower.yml`](registry/tower.yml) | Canonical index and governance root | **Authored authority** |
 | [`generated/build_commands.json`](generated/build_commands.json) | Toolchains, pins, build/test commands, and execution tiers | Generated |
 | [`generated/interfaces.json`](generated/interfaces.json) | Cross-language interface graph | Generated |
 | [`generated/maturity.json`](generated/maturity.json) | Evidence state, proof class, and exhibit locations | Generated |
-| [`generated/megamind.technology-map.json`](generated/megamind.technology-map.json) | Agent/piston ownership and activation map | Generated active export |
-| [`integrations/megamind/`](integrations/megamind/) | Typed Tower-to-Megamind adapter contracts | Executable integration surface |
-| [`generated/spiral-engine.registry.json`](generated/spiral-engine.registry.json) | Spiral admission metadata and technology edges | Declared metadata; runtime is executable |
-| [`src/tower/spiral.py`](src/tower/spiral.py) | Deterministic question, admission, override, audit, and receipt runtime | Operational-alpha |
+| [`generated/megamind.technology-map.json`](generated/megamind.technology-map.json) | Agent/piston ownership and activation map | Active export |
+| [`integrations/megamind/`](integrations/megamind/) | Typed Tower-to-Megamind adapter contracts | Executable surface |
+| [`generated/spiral-engine.registry.json`](generated/spiral-engine.registry.json) | Spiral metadata and technology edges | Declared metadata |
+| [`src/tower/spiral.py`](src/tower/spiral.py) | Question, admission, override, audit, and receipt runtime | Operational-alpha |
 | [`generated/smithery.registry.json`](generated/smithery.registry.json) | Smithery capability and publication contract | **Declared, not published** |
-| [`generated/link_library.md`](generated/link_library.md) | Curated primary evidence links for every floor | Generated reference library |
-| [`.integrity/file_hashes.json`](.integrity/file_hashes.json) | SHA-256 ledger for governed repository artifacts | Sealed verification surface |
+| [`generated/link_library.md`](generated/link_library.md) | Curated primary evidence for every floor | Generated library |
+| [`.integrity/file_hashes.json`](.integrity/file_hashes.json) | SHA-256 ledger for governed artifacts | Sealed surface |
 
 ### Portfolio mesh
 
-The Tower owns technology placement and proof. Connected repositories retain their own operational authority and consume Tower exports rather than maintaining competing language registries.
+The Tower owns technology placement and proof. Connected repositories retain their own operational authority and consume Tower exports rather than maintaining competing registries.
 
-| Repository | Relationship to the Tower | Current boundary |
+| Repository | Relationship | Boundary |
 |---|---|---|
-| [`GlacierEQ/AKOS`](https://github.com/GlacierEQ/AKOS) | Governance and agent-orchestration peer | Portfolio-level constitutional and execution doctrine; integration is contract-driven. |
-| [`GlacierEQ/job-app-helix`](https://github.com/GlacierEQ/job-app-helix) | Portfolio projection and evidence mesh | Presents repository capability and proof without becoming the technology authority. |
-| [`GlacierEQ/apex-control-plane`](https://github.com/GlacierEQ/apex-control-plane) | Control-plane peer | Execution and automation surface that can consume governed technology selections. |
+| [`GlacierEQ/AKOS`](https://github.com/GlacierEQ/AKOS) | Governance and agent-orchestration peer | Portfolio doctrine and execution governance; integration is contract-driven. |
+| [`GlacierEQ/job-app-helix`](https://github.com/GlacierEQ/job-app-helix) | Portfolio projection and evidence mesh | Presents capability and proof without becoming the technology authority. |
+| [`GlacierEQ/apex-control-plane`](https://github.com/GlacierEQ/apex-control-plane) | Control-plane peer | Execution and automation surface that can consume governed selections. |
 | [`GlacierEQ/apex-cli`](https://github.com/GlacierEQ/apex-cli) | Operator-facing peer | Command surface for downstream control-plane workflows. |
-| [`flagship/`](flagship/) | In-repository integration proof | Executes the strict polyglot mission contract across selected floors. |
+| [`flagship/`](flagship/) | In-repository integration proof | Executes the strict polyglot mission contract. |
 
-External links describe curated portfolio relationships, not an assertion that every repository is live-synchronized. The generated interface and ownership maps remain the machine-checkable source for actual Tower integration.
+External links describe curated portfolio relationships, not a claim that every repository is live-synchronized. Generated interfaces and ownership maps remain the machine-checkable integration source.
 
 ## Governance that survives automation
 
-- `main` is the living worker and completed functionality must land there.
+- `main` is the living worker; completed functionality lands there.
 - Generated surfaces are never hand-edited; `tower generate --check` rejects drift.
 - Every claim carries an evidence state and proof class.
 - Blocked hardware, tools, and services remain visible and machine-readable.
 - Cross-language interfaces are explicit and versioned.
 - Megamind consumes Tower exports and does not maintain a competing registry.
 - Smithery remains `declared-not-published` until an MCP package and external publication receipt exist.
-- The Spiral runtime is executable; its registry activation status remains `declared` until a separate governed promotion.
-- File integrity, build evidence, proof reports, and receipts are deterministic review surfaces.
-
-### Change a floor without breaking the Tower
+- The Spiral runtime is executable; registry activation remains `declared` until governed promotion.
+- Integrity, build evidence, proof reports, and receipts remain deterministic review surfaces.
 
 ```text
 edit canonical fragment
@@ -315,17 +312,17 @@ edit canonical fragment
     → review exact-head CI
 ```
 
-The governing details live in [`AGENTS.md`](AGENTS.md) and [`BRANCH_POLICY.md`](BRANCH_POLICY.md).
+See [`AGENTS.md`](AGENTS.md) and [`BRANCH_POLICY.md`](BRANCH_POLICY.md).
 
 ## Truth boundary
 
-The Tower is an **operational-alpha engineering authority**. It makes strong claims only where checked-in evidence supports them. Toolchain-, hardware-, and service-gated floors are intentionally reported as gated. Smithery publication is not claimed. External portfolio relationships are explicit architectural contracts unless a repository contains and verifies a live adapter.
+The Tower is an **operational-alpha engineering authority**. It makes strong claims only where checked-in evidence supports them. Toolchain-, hardware-, and service-gated floors remain explicitly gated. Smithery publication is not claimed. External portfolio relationships are architectural contracts unless a repository contains and verifies a live adapter.
 
 ## License
 
 MIT — see [`LICENSE`](LICENSE).
 '''
-          '''
+          """
 
           path.write_text(source[:start] + replacement + source[end:], encoding="utf-8")
           PY
@@ -333,7 +330,7 @@ MIT — see [`LICENSE`](LICENSE).
       - name: Install Tower
         run: python -m pip install -e .[dev]
 
-      - name: Regenerate governed surfaces
+      - name: Regenerate and reseal
         run: |
           tower validate
           python -m tower.generate
