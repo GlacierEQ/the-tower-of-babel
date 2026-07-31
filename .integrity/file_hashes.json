@@ -70,7 +70,7 @@
     "languages/flatbuffers/easy_user.fbs": "32ba610fba6ca7486553a82075025d2f78e4eaa79786365550c6cfec58fed15a",
     "languages/go/advanced_telemetry_decoder.go": "5e482cf014eb977afd5700b9d9cd7c982c14207f86afe133c960a6622fa6530b",
     "languages/go/advanced_telemetry_decoder_test.go": "9fb3b52612a49853538d869f41aa2a00e0420d408e550ea9ee350c3ac24d4005",
-    "languages/go/easy_ping.go": "3a5c1f2add8d07cdcfaebf8f65a7b87a64ffe3c8533219f26b4deb9f883a59d8",
+    "languages/go/easy_ping.go": "69fb50b6fc88de2ea197c0dd0130a662daa1056fc5dde8bcd8bd7534cdacc876",
     "languages/haskell/advanced_ast_validator.hs": "39f44a96f0671b8377d838b0422a38d5447d07dd2fc7fb035287aabc9d28b4d8",
     "languages/haskell/easy_tree.hs": "5ef3ad26d147b86e451f2ccde81399aa31216e0b2f092011491f0da73624872f",
     "languages/julia/advanced_orbital_differential.jl": "601e83ae32fe4a877ce0233726ca14fce0a0f25961e0331161a7ecee4022b881",
