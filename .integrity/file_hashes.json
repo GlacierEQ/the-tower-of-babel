@@ -1,5 +1,5 @@
 {
-  "file_count": 154,
+  "file_count": 156,
   "hash_algorithm": "sha256",
   "hashes": {
     ".github/workflows/advanced-exhibits.yml": "4748b5f8d7745601a141ecf10652027b9f7350c52546181719b508e63e541d55",
@@ -21,6 +21,7 @@
     "build.sbt": "bdb0c62227449451d3729206cb31a3e9576b1840f85a0433b96b2e7c50457398",
     "docs/BENCHMARKS_AND_PROOFS.md": "9363df58cf5e72f94aa0ab2d3d6c23d7db0e5cea05bfb966a51ce6d362d2164a",
     "docs/BUILD_ORDER.md": "c836b724c3f274ff531260a79c6d95a9e007361d98d89f6e8bce01122f3eb538",
+    "docs/JOB_APPLICATION_INTEGRATION.md": "b6e3afeab6b8d4a4a380bf44175a679f6f04363cab64f8e7ad5710c8328d80c5",
     "docs/SPIRAL_ENGINE.md": "5e9917bc723450b63fd918bc80a156c5ede9cb40f2109a57630e8d39e8d3191b",
     "examples/spiral/civilization_capability.json": "67d9839fa12dcb6ee5540e10a2f93068832fc841de09f203907c2f12a500737a",
     "flagship/README.md": "170fd0ce7ebd3746166893351df59e7a4e8190ef4f78c6198cb64940d16dae82",
@@ -121,6 +122,7 @@
     "pyproject.toml": "ed03b00a87b6c6fc8d6d5610e1a366c923885890454f7794370d48cd6ad31962",
     "quality/advanced_exhibit_atlas.json": "c98de43b88985eeb5965bb74aad658a31ed0dab6e9ea99e4a18974b51f71fc2d",
     "quality/exhibit_status.json": "c5cde5309cdb3eb5a307dd8f9e6d4857eba49ef29b3c7b635d3dce6a820073cd",
+    "quality/job_application_integration.json": "4a13c8a094468005cff723df110f16a49fef0ae8954224358d59bf0996c850f8",
     "registry/tower.d/compute-graphs.json": "38d3b10977fb62dc8163801fd1e52cc76c85b41daae7fe97530f3382cbf94535",
     "registry/tower.d/contracts-hardware.json": "bc4e350d36994b0658c9337f27ce524de45241c25e0c371ed1d4cf343fbe71ab",
     "registry/tower.d/formal.json": "a7a73157c251202203125a0aaa3f31d30326edcd1cd4571ba5be21bbb0ce2464",
