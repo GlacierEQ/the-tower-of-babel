@@ -28,10 +28,10 @@ const (
 )
 
 type TelemetryFrame struct {
-	Sequence     uint32
-	TimestampNS  uint64
+	Sequence    uint32
+	TimestampNS uint64
 	Temperature float32
-	PressurePA   float32
+	PressurePA  float32
 }
 
 type DecodeCode string
@@ -117,10 +117,10 @@ func (d *TelemetryDecoder) Decode(buf []byte) (TelemetryFrame, error) {
 	}
 
 	frame := TelemetryFrame{
-		Sequence:     binary.BigEndian.Uint32(buf[8:12]),
-		TimestampNS:  binary.BigEndian.Uint64(buf[12:20]),
+		Sequence:    binary.BigEndian.Uint32(buf[8:12]),
+		TimestampNS: binary.BigEndian.Uint64(buf[12:20]),
 		Temperature: math.Float32frombits(binary.BigEndian.Uint32(buf[20:24])),
-		PressurePA:   math.Float32frombits(binary.BigEndian.Uint32(buf[24:28])),
+		PressurePA:  math.Float32frombits(binary.BigEndian.Uint32(buf[24:28])),
 	}
 	if math.IsNaN(float64(frame.Temperature)) || math.IsInf(float64(frame.Temperature), 0) ||
 		math.IsNaN(float64(frame.PressurePA)) || math.IsInf(float64(frame.PressurePA), 0) {
@@ -213,10 +213,10 @@ func EncodeTelemetryFrame(frame TelemetryFrame) []byte {
 func main() {
 	decoder := NewTelemetryDecoder()
 	encoded := EncodeTelemetryFrame(TelemetryFrame{
-		Sequence:     1,
-		TimestampNS:  1_726_100_000_000_000_000,
+		Sequence:    1,
+		TimestampNS: 1_726_100_000_000_000_000,
 		Temperature: 21.5,
-		PressurePA:   101325,
+		PressurePA:  101325,
 	})
 	decoded, err := decoder.Decode(encoded)
 	if err != nil {

@@ -68,7 +68,7 @@
     "languages/elixir/easy_actor.ex": "ae8b80a355d310ddbeda33371ca8682bb4bfa4821af9178d933083d0c98e8b3d",
     "languages/flatbuffers/advanced_telemetry.fbs": "7004b371828e01e7247e18701db22bf5d8addf57c6c98028faefae7dd9f4e856",
     "languages/flatbuffers/easy_user.fbs": "32ba610fba6ca7486553a82075025d2f78e4eaa79786365550c6cfec58fed15a",
-    "languages/go/advanced_telemetry_decoder.go": "92fd1c5a857ed09427ae99577b5c7ad4226e1bf4bd92af58a70ca996149b9657",
+    "languages/go/advanced_telemetry_decoder.go": "5e482cf014eb977afd5700b9d9cd7c982c14207f86afe133c960a6622fa6530b",
     "languages/go/advanced_telemetry_decoder_test.go": "9fb3b52612a49853538d869f41aa2a00e0420d408e550ea9ee350c3ac24d4005",
     "languages/go/easy_ping.go": "3a5c1f2add8d07cdcfaebf8f65a7b87a64ffe3c8533219f26b4deb9f883a59d8",
     "languages/haskell/advanced_ast_validator.hs": "39f44a96f0671b8377d838b0422a38d5447d07dd2fc7fb035287aabc9d28b4d8",
