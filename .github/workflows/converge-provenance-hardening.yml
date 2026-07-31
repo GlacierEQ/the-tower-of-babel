@@ -33,6 +33,13 @@ jobs:
           python -m pip install --require-hashes -r requirements/ci.lock
           python -m pip install --no-deps --no-build-isolation -e .
 
+      - name: Apply one-time source-grounded contract corrections
+        run: |
+          if [[ -f tools/patch_claim_contracts_once.py ]]; then
+            python tools/patch_claim_contracts_once.py
+            rm tools/patch_claim_contracts_once.py
+          fi
+
       - name: Generate and test canonical surfaces
         run: |
           tower validate
@@ -44,8 +51,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git add README.md ADVANCED_EXHIBITS.md generated quality/advanced_exhibit_atlas.json \
-            src/babel_registry.py mastermind_sidecar.py src/tower/data
+          git add -A
           if git diff --cached --quiet; then
             echo "Generated surfaces already converge."
             exit 0
