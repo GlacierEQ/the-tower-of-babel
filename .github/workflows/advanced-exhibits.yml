@@ -75,9 +75,6 @@ jobs:
       - name: Validate canonical authority
         run: tower validate
 
-      - name: Validate nervous-system contract
-        run: python scripts/validate_nervous_system.py
-
       - name: Generate or verify derived surfaces
         shell: bash
         run: |
@@ -89,6 +86,9 @@ jobs:
             tower generate --check
             python tools/audit_advanced_exhibits.py --check
           fi
+
+      - name: Validate nervous-system contract
+        run: python scripts/validate_nervous_system.py
 
       - name: Run repository tests
         run: pytest -q
