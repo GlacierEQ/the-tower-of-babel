@@ -26,13 +26,13 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
-      - name: Detect pending advanced-exhibit promotion
+      - name: Detect pending canonical convergence
         id: promotion
         shell: bash
         run: |
-          if [[ -f tools/promote_registry_and_cleanup.py ]]; then
+          if [[ -f tools/promote_registry_and_cleanup.py || -f tools/finalize_advanced_nervous_merge.py ]]; then
             echo "pending=true" >> "${GITHUB_OUTPUT}"
-            echo "Advanced Exhibit Gate owns this one-time promotion; branch hygiene will resume on its clean commit."
+            echo "Advanced Exhibit Gate owns the one-time convergence; branch hygiene will resume on its clean commit."
           else
             echo "pending=false" >> "${GITHUB_OUTPUT}"
           fi
