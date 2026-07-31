@@ -28,10 +28,10 @@ const (
 )
 
 type TelemetryFrame struct {
-	Sequence    uint32
-	TimestampNS uint64
+	Sequence     uint32
+	TimestampNS  uint64
 	Temperature float32
-	PressurePA  float32
+	PressurePA   float32
 }
 
 type DecodeCode string
@@ -117,10 +117,10 @@ func (d *TelemetryDecoder) Decode(buf []byte) (TelemetryFrame, error) {
 	}
 
 	frame := TelemetryFrame{
-		Sequence:    binary.BigEndian.Uint32(buf[8:12]),
-		TimestampNS: binary.BigEndian.Uint64(buf[12:20]),
+		Sequence:     binary.BigEndian.Uint32(buf[8:12]),
+		TimestampNS:  binary.BigEndian.Uint64(buf[12:20]),
 		Temperature: math.Float32frombits(binary.BigEndian.Uint32(buf[20:24])),
-		PressurePA:  math.Float32frombits(binary.BigEndian.Uint32(buf[24:28])),
+		PressurePA:   math.Float32frombits(binary.BigEndian.Uint32(buf[24:28])),
 	}
 	if math.IsNaN(float64(frame.Temperature)) || math.IsInf(float64(frame.Temperature), 0) ||
 		math.IsNaN(float64(frame.PressurePA)) || math.IsInf(float64(frame.PressurePA), 0) {
@@ -208,4 +208,29 @@ func EncodeTelemetryFrame(frame TelemetryFrame) []byte {
 	binary.BigEndian.PutUint32(buf[24:28], math.Float32bits(frame.PressurePA))
 	binary.BigEndian.PutUint32(buf[28:32], crc32.ChecksumIEEE(buf[:28]))
 	return buf
+}
+
+func main() {
+	decoder := NewTelemetryDecoder()
+	encoded := EncodeTelemetryFrame(TelemetryFrame{
+		Sequence:     1,
+		TimestampNS:  1_726_100_000_000_000_000,
+		Temperature: 21.5,
+		PressurePA:   101325,
+	})
+	decoded, err := decoder.Decode(encoded)
+	if err != nil {
+		panic(err)
+	}
+	metrics := decoder.Metrics()
+	fmt.Printf(
+		"status=VERIFIED sequence=%d timestamp_ns=%d temperature_c=%.1f pressure_pa=%.0f decoded=%d rejected=%d gaps=%d\n",
+		decoded.Sequence,
+		decoded.TimestampNS,
+		decoded.Temperature,
+		decoded.PressurePA,
+		metrics.Decoded,
+		metrics.Rejected,
+		metrics.SequenceGaps,
+	)
 }
