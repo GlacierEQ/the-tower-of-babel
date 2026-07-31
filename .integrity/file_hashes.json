@@ -59,7 +59,7 @@
     "lake-manifest.json": "b9ea68a50a4029d4fdb9b7acfc112695780e0ed4db28a09414449e7701a70219",
     "lakefile.lean": "2c6aaf8490856f7463cf578bae221079a03166a62cdb498c25029e74ea1b5c8d",
     "languages/agda/advanced_capability_lattice.agda": "10711c4144664bcb1ecae6b1067d989fe850528c73f424887423ce562a361963",
-    "languages/agda/easy_logic.agda": "6a653c6fa16a01f55d651ed3750644862c47f65513b947fef732880606a00e",
+    "languages/agda/easy_logic.agda": "6a653c6fa16a1a01f55d651ed3750644862c47f65513b947fef732880606a00e",
     "languages/c/advanced_lockfree_spsc_ring.c": "bbe721986673aefd419ac4261a5bf68a88e6c5b8a4782ed3195d3fe6b7a203bb",
     "languages/c/easy_linked_list.c": "0ad7bd8b518d7725909540329d65f2d1605204633d52b5a74fdc053ce0dcedaf",
     "languages/capnproto/advanced_agent_mesh.capnp": "6a12c55595f3878cb9e979a48d6ea369aa9cf73fa05822b6df83c11a1ee3896f",
