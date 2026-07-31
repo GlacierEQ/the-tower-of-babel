@@ -1,0 +1,526 @@
+{
+  "advanced_exhibit_count": 30,
+  "all_profiles_present": true,
+  "authority": "registry/tower.yml",
+  "exhibits": [
+    {
+      "activation_condition": "Use when deterministic layout, ABI control, or near-zero runtime overhead is mandatory.",
+      "advanced_exhibit": "languages/c/advanced_lockfree_spsc_ring.c",
+      "architectural_role": "Firmware, kernels, embedded loops, lock-free primitives, and portable system libraries.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "tested",
+      "id": "c",
+      "interfaces": [
+        "c_abi",
+        "shared_memory"
+      ],
+      "maturity_tier": "proof-grade",
+      "proof_class": "behavioral",
+      "proof_surface": "bounded queue, atomics, FIFO and backpressure receipt",
+      "signature_innovation": "Lock-free SPSC telemetry handoff",
+      "technology": "C"
+    },
+    {
+      "activation_condition": "Use when performance and complex abstractions must coexist in one native binary.",
+      "advanced_exhibit": "languages/cpp/advanced_kv_entropy.cpp",
+      "architectural_role": "Engines, inference runtimes, cache systems, geometry, simulation, and latency-sensitive services.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "tested",
+      "id": "cpp",
+      "interfaces": [
+        "c_abi",
+        "protobuf"
+      ],
+      "maturity_tier": "proof-grade",
+      "proof_class": "behavioral",
+      "proof_surface": "deterministic utility scoring, pinned retention and decision fingerprint",
+      "signature_innovation": "Entropy-aware KV cache policy",
+      "technology": "C++"
+    },
+    {
+      "activation_condition": "Use when native performance and strong memory/concurrency guarantees are both non-negotiable.",
+      "advanced_exhibit": "languages/rust/advanced_safety_governor.rs",
+      "architectural_role": "Evidence engines, action governors, cryptographic tooling, network services, and safe concurrency.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "tested",
+      "id": "rust",
+      "interfaces": [
+        "protobuf",
+        "c_abi",
+        "capnp"
+      ],
+      "maturity_tier": "proof-grade",
+      "proof_class": "behavioral",
+      "proof_surface": "fail-closed path, payload, depth and approval policy",
+      "signature_innovation": "Typed side-effect safety governor",
+      "technology": "Rust"
+    },
+    {
+      "activation_condition": "Use when cross-target delivery, allocator control, or C integration dominates.",
+      "advanced_exhibit": "languages/zig/advanced_arena_allocator.zig",
+      "architectural_role": "Portable CLIs, allocators, cross-compilation, embedded tools, and small runtime components.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "tested",
+      "id": "zig",
+      "interfaces": [
+        "c_abi",
+        "wasm"
+      ],
+      "maturity_tier": "proof-grade",
+      "proof_class": "behavioral",
+      "proof_surface": "arena lifetime, deduplication and hard sample ceiling",
+      "signature_innovation": "Mission-scoped allocator discipline",
+      "technology": "Zig"
+    },
+    {
+      "activation_condition": "Use when data layout, allocator visibility, and predictable control flow are central.",
+      "advanced_exhibit": "languages/odin/advanced_reentry_thermal.odin",
+      "architectural_role": "Game engines, physics, visualization, and deterministic real-time loops.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "toolchain_gated",
+      "id": "odin",
+      "interfaces": [
+        "c_abi"
+      ],
+      "maturity_tier": "explicitly-gated-reference",
+      "proof_class": "compile",
+      "proof_surface": "explicit physical bounds, ablation and mission diagnostics",
+      "signature_innovation": "Data-oriented thermal integration",
+      "technology": "Odin"
+    },
+    {
+      "activation_condition": "Use when iteration speed, ecosystem breadth, and readable coordination dominate the boundary.",
+      "advanced_exhibit": "languages/python/advanced_async_orchestrator.py",
+      "architectural_role": "Mission orchestration, model tooling, document pipelines, tests, and integration glue.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "tested",
+      "id": "python",
+      "interfaces": [
+        "protobuf",
+        "json",
+        "subprocess"
+      ],
+      "maturity_tier": "proof-grade",
+      "proof_class": "behavioral",
+      "proof_surface": "bounded queues, FIFO ties, futures, retries and graceful shutdown",
+      "signature_innovation": "Drainable priority agent runtime",
+      "technology": "Python"
+    },
+    {
+      "activation_condition": "Use when many I/O-bound tasks need straightforward concurrency and operational simplicity.",
+      "advanced_exhibit": "languages/go/advanced_telemetry_decoder.go",
+      "architectural_role": "Gateways, control-plane daemons, streaming telemetry, and cloud infrastructure.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "tested",
+      "id": "go",
+      "interfaces": [
+        "protobuf",
+        "grpc",
+        "http"
+      ],
+      "maturity_tier": "proof-grade",
+      "proof_class": "behavioral",
+      "proof_surface": "CRC, frame bounds, sequence continuity, cancellation and metrics",
+      "signature_innovation": "Versioned telemetry trust boundary",
+      "technology": "Go"
+    },
+    {
+      "activation_condition": "Use when the boundary is web-native, JSON/RPC-heavy, or shared between frontend and backend.",
+      "advanced_exhibit": "languages/typescript/advanced_mcp_gateway.ts",
+      "architectural_role": "MCP gateways, web applications, browser agents, connectors, and asynchronous control surfaces.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "tested",
+      "id": "typescript",
+      "interfaces": [
+        "jsonrpc",
+        "mcp",
+        "protobuf"
+      ],
+      "maturity_tier": "proof-grade",
+      "proof_class": "behavioral",
+      "proof_surface": "runtime validation, mutation approval, rate limiting and hashed receipts",
+      "signature_innovation": "Governed MCP/JSON-RPC gateway",
+      "technology": "TypeScript"
+    },
+    {
+      "activation_condition": "Use when the target is Apple's runtime, UI stack, or GPU/ANE ecosystem.",
+      "advanced_exhibit": "languages/swift/advanced_metal_compute_engine.swift",
+      "architectural_role": "macOS/iOS applications, Apple Silicon inference, Metal compute, and device-native interfaces.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "hardware_gated",
+      "id": "swift",
+      "interfaces": [
+        "metal",
+        "coreml"
+      ],
+      "maturity_tier": "explicitly-gated-reference",
+      "proof_class": "hardware",
+      "proof_surface": "GPU dispatch with CPU reference and an explicit no-ANE claim boundary",
+      "signature_innovation": "Metal affine-clamp engine",
+      "technology": "Swift"
+    },
+    {
+      "activation_condition": "Use when fault isolation, uptime, and highly concurrent messaging dominate.",
+      "advanced_exhibit": "languages/elixir/advanced_fault_tolerant_beam.ex",
+      "architectural_role": "Realtime backends, event systems, self-healing clusters, and coordination services.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "tested",
+      "id": "elixir",
+      "interfaces": [
+        "protobuf",
+        "http",
+        "events"
+      ],
+      "maturity_tier": "proof-grade",
+      "proof_class": "behavioral",
+      "proof_surface": "duplicate rejection and observed process replacement after failure",
+      "signature_innovation": "Supervised idempotent mission worker",
+      "technology": "Elixir"
+    },
+    {
+      "activation_condition": "Use when algebraic structure and purity simplify reasoning about complex state.",
+      "advanced_exhibit": "languages/haskell/advanced_ast_validator.hs",
+      "architectural_role": "Compilers, DSLs, formal models, financial logic, and correctness-sensitive transformations.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "compiles",
+      "id": "haskell",
+      "interfaces": [
+        "protobuf",
+        "ffi"
+      ],
+      "maturity_tier": "verified-reference",
+      "proof_class": "compile",
+      "proof_surface": "algebraic decisions, lexical path safety and deterministic receipt",
+      "signature_innovation": "Pure capability-policy AST validation",
+      "technology": "Haskell"
+    },
+    {
+      "activation_condition": "Use when statistical methodology and domain packages matter more than service deployment.",
+      "advanced_exhibit": "languages/r/advanced_bayesian_ab_test.R",
+      "architectural_role": "Experiments, Bayesian analysis, biostatistics, forecasting, and reproducible reports.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "tested",
+      "id": "r",
+      "interfaces": [
+        "csv",
+        "arrow",
+        "sql"
+      ],
+      "maturity_tier": "proof-grade",
+      "proof_class": "behavioral",
+      "proof_surface": "ROPE, HDI and expected loss without MCMC or Bayes-factor overclaim",
+      "signature_innovation": "Exact Beta-Binomial decision analysis",
+      "technology": "R"
+    },
+    {
+      "activation_condition": "Use when researchers need expressive mathematics without abandoning native-speed kernels.",
+      "advanced_exhibit": "languages/julia/advanced_orbital_differential.jl",
+      "architectural_role": "ODE/PDE solvers, optimization, scientific machine learning, and simulation.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "tested",
+      "id": "julia",
+      "interfaces": [
+        "arrow",
+        "c_abi"
+      ],
+      "maturity_tier": "proof-grade",
+      "proof_class": "behavioral",
+      "proof_surface": "velocity-Verlet propagation with conservation drift diagnostics",
+      "signature_innovation": "Energy-audited orbital integration",
+      "technology": "Julia"
+    },
+    {
+      "activation_condition": "Use when durable data relationships and set-oriented operations belong inside the database.",
+      "advanced_exhibit": "languages/sql/advanced_pgvector_hnsw.sql",
+      "architectural_role": "Canonical state, analytics, audit records, knowledge graphs, and embedding search.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "service_gated",
+      "id": "sql",
+      "interfaces": [
+        "postgresql",
+        "arrow"
+      ],
+      "maturity_tier": "explicitly-gated-reference",
+      "proof_class": "integration",
+      "proof_surface": "HNSW retrieval, RLS, constraints and bounded search function",
+      "signature_innovation": "Tenant-isolated vector evidence store",
+      "technology": "SQL / pgvector"
+    },
+    {
+      "activation_condition": "Use when profiling proves GPU compute or memory movement is the dominant bottleneck.",
+      "advanced_exhibit": "languages/cuda/advanced_reference_attention.cu",
+      "architectural_role": "Attention, matrix multiplication, simulation, image processing, and custom inference kernels.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "hardware_gated",
+      "id": "cuda",
+      "interfaces": [
+        "c_abi",
+        "dlpack"
+      ],
+      "maturity_tier": "explicitly-gated-reference",
+      "proof_class": "hardware",
+      "proof_surface": "stable softmax and GPU validation without a FlashAttention claim",
+      "signature_innovation": "Audited reference attention kernel",
+      "technology": "CUDA"
+    },
+    {
+      "activation_condition": "Use after profiling shows framework kernels are inadequate and the target GPU is supported.",
+      "advanced_exhibit": "languages/triton/advanced_fused_attention.py",
+      "architectural_role": "Fused attention, normalization, quantization, MoE routing, and custom inference operations.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "hardware_gated",
+      "id": "triton",
+      "interfaces": [
+        "python",
+        "dlpack",
+        "mlir"
+      ],
+      "maturity_tier": "explicitly-gated-reference",
+      "proof_class": "benchmark",
+      "proof_surface": "one-program fusion, Torch oracle and latency benchmark",
+      "signature_innovation": "Bounded fused single-query attention",
+      "technology": "Triton"
+    },
+    {
+      "activation_condition": "Use when Python ergonomics must reach native or accelerator performance in one language.",
+      "advanced_exhibit": "languages/mojo/advanced_simd_tensor_kernel.mojo",
+      "architectural_role": "AI kernels, SIMD tensor code, model serving components, and MLIR-backed optimization.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "toolchain_gated",
+      "id": "mojo",
+      "interfaces": [
+        "python",
+        "mlir"
+      ],
+      "maturity_tier": "explicitly-gated-reference",
+      "proof_class": "compile",
+      "proof_surface": "explicit pointers and vector width without unsupported TPU branding",
+      "signature_innovation": "SIMD affine-clamp tensor kernel",
+      "technology": "Mojo"
+    },
+    {
+      "activation_condition": "Use when a model must move between frameworks or run across multiple inference backends.",
+      "advanced_exhibit": "languages/onnx/advanced_moe_router.py",
+      "architectural_role": "Model exchange, runtime deployment, graph inspection, optimization, and hardware-provider selection.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "tested",
+      "id": "onnx",
+      "interfaces": [
+        "onnxruntime",
+        "tensorrt",
+        "coreml"
+      ],
+      "maturity_tier": "proof-grade",
+      "proof_class": "behavioral",
+      "proof_surface": "model checking, reference execution and deterministic expert ordering",
+      "signature_innovation": "Portable top-k MoE router graph",
+      "technology": "ONNX"
+    },
+    {
+      "activation_condition": "Use when one operation must be progressively transformed from domain semantics to machine code.",
+      "advanced_exhibit": "languages/mlir/advanced_attention_pipeline.mlir",
+      "architectural_role": "Compiler pipelines, tensor lowering, accelerator backends, DSLs, and hardware-specific optimization.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "toolchain_gated",
+      "id": "mlir",
+      "interfaces": [
+        "llvm",
+        "triton",
+        "mojo"
+      ],
+      "maturity_tier": "explicitly-gated-reference",
+      "proof_class": "compile",
+      "proof_surface": "SSA tensor contract prepared for canonicalization and loop/vector passes",
+      "signature_innovation": "Destination-style attention score lowering",
+      "technology": "MLIR"
+    },
+    {
+      "activation_condition": "Use when untrusted or portable code must run within explicit host capabilities.",
+      "advanced_exhibit": "languages/wat/advanced_wasm_sandbox.wat",
+      "architectural_role": "Browser modules, plugin systems, edge runtimes, and zero-trust agent tools.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "tested",
+      "id": "webassembly",
+      "interfaces": [
+        "wasi",
+        "component_model"
+      ],
+      "maturity_tier": "proof-grade",
+      "proof_class": "behavioral",
+      "proof_surface": "memory bounds, denied-operation immutability and audit counters",
+      "signature_innovation": "Capability- and fuel-bounded tool sandbox",
+      "technology": "WebAssembly"
+    },
+    {
+      "activation_condition": "Use when multiple languages need one evolvable typed contract.",
+      "advanced_exhibit": "languages/protobuf/advanced_colossus_cooling.proto",
+      "architectural_role": "Service contracts, telemetry, receipts, registries, and cross-language mission envelopes.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "tested",
+      "id": "protobuf",
+      "interfaces": [
+        "grpc",
+        "binary",
+        "protojson"
+      ],
+      "maturity_tier": "proof-grade",
+      "proof_class": "behavioral",
+      "proof_surface": "schema evolution, oneof authority, deterministic serialization and hashes",
+      "signature_innovation": "Cooling command and receipt contract",
+      "technology": "Protocol Buffers"
+    },
+    {
+      "activation_condition": "Use when read latency and allocation avoidance dominate and schema evolution remains required.",
+      "advanced_exhibit": "languages/flatbuffers/advanced_telemetry.fbs",
+      "architectural_role": "Games, mobile state, telemetry, embedded inference, and latency-sensitive local IPC.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "compiles",
+      "id": "flatbuffers",
+      "interfaces": [
+        "binary",
+        "shared_memory"
+      ],
+      "maturity_tier": "verified-reference",
+      "proof_class": "compile",
+      "proof_surface": "typed samples, file identity and prior-frame integrity field",
+      "signature_innovation": "Hash-linked zero-copy telemetry frame",
+      "technology": "FlatBuffers"
+    },
+    {
+      "activation_condition": "Use when serialized messages and authority-bearing RPC references must share one model.",
+      "advanced_exhibit": "languages/capnproto/advanced_agent_mesh.capnp",
+      "architectural_role": "Low-latency distributed systems, secure object capabilities, storage engines, and agent IPC.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "compiles",
+      "id": "capnproto",
+      "interfaces": [
+        "capability_rpc",
+        "binary"
+      ],
+      "maturity_tier": "verified-reference",
+      "proof_class": "compile",
+      "proof_surface": "authority-bearing specialist references and typed receipts",
+      "signature_innovation": "Capability-oriented agent mesh RPC",
+      "technology": "Cap'n Proto"
+    },
+    {
+      "activation_condition": "Use when the output must become gates, registers, and wires rather than software instructions.",
+      "advanced_exhibit": "languages/verilog/advanced_weight_stationary_dot_array.v",
+      "architectural_role": "FPGA prototypes, ASIC blocks, counters, pipelines, and arithmetic units.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "compiles",
+      "id": "verilog",
+      "interfaces": [
+        "axi",
+        "rtl"
+      ],
+      "maturity_tier": "verified-reference",
+      "proof_class": "compile",
+      "proof_surface": "registered coefficients, widened signed accumulation and valid timing",
+      "signature_innovation": "Weight-stationary dot-product datapath",
+      "technology": "Verilog"
+    },
+    {
+      "activation_condition": "Use when hardware design needs stronger typing, interfaces, or executable assertions.",
+      "advanced_exhibit": "languages/systemverilog/advanced_systolic_array.sv",
+      "architectural_role": "ASIC/FPGA design, protocol interfaces, constrained verification, and accelerator pipelines.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "compiles",
+      "id": "systemverilog",
+      "interfaces": [
+        "axi",
+        "rtl",
+        "sva"
+      ],
+      "maturity_tier": "verified-reference",
+      "proof_class": "compile",
+      "proof_surface": "explicit systolic dataflow and temporal accumulator invariants",
+      "signature_innovation": "Assertion-bearing 2x2 MAC mesh",
+      "technology": "SystemVerilog"
+    },
+    {
+      "activation_condition": "Use when hardware correctness, strong typing, and long-lived certification-oriented design dominate.",
+      "advanced_exhibit": "languages/vhdl/advanced_fault_tolerant_voter.vhd",
+      "architectural_role": "Aerospace, defense, FPGA control logic, safety-critical digital systems, and reusable IP.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "compiles",
+      "id": "vhdl",
+      "interfaces": [
+        "rtl"
+      ],
+      "maturity_tier": "verified-reference",
+      "proof_class": "compile",
+      "proof_surface": "majority result, mismatch signal and all-lanes-disagree assertion",
+      "signature_innovation": "Triple-modular-redundancy voter",
+      "technology": "VHDL"
+    },
+    {
+      "activation_condition": "Use when hardware should be generated from reusable abstractions rather than copied RTL.",
+      "advanced_exhibit": "languages/chisel/advanced_noc_router.scala",
+      "architectural_role": "RISC-V processors, reusable accelerators, networks-on-chip, and parameterized hardware families.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "toolchain_gated",
+      "id": "chisel",
+      "interfaces": [
+        "firrtl",
+        "verilog"
+      ],
+      "maturity_tier": "explicitly-gated-reference",
+      "proof_class": "compile",
+      "proof_surface": "destination routing, round-robin arbitration and Decoupled backpressure",
+      "signature_innovation": "Parameterized NoC router generator",
+      "technology": "Chisel"
+    },
+    {
+      "activation_condition": "Use when a critical property must be proven rather than sampled by tests.",
+      "advanced_exhibit": "languages/lean4/advanced_truth_gate_proof.lean",
+      "architectural_role": "Safety invariants, receipt-chain correctness, mathematics, and verified decision gates.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "formally_verified",
+      "id": "lean4",
+      "interfaces": [
+        "proof_certificate"
+      ],
+      "maturity_tier": "proof-grade",
+      "proof_class": "formal",
+      "proof_surface": "kernel-checked action ordering and non-regressing sequence property",
+      "signature_innovation": "Monotone authority and receipt proofs",
+      "technology": "Lean 4"
+    },
+    {
+      "activation_condition": "Use when constructive proofs, extraction, or mature proof libraries fit the assurance case.",
+      "advanced_exhibit": "languages/coq/advanced_receipt_chain.v",
+      "architectural_role": "Verified compilers, protocols, cryptography, semantics, and critical algorithms.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "formally_verified",
+      "id": "coq",
+      "interfaces": [
+        "proof_certificate"
+      ],
+      "maturity_tier": "proof-grade",
+      "proof_class": "formal",
+      "proof_surface": "constructive chain-step and ordered-list invariants",
+      "signature_innovation": "Linked receipt-chain ordering proof",
+      "technology": "Coq"
+    },
+    {
+      "activation_condition": "Use when the implementation and proof should inhabit the same expressive dependent type system.",
+      "advanced_exhibit": "languages/agda/advanced_capability_lattice.agda",
+      "architectural_role": "Protocol models, type-safe DSLs, mathematical structures, and certified transformations.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention or production readiness.",
+      "evidence_state": "formally_verified",
+      "id": "agda",
+      "interfaces": [
+        "proof_certificate",
+        "haskell"
+      ],
+      "maturity_tier": "proof-grade",
+      "proof_class": "formal",
+      "proof_surface": "total transitivity proof and impossible destructive downgrade case",
+      "signature_innovation": "Dependent capability lattice",
+      "technology": "Agda"
+    }
+  ],
+  "generated_by": "tools/audit_advanced_exhibits.py",
+  "schema_version": 1
+}

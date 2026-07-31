@@ -1,0 +1,118 @@
+name: Advanced Exhibit Gate
+
+on:
+  push:
+    branches: [main, hardening/advanced-exhibits]
+    paths:
+      - "languages/**"
+      - "registry/**"
+      - "src/tower/generate.py"
+      - "tools/audit_advanced_exhibits.py"
+      - "tools/promote_registry_and_cleanup.py"
+      - "tools/finalize_advanced_nervous_merge.py"
+      - "tests/test_advanced_exhibits.py"
+      - ".glaciereq/nervous-system.node.json"
+      - "scripts/validate_nervous_system.py"
+      - ".github/workflows/advanced-exhibits.yml"
+      - ".github/workflows/nervous-system-contract.yml"
+  pull_request:
+    paths:
+      - "languages/**"
+      - "registry/**"
+      - "src/tower/generate.py"
+      - "tools/audit_advanced_exhibits.py"
+      - "tools/promote_registry_and_cleanup.py"
+      - "tools/finalize_advanced_nervous_merge.py"
+      - "tests/test_advanced_exhibits.py"
+      - ".glaciereq/nervous-system.node.json"
+      - "scripts/validate_nervous_system.py"
+      - ".github/workflows/advanced-exhibits.yml"
+      - ".github/workflows/nervous-system-contract.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: advanced-exhibits-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify-and-promote:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout exact head
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Apply one-time convergence
+        id: promotion
+        shell: bash
+        run: |
+          set -euo pipefail
+          applied=false
+          if [[ -f tools/promote_registry_and_cleanup.py ]]; then
+            python tools/promote_registry_and_cleanup.py
+            rm tools/promote_registry_and_cleanup.py
+            applied=true
+          fi
+          if [[ -f tools/finalize_advanced_nervous_merge.py ]]; then
+            python tools/finalize_advanced_nervous_merge.py
+            rm tools/finalize_advanced_nervous_merge.py
+            applied=true
+          fi
+          echo "applied=${applied}" >> "${GITHUB_OUTPUT}"
+
+      - name: Install Tower
+        run: python -m pip install -e .[dev]
+
+      - name: Validate canonical authority
+        run: tower validate
+
+      - name: Generate or verify derived surfaces
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ steps.promotion.outputs.applied }}" == "true" ]]; then
+            tower generate
+            python tools/audit_advanced_exhibits.py --write
+          else
+            tower generate --check
+            python tools/audit_advanced_exhibits.py --check
+          fi
+
+      - name: Validate nervous-system contract
+        run: python scripts/validate_nervous_system.py
+
+      - name: Run repository tests
+        run: pytest -q
+
+      - name: Execute all governed exhibit gates
+        run: tower build --all --allow-blocked --output /tmp/advanced-exhibit-build-report.json
+
+      - name: Seal or verify integrity
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ steps.promotion.outputs.applied }}" == "true" ]]; then
+            tower integrity generate
+          fi
+          tower integrity verify
+
+      - name: Promote generated convergence commit
+        if: steps.promotion.outputs.applied == 'true' && github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: finalize advanced exhibit and nervous-system convergence"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

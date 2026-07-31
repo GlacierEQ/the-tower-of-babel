@@ -80,7 +80,7 @@ def test_weak_advanced_exhibits_are_substantive():
     minimum_bytes = {
         "languages/rust/advanced_safety_governor.rs": 2500,
         "languages/typescript/advanced_mcp_gateway.ts": 2500,
-        "languages/cuda/advanced_flash_attn_kernel.cu": 2000,
+        "languages/cuda/advanced_reference_attention.cu": 2000,
         "languages/lean4/advanced_truth_gate_proof.lean": 700,
         "languages/protobuf/advanced_colossus_cooling.proto": 900,
     }

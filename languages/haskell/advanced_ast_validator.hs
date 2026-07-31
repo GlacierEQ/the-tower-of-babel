@@ -60,9 +60,9 @@ splitOnSlash value = go value [] []
     go (char : rest) current parts = go rest (char : current) parts
 
 safeRelativePath :: FilePath -> Either ValidationError FilePath
+safeRelativePath [] = Left (EmptyIdentifier "path")
+safeRelativePath path@('/' : _) = Left (UnsafeRelativePath path)
 safeRelativePath path
-  | null path = Left (EmptyIdentifier "path")
-  | head path == '/' = Left (UnsafeRelativePath path)
   | '\\' `elem` path = Left (UnsafeRelativePath path)
   | any invalidSegment segments = Left (UnsafeRelativePath path)
   | otherwise = Right (intercalate "/" segments)

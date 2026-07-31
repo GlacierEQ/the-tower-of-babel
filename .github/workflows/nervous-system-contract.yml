@@ -2,9 +2,21 @@ name: Nervous System Contract
 on:
   push:
     branches: [main]
-    paths: [README.md, .glaciereq/nervous-system.node.json, scripts/validate_nervous_system.py, .github/workflows/nervous-system-contract.yml]
+    paths:
+      - README.md
+      - src/tower/generate.py
+      - tools/finalize_advanced_nervous_merge.py
+      - .glaciereq/nervous-system.node.json
+      - scripts/validate_nervous_system.py
+      - .github/workflows/nervous-system-contract.yml
   pull_request:
-    paths: [README.md, .glaciereq/nervous-system.node.json, scripts/validate_nervous_system.py, .github/workflows/nervous-system-contract.yml]
+    paths:
+      - README.md
+      - src/tower/generate.py
+      - tools/finalize_advanced_nervous_merge.py
+      - .glaciereq/nervous-system.node.json
+      - scripts/validate_nervous_system.py
+      - .github/workflows/nervous-system-contract.yml
   workflow_dispatch:
 permissions:
   contents: read
@@ -15,4 +27,14 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: '3.12'}
-      - run: python scripts/validate_nervous_system.py
+      - name: Materialize generated nervous-system surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -f tools/finalize_advanced_nervous_merge.py ]]; then
+            python tools/finalize_advanced_nervous_merge.py
+          fi
+          python -m pip install -e .
+          tower generate
+      - name: Validate nervous-system contract
+        run: python scripts/validate_nervous_system.py

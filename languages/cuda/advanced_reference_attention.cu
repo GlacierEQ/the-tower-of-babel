@@ -1,4 +1,4 @@
-// Advanced CUDA exhibit: reference scaled dot-product attention kernel.
+// CUDA — Advanced Example: Audited Reference Scaled Dot-Product Attention.
 // This is an auditable correctness reference, not a claim to implement the
 // production FlashAttention algorithm. Evidence class: hardware_gated.
 
@@ -63,9 +63,7 @@ int main() {
     if (!cuda_ok(cudaMemcpy(k, host.data(), bytes, cudaMemcpyHostToDevice), "cudaMemcpy(k)")) goto cleanup;
     if (!cuda_ok(cudaMemcpy(v, host.data(), bytes, cudaMemcpyHostToDevice), "cudaMemcpy(v)")) goto cleanup;
 
-    reference_attention<<<sequence, 1, sequence * sizeof(float)>>>(
-        q, k, v, out, sequence, dimension
-    );
+    reference_attention<<<sequence, 1, sequence * sizeof(float)>>>(q, k, v, out, sequence, dimension);
     if (!cuda_ok(cudaGetLastError(), "reference_attention launch")) goto cleanup;
     if (!cuda_ok(cudaDeviceSynchronize(), "reference_attention execution")) goto cleanup;
     if (!cuda_ok(cudaMemcpy(host.data(), out, bytes, cudaMemcpyDeviceToHost), "cudaMemcpy(out)")) goto cleanup;
@@ -76,7 +74,10 @@ int main() {
             goto cleanup;
         }
     }
-    std::printf("attention[0]=%.6f verified\n", host[0]);
+    std::printf(
+        "{\"status\":\"VERIFIED\",\"algorithm\":\"reference-scaled-dot-product-attention\",\"sequence\":%d,\"dimension\":%d,\"attention_0\":%.6f,\"claim_boundary\":\"not FlashAttention\"}\n",
+        sequence, dimension, host[0]
+    );
     exit_code = EXIT_SUCCESS;
 
 cleanup:

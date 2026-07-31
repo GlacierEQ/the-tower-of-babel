@@ -26,11 +26,24 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
+      - name: Detect pending canonical convergence
+        id: promotion
+        shell: bash
+        run: |
+          if [[ -f tools/promote_registry_and_cleanup.py || -f tools/finalize_advanced_nervous_merge.py ]]; then
+            echo "pending=true" >> "${GITHUB_OUTPUT}"
+            echo "Advanced Exhibit Gate owns the one-time convergence; branch hygiene will resume on its clean commit."
+          else
+            echo "pending=false" >> "${GITHUB_OUTPUT}"
+          fi
+
       - uses: actions/setup-python@v5
+        if: steps.promotion.outputs.pending != 'true'
         with:
           python-version: "3.12"
 
       - name: Remove merged and explicitly obsolete remote branches
+        if: steps.promotion.outputs.pending != 'true'
         env:
           EVENT_NAME: ${{ github.event_name }}
           PR_BRANCH: ${{ github.event.pull_request.head.ref || '' }}
@@ -59,12 +72,11 @@ jobs:
             delete_branch "${branch}"
           done < <(git branch -r --merged origin/main --format='%(refname:strip=3)')
 
-          # One-time convergence for superseded pre-canonical branches. Keeping
-          # these names here is harmless and prevents accidental resurrection.
           delete_branch "feature/canonical-language-manifest"
           delete_branch "feature/canonical-language-manifest-v2"
 
       - name: Reseal and verify canonical main
+        if: steps.promotion.outputs.pending != 'true'
         run: |
           set -euo pipefail
           python -m pip install -e .[dev]
@@ -83,6 +95,7 @@ jobs:
           fi
 
       - name: Verify canonical topology
+        if: steps.promotion.outputs.pending != 'true'
         run: |
           set -euo pipefail
           test -n "$(git ls-remote --heads origin refs/heads/main)"

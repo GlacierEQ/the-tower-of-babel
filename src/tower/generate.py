@@ -225,6 +225,10 @@ See [`flagship/README.md`](flagship/README.md) and run `python flagship/run_pipe
 | `integrated` | The floor participates in the flagship multi-language system. |
 | `production_reference` | Operational failure handling, observability, and deployment evidence exist. |
 
+## Advanced Exhibit Atlas
+
+The easy exhibit teaches the technology. The advanced exhibit must own a real engineering boundary, expose failure behavior, and terminate in proof or an exact blocker. [`ADVANCED_EXHIBITS.md`](ADVANCED_EXHIBITS.md) publishes the signature engineering move and claim boundary for all {count} floors; [`quality/advanced_exhibit_atlas.json`](quality/advanced_exhibit_atlas.json) provides the same map to agents and automation.
+
 ## The thirty-floor map
 
 The matrix is generated from the canonical registry. Change the registry and exhibits—not this README—to change a floor.
@@ -274,7 +278,11 @@ The Tower owns technology placement and proof. Connected repositories retain the
 
 | Repository | Relationship | Boundary |
 |---|---|---|
-| [`GlacierEQ/AKOS`](https://github.com/GlacierEQ/AKOS) | Governance and agent-orchestration peer | Portfolio doctrine and execution governance; integration is contract-driven. |
+| [`GlacierEQ/AKOS`](https://github.com/GlacierEQ/AKOS) | Governance and agent-orchestration authority | Canonical governance, evidence, completion, and operating-sequence contract. |
+| [`GlacierEQ/aspen-grove-core`](https://github.com/GlacierEQ/aspen-grove-core) | Memory and context-continuity peer | Preserves durable context and continuity without competing with Tower placement authority. |
+| [`GlacierEQ/apex-boot-core`](https://github.com/GlacierEQ/apex-boot-core) | Identity and initialization peer | Activates identity, capability, and initialization contracts before governed execution. |
+| [`GlacierEQ/Pro_Code`](https://github.com/GlacierEQ/Pro_Code) | Engineering doctrine peer | Publishes standards, doctrine, and playbooks consumed by implementation systems. |
+| [`GlacierEQ/pro-code`](https://github.com/GlacierEQ/pro-code) | Governed engineering-execution peer | Executes, verifies, cures, and persists engineering changes under shared governance. |
 | [`GlacierEQ/job-app-helix`](https://github.com/GlacierEQ/job-app-helix) | Portfolio projection and evidence mesh | Presents capability and proof without becoming the technology authority. |
 | [`GlacierEQ/apex-control-plane`](https://github.com/GlacierEQ/apex-control-plane) | Control-plane peer | Execution and automation surface that can consume governed selections. |
 | [`GlacierEQ/apex-cli`](https://github.com/GlacierEQ/apex-cli) | Operator-facing peer | Command surface for downstream control-plane workflows. |
