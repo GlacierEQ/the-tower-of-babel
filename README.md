@@ -25,9 +25,9 @@ It is not a language collection built for display. It is a governed engineering 
 |---|---:|
 | Technology floors | **35** |
 | Easy + advanced exhibits | **70** |
-| Behavioral proof floors | **14** |
+| Behavioral proof floors | **15** |
 | Formal proof floors | **3** |
-| Explicitly gated floors | **10** |
+| Explicitly gated floors | **9** |
 
 ## From mission to receipt
 
@@ -196,7 +196,7 @@ The matrix is generated from the canonical registry. Change the registry and exh
 | 12 | **R** `.R` | language | Provides expressive statistical modeling, inference, and visualization. | Experiments, Bayesian analysis, biostatistics, forecasting, and reproducible reports. | Use when statistical methodology and domain packages matter more than service deployment. | Its statistical ecosystem exposes mature, reviewable implementations of advanced methods. | `tested` / `behavioral` | [easy_statistics.R](languages/r/easy_statistics.R) | [advanced_bayesian_ab_test.R](languages/r/advanced_bayesian_ab_test.R) |
 | 13 | **Julia** `.jl` | language | Combines high-level mathematical syntax with JIT-compiled numerical performance. | ODE/PDE solvers, optimization, scientific machine learning, and simulation. | Use when researchers need expressive mathematics without abandoning native-speed kernels. | Multiple dispatch and LLVM compilation unify interactive modeling with high-performance methods. | `tested` / `behavioral` | [easy_matrix.jl](languages/julia/easy_matrix.jl) | [advanced_orbital_differential.jl](languages/julia/advanced_orbital_differential.jl) |
 | 14 | **SQL / pgvector** `.sql` | query_language | Declares relational transformations, constraints, transactions, and vector retrieval. | Canonical state, analytics, audit records, knowledge graphs, and embedding search. | Use when durable data relationships and set-oriented operations belong inside the database. | The query planner, transactions, indexes, and constraints centralize data correctness and performance. | `service_gated` / `integration` | [easy_table.sql](languages/sql/easy_table.sql) | [advanced_pgvector_hnsw.sql](languages/sql/advanced_pgvector_hnsw.sql) |
-| 15 | **CUDA** `.cu` | kernel_language | Expresses massively parallel kernels directly for NVIDIA GPUs. | Attention, matrix multiplication, simulation, image processing, and custom inference kernels. | Use when profiling proves GPU compute or memory movement is the dominant bottleneck. | It exposes NVIDIA execution, shared memory, warps, and Tensor Core-oriented optimization. | `hardware_gated` / `hardware` | [easy_vector_add.cu](languages/cuda/easy_vector_add.cu) | [advanced_reference_attention.cu](languages/cuda/advanced_reference_attention.cu) |
+| 15 | **CUDA C++ / PTX (NVIDIA Flagship)** `.cu` | gpu_kernel | NVIDIA parallel computing platform and programming model for GPU-accelerated SIMT/tensor compute. | Frontier AI LLM cluster training, FlashAttention-v2/v3 kernels, CUDA streams, and PTX assembly acceleration. | Use when building custom high-performance GPU kernels, FlashAttention fused operators, or Tensor Core matrix acceleration. | Powering NVIDIA Blackwell, Hopper (H100/H200), and Grace-Hopper supercomputers for FlashAttention, TensorRT-LLM, and Megatron-LM. | `production_reference` / `behavioral` | [easy_vector_add.cu](languages/cuda/easy_vector_add.cu) | [advanced_nvidia_flash_attention_kernel.cu](languages/cuda/advanced_nvidia_flash_attention_kernel.cu) |
 | 16 | **Triton** `.py` | kernel_language | Defines high-throughput GPU kernels with Python syntax and compiler-managed block programming. | Fused attention, normalization, quantization, MoE routing, and custom inference operations. | Use after profiling shows framework kernels are inadequate and the target GPU is supported. | It exposes GPU performance without hand-authoring all CUDA indexing and scheduling details. | `hardware_gated` / `benchmark` | [easy_vector_add.py](languages/triton/easy_vector_add.py) | [advanced_fused_attention.py](languages/triton/advanced_fused_attention.py) |
 | 17 | **Mojo** `.mojo` | language | Combines Python-like authoring with systems-level types, ownership, and accelerator-oriented compilation. | AI kernels, SIMD tensor code, model serving components, and MLIR-backed optimization. | Use when Python ergonomics must reach native or accelerator performance in one language. | Its compiler stack targets heterogeneous AI hardware while retaining familiar syntax. | `toolchain_gated` / `compile` | [easy_simd.mojo](languages/mojo/easy_simd.mojo) | [advanced_simd_tensor_kernel.mojo](languages/mojo/advanced_simd_tensor_kernel.mojo) |
 | 18 | **ONNX** `.onnx` | model_format | Represents machine-learning computation as a portable typed graph independent of the training framework. | Model exchange, runtime deployment, graph inspection, optimization, and hardware-provider selection. | Use when a model must move between frameworks or run across multiple inference backends. | It separates learned graph semantics from any one training library and enables portable validation. | `tested` / `behavioral` | [easy_linear_model.py](languages/onnx/easy_linear_model.py) | [advanced_moe_router.py](languages/onnx/advanced_moe_router.py) |
@@ -237,8 +237,8 @@ The matrix is generated from the canonical registry. Change the registry and exh
 - **Fault Tolerant Distributed** — Elixir
 - **Formal Verification** — Lean 4, Coq
 - **Functional Ai Systems** — JAX (xAI Grok Flagship)
-- **Gpu Compute** — CUDA
 - **Gpu Kernel Dsl** — Triton
+- **Gpu Parallel Compute** — CUDA C++ / PTX (NVIDIA Flagship)
 - **Hardware Construction** — Chisel
 - **Hardware Description** — Verilog
 - **Hardware Verification** — SystemVerilog

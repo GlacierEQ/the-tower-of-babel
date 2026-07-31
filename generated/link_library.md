@@ -43,8 +43,9 @@
 - https://www.postgresql.org/docs/
 - https://github.com/pgvector/pgvector
 
-## CUDA
-- https://docs.nvidia.com/cuda/
+## CUDA C++ / PTX (NVIDIA Flagship)
+- https://developer.nvidia.com/cuda-zone
+- https://github.com/Dao-AILab/FlashAttention
 
 ## Triton
 - https://triton-lang.org/main/index.html

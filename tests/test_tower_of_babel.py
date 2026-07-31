@@ -229,9 +229,9 @@ def test_megamind_adapter_short_capability_not_displaced_by_prefix():
     assert "go" in res["technology_ids"]
 
 
-def test_receipt_has_body_sha256():
+def test_receipt_v2_has_sha256_field():
     rec = build_receipt({"counts": {"VERIFIED": 1}})
-    assert "body_sha256" in rec
+    assert "receipt_sha256" in rec
     assert rec["body_sha256"] == rec["receipt_sha256"]
 
 

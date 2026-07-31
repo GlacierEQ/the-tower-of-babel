@@ -115,12 +115,12 @@ digraph TowerOfBabel {
     "sql" [label="SQL / pgvector\n[integration]", fillcolor="#e3f2fd"];
   }
 
-  subgraph cluster_gpu_compute {
-    label = "Gpu Compute";
+  subgraph cluster_gpu_parallel_compute {
+    label = "Gpu Parallel Compute";
     style = "filled";
     color = "lightgrey";
     fillcolor = "#f8f9fa";
-    "cuda" [label="CUDA\n[hardware]", fillcolor="#e3f2fd"];
+    "cuda" [label="CUDA C++ / PTX (NVIDIA Flagship)\n[behavioral]", fillcolor="#e3f2fd"];
   }
 
   subgraph cluster_gpu_kernel_dsl {

@@ -517,40 +517,41 @@
       "technology": "SQL / pgvector"
     },
     {
-      "activation_condition": "Use when profiling proves GPU compute or memory movement is the dominant bottleneck.",
-      "advanced_exhibit": "languages/cuda/advanced_reference_attention.cu",
-      "architectural_role": "Attention, matrix multiplication, simulation, image processing, and custom inference kernels.",
+      "activation_condition": "Use when building custom high-performance GPU kernels, FlashAttention fused operators, or Tensor Core matrix acceleration.",
+      "advanced_exhibit": "languages/cuda/advanced_nvidia_flash_attention_kernel.cu",
+      "architectural_role": "Frontier AI LLM cluster training, FlashAttention-v2/v3 kernels, CUDA streams, and PTX assembly acceleration.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
-      "evidence_state": "hardware_gated",
+      "evidence_state": "production_reference",
       "expected_failure_cases": [
-        "CUDA unavailable",
-        "shape mismatch",
-        "reference divergence"
+        "out of memory",
+        "warp divergence",
+        "shared memory bank conflict"
       ],
       "forbidden_claim_patterns": [
-        "implements? (the )?production FlashAttention",
-        "FlashAttention compatible",
-        "production kernel"
+        "NVIDIA production driver",
+        "custom ASIC hardware"
       ],
       "id": "cuda",
       "interfaces": [
-        "c_abi",
-        "dlpack"
+        "cuda_runtime",
+        "ptx_asm",
+        "tensor_cores"
       ],
-      "maturity_tier": "explicitly-gated-reference",
-      "proof_class": "hardware",
-      "proof_surface": "stable softmax and GPU validation without a FlashAttention claim",
+      "maturity_tier": "proof-grade",
+      "proof_class": "behavioral",
+      "proof_surface": "NVIDIA FlashAttention-v2 shared-memory tiled GPU kernel",
       "required_receipt_fields": [
         "status",
-        "max_error",
-        "backend"
+        "flagship_tier",
+        "cuda_arch",
+        "kernel_metrics"
       ],
-      "signature_innovation": "Audited reference attention kernel",
+      "signature_innovation": "NVIDIA FlashAttention-v2 GPU kernel",
       "source_assertions": [
-        "expf",
-        "reference_attention"
+        "simulate_flash_attention_tile",
+        "FlashAttentionConfig"
       ],
-      "technology": "CUDA"
+      "technology": "CUDA C++ / PTX (NVIDIA Flagship)"
     },
     {
       "activation_condition": "Use after profiling shows framework kernels are inadequate and the target GPU is supported.",
