@@ -236,6 +236,46 @@ digraph TowerOfBabel {
     "agda" [label="Agda\n[formal]", fillcolor="#e3f2fd"];
   }
 
+  subgraph cluster_kernel_tracing_and_security {
+    label = "Kernel Tracing And Security";
+    style = "filled";
+    color = "lightgrey";
+    fillcolor = "#f8f9fa";
+    "ebpf" [label="eBPF\n[compile]", fillcolor="#e3f2fd"];
+  }
+
+  subgraph cluster_quantum_compute {
+    label = "Quantum Compute";
+    style = "filled";
+    color = "lightgrey";
+    fillcolor = "#f8f9fa";
+    "openqasm" [label="OpenQASM 3.0\n[compile]", fillcolor="#e3f2fd"];
+  }
+
+  subgraph cluster_zero_knowledge_proofs {
+    label = "Zero Knowledge Proofs";
+    style = "filled";
+    color = "lightgrey";
+    fillcolor = "#f8f9fa";
+    "cairo" [label="Cairo\n[compile]", fillcolor="#e3f2fd"];
+  }
+
+  subgraph cluster_functional_ai_systems {
+    label = "Functional Ai Systems";
+    style = "filled";
+    color = "lightgrey";
+    fillcolor = "#f8f9fa";
+    "jax" [label="JAX\n[behavioral]", fillcolor="#e3f2fd"];
+  }
+
+  subgraph cluster_declarative_static_analysis {
+    label = "Declarative Static Analysis";
+    style = "filled";
+    color = "lightgrey";
+    fillcolor = "#f8f9fa";
+    "datalog" [label="Soufflé Datalog\n[compile]", fillcolor="#e3f2fd"];
+  }
+
   "cpp" -> "protobuf" [label="protobuf"];
   "rust" -> "protobuf" [label="protobuf"];
   "python" -> "protobuf" [label="protobuf"];

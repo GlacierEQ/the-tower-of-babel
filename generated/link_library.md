@@ -91,3 +91,18 @@
 ## Agda
 - https://agda.readthedocs.io/
 
+## eBPF
+- https://ebpf.io/docs/
+
+## OpenQASM 3.0
+- https://openqasm.com/
+
+## Cairo
+- https://cairo-lang.org/docs/
+
+## JAX
+- https://jax.readthedocs.io/
+
+## Soufflé Datalog
+- https://souffle-lang.github.io/
+

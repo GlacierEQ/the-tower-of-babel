@@ -5,8 +5,10 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from tower.registry import REPO_ROOT, load_registry, validate_registry
 
 PLACEHOLDERS = [

@@ -1,5 +1,5 @@
 {
-  "advanced_exhibit_count": 30,
+  "advanced_exhibit_count": 35,
   "all_claim_contracts_present": true,
   "all_profiles_present": true,
   "authority": [
@@ -1081,6 +1081,181 @@
         "trans|downgrade"
       ],
       "technology": "Agda"
+    },
+    {
+      "activation_condition": "Use when kernel-level observability, network packet filtering, or syscall enforcement is required at line rate.",
+      "advanced_exhibit": "languages/ebpf/advanced_syscall_sentinel.bpf.c",
+      "architectural_role": "Linux kernel tracing, Cilium networking, Falco security auditing, and socket performance profiling.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
+      "evidence_state": "compiles",
+      "expected_failure_cases": [
+        "unapproved syscall",
+        "map allocation failure",
+        "verifier rejection"
+      ],
+      "forbidden_claim_patterns": [
+        "kernel security bypass",
+        "production intrusion prevention"
+      ],
+      "id": "ebpf",
+      "interfaces": [
+        "c_abi",
+        "bpf_map"
+      ],
+      "maturity_tier": "verified-reference",
+      "proof_class": "compile",
+      "proof_surface": "kernel syscall execve sentinel",
+      "required_receipt_fields": [
+        "trace_sys_execve",
+        "kprobe",
+        "execve"
+      ],
+      "signature_innovation": "Kernel syscall sentinel",
+      "source_assertions": [
+        "kprobe",
+        "execve|sys_execve"
+      ],
+      "technology": "eBPF"
+    },
+    {
+      "activation_condition": "Use when constructing quantum circuits, Bell states, or hybrid quantum-classical algorithms.",
+      "advanced_exhibit": "languages/openqasm/advanced_grover_oracle.qasm",
+      "architectural_role": "IBM Quantum, AWS Braket, Rigetti, QPU simulators, and quantum error correction algorithms.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
+      "evidence_state": "toolchain_gated",
+      "expected_failure_cases": [
+        "qubit decoherence",
+        "gate fidelity error",
+        "invalid measurement"
+      ],
+      "forbidden_claim_patterns": [
+        "physical quantum supremacy",
+        "hardware QPU execution"
+      ],
+      "id": "openqasm",
+      "interfaces": [
+        "qasm_ir"
+      ],
+      "maturity_tier": "explicitly-gated-reference",
+      "proof_class": "compile",
+      "proof_surface": "3-qubit Grover oracle superposition and diffusion",
+      "required_receipt_fields": [
+        "q",
+        "c",
+        "cz"
+      ],
+      "signature_innovation": "Grover search oracle circuit",
+      "source_assertions": [
+        "cz",
+        "Grover|oracle"
+      ],
+      "technology": "OpenQASM 3.0"
+    },
+    {
+      "activation_condition": "Use when off-chain state execution must produce cryptographically verifiable proof of correctness.",
+      "advanced_exhibit": "languages/cairo/advanced_stark_governor.cairo",
+      "architectural_role": "Starknet, STARK-based L2 rollups, verifiable AI inference, and privacy-preserving audit ledgers.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
+      "evidence_state": "toolchain_gated",
+      "expected_failure_cases": [
+        "unapproved action",
+        "invalid proof",
+        "felt overflow"
+      ],
+      "forbidden_claim_patterns": [
+        "on-chain finality",
+        "production rollup"
+      ],
+      "id": "cairo",
+      "interfaces": [
+        "stark_proof",
+        "sierra"
+      ],
+      "maturity_tier": "explicitly-gated-reference",
+      "proof_class": "compile",
+      "proof_surface": "STARK state governor receipt verification",
+      "required_receipt_fields": [
+        "case_id",
+        "action_hash",
+        "approved"
+      ],
+      "signature_innovation": "STARK-provable state governor",
+      "source_assertions": [
+        "StateReceipt",
+        "verify_state_transition"
+      ],
+      "technology": "Cairo"
+    },
+    {
+      "activation_condition": "Use when building high-performance LLMs (Grok-scale), custom automatic differentiation, or XLA-compiled tensor transforms.",
+      "advanced_exhibit": "languages/jax/advanced_grok_transformer_attention.py",
+      "architectural_role": "Grok LLM training pipelines, xAI cluster orchestration, TPU/GPU distributed attention, and neural dynamics.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
+      "evidence_state": "tested",
+      "expected_failure_cases": [
+        "shape mismatch",
+        "XLA compilation failure",
+        "softmax overflow"
+      ],
+      "forbidden_claim_patterns": [
+        "Grok-3 model weights",
+        "production LLM cluster"
+      ],
+      "id": "jax",
+      "interfaces": [
+        "xla",
+        "python_api"
+      ],
+      "maturity_tier": "proof-grade",
+      "proof_class": "behavioral",
+      "proof_surface": "functional Grok attention with RoPE and JIT compilation",
+      "required_receipt_fields": [
+        "status",
+        "architecture",
+        "rope_applied",
+        "attention_score",
+        "softmax_weight"
+      ],
+      "signature_innovation": "Grok-style functional RoPE attention",
+      "source_assertions": [
+        "rope_rotate",
+        "grok_scaled_dot_product_attention"
+      ],
+      "technology": "JAX"
+    },
+    {
+      "activation_condition": "Use when declarative rule-based query evaluation across large code graphs is required.",
+      "advanced_exhibit": "languages/datalog/advanced_vulnerability_scanner.dl",
+      "architectural_role": "Vulnerability scanning, compiler program analysis, access control evaluation, and static call graph analysis.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
+      "evidence_state": "compiles",
+      "expected_failure_cases": [
+        "unbound relation",
+        "cyclic vulnerability",
+        "sanitization bypass"
+      ],
+      "forbidden_claim_patterns": [
+        "complete static analysis",
+        "zero false positives"
+      ],
+      "id": "datalog",
+      "interfaces": [
+        "datalog_facts"
+      ],
+      "maturity_tier": "verified-reference",
+      "proof_class": "compile",
+      "proof_surface": "declarative vulnerability taint flow",
+      "required_receipt_fields": [
+        "vulnerability",
+        "source",
+        "sink"
+      ],
+      "signature_innovation": "Declarative static security scanner",
+      "source_assertions": [
+        "vulnerability",
+        "source|sink"
+      ],
+      "technology": "Souffl\u00e9 Datalog"
     }
   ],
   "generated_by": "tools/audit_advanced_exhibits.py",

@@ -36,6 +36,11 @@ The Atlas is generated from `registry/tower.yml` and `registry/advanced-claim-co
 | **Lean 4** | Monotone authority and receipt proofs — kernel-checked action ordering and non-regressing sequence property | `formally_verified` / `formal` | [`advanced_truth_gate_proof.lean`](languages/lean4/advanced_truth_gate_proof.lean) |
 | **Coq** | Linked receipt-chain ordering proof — constructive chain-step and ordered-list invariants | `formally_verified` / `formal` | [`advanced_receipt_chain.v`](languages/coq/advanced_receipt_chain.v) |
 | **Agda** | Dependent capability lattice — total transitivity proof and impossible destructive downgrade case | `formally_verified` / `formal` | [`advanced_capability_lattice.agda`](languages/agda/advanced_capability_lattice.agda) |
+| **eBPF** | Kernel syscall sentinel — kernel syscall execve sentinel | `compiles` / `compile` | [`advanced_syscall_sentinel.bpf.c`](languages/ebpf/advanced_syscall_sentinel.bpf.c) |
+| **OpenQASM 3.0** | Grover search oracle circuit — 3-qubit Grover oracle superposition and diffusion | `toolchain_gated` / `compile` | [`advanced_grover_oracle.qasm`](languages/openqasm/advanced_grover_oracle.qasm) |
+| **Cairo** | STARK-provable state governor — STARK state governor receipt verification | `toolchain_gated` / `compile` | [`advanced_stark_governor.cairo`](languages/cairo/advanced_stark_governor.cairo) |
+| **JAX** | Grok-style functional RoPE attention — functional Grok attention with RoPE and JIT compilation | `tested` / `behavioral` | [`advanced_grok_transformer_attention.py`](languages/jax/advanced_grok_transformer_attention.py) |
+| **Soufflé Datalog** | Declarative static security scanner — declarative vulnerability taint flow | `compiles` / `compile` | [`advanced_vulnerability_scanner.dl`](languages/datalog/advanced_vulnerability_scanner.dl) |
 
 ## Machine-enforced claim contract
 

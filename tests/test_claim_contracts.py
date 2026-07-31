@@ -11,7 +11,7 @@ def test_every_floor_has_one_semantic_claim_contract() -> None:
     assert validate_registry(registry) == []
     ids = {tech["id"] for tech in registry.technologies}
     assert set(registry.claim_contracts) == ids
-    assert len(ids) == 30
+    assert len(ids) == 35
 
 
 def test_claim_contract_source_assertions_match_advanced_exhibits() -> None:

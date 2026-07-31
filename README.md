@@ -8,7 +8,7 @@
 
 The Tower of Babel **decides where a technology belongs, explains why it belongs there, shows how it works, verifies the claim at the strongest available proof level, and exports the result for humans, software, and AI agents**.
 
-It is not a language collection built for display. It is a governed engineering map: **30 technology floors**, **60 linked exhibits**, versioned interface contracts, explicit blockers, executable build gates, and deterministic receipts. A floor earns its role through runtime behavior, safety, performance, hardware fit, or interoperability—not decorative polyglot signaling.
+It is not a language collection built for display. It is a governed engineering map: **35 technology floors**, **70 linked exhibits**, versioned interface contracts, explicit blockers, executable build gates, and deterministic receipts. A floor earns its role through runtime behavior, safety, performance, hardware fit, or interoperability—not decorative polyglot signaling.
 
 ## The system in one minute
 
@@ -23,11 +23,11 @@ It is not a language collection built for display. It is a governed engineering 
 
 | Governed surface | Count |
 |---|---:|
-| Technology floors | **30** |
-| Easy + advanced exhibits | **60** |
-| Behavioral proof floors | **13** |
+| Technology floors | **35** |
+| Easy + advanced exhibits | **70** |
+| Behavioral proof floors | **14** |
 | Formal proof floors | **3** |
-| Explicitly gated floors | **8** |
+| Explicitly gated floors | **10** |
 
 ## From mission to receipt
 
@@ -171,7 +171,7 @@ See [`flagship/README.md`](flagship/README.md) and run `python flagship/run_pipe
 
 ## Advanced Exhibit Atlas
 
-The easy exhibit teaches the technology. The advanced exhibit must own a real engineering boundary, expose failure behavior, and terminate in proof or an exact blocker. [`ADVANCED_EXHIBITS.md`](ADVANCED_EXHIBITS.md) publishes the signature engineering move and claim boundary for all 30 floors; [`quality/advanced_exhibit_atlas.json`](quality/advanced_exhibit_atlas.json) provides the same map to agents and automation.
+The easy exhibit teaches the technology. The advanced exhibit must own a real engineering boundary, expose failure behavior, and terminate in proof or an exact blocker. [`ADVANCED_EXHIBITS.md`](ADVANCED_EXHIBITS.md) publishes the signature engineering move and claim boundary for all 35 floors; [`quality/advanced_exhibit_atlas.json`](quality/advanced_exhibit_atlas.json) provides the same map to agents and automation.
 
 ## The thirty-floor map
 
@@ -212,6 +212,11 @@ The matrix is generated from the canonical registry. Change the registry and exh
 | 28 | **Lean 4** `.lean` | proof_language | Combines dependent types, executable functional programming, and machine-checked proofs. | Safety invariants, receipt-chain correctness, mathematics, and verified decision gates. | Use when a critical property must be proven rather than sampled by tests. | It produces kernel-checked proofs with explicit assumptions and reusable theorem libraries. | `formally_verified` / `formal` | [easy_logic.lean](languages/lean4/easy_logic.lean) | [advanced_truth_gate_proof.lean](languages/lean4/advanced_truth_gate_proof.lean) |
 | 29 | **Coq** `.v` | proof_language | Defines programs and machine-checked proofs in the Calculus of Inductive Constructions. | Verified compilers, protocols, cryptography, semantics, and critical algorithms. | Use when constructive proofs, extraction, or mature proof libraries fit the assurance case. | It checks every proof term with a small trusted kernel and can extract verified programs. | `formally_verified` / `formal` | [easy_logic.v](languages/coq/easy_logic.v) | [advanced_receipt_chain.v](languages/coq/advanced_receipt_chain.v) |
 | 30 | **Agda** `.agda` | proof_language | Uses dependent types for proofs and total functional programs. | Protocol models, type-safe DSLs, mathematical structures, and certified transformations. | Use when the implementation and proof should inhabit the same expressive dependent type system. | It makes invariants part of types and requires total, structurally valid definitions. | `formally_verified` / `formal` | [easy_logic.agda](languages/agda/easy_logic.agda) | [advanced_capability_lattice.agda](languages/agda/advanced_capability_lattice.agda) |
+| 31 | **eBPF** `.bpf.c` | bytecode | Executes sandboxed bytecode inside the Linux kernel without modifying kernel source code. | Linux kernel tracing, Cilium networking, Falco security auditing, and socket performance profiling. | Use when kernel-level observability, network packet filtering, or syscall enforcement is required at line rate. | It enables programmable zero-overhead packet filtering, syscall tracing, and real-time security auditing. | `compiles` / `compile` | [easy_packet_filter.bpf.c](languages/ebpf/easy_packet_filter.bpf.c) | [advanced_syscall_sentinel.bpf.c](languages/ebpf/advanced_syscall_sentinel.bpf.c) |
+| 32 | **OpenQASM 3.0** `.qasm` | circuit_description | Describes quantum circuits, entanglement gates, and classical feedback loops for QPUs. | IBM Quantum, AWS Braket, Rigetti, QPU simulators, and quantum error correction algorithms. | Use when constructing quantum circuits, Bell states, or hybrid quantum-classical algorithms. | It provides a hardware-agnostic intermediate representation for gate-based quantum compilation. | `toolchain_gated` / `compile` | [easy_bell_state.qasm](languages/openqasm/easy_bell_state.qasm) | [advanced_grover_oracle.qasm](languages/openqasm/advanced_grover_oracle.qasm) |
+| 33 | **Cairo** `.cairo` | turing_complete_zk | A Turing-complete language for writing STARK-provable programs and zero-knowledge verification logic. | Starknet, STARK-based L2 rollups, verifiable AI inference, and privacy-preserving audit ledgers. | Use when off-chain state execution must produce cryptographically verifiable proof of correctness. | It allows complex off-chain execution to be mathematically proven on-chain via succinct cryptographic receipts. | `toolchain_gated` / `compile` | [easy_fib_proof.cairo](languages/cairo/easy_fib_proof.cairo) | [advanced_stark_governor.cairo](languages/cairo/advanced_stark_governor.cairo) |
+| 34 | **JAX** `.py` | tensor_autodiff | Autograd and XLA compiler framework for high-performance functional neural network compute. | Grok LLM training pipelines, xAI cluster orchestration, TPU/GPU distributed attention, and neural dynamics. | Use when building high-performance LLMs (Grok-scale), custom automatic differentiation, or XLA-compiled tensor transforms. | Powering Grok (xAI) and Gemini models with functional purity, automatic differentiation, and XLA kernel compilation. | `tested` / `behavioral` | [easy_grad_jit.py](languages/jax/easy_grad_jit.py) | [advanced_grok_transformer_attention.py](languages/jax/advanced_grok_transformer_attention.py) |
+| 35 | **Soufflé Datalog** `.dl` | logic_rules | Declarative logic programming language for high-speed static code analysis and security verification. | Vulnerability scanning, compiler program analysis, access control evaluation, and static call graph analysis. | Use when declarative rule-based query evaluation across large code graphs is required. | It resolves complex graph reachability, pointer analysis, and security policy rules in parallel C++ code. | `compiles` / `compile` | [easy_reachability.dl](languages/datalog/easy_reachability.dl) | [advanced_vulnerability_scanner.dl](languages/datalog/advanced_vulnerability_scanner.dl) |
 
 </details>
 
@@ -227,9 +232,11 @@ The matrix is generated from the canonical registry. Change the registry and exh
 - **Concurrent Services** — Go
 - **Data Oriented Systems** — Odin
 - **Declarative Data** — SQL / pgvector
+- **Declarative Static Analysis** — Soufflé Datalog
 - **Dependent Programming** — Agda
 - **Fault Tolerant Distributed** — Elixir
 - **Formal Verification** — Lean 4, Coq
+- **Functional Ai Systems** — JAX
 - **Gpu Compute** — CUDA
 - **Gpu Kernel Dsl** — Triton
 - **Hardware Construction** — Chisel
@@ -237,15 +244,18 @@ The matrix is generated from the canonical registry. Change the registry and exh
 - **Hardware Verification** — SystemVerilog
 - **High Performance Systems** — C++
 - **High Reliability Hardware** — VHDL
+- **Kernel Tracing And Security** — eBPF
 - **Memory Safe Systems** — Rust
 - **Orchestration And Ai** — Python
 - **Portable Systems** — Zig
 - **Pure Functional** — Haskell
+- **Quantum Compute** — OpenQASM 3.0
 - **Sandbox Runtime** — WebAssembly
 - **Scientific Computing** — Julia
 - **Statistics** — R
 - **Typed Async Interfaces** — TypeScript
 - **Zero Copy Serialization** — FlatBuffers
+- **Zero Knowledge Proofs** — Cairo
 
 ## Machine entrypoint
 

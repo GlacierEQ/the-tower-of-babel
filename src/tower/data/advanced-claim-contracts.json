@@ -678,6 +678,118 @@
         "dedup|duplicate"
       ],
       "signature_innovation": "Mission-scoped allocator discipline"
+    },
+    "cairo": {
+      "expected_failure_cases": [
+        "unapproved action",
+        "invalid proof",
+        "felt overflow"
+      ],
+      "forbidden_claim_patterns": [
+        "on-chain finality",
+        "production rollup"
+      ],
+      "proof_surface": "STARK state governor receipt verification",
+      "required_receipt_fields": [
+        "case_id",
+        "action_hash",
+        "approved"
+      ],
+      "required_source_patterns": [
+        "StateReceipt",
+        "verify_state_transition"
+      ],
+      "signature_innovation": "STARK-provable state governor"
+    },
+    "datalog": {
+      "expected_failure_cases": [
+        "unbound relation",
+        "cyclic vulnerability",
+        "sanitization bypass"
+      ],
+      "forbidden_claim_patterns": [
+        "complete static analysis",
+        "zero false positives"
+      ],
+      "proof_surface": "declarative vulnerability taint flow",
+      "required_receipt_fields": [
+        "vulnerability",
+        "source",
+        "sink"
+      ],
+      "required_source_patterns": [
+        "vulnerability",
+        "source|sink"
+      ],
+      "signature_innovation": "Declarative static security scanner"
+    },
+    "ebpf": {
+      "expected_failure_cases": [
+        "unapproved syscall",
+        "map allocation failure",
+        "verifier rejection"
+      ],
+      "forbidden_claim_patterns": [
+        "kernel security bypass",
+        "production intrusion prevention"
+      ],
+      "proof_surface": "kernel syscall execve sentinel",
+      "required_receipt_fields": [
+        "trace_sys_execve",
+        "kprobe",
+        "execve"
+      ],
+      "required_source_patterns": [
+        "kprobe",
+        "execve|sys_execve"
+      ],
+      "signature_innovation": "Kernel syscall sentinel"
+    },
+    "jax": {
+      "expected_failure_cases": [
+        "shape mismatch",
+        "XLA compilation failure",
+        "softmax overflow"
+      ],
+      "forbidden_claim_patterns": [
+        "Grok-3 model weights",
+        "production LLM cluster"
+      ],
+      "proof_surface": "functional Grok attention with RoPE and JIT compilation",
+      "required_receipt_fields": [
+        "status",
+        "architecture",
+        "rope_applied",
+        "attention_score",
+        "softmax_weight"
+      ],
+      "required_source_patterns": [
+        "rope_rotate",
+        "grok_scaled_dot_product_attention"
+      ],
+      "signature_innovation": "Grok-style functional RoPE attention"
+    },
+    "openqasm": {
+      "expected_failure_cases": [
+        "qubit decoherence",
+        "gate fidelity error",
+        "invalid measurement"
+      ],
+      "forbidden_claim_patterns": [
+        "physical quantum supremacy",
+        "hardware QPU execution"
+      ],
+      "proof_surface": "3-qubit Grover oracle superposition and diffusion",
+      "required_receipt_fields": [
+        "q",
+        "c",
+        "cz"
+      ],
+      "required_source_patterns": [
+        "cz",
+        "Grover|oracle"
+      ],
+      "signature_innovation": "Grover search oracle circuit"
     }
   },
   "global_claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
