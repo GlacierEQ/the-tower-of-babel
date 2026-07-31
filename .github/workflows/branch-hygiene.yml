@@ -26,6 +26,10 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
       - name: Remove merged and explicitly obsolete remote branches
         env:
           EVENT_NAME: ${{ github.event_name }}
@@ -59,6 +63,24 @@ jobs:
           # these names here is harmless and prevents accidental resurrection.
           delete_branch "feature/canonical-language-manifest"
           delete_branch "feature/canonical-language-manifest-v2"
+
+      - name: Reseal and verify canonical main
+        run: |
+          set -euo pipefail
+          python -m pip install -e .[dev]
+          tower integrity generate
+          tower validate
+          tower generate --check
+          pytest -q
+          tower integrity verify
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .integrity/file_hashes.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: reseal canonical main integrity"
+            git push origin HEAD:main
+          fi
 
       - name: Verify canonical topology
         run: |
