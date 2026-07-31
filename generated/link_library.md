@@ -100,8 +100,9 @@
 ## Cairo
 - https://cairo-lang.org/docs/
 
-## JAX
+## JAX (xAI Grok Flagship)
 - https://jax.readthedocs.io/
+- https://x.ai/blog/grok-1
 
 ## Soufflé Datalog
 - https://souffle-lang.github.io/

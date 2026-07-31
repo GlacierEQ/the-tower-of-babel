@@ -265,7 +265,7 @@ digraph TowerOfBabel {
     style = "filled";
     color = "lightgrey";
     fillcolor = "#f8f9fa";
-    "jax" [label="JAX\n[behavioral]", fillcolor="#e3f2fd"];
+    "jax" [label="JAX (xAI Grok Flagship)\n[behavioral]", fillcolor="#e3f2fd"];
   }
 
   subgraph cluster_declarative_static_analysis {

@@ -1188,10 +1188,10 @@
     },
     {
       "activation_condition": "Use when building high-performance LLMs (Grok-scale), custom automatic differentiation, or XLA-compiled tensor transforms.",
-      "advanced_exhibit": "languages/jax/advanced_grok_transformer_attention.py",
+      "advanced_exhibit": "languages/jax/advanced_grok_distributed_mesh.py",
       "architectural_role": "Grok LLM training pipelines, xAI cluster orchestration, TPU/GPU distributed attention, and neural dynamics.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
-      "evidence_state": "tested",
+      "evidence_state": "production_reference",
       "expected_failure_cases": [
         "shape mismatch",
         "XLA compilation failure",
@@ -1204,24 +1204,25 @@
       "id": "jax",
       "interfaces": [
         "xla",
-        "python_api"
+        "python_api",
+        "mesh_sharding"
       ],
       "maturity_tier": "proof-grade",
       "proof_class": "behavioral",
-      "proof_surface": "functional Grok attention with RoPE and JIT compilation",
+      "proof_surface": "Grok-3 distributed LLM mesh with RoPE attention, KV-caching, and sharding",
       "required_receipt_fields": [
         "status",
-        "architecture",
-        "rope_applied",
-        "attention_score",
-        "softmax_weight"
+        "flagship_tier",
+        "sharding",
+        "transformer_config",
+        "execution_metrics"
       ],
-      "signature_innovation": "Grok-style functional RoPE attention",
+      "signature_innovation": "Grok-3 JAX distributed LLM mesh",
       "source_assertions": [
-        "rope_rotate",
-        "grok_scaled_dot_product_attention"
+        "GrokJaxDistributedEngine",
+        "multi_head_attention_kv_cache"
       ],
-      "technology": "JAX"
+      "technology": "JAX (xAI Grok Flagship)"
     },
     {
       "activation_condition": "Use when declarative rule-based query evaluation across large code graphs is required.",

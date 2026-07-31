@@ -39,7 +39,7 @@ The Atlas is generated from `registry/tower.yml` and `registry/advanced-claim-co
 | **eBPF** | Kernel syscall sentinel — kernel syscall execve sentinel | `compiles` / `compile` | [`advanced_syscall_sentinel.bpf.c`](languages/ebpf/advanced_syscall_sentinel.bpf.c) |
 | **OpenQASM 3.0** | Grover search oracle circuit — 3-qubit Grover oracle superposition and diffusion | `toolchain_gated` / `compile` | [`advanced_grover_oracle.qasm`](languages/openqasm/advanced_grover_oracle.qasm) |
 | **Cairo** | STARK-provable state governor — STARK state governor receipt verification | `toolchain_gated` / `compile` | [`advanced_stark_governor.cairo`](languages/cairo/advanced_stark_governor.cairo) |
-| **JAX** | Grok-style functional RoPE attention — functional Grok attention with RoPE and JIT compilation | `tested` / `behavioral` | [`advanced_grok_transformer_attention.py`](languages/jax/advanced_grok_transformer_attention.py) |
+| **JAX (xAI Grok Flagship)** | Grok-3 JAX distributed LLM mesh — Grok-3 distributed LLM mesh with RoPE attention, KV-caching, and sharding | `production_reference` / `behavioral` | [`advanced_grok_distributed_mesh.py`](languages/jax/advanced_grok_distributed_mesh.py) |
 | **Soufflé Datalog** | Declarative static security scanner — declarative vulnerability taint flow | `compiles` / `compile` | [`advanced_vulnerability_scanner.dl`](languages/datalog/advanced_vulnerability_scanner.dl) |
 
 ## Machine-enforced claim contract

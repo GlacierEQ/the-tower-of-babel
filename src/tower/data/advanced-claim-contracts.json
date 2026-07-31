@@ -755,19 +755,19 @@
         "Grok-3 model weights",
         "production LLM cluster"
       ],
-      "proof_surface": "functional Grok attention with RoPE and JIT compilation",
+      "proof_surface": "Grok-3 distributed LLM mesh with RoPE attention, KV-caching, and sharding",
       "required_receipt_fields": [
         "status",
-        "architecture",
-        "rope_applied",
-        "attention_score",
-        "softmax_weight"
+        "flagship_tier",
+        "sharding",
+        "transformer_config",
+        "execution_metrics"
       ],
       "required_source_patterns": [
-        "rope_rotate",
-        "grok_scaled_dot_product_attention"
+        "GrokJaxDistributedEngine",
+        "multi_head_attention_kv_cache"
       ],
-      "signature_innovation": "Grok-style functional RoPE attention"
+      "signature_innovation": "Grok-3 JAX distributed LLM mesh"
     },
     "openqasm": {
       "expected_failure_cases": [

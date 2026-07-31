@@ -172,7 +172,7 @@
     },
     {
       "id": "jax",
-      "name": "JAX",
+      "name": "JAX (xAI Grok Flagship)",
       "category": "functional_ai_systems",
       "artifact_type": "tensor_autodiff",
       "extension": ".py",
@@ -180,12 +180,13 @@
       "why": "Powering Grok (xAI) and Gemini models with functional purity, automatic differentiation, and XLA kernel compilation.",
       "where": "Grok LLM training pipelines, xAI cluster orchestration, TPU/GPU distributed attention, and neural dynamics.",
       "when": "Use when building high-performance LLMs (Grok-scale), custom automatic differentiation, or XLA-compiled tensor transforms.",
-      "how": "jax.jit, jax.grad, jax.vmap, jax.pmap, flax/equinox modules, and XLA HLO lowering.",
+      "how": "jax.jit, jax.grad, jax.vmap, jax.pmap, flax/equinox modules, NamedSharding, and PartitionSpec XLA lowering.",
       "primary_evidence": [
-        "https://jax.readthedocs.io/"
+        "https://jax.readthedocs.io/",
+        "https://x.ai/blog/grok-1"
       ],
       "proof_class": "behavioral",
-      "evidence_state": "tested",
+      "evidence_state": "production_reference",
       "execution": {
         "ci_tier": "portable",
         "hardware_gate": ""
@@ -201,6 +202,10 @@
           [
             "python3",
             "languages/jax/advanced_grok_transformer_attention.py"
+          ],
+          [
+            "python3",
+            "languages/jax/advanced_grok_distributed_mesh.py"
           ]
         ],
         "test": [
@@ -211,12 +216,17 @@
           [
             "python3",
             "languages/jax/advanced_grok_transformer_attention.py"
+          ],
+          [
+            "python3",
+            "languages/jax/advanced_grok_distributed_mesh.py"
           ]
         ]
       },
       "interfaces": [
         "xla",
-        "python_api"
+        "python_api",
+        "mesh_sharding"
       ],
       "megamind": {
         "agents": [
@@ -229,7 +239,7 @@
         ]
       },
       "easy_example": "languages/jax/easy_grad_jit.py",
-      "advanced_example": "languages/jax/advanced_grok_transformer_attention.py"
+      "advanced_example": "languages/jax/advanced_grok_distributed_mesh.py"
     },
     {
       "id": "datalog",
