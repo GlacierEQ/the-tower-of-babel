@@ -154,6 +154,38 @@
       "when": "Use when data layout, allocator visibility, and predictable control flow are central.",
       "where": "Game engines, physics, visualization, and deterministic real-time loops.",
       "why": "It presents a simpler C-like systems model with built-in data-oriented facilities."
+    },
+    {
+      "advanced_example": "languages/lua/advanced_sandbox_capability_table.lua",
+      "artifact_type": "language",
+      "category": "embeddable_scripting",
+      "easy_example": "languages/lua/easy_hello.lua",
+      "evidence_state": "tested",
+      "execution": {"ci_tier": "portable", "hardware_gate": ""},
+      "extension": ".lua",
+      "how": "Tables, metatables, lexical environments, pcall, and host-provided capability injection.",
+      "id": "lua",
+      "interfaces": ["c_abi", "embedding"],
+      "megamind": {"agents": ["runtime-agent", "security-agent"], "pistons": ["stealth-viper"]},
+      "name": "Lua",
+      "primary_evidence": [
+        "https://www.lua.org/manual/5.4/",
+        "https://www.lua.org/pil/",
+        "https://www.lua.org/manual/5.4/manual.html#2.4",
+        "https://luajit.org/luajit.html",
+        "https://github.com/lua/lua"
+      ],
+      "proof_class": "behavioral",
+      "toolchain": {
+        "build": [],
+        "reference_pin": "5.4",
+        "test": [["lua", "languages/lua/easy_hello.lua"], ["lua", "languages/lua/advanced_sandbox_capability_table.lua"]],
+        "tool": "lua"
+      },
+      "what": "Provides a tiny, portable embeddable scripting runtime for host-controlled extension.",
+      "when": "Use when untrusted or third-party logic must run under an explicit capability table.",
+      "where": "Game engines, plugin hosts, config loaders, agent tool sandboxes, and embedded automation.",
+      "why": "Its small core and first-class environments make capability isolation practical without a heavyweight runtime."
     }
   ]
 }
