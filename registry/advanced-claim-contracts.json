@@ -140,26 +140,38 @@
     },
     "cuda": {
       "expected_failure_cases": [
-        "CUDA unavailable",
-        "shape mismatch",
-        "reference divergence"
+        "out of memory",
+        "warp divergence",
+        "shared memory bank conflict"
       ],
       "forbidden_claim_patterns": [
-        "implements? (the )?production FlashAttention",
-        "FlashAttention compatible",
-        "production kernel"
+        "NVIDIA production driver",
+        "custom ASIC hardware"
       ],
-      "proof_surface": "stable softmax and GPU validation without a FlashAttention claim",
+      "proof_surface": "Host-side reference math only until a real nvcc-built and GPU-executed kernel receipt exists",
       "required_receipt_fields": [
         "status",
-        "max_error",
-        "backend"
+        "flagship_tier",
+        "cuda_arch",
+        "kernel_metrics"
       ],
       "required_source_patterns": [
-        "expf",
-        "reference_attention"
+        "simulate_flash_attention_tile",
+        "FlashAttentionConfig"
       ],
-      "signature_innovation": "Audited reference attention kernel"
+      "signature_innovation": "Reference attention tile simulation with an explicit CUDA admission gate",
+      "promotion_requirements": {
+        "minimum_evidence_state": "tested",
+        "required_source_patterns": [
+          "__global__",
+          "cudaMalloc|cudaMemcpy|cudaLaunchKernel"
+        ],
+        "required_receipt_fields": [
+          "cuda_arch",
+          "kernel_metrics",
+          "gpu_backend"
+        ]
+      }
     },
     "elixir": {
       "expected_failure_cases": [
@@ -755,7 +767,7 @@
         "Grok-3 model weights",
         "production LLM cluster"
       ],
-      "proof_surface": "Grok-3 distributed LLM mesh with RoPE attention, KV-caching, and sharding",
+      "proof_surface": "Python reference behavior only until JAX/XLA execution and real sharding are evidenced",
       "required_receipt_fields": [
         "status",
         "flagship_tier",
@@ -767,7 +779,20 @@
         "GrokJaxDistributedEngine",
         "multi_head_attention_kv_cache"
       ],
-      "signature_innovation": "Grok-3 JAX distributed LLM mesh"
+      "signature_innovation": "Reference distributed-mesh shape simulation with an explicit JAX/XLA admission gate",
+      "promotion_requirements": {
+        "minimum_evidence_state": "tested",
+        "required_source_patterns": [
+          "import\\s+jax",
+          "jax\\.jit|jax\\.pjit",
+          "NamedSharding|PartitionSpec"
+        ],
+        "required_receipt_fields": [
+          "xla_backend",
+          "device_count",
+          "sharding_receipt"
+        ]
+      }
     },
     "openqasm": {
       "expected_failure_cases": [
@@ -791,29 +816,6 @@
       ],
       "signature_innovation": "Grover search oracle circuit"
     },
-    "cuda": {
-      "expected_failure_cases": [
-        "out of memory",
-        "warp divergence",
-        "shared memory bank conflict"
-      ],
-      "forbidden_claim_patterns": [
-        "NVIDIA production driver",
-        "custom ASIC hardware"
-      ],
-      "proof_surface": "NVIDIA FlashAttention-v2 shared-memory tiled GPU kernel",
-      "required_receipt_fields": [
-        "status",
-        "flagship_tier",
-        "cuda_arch",
-        "kernel_metrics"
-      ],
-      "required_source_patterns": [
-        "simulate_flash_attention_tile",
-        "FlashAttentionConfig"
-      ],
-      "signature_innovation": "NVIDIA FlashAttention-v2 GPU kernel"
-    },
     "rhl_quant": {
       "expected_failure_cases": [
         "outlier overflow",
@@ -824,7 +826,7 @@
         "hardware ASIC tapeout",
         "zero latency loss"
       ],
-      "proof_surface": "1.58-bit Base Ternary Lattice with 2-bit Sparse Delta HLO Outlier Mesh",
+      "proof_surface": "Numerical reference only until HLO/accelerator execution and baseline quality/performance receipts exist",
       "required_receipt_fields": [
         "status",
         "flagship_tier",
@@ -836,7 +838,21 @@
         "quantize_weight_tensor",
         "dequantize_and_matmul"
       ],
-      "signature_innovation": "Residual HLO-Lattice Quantization (RHL-Quant)"
+      "signature_innovation": "Reference ternary/residual quantizer with an explicit accelerator and benchmark admission gate",
+      "promotion_requirements": {
+        "minimum_evidence_state": "benchmark",
+        "required_source_patterns": [
+          "numpy|torch",
+          "baseline|reference",
+          "max_error|relative_error"
+        ],
+        "required_receipt_fields": [
+          "backend",
+          "memory_bytes",
+          "quality_delta",
+          "throughput"
+        ]
+      }
     }
   },
   "global_claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",

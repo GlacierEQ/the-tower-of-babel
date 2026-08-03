@@ -30,13 +30,35 @@ DISCLAIMER_MARKERS = (
 )
 
 
+EVIDENCE_RANK = {
+    "illustrative": 0,
+    "toolchain_gated": 1,
+    "service_gated": 1,
+    "hardware_gated": 1,
+    "compiles": 2,
+    "tested": 3,
+    "benchmark": 4,
+    "formally_verified": 4,
+    "integrated": 5,
+    "production_reference": 6,
+}
+
+EVIDENCE_TIERS = {
+    "illustrative": "concept_only",
+    "toolchain_gated": "gated_reference",
+    "service_gated": "gated_reference",
+    "hardware_gated": "gated_reference",
+    "compiles": "runnable_reference",
+    "tested": "tested_implementation",
+    "benchmark": "benchmarked_implementation",
+    "formally_verified": "tested_implementation",
+    "integrated": "integrated_capability",
+    "production_reference": "production_reference",
+}
+
+
 def classify(tech: dict) -> str:
-    state = tech["evidence_state"]
-    if state in {"tested", "formally_verified", "production_reference", "integrated"}:
-        return "proof-grade"
-    if state in {"compiles", "benchmark"}:
-        return "verified-reference"
-    return "explicitly-gated-reference"
+    return EVIDENCE_TIERS[tech["evidence_state"]]
 
 
 def _forbidden_positive_claim(text: str, pattern: str) -> bool:
@@ -72,6 +94,24 @@ def audit() -> tuple[list[str], dict]:
             errors.append(f"{tech_id}: advanced exhibit missing: {tech['advanced_example']}")
             continue
         text = path.read_text(encoding="utf-8", errors="replace")
+        # A reference exhibit must not emit a success receipt that downstream
+        # systems could mistake for execution proof.
+        if tech["evidence_state"] == "illustrative" and re.search(
+            r"[\"']status[\"']\s*:\s*[\"']VERIFIED", text, re.IGNORECASE
+        ):
+            errors.append(f"{tech_id}: illustrative exhibit emits VERIFIED status")
+
+        promotion = contract.get("promotion_requirements", {})
+        if promotion:
+            minimum = promotion.get("minimum_evidence_state")
+            required_runtime = promotion.get("required_source_patterns", [])
+            if minimum not in EVIDENCE_RANK:
+                errors.append(f"{tech_id}: promotion gate has unknown minimum evidence state")
+            elif EVIDENCE_RANK.get(tech["evidence_state"], -1) >= EVIDENCE_RANK[minimum]:
+                for pattern in required_runtime:
+                    if not re.search(pattern, text, re.IGNORECASE | re.MULTILINE):
+                        errors.append(f"{tech_id}: promotion gate missing runtime proof {pattern!r}")
+
         substantive = [
             line for line in text.splitlines()
             if line.strip() and not line.lstrip().startswith(("//", "#", ";;", "--"))
@@ -122,6 +162,8 @@ def audit() -> tuple[list[str], dict]:
             "evidence_state": state,
             "proof_class": tech["proof_class"],
             "maturity_tier": classify(tech),
+            "evidence_tier": classify(tech),
+            "promotion_gate": contract.get("promotion_requirements", {}),
             "interfaces": tech["interfaces"],
             "claim_boundary": registry.claim_contract_metadata["global_claim_boundary"],
         })
@@ -148,7 +190,7 @@ def markdown(atlas: dict) -> str:
         "",
         "> A generated map of the engineering boundary, source assertions, failure cases, proof surface, and truthful claim limit for every advanced Tower exhibit.",
         "",
-        "The Atlas is generated from `registry/tower.yml` and `registry/advanced-claim-contracts.json`. It exposes distinctive implementation choices without converting them into unsupported novelty or production claims.",
+        "The Atlas is generated from `registry/tower.yml` and `registry/advanced-claim-contracts.json`. It exposes operational implementation choices without converting simulations into execution proof or unsupported novelty claims.",
         "",
         "| Technology | Signature engineering move | Evidence | Advanced exhibit |",
         "|---|---|---|---|",
@@ -167,7 +209,7 @@ def markdown(atlas: dict) -> str:
         "",
         "## Promotion standard",
         "",
-        "An exhibit is advanced only when it owns a meaningful boundary, rejects invalid or unsafe states, exposes an observable result, and carries a proof command or exact environmental blocker. File size, exotic syntax, and dramatic naming are not evidence.",
+        "An exhibit is admitted to operations only when it owns a meaningful boundary, rejects invalid or unsafe states, exposes an observable result, and carries executable proof or an exact environmental blocker. Concept-only references are never eligible for runtime selection. File size, exotic syntax, and dramatic naming are not evidence.",
         "",
         "## Originality boundary",
         "",

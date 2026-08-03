@@ -172,28 +172,28 @@
     },
     {
       "id": "jax",
-      "name": "JAX (xAI Grok Flagship)",
+      "name": "JAX + XLA (gated autodiff runtime)",
       "category": "functional_ai_systems",
       "artifact_type": "tensor_autodiff",
       "extension": ".py",
-      "what": "Autograd and XLA compiler framework for high-performance functional neural network compute.",
-      "why": "Powering Grok (xAI) and Gemini models with functional purity, automatic differentiation, and XLA kernel compilation.",
-      "where": "Grok LLM training pipelines, xAI cluster orchestration, TPU/GPU distributed attention, and neural dynamics.",
-      "when": "Use when building high-performance LLMs (Grok-scale), custom automatic differentiation, or XLA-compiled tensor transforms.",
-      "how": "jax.jit, jax.grad, jax.vmap, jax.pmap, flax/equinox modules, NamedSharding, and PartitionSpec XLA lowering.",
+      "what": "Python autodiff and XLA compilation framework; this record is a pure-Python shape simulation until JAX executes.",
+      "why": "Use when JAX/XLA provides a measured advantage for autodiff, compilation, or device parallelism.",
+      "where": "Verified JAX runtimes with a declared CPU/GPU/TPU backend and reproducible device tests.",
+      "when": "Select only after JAX imports, jax.jit or pjit executes, and the requested sharding/backend receipt is captured.",
+      "how": "Admission requires JAX runtime markers, executable XLA lowering, real device count, and sharding evidence\u2014not Python lists.",
       "primary_evidence": [
         "https://jax.readthedocs.io/",
         "https://x.ai/blog/grok-1"
       ],
-      "proof_class": "behavioral",
-      "evidence_state": "production_reference",
+      "proof_class": "illustrative",
+      "evidence_state": "illustrative",
       "execution": {
-        "ci_tier": "portable",
-        "hardware_gate": ""
+        "ci_tier": "specialized",
+        "hardware_gate": "JAX + XLA runtime + multi-device backend; current exhibit is pure-Python simulation"
       },
       "toolchain": {
         "tool": "python3",
-        "reference_pin": "3.12 + jax 0.4.35",
+        "reference_pin": "3.12 + jax 0.4.35 (runtime not exercised by current exhibit)",
         "build": [
           [
             "python3",
@@ -239,11 +239,12 @@
         ]
       },
       "easy_example": "languages/jax/easy_grad_jit.py",
-      "advanced_example": "languages/jax/advanced_grok_distributed_mesh.py"
+      "advanced_example": "languages/jax/advanced_grok_distributed_mesh.py",
+      "verification_notes": "Demoted until the advanced file imports JAX and executes jax.jit/XLA or real mesh sharding; Python lists are not JAX proof."
     },
     {
       "id": "datalog",
-      "name": "Soufflé Datalog",
+      "name": "Souffl\u00e9 Datalog",
       "category": "declarative_static_analysis",
       "artifact_type": "logic_rules",
       "extension": ".dl",
@@ -297,28 +298,28 @@
     },
     {
       "id": "rhl_quant",
-      "name": "RHL-Quant (1.58b Ternary Quantization Flagship)",
+      "name": "RHL-Quant reference quantizer (unbenchmarked)",
       "category": "quantization_and_compression",
       "artifact_type": "tensor_compression",
       "extension": ".py",
-      "what": "Post-training 2-level quantum-lattice quantization engine combining 1.58-bit ternary base with 2-bit sparse residual delta HLO mesh.",
-      "why": "Shrinks 314-billion parameter LLM weights (Grok-1) from 628 GB down to ~65 GB, enabling full 314B MoE inference on a single 80GB H100 GPU.",
-      "where": "Frontier LLM deployment, VRAM constrained edge clusters, bitwise GPU matrix multiplication, and ultra-low memory inference.",
-      "when": "Use when fitting massive MoE or dense LLMs onto minimal GPU VRAM hardware without perplexity degradation.",
-      "how": "Base ternary lattice {-1, 0, +1}, residual delta mesh, POPCNT bitwise GPU matmul, and dynamic scale factor reconstruction.",
+      "what": "Reference ternary/residual quantization experiment; no accelerator, model-scale, memory, or quality result is established here.",
+      "why": "A candidate compression path, not an operational choice, until numerical baselines and hardware measurements are reproduced.",
+      "where": "Benchmark harnesses for model compression after a backend, dataset, quality metric, and rollback path are defined.",
+      "when": "Select only after a real backend implementation, baseline comparison, memory measurement, throughput measurement, and quality delta are verified.",
+      "how": "Admission requires executable backend code, reconstruction-error checks, memory/throughput receipts, and a named baseline.",
       "primary_evidence": [
         "https://github.com/GlacierEQ/residual-lattice-quantization",
         "https://arxiv.org/abs/2402.17764"
       ],
-      "proof_class": "behavioral",
-      "evidence_state": "production_reference",
+      "proof_class": "illustrative",
+      "evidence_state": "illustrative",
       "execution": {
-        "ci_tier": "portable",
-        "hardware_gate": ""
+        "ci_tier": "specialized",
+        "hardware_gate": "Accelerator backend + numerical/performance benchmark; current exhibit is Python reference code"
       },
       "toolchain": {
         "tool": "python3",
-        "reference_pin": "3.12",
+        "reference_pin": "3.12 (reference-only; accelerator not exercised)",
         "build": [
           [
             "python3",
@@ -355,7 +356,8 @@
         ]
       },
       "easy_example": "languages/rhl_quant/easy_ternary_scale.py",
-      "advanced_example": "languages/rhl_quant/advanced_rhl_quant_engine.py"
+      "advanced_example": "languages/rhl_quant/advanced_rhl_quant_engine.py",
+      "verification_notes": "Demoted until HLO/accelerator execution, numerical baselines, and memory/performance measurements are reproduced."
     }
   ]
 }

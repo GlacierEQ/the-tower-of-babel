@@ -1,4 +1,4 @@
-"""Unit test suite for CUDA C++ / PTX NVIDIA FlashAttention Flagship Exhibit."""
+"""Reference test for the host-side CUDA attention simulation; it does not prove GPU execution."""
 from __future__ import annotations
 
 import subprocess
@@ -21,10 +21,10 @@ def test_cuda_flash_attention_kernel_compiles_and_runs():
     res = subprocess.run([str(out_bin)], check=True, capture_output=True, text=True)
     report = json.loads(res.stdout)
 
-    assert report["status"] == "VERIFIED"
-    assert report["flagship_tier"] == "NVIDIA_CUDA_FLASH_ATTENTION_V2"
+    assert report["status"] == "REFERENCE_ONLY"
+    assert report["flagship_tier"] == "HOST_REFERENCE_ATTENTION_TILE"
     assert report["cuda_arch"]["compute_capability"] == "sm_90a (Hopper/Blackwell)"
-    assert report["kernel_metrics"]["online_softmax_status"] == "STABLE"
+    assert report["kernel_metrics"]["online_softmax_status"] == "REFERENCE_STABLE"
 
     if out_bin.exists():
         out_bin.unlink()

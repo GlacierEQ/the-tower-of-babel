@@ -517,11 +517,12 @@
       "technology": "SQL / pgvector"
     },
     {
-      "activation_condition": "Use when building custom high-performance GPU kernels, FlashAttention fused operators, or Tensor Core matrix acceleration.",
+      "activation_condition": "Select only after the target GPU, CUDA toolkit, kernel receipt, and baseline performance are verified.",
       "advanced_exhibit": "languages/cuda/advanced_nvidia_flash_attention_kernel.cu",
-      "architectural_role": "Frontier AI LLM cluster training, FlashAttention-v2/v3 kernels, CUDA streams, and PTX assembly acceleration.",
+      "architectural_role": "NVIDIA GPU services, inference kernels, and numerical workloads requiring measured device acceleration.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
-      "evidence_state": "production_reference",
+      "evidence_state": "illustrative",
+      "evidence_tier": "concept_only",
       "expected_failure_cases": [
         "out of memory",
         "warp divergence",
@@ -537,21 +538,33 @@
         "ptx_asm",
         "tensor_cores"
       ],
-      "maturity_tier": "proof-grade",
-      "proof_class": "behavioral",
-      "proof_surface": "NVIDIA FlashAttention-v2 shared-memory tiled GPU kernel",
+      "maturity_tier": "concept_only",
+      "promotion_gate": {
+        "minimum_evidence_state": "tested",
+        "required_receipt_fields": [
+          "cuda_arch",
+          "kernel_metrics",
+          "gpu_backend"
+        ],
+        "required_source_patterns": [
+          "__global__",
+          "cudaMalloc|cudaMemcpy|cudaLaunchKernel"
+        ]
+      },
+      "proof_class": "illustrative",
+      "proof_surface": "Host-side reference math only until a real nvcc-built and GPU-executed kernel receipt exists",
       "required_receipt_fields": [
         "status",
         "flagship_tier",
         "cuda_arch",
         "kernel_metrics"
       ],
-      "signature_innovation": "NVIDIA FlashAttention-v2 GPU kernel",
+      "signature_innovation": "Reference attention tile simulation with an explicit CUDA admission gate",
       "source_assertions": [
         "simulate_flash_attention_tile",
         "FlashAttentionConfig"
       ],
-      "technology": "CUDA C++ / PTX (NVIDIA Flagship)"
+      "technology": "CUDA C++ / PTX (gated kernel runtime)"
     },
     {
       "activation_condition": "Use after profiling shows framework kernels are inadequate and the target GPU is supported.",
@@ -1188,11 +1201,12 @@
       "technology": "Cairo"
     },
     {
-      "activation_condition": "Use when building high-performance LLMs (Grok-scale), custom automatic differentiation, or XLA-compiled tensor transforms.",
+      "activation_condition": "Select only after JAX imports, jax.jit or pjit executes, and the requested sharding/backend receipt is captured.",
       "advanced_exhibit": "languages/jax/advanced_grok_distributed_mesh.py",
-      "architectural_role": "Grok LLM training pipelines, xAI cluster orchestration, TPU/GPU distributed attention, and neural dynamics.",
+      "architectural_role": "Verified JAX runtimes with a declared CPU/GPU/TPU backend and reproducible device tests.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
-      "evidence_state": "production_reference",
+      "evidence_state": "illustrative",
+      "evidence_tier": "concept_only",
       "expected_failure_cases": [
         "shape mismatch",
         "XLA compilation failure",
@@ -1208,9 +1222,22 @@
         "python_api",
         "mesh_sharding"
       ],
-      "maturity_tier": "proof-grade",
-      "proof_class": "behavioral",
-      "proof_surface": "Grok-3 distributed LLM mesh with RoPE attention, KV-caching, and sharding",
+      "maturity_tier": "concept_only",
+      "promotion_gate": {
+        "minimum_evidence_state": "tested",
+        "required_receipt_fields": [
+          "xla_backend",
+          "device_count",
+          "sharding_receipt"
+        ],
+        "required_source_patterns": [
+          "import\\s+jax",
+          "jax\\.jit|jax\\.pjit",
+          "NamedSharding|PartitionSpec"
+        ]
+      },
+      "proof_class": "illustrative",
+      "proof_surface": "Python reference behavior only until JAX/XLA execution and real sharding are evidenced",
       "required_receipt_fields": [
         "status",
         "flagship_tier",
@@ -1218,12 +1245,12 @@
         "transformer_config",
         "execution_metrics"
       ],
-      "signature_innovation": "Grok-3 JAX distributed LLM mesh",
+      "signature_innovation": "Reference distributed-mesh shape simulation with an explicit JAX/XLA admission gate",
       "source_assertions": [
         "GrokJaxDistributedEngine",
         "multi_head_attention_kv_cache"
       ],
-      "technology": "JAX (xAI Grok Flagship)"
+      "technology": "JAX + XLA (gated autodiff runtime)"
     },
     {
       "activation_condition": "Use when declarative rule-based query evaluation across large code graphs is required.",
@@ -1260,11 +1287,12 @@
       "technology": "Souffl\u00e9 Datalog"
     },
     {
-      "activation_condition": "Use when fitting massive MoE or dense LLMs onto minimal GPU VRAM hardware without perplexity degradation.",
+      "activation_condition": "Select only after a real backend implementation, baseline comparison, memory measurement, throughput measurement, and quality delta are verified.",
       "advanced_exhibit": "languages/rhl_quant/advanced_rhl_quant_engine.py",
-      "architectural_role": "Frontier LLM deployment, VRAM constrained edge clusters, bitwise GPU matrix multiplication, and ultra-low memory inference.",
+      "architectural_role": "Benchmark harnesses for model compression after a backend, dataset, quality metric, and rollback path are defined.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
-      "evidence_state": "production_reference",
+      "evidence_state": "illustrative",
+      "evidence_tier": "concept_only",
       "expected_failure_cases": [
         "outlier overflow",
         "zero scale factor",
@@ -1279,9 +1307,23 @@
         "python_api",
         "quantization_mesh"
       ],
-      "maturity_tier": "proof-grade",
-      "proof_class": "behavioral",
-      "proof_surface": "1.58-bit Base Ternary Lattice with 2-bit Sparse Delta HLO Outlier Mesh",
+      "maturity_tier": "concept_only",
+      "promotion_gate": {
+        "minimum_evidence_state": "benchmark",
+        "required_receipt_fields": [
+          "backend",
+          "memory_bytes",
+          "quality_delta",
+          "throughput"
+        ],
+        "required_source_patterns": [
+          "numpy|torch",
+          "baseline|reference",
+          "max_error|relative_error"
+        ]
+      },
+      "proof_class": "illustrative",
+      "proof_surface": "Numerical reference only until HLO/accelerator execution and baseline quality/performance receipts exist",
       "required_receipt_fields": [
         "status",
         "flagship_tier",
@@ -1289,12 +1331,12 @@
         "quant_metrics",
         "performance"
       ],
-      "signature_innovation": "Residual HLO-Lattice Quantization (RHL-Quant)",
+      "signature_innovation": "Reference ternary/residual quantizer with an explicit accelerator and benchmark admission gate",
       "source_assertions": [
         "quantize_weight_tensor",
         "dequantize_and_matmul"
       ],
-      "technology": "RHL-Quant (1.58b Ternary Quantization Flagship)"
+      "technology": "RHL-Quant reference quantizer (unbenchmarked)"
     }
   ],
   "generated_by": "tools/audit_advanced_exhibits.py",
