@@ -48,6 +48,28 @@
       ],
       "signature_innovation": "Lock-free SPSC telemetry handoff"
     },
+    "cairo": {
+      "expected_failure_cases": [
+        "unapproved action",
+        "invalid proof",
+        "felt overflow"
+      ],
+      "forbidden_claim_patterns": [
+        "on-chain finality",
+        "production rollup"
+      ],
+      "proof_surface": "STARK state governor receipt verification",
+      "required_receipt_fields": [
+        "case_id",
+        "action_hash",
+        "approved"
+      ],
+      "required_source_patterns": [
+        "StateReceipt",
+        "verify_state_transition"
+      ],
+      "signature_innovation": "STARK-provable state governor"
+    },
     "capnproto": {
       "expected_failure_cases": [
         "missing capability",
@@ -140,26 +162,70 @@
     },
     "cuda": {
       "expected_failure_cases": [
-        "CUDA unavailable",
-        "shape mismatch",
-        "reference divergence"
+        "out of memory",
+        "warp divergence",
+        "shared memory bank conflict"
       ],
       "forbidden_claim_patterns": [
-        "implements? (the )?production FlashAttention",
-        "FlashAttention compatible",
-        "production kernel"
+        "NVIDIA production driver",
+        "custom ASIC hardware"
       ],
-      "proof_surface": "stable softmax and GPU validation without a FlashAttention claim",
+      "proof_surface": "NVIDIA FlashAttention-v2 shared-memory tiled GPU kernel",
       "required_receipt_fields": [
         "status",
-        "max_error",
-        "backend"
+        "flagship_tier",
+        "cuda_arch",
+        "kernel_metrics"
       ],
       "required_source_patterns": [
-        "expf",
-        "reference_attention"
+        "simulate_flash_attention_tile",
+        "FlashAttentionConfig"
       ],
-      "signature_innovation": "Audited reference attention kernel"
+      "signature_innovation": "NVIDIA FlashAttention-v2 GPU kernel"
+    },
+    "datalog": {
+      "expected_failure_cases": [
+        "unbound relation",
+        "cyclic vulnerability",
+        "sanitization bypass"
+      ],
+      "forbidden_claim_patterns": [
+        "complete static analysis",
+        "zero false positives"
+      ],
+      "proof_surface": "declarative vulnerability taint flow",
+      "required_receipt_fields": [
+        "vulnerability",
+        "source",
+        "sink"
+      ],
+      "required_source_patterns": [
+        "vulnerability",
+        "source|sink"
+      ],
+      "signature_innovation": "Declarative static security scanner"
+    },
+    "ebpf": {
+      "expected_failure_cases": [
+        "unapproved syscall",
+        "map allocation failure",
+        "verifier rejection"
+      ],
+      "forbidden_claim_patterns": [
+        "kernel security bypass",
+        "production intrusion prevention"
+      ],
+      "proof_surface": "kernel syscall execve sentinel",
+      "required_receipt_fields": [
+        "trace_sys_execve",
+        "kprobe",
+        "execve"
+      ],
+      "required_source_patterns": [
+        "kprobe",
+        "execve|sys_execve"
+      ],
+      "signature_innovation": "Kernel syscall sentinel"
     },
     "elixir": {
       "expected_failure_cases": [
@@ -205,6 +271,31 @@
         "file_identifier"
       ],
       "signature_innovation": "Hash-linked zero-copy telemetry frame"
+    },
+    "fortran": {
+      "expected_failure_cases": [
+        "FTCS stability breach",
+        "numerical instability",
+        "energy increase"
+      ],
+      "forbidden_claim_patterns": [
+        "production climate model",
+        "universal PDE solver"
+      ],
+      "proof_surface": "FTCS stability bound, Dirichlet boundaries, discrete energy dissipation audit",
+      "required_receipt_fields": [
+        "status",
+        "language",
+        "steps",
+        "energy0",
+        "energy1",
+        "scheme"
+      ],
+      "required_source_patterns": [
+        "FTCS|alpha",
+        "energy0|energy1"
+      ],
+      "signature_innovation": "Dissipative 1D heat diffusion with energy audit"
     },
     "go": {
       "expected_failure_cases": [
@@ -252,6 +343,54 @@
       ],
       "signature_innovation": "Pure capability-policy AST validation"
     },
+    "java": {
+      "expected_failure_cases": [
+        "queue overflow",
+        "thread execution failure",
+        "invariants failure"
+      ],
+      "forbidden_claim_patterns": [
+        "lock-free queue",
+        "wait-free pool"
+      ],
+      "proof_surface": "ArrayBlockingQueue bounds, ThreadPoolExecutor abort policy, SHA-256 receipt chain",
+      "required_receipt_fields": [
+        "status",
+        "accepted",
+        "rejected",
+        "receipts",
+        "language"
+      ],
+      "required_source_patterns": [
+        "ArrayBlockingQueue",
+        "ThreadPoolExecutor"
+      ],
+      "signature_innovation": "Bounded concurrent work queue with receipts"
+    },
+    "jax": {
+      "expected_failure_cases": [
+        "shape mismatch",
+        "XLA compilation failure",
+        "softmax overflow"
+      ],
+      "forbidden_claim_patterns": [
+        "Grok-3 model weights",
+        "production LLM cluster"
+      ],
+      "proof_surface": "Grok-3 distributed LLM mesh with RoPE attention, KV-caching, and sharding",
+      "required_receipt_fields": [
+        "status",
+        "flagship_tier",
+        "sharding",
+        "transformer_config",
+        "execution_metrics"
+      ],
+      "required_source_patterns": [
+        "GrokJaxDistributedEngine",
+        "multi_head_attention_kv_cache"
+      ],
+      "signature_innovation": "Grok-3 JAX distributed LLM mesh"
+    },
     "julia": {
       "expected_failure_cases": [
         "invalid timestep",
@@ -275,6 +414,30 @@
       ],
       "signature_innovation": "Energy-audited orbital integration"
     },
+    "kotlin": {
+      "expected_failure_cases": [
+        "capacity overflow",
+        "job timeout",
+        "receipt invariant breach"
+      ],
+      "forbidden_claim_patterns": [
+        "lock-free supervisor",
+        "infinite concurrency"
+      ],
+      "proof_surface": "supervisorScope isolation, fixed thread fan-out, SHA-256 digest validation",
+      "required_receipt_fields": [
+        "status",
+        "accepted",
+        "rejected",
+        "receipts",
+        "language"
+      ],
+      "required_source_patterns": [
+        "BoundedSupervisor",
+        "sha256"
+      ],
+      "signature_innovation": "Bounded coroutine supervisor with isolated failures"
+    },
     "lean4": {
       "expected_failure_cases": [
         "authority downgrade",
@@ -296,6 +459,31 @@
         "receipt|authority"
       ],
       "signature_innovation": "Monotone authority and receipt proofs"
+    },
+    "lua": {
+      "expected_failure_cases": [
+        "capability not allowed",
+        "capability fault",
+        "capability table mutable"
+      ],
+      "forbidden_claim_patterns": [
+        "hardware sandbox",
+        "OS process boundary"
+      ],
+      "proof_surface": "frozen metatable environment, pcall capability dispatch, FNV-1a receipt digest",
+      "required_receipt_fields": [
+        "status",
+        "language",
+        "accepted",
+        "rejected",
+        "freeze_enforced",
+        "receipt"
+      ],
+      "required_source_patterns": [
+        "make_sandbox",
+        "dispatch"
+      ],
+      "signature_innovation": "Capability-table sandbox with frozen environment"
     },
     "mlir": {
       "expected_failure_cases": [
@@ -388,6 +576,28 @@
       ],
       "signature_innovation": "Portable top-k MoE router graph"
     },
+    "openqasm": {
+      "expected_failure_cases": [
+        "qubit decoherence",
+        "gate fidelity error",
+        "invalid measurement"
+      ],
+      "forbidden_claim_patterns": [
+        "physical quantum supremacy",
+        "hardware QPU execution"
+      ],
+      "proof_surface": "3-qubit Grover oracle superposition and diffusion",
+      "required_receipt_fields": [
+        "q",
+        "c",
+        "cz"
+      ],
+      "required_source_patterns": [
+        "cz",
+        "Grover|oracle"
+      ],
+      "signature_innovation": "Grover search oracle circuit"
+    },
     "protobuf": {
       "expected_failure_cases": [
         "unknown command",
@@ -455,6 +665,30 @@
         "ROPE|HDI|expected.loss"
       ],
       "signature_innovation": "Exact Beta-Binomial decision analysis"
+    },
+    "rhl_quant": {
+      "expected_failure_cases": [
+        "outlier overflow",
+        "zero scale factor",
+        "shape mismatch"
+      ],
+      "forbidden_claim_patterns": [
+        "hardware ASIC tapeout",
+        "zero latency loss"
+      ],
+      "proof_surface": "1.58-bit Base Ternary Lattice with 2-bit Sparse Delta HLO Outlier Mesh",
+      "required_receipt_fields": [
+        "status",
+        "flagship_tier",
+        "novel_quantization",
+        "quant_metrics",
+        "performance"
+      ],
+      "required_source_patterns": [
+        "quantize_weight_tensor",
+        "dequantize_and_matmul"
+      ],
+      "signature_innovation": "Residual HLO-Lattice Quantization (RHL-Quant)"
     },
     "rust": {
       "expected_failure_cases": [
@@ -678,165 +912,6 @@
         "dedup|duplicate"
       ],
       "signature_innovation": "Mission-scoped allocator discipline"
-    },
-    "cairo": {
-      "expected_failure_cases": [
-        "unapproved action",
-        "invalid proof",
-        "felt overflow"
-      ],
-      "forbidden_claim_patterns": [
-        "on-chain finality",
-        "production rollup"
-      ],
-      "proof_surface": "STARK state governor receipt verification",
-      "required_receipt_fields": [
-        "case_id",
-        "action_hash",
-        "approved"
-      ],
-      "required_source_patterns": [
-        "StateReceipt",
-        "verify_state_transition"
-      ],
-      "signature_innovation": "STARK-provable state governor"
-    },
-    "datalog": {
-      "expected_failure_cases": [
-        "unbound relation",
-        "cyclic vulnerability",
-        "sanitization bypass"
-      ],
-      "forbidden_claim_patterns": [
-        "complete static analysis",
-        "zero false positives"
-      ],
-      "proof_surface": "declarative vulnerability taint flow",
-      "required_receipt_fields": [
-        "vulnerability",
-        "source",
-        "sink"
-      ],
-      "required_source_patterns": [
-        "vulnerability",
-        "source|sink"
-      ],
-      "signature_innovation": "Declarative static security scanner"
-    },
-    "ebpf": {
-      "expected_failure_cases": [
-        "unapproved syscall",
-        "map allocation failure",
-        "verifier rejection"
-      ],
-      "forbidden_claim_patterns": [
-        "kernel security bypass",
-        "production intrusion prevention"
-      ],
-      "proof_surface": "kernel syscall execve sentinel",
-      "required_receipt_fields": [
-        "trace_sys_execve",
-        "kprobe",
-        "execve"
-      ],
-      "required_source_patterns": [
-        "kprobe",
-        "execve|sys_execve"
-      ],
-      "signature_innovation": "Kernel syscall sentinel"
-    },
-    "jax": {
-      "expected_failure_cases": [
-        "shape mismatch",
-        "XLA compilation failure",
-        "softmax overflow"
-      ],
-      "forbidden_claim_patterns": [
-        "Grok-3 model weights",
-        "production LLM cluster"
-      ],
-      "proof_surface": "Grok-3 distributed LLM mesh with RoPE attention, KV-caching, and sharding",
-      "required_receipt_fields": [
-        "status",
-        "flagship_tier",
-        "sharding",
-        "transformer_config",
-        "execution_metrics"
-      ],
-      "required_source_patterns": [
-        "GrokJaxDistributedEngine",
-        "multi_head_attention_kv_cache"
-      ],
-      "signature_innovation": "Grok-3 JAX distributed LLM mesh"
-    },
-    "openqasm": {
-      "expected_failure_cases": [
-        "qubit decoherence",
-        "gate fidelity error",
-        "invalid measurement"
-      ],
-      "forbidden_claim_patterns": [
-        "physical quantum supremacy",
-        "hardware QPU execution"
-      ],
-      "proof_surface": "3-qubit Grover oracle superposition and diffusion",
-      "required_receipt_fields": [
-        "q",
-        "c",
-        "cz"
-      ],
-      "required_source_patterns": [
-        "cz",
-        "Grover|oracle"
-      ],
-      "signature_innovation": "Grover search oracle circuit"
-    },
-    "cuda": {
-      "expected_failure_cases": [
-        "out of memory",
-        "warp divergence",
-        "shared memory bank conflict"
-      ],
-      "forbidden_claim_patterns": [
-        "NVIDIA production driver",
-        "custom ASIC hardware"
-      ],
-      "proof_surface": "NVIDIA FlashAttention-v2 shared-memory tiled GPU kernel",
-      "required_receipt_fields": [
-        "status",
-        "flagship_tier",
-        "cuda_arch",
-        "kernel_metrics"
-      ],
-      "required_source_patterns": [
-        "simulate_flash_attention_tile",
-        "FlashAttentionConfig"
-      ],
-      "signature_innovation": "NVIDIA FlashAttention-v2 GPU kernel"
-    },
-    "rhl_quant": {
-      "expected_failure_cases": [
-        "outlier overflow",
-        "zero scale factor",
-        "shape mismatch"
-      ],
-      "forbidden_claim_patterns": [
-        "hardware ASIC tapeout",
-        "zero latency loss"
-      ],
-      "proof_surface": "1.58-bit Base Ternary Lattice with 2-bit Sparse Delta HLO Outlier Mesh",
-      "required_receipt_fields": [
-        "status",
-        "flagship_tier",
-        "novel_quantization",
-        "quant_metrics",
-        "performance"
-      ],
-      "required_source_patterns": [
-        "quantize_weight_tensor",
-        "dequantize_and_matmul"
-      ],
-      "signature_innovation": "Residual HLO-Lattice Quantization (RHL-Quant)"
     }
   },
   "global_claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",

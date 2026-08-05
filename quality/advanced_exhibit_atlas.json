@@ -1,5 +1,5 @@
 {
-  "advanced_exhibit_count": 36,
+  "advanced_exhibit_count": 40,
   "all_claim_contracts_present": true,
   "all_profiles_present": true,
   "authority": [
@@ -189,6 +189,44 @@
       "technology": "Odin"
     },
     {
+      "activation_condition": "Use when untrusted or third-party logic must run under an explicit capability table.",
+      "advanced_exhibit": "languages/lua/advanced_sandbox_capability_table.lua",
+      "architectural_role": "Game engines, plugin hosts, config loaders, agent tool sandboxes, and embedded automation.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
+      "evidence_state": "tested",
+      "expected_failure_cases": [
+        "capability not allowed",
+        "capability fault",
+        "capability table mutable"
+      ],
+      "forbidden_claim_patterns": [
+        "hardware sandbox",
+        "OS process boundary"
+      ],
+      "id": "lua",
+      "interfaces": [
+        "c_abi",
+        "embedding"
+      ],
+      "maturity_tier": "proof-grade",
+      "proof_class": "behavioral",
+      "proof_surface": "frozen metatable environment, pcall capability dispatch, FNV-1a receipt digest",
+      "required_receipt_fields": [
+        "status",
+        "language",
+        "accepted",
+        "rejected",
+        "freeze_enforced",
+        "receipt"
+      ],
+      "signature_innovation": "Capability-table sandbox with frozen environment",
+      "source_assertions": [
+        "make_sandbox",
+        "dispatch"
+      ],
+      "technology": "Lua"
+    },
+    {
       "activation_condition": "Use when iteration speed, ecosystem breadth, and readable coordination dominate the boundary.",
       "advanced_exhibit": "languages/python/advanced_async_orchestrator.py",
       "architectural_role": "Mission orchestration, model tooling, document pipelines, tests, and integration glue.",
@@ -298,6 +336,84 @@
         "approval|rate"
       ],
       "technology": "TypeScript"
+    },
+    {
+      "activation_condition": "Use when the operational contract is the JVM itself and long-lived enterprise ecosystems matter.",
+      "advanced_exhibit": "languages/java/advanced_bounded_work_queue.java",
+      "architectural_role": "Application servers, batch gateways, Android runtimes, and cross-organization service boundaries.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
+      "evidence_state": "tested",
+      "expected_failure_cases": [
+        "queue overflow",
+        "thread execution failure",
+        "invariants failure"
+      ],
+      "forbidden_claim_patterns": [
+        "lock-free queue",
+        "wait-free pool"
+      ],
+      "id": "java",
+      "interfaces": [
+        "jdbc",
+        "grpc",
+        "protobuf",
+        "jni"
+      ],
+      "maturity_tier": "proof-grade",
+      "proof_class": "behavioral",
+      "proof_surface": "ArrayBlockingQueue bounds, ThreadPoolExecutor abort policy, SHA-256 receipt chain",
+      "required_receipt_fields": [
+        "status",
+        "accepted",
+        "rejected",
+        "receipts",
+        "language"
+      ],
+      "signature_innovation": "Bounded concurrent work queue with receipts",
+      "source_assertions": [
+        "ArrayBlockingQueue",
+        "ThreadPoolExecutor"
+      ],
+      "technology": "Java"
+    },
+    {
+      "activation_condition": "Use when new JVM work needs safer defaults, concise syntax, and optional multiplatform reach.",
+      "advanced_exhibit": "languages/kotlin/advanced_coroutine_supervisor.kt",
+      "architectural_role": "Android, server services, shared business logic, and agent runtimes on the JVM.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
+      "evidence_state": "tested",
+      "expected_failure_cases": [
+        "capacity overflow",
+        "job timeout",
+        "receipt invariant breach"
+      ],
+      "forbidden_claim_patterns": [
+        "lock-free supervisor",
+        "infinite concurrency"
+      ],
+      "id": "kotlin",
+      "interfaces": [
+        "jvm",
+        "android",
+        "protobuf",
+        "grpc"
+      ],
+      "maturity_tier": "proof-grade",
+      "proof_class": "behavioral",
+      "proof_surface": "supervisorScope isolation, fixed thread fan-out, SHA-256 digest validation",
+      "required_receipt_fields": [
+        "status",
+        "accepted",
+        "rejected",
+        "receipts",
+        "language"
+      ],
+      "signature_innovation": "Bounded coroutine supervisor with isolated failures",
+      "source_assertions": [
+        "BoundedSupervisor",
+        "sha256"
+      ],
+      "technology": "Kotlin"
     },
     {
       "activation_condition": "Use when the target is Apple's runtime, UI stack, or GPU/ANE ecosystem.",
@@ -480,6 +596,45 @@
         "energy"
       ],
       "technology": "Julia"
+    },
+    {
+      "activation_condition": "Use when dense numerical loops, long-lived scientific codes, or HPC libraries dominate.",
+      "advanced_exhibit": "languages/fortran/advanced_heat_diffusion.f90",
+      "architectural_role": "Climate models, CFD, linear algebra, materials simulation, and legacy scientific stacks.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
+      "evidence_state": "tested",
+      "expected_failure_cases": [
+        "FTCS stability breach",
+        "numerical instability",
+        "energy increase"
+      ],
+      "forbidden_claim_patterns": [
+        "production climate model",
+        "universal PDE solver"
+      ],
+      "id": "fortran",
+      "interfaces": [
+        "c_abi",
+        "mpi",
+        "openmp"
+      ],
+      "maturity_tier": "proof-grade",
+      "proof_class": "behavioral",
+      "proof_surface": "FTCS stability bound, Dirichlet boundaries, discrete energy dissipation audit",
+      "required_receipt_fields": [
+        "status",
+        "language",
+        "steps",
+        "energy0",
+        "energy1",
+        "scheme"
+      ],
+      "signature_innovation": "Dissipative 1D heat diffusion with energy audit",
+      "source_assertions": [
+        "FTCS|alpha",
+        "energy0|energy1"
+      ],
+      "technology": "Fortran"
     },
     {
       "activation_condition": "Use when durable data relationships and set-oriented operations belong inside the database.",
