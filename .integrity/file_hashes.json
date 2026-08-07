@@ -6,7 +6,7 @@
     ".github/dependabot.yml": "d9a3dd6bc9dc1bf65a395643280126cae8a14a210929a7322945b5b73c6f18bc",
     ".github/workflows/advanced-exhibits.yml": "66e4a66bcbc0e6cf0c8b7651e3fc2c6f1b6f5f0053a087371a3bcc6df2da881a",
     ".github/workflows/branch-hygiene.yml": "0e4a6f03618e83152d649ac673a0fefe22f00bc3b3086ae92e0745ec39323b9b",
-    ".github/workflows/ci.yml": "95007d7d9ce76cdbe10c4fa2a81d2fbf733670e0a59a9c90f7b45a1df6f10984",
+    ".github/workflows/ci.yml": "412b7bff530d3a20e39d2ec1ed11d59450891dc366e20b420822fd27a8a01724",
     ".github/workflows/main-ruleset-contract.yml": "714a82690a7a21352134d01c05caa304bbb2547bd92bd890d39ed7342998b853",
     ".github/workflows/nervous-system-contract.yml": "c6e692949904e3121f5ecb20e38f5fc6572061b47bd59a2ab00f62d698d89ab4",
     ".github/workflows/spiral.yml": "d988b8fc16e3bc61964b6409ef7de500e7c28e1f9cc0769fe9bf70643e3d2ac4",
