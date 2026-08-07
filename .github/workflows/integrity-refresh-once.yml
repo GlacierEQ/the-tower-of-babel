@@ -52,7 +52,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git add .integrity/file_hashes.json .github/workflows/integrity-refresh-once.yml
+          git add -A
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git commit -m 'ci: regenerate integrity ledger from final checkout-v7 synthesis tree'
