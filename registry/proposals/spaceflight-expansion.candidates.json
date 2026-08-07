@@ -1,0 +1,103 @@
+{
+  "schema_version": "tower-candidate-floors/1",
+  "authority": "registry/tower.yml",
+  "status": "proposal_not_admitted",
+  "audit": "docs/SPACEFLIGHT_EXPANSION_AUDIT.md",
+  "rationale": "Public SpaceX-adjacent signals suggest aerospace execution domains that are not yet active Tower floors. They must remain candidates until examples, claim contracts, proof classes, toolchain blockers, generated surfaces, and integrity receipts exist.",
+  "do_not_claim": [
+    "Do not claim these are SpaceX proprietary technologies.",
+    "Do not claim active registry admission until tower.yml references a fragment and validation passes.",
+    "Do not claim production-grade mastery without evidence states and receipts."
+  ],
+  "candidate_floors": [
+    {
+      "id": "embedded_linux_yocto",
+      "name": "Embedded Linux / Yocto",
+      "artifact_type": "runtime_surface",
+      "priority": 1,
+      "proposed_evidence_state": "toolchain_gated",
+      "proposed_proof_class": "integration",
+      "why": "Spaceflight and satellite systems use Linux-based flight, ground, and application software surfaces; Yocto represents reproducible embedded Linux images and board support boundaries.",
+      "example_boundary": "portable Linux capability probe plus Yocto image-build receipt when the toolchain is available",
+      "admission_blockers": ["easy exhibit", "advanced Yocto/embedded Linux exhibit", "claim contract", "toolchain-gated CI receipt"]
+    },
+    {
+      "id": "csharp_dotnet",
+      "name": "C# / .NET",
+      "artifact_type": "application_platform",
+      "priority": 2,
+      "proposed_evidence_state": "tested",
+      "proposed_proof_class": "behavioral",
+      "why": "Public SpaceX postings identify C#/Python application software, .NET APIs, data pipelines, dashboards, and operational systems.",
+      "example_boundary": "mission telemetry API with typed request/response models, validation, failure handling, and tests",
+      "admission_blockers": ["easy exhibit", "advanced ASP.NET or CLI data-pipeline exhibit", "claim contract", "dotnet build/test gate"]
+    },
+    {
+      "id": "matlab_simulink",
+      "name": "MATLAB / Simulink",
+      "artifact_type": "model_based_engineering",
+      "priority": 3,
+      "proposed_evidence_state": "toolchain_gated",
+      "proposed_proof_class": "benchmark",
+      "why": "GNC, control theory, state estimation, Monte Carlo simulation, HITL, and vehicle dynamics need a model-based control/simulation floor even where specific proprietary adoption is not asserted.",
+      "example_boundary": "closed-loop control model with simulation receipt and exact toolchain blocker when MATLAB/Simulink is unavailable",
+      "admission_blockers": ["model example", "advanced control exhibit", "claim contract", "license/toolchain blocker handling"]
+    },
+    {
+      "id": "labview_test_automation",
+      "name": "LabVIEW / Test Automation",
+      "artifact_type": "instrumentation_platform",
+      "priority": 8,
+      "proposed_evidence_state": "toolchain_gated",
+      "proposed_proof_class": "integration",
+      "why": "Historical public SpaceX software-team disclosures mention LabVIEW in build/launch/monitor tooling; use as instrumentation/test-automation candidate only unless current sources improve.",
+      "example_boundary": "hardware-in-the-loop test orchestration boundary with a receipt schema and graceful unavailable state",
+      "admission_blockers": ["current source posture", "VI or textual surrogate exhibit", "claim contract", "toolchain unavailable receipt"]
+    },
+    {
+      "id": "rtos_rtems",
+      "name": "RTOS / RTEMS",
+      "artifact_type": "real_time_runtime",
+      "priority": 4,
+      "proposed_evidence_state": "toolchain_gated",
+      "proposed_proof_class": "behavioral",
+      "why": "Hard real-time control requires deterministic scheduling, deadlines, and hardware-adjacent failure semantics distinct from Linux services.",
+      "example_boundary": "rate-monotonic task scheduler model plus RTEMS-gated runtime build",
+      "admission_blockers": ["easy scheduling exhibit", "advanced RTEMS or portable RTOS simulator", "claim contract", "deterministic timing receipt"]
+    },
+    {
+      "id": "ros2_dds",
+      "name": "ROS 2 / DDS",
+      "artifact_type": "distributed_robotics_middleware",
+      "priority": 6,
+      "proposed_evidence_state": "service_gated",
+      "proposed_proof_class": "integration",
+      "why": "Publish/subscribe middleware is a natural space-robotics and satellite coordination boundary for telemetry, command, autonomy, and subsystem messaging.",
+      "example_boundary": "typed telemetry publisher/subscriber with deadline/liveliness QoS and exact service/toolchain blockers",
+      "admission_blockers": ["easy pubsub exhibit", "advanced fault-tolerant messaging exhibit", "claim contract", "ROS 2/DDS install gate"]
+    },
+    {
+      "id": "aadl_agree",
+      "name": "AADL / AGREE",
+      "artifact_type": "avionics_architecture_contract",
+      "priority": 5,
+      "proposed_evidence_state": "formally_verified",
+      "proposed_proof_class": "formal",
+      "why": "Avionics and flight-control architecture require component contracts, assume-guarantee reasoning, and model-level verification beyond general proof-language snippets.",
+      "example_boundary": "redundant flight-control component model with assume-guarantee safety contract and proof receipt",
+      "admission_blockers": ["AADL model", "AGREE theorem/check receipt", "claim contract", "formal toolchain blocker"]
+    },
+    {
+      "id": "modelica_fmi",
+      "name": "Modelica / FMI",
+      "artifact_type": "physical_system_cosimulation",
+      "priority": 7,
+      "proposed_evidence_state": "toolchain_gated",
+      "proposed_proof_class": "integration",
+      "why": "Propulsion, thermal, fluids, electrical, and vehicle simulations benefit from exchangeable physical models and co-simulation boundaries.",
+      "example_boundary": "thermal or propulsion plant model exported as an FMI/FMU-style receipt with graceful toolchain blocker",
+      "admission_blockers": ["easy physical-system model", "advanced co-simulation exhibit", "claim contract", "OpenModelica/FMI gate"]
+    }
+  ],
+  "recommended_first_active_floor": "csharp_dotnet"
+}
