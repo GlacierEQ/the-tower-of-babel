@@ -45,6 +45,9 @@ class SecurityBoundaryTests(unittest.TestCase):
             with self.subTest(executable=executable):
                 self.assertIsNone(build._validate_argv([executable, "--version"]))
 
+    def test_command_policy_admits_declared_java_runtime(self) -> None:
+        self.assertIsNone(build._validate_argv(["java", "-version"]))
+
     def test_build_floor_rejects_unapproved_primary_tool(self) -> None:
         result = build.build_floor({
             "id": "unsafe",
