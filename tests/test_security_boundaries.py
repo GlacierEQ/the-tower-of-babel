@@ -40,6 +40,11 @@ class SecurityBoundaryTests(unittest.TestCase):
         self.assertIsNone(build._validate_argv(["psql", "--version"]))
         self.assertIsNone(build._validate_argv(["ghdl", "--version"]))
 
+    def test_command_policy_admits_declared_specialized_toolchains(self) -> None:
+        for executable in ("lua", "javac", "kotlinc", "gfortran", "qasm3", "cairo-compile", "souffle"):
+            with self.subTest(executable=executable):
+                self.assertIsNone(build._validate_argv([executable, "--version"]))
+
     def test_build_floor_rejects_unapproved_primary_tool(self) -> None:
         result = build.build_floor({
             "id": "unsafe",
