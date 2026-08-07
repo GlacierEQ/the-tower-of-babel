@@ -36,6 +36,7 @@ _SAFE_EXECUTABLES = frozenset({
     "ghdl",
     "go",
     "iverilog",
+    "java",
     "javac",
     "julia",
     "kotlinc",
