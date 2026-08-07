@@ -32,7 +32,7 @@ jobs:
           mkdir -p artifacts
 
           case "${BRANCH}" in
-            feature/*|fix/*|chore/*|docs/*|hardening/*|release/*|dependabot/*|renovate/*)
+            feature/*|fix/*|chore/*|docs/*|hardening/*|release/*|dependabot/*|renovate/*|synthesize/*|integration/*)
               ;;
             *)
               echo "Refusing unapproved branch prefix: ${BRANCH}" >&2
