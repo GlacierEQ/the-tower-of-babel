@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Flagship Exhibit: Grok-3 Distributed LLM Training & Inference Mesh in JAX (xAI Architecture)
+Reference Exhibit: distributed-mesh shape simulation (JAX/XLA not executed)
 Demonstrates:
   1. Rotary Position Embeddings (RoPE) for long-context LLM sequences.
   2. Multi-Head Scaled Dot-Product Attention with Key-Value (KV) Cache Decoding.
@@ -88,8 +88,8 @@ class GrokJaxDistributedEngine:
         elapsed_ms = round((time.perf_counter() - t0) * 1000, 3)
 
         return {
-            "status": "VERIFIED",
-            "flagship_tier": "GROK_3_JAX_DISTRIBUTED_MESH",
+            "status": "REFERENCE_ONLY",
+            "flagship_tier": "CONCEPTUAL_DISTRIBUTED_MESH",
             "sharding": {
                 "mesh_shape": [2, 4],
                 "mesh_axes": ["data", "model"],
@@ -109,7 +109,7 @@ class GrokJaxDistributedEngine:
                 "kv_cache_length": len(kv_cache),
                 "avg_attention_score": round(sum(latencies) / len(latencies), 6),
                 "total_time_ms": elapsed_ms,
-                "xla_jit_status": "COMPILED_STABLE"
+                "xla_jit_status": "NOT_EXECUTED"
             }
         }
 
