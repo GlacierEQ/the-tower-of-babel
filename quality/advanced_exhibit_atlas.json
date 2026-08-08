@@ -14,6 +14,7 @@
       "architectural_role": "Firmware, kernels, embedded loops, lock-free primitives, and portable system libraries.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "tested",
+      "evidence_tier": "tested_implementation",
       "expected_failure_cases": [
         "null input",
         "bounded overflow",
@@ -28,7 +29,8 @@
         "c_abi",
         "shared_memory"
       ],
-      "maturity_tier": "proof-grade",
+      "maturity_tier": "tested_implementation",
+      "promotion_gate": {},
       "proof_class": "behavioral",
       "proof_surface": "bounded queue, atomics, FIFO and backpressure receipt",
       "required_receipt_fields": [
@@ -51,6 +53,7 @@
       "architectural_role": "Engines, inference runtimes, cache systems, geometry, simulation, and latency-sensitive services.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "tested",
+      "evidence_tier": "tested_implementation",
       "expected_failure_cases": [
         "invalid capacity",
         "pinned eviction",
@@ -65,7 +68,8 @@
         "c_abi",
         "protobuf"
       ],
-      "maturity_tier": "proof-grade",
+      "maturity_tier": "tested_implementation",
+      "promotion_gate": {},
       "proof_class": "behavioral",
       "proof_surface": "deterministic utility scoring, pinned retention and decision fingerprint",
       "required_receipt_fields": [
@@ -87,6 +91,7 @@
       "architectural_role": "Evidence engines, action governors, cryptographic tooling, network services, and safe concurrency.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "tested",
+      "evidence_tier": "tested_implementation",
       "expected_failure_cases": [
         "path traversal",
         "oversized payload",
@@ -102,7 +107,8 @@
         "c_abi",
         "capnp"
       ],
-      "maturity_tier": "proof-grade",
+      "maturity_tier": "tested_implementation",
+      "promotion_gate": {},
       "proof_class": "behavioral",
       "proof_surface": "fail-closed path, payload, depth and approval policy",
       "required_receipt_fields": [
@@ -124,6 +130,7 @@
       "architectural_role": "Portable CLIs, allocators, cross-compilation, embedded tools, and small runtime components.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "tested",
+      "evidence_tier": "tested_implementation",
       "expected_failure_cases": [
         "allocator exhaustion",
         "duplicate sample",
@@ -138,7 +145,8 @@
         "c_abi",
         "wasm"
       ],
-      "maturity_tier": "proof-grade",
+      "maturity_tier": "tested_implementation",
+      "promotion_gate": {},
       "proof_class": "behavioral",
       "proof_surface": "arena lifetime, deduplication and hard sample ceiling",
       "required_receipt_fields": [
@@ -159,6 +167,7 @@
       "architectural_role": "Game engines, physics, visualization, and deterministic real-time loops.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "toolchain_gated",
+      "evidence_tier": "gated_reference",
       "expected_failure_cases": [
         "invalid timestep",
         "nonphysical temperature",
@@ -172,7 +181,8 @@
       "interfaces": [
         "c_abi"
       ],
-      "maturity_tier": "explicitly-gated-reference",
+      "maturity_tier": "gated_reference",
+      "promotion_gate": {},
       "proof_class": "compile",
       "proof_surface": "explicit physical bounds, ablation and mission diagnostics",
       "required_receipt_fields": [
@@ -194,6 +204,7 @@
       "architectural_role": "Game engines, plugin hosts, config loaders, agent tool sandboxes, and embedded automation.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "tested",
+      "evidence_tier": "tested_implementation",
       "expected_failure_cases": [
         "capability not allowed",
         "capability fault",
@@ -208,7 +219,8 @@
         "c_abi",
         "embedding"
       ],
-      "maturity_tier": "proof-grade",
+      "maturity_tier": "tested_implementation",
+      "promotion_gate": {},
       "proof_class": "behavioral",
       "proof_surface": "frozen metatable environment, pcall capability dispatch, FNV-1a receipt digest",
       "required_receipt_fields": [
@@ -232,6 +244,7 @@
       "architectural_role": "Mission orchestration, model tooling, document pipelines, tests, and integration glue.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "tested",
+      "evidence_tier": "tested_implementation",
       "expected_failure_cases": [
         "queue full",
         "retry exhaustion",
@@ -247,7 +260,8 @@
         "json",
         "subprocess"
       ],
-      "maturity_tier": "proof-grade",
+      "maturity_tier": "tested_implementation",
+      "promotion_gate": {},
       "proof_class": "behavioral",
       "proof_surface": "bounded queues, FIFO ties, futures, retries and graceful shutdown",
       "required_receipt_fields": [
@@ -269,6 +283,7 @@
       "architectural_role": "Gateways, control-plane daemons, streaming telemetry, and cloud infrastructure.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "tested",
+      "evidence_tier": "tested_implementation",
       "expected_failure_cases": [
         "checksum mismatch",
         "oversized frame",
@@ -284,7 +299,8 @@
         "grpc",
         "http"
       ],
-      "maturity_tier": "proof-grade",
+      "maturity_tier": "tested_implementation",
+      "promotion_gate": {},
       "proof_class": "behavioral",
       "proof_surface": "CRC, frame bounds, sequence continuity, cancellation and metrics",
       "required_receipt_fields": [
@@ -306,6 +322,7 @@
       "architectural_role": "MCP gateways, web applications, browser agents, connectors, and asynchronous control surfaces.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "tested",
+      "evidence_tier": "tested_implementation",
       "expected_failure_cases": [
         "invalid method",
         "mutation without approval",
@@ -321,7 +338,8 @@
         "mcp",
         "protobuf"
       ],
-      "maturity_tier": "proof-grade",
+      "maturity_tier": "tested_implementation",
+      "promotion_gate": {},
       "proof_class": "behavioral",
       "proof_surface": "runtime validation, mutation approval, rate limiting and hashed receipts",
       "required_receipt_fields": [
@@ -343,6 +361,7 @@
       "architectural_role": "Application servers, batch gateways, Android runtimes, and cross-organization service boundaries.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "tested",
+      "evidence_tier": "tested_implementation",
       "expected_failure_cases": [
         "queue overflow",
         "thread execution failure",
@@ -359,7 +378,8 @@
         "protobuf",
         "jni"
       ],
-      "maturity_tier": "proof-grade",
+      "maturity_tier": "tested_implementation",
+      "promotion_gate": {},
       "proof_class": "behavioral",
       "proof_surface": "ArrayBlockingQueue bounds, ThreadPoolExecutor abort policy, SHA-256 receipt chain",
       "required_receipt_fields": [
@@ -382,6 +402,7 @@
       "architectural_role": "Android, server services, shared business logic, and agent runtimes on the JVM.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "tested",
+      "evidence_tier": "tested_implementation",
       "expected_failure_cases": [
         "capacity overflow",
         "job timeout",
@@ -398,7 +419,8 @@
         "protobuf",
         "grpc"
       ],
-      "maturity_tier": "proof-grade",
+      "maturity_tier": "tested_implementation",
+      "promotion_gate": {},
       "proof_class": "behavioral",
       "proof_surface": "supervisorScope isolation, fixed thread fan-out, SHA-256 digest validation",
       "required_receipt_fields": [
@@ -421,6 +443,7 @@
       "architectural_role": "macOS/iOS applications, Apple Silicon inference, Metal compute, and device-native interfaces.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "hardware_gated",
+      "evidence_tier": "gated_reference",
       "expected_failure_cases": [
         "Metal unavailable",
         "shape mismatch",
@@ -436,7 +459,8 @@
         "metal",
         "coreml"
       ],
-      "maturity_tier": "explicitly-gated-reference",
+      "maturity_tier": "gated_reference",
+      "promotion_gate": {},
       "proof_class": "hardware",
       "proof_surface": "GPU dispatch with CPU reference and an explicit no-ANE claim boundary",
       "required_receipt_fields": [
@@ -457,6 +481,7 @@
       "architectural_role": "Realtime backends, event systems, self-healing clusters, and coordination services.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "tested",
+      "evidence_tier": "tested_implementation",
       "expected_failure_cases": [
         "duplicate mission",
         "worker crash",
@@ -472,7 +497,8 @@
         "http",
         "events"
       ],
-      "maturity_tier": "proof-grade",
+      "maturity_tier": "tested_implementation",
+      "promotion_gate": {},
       "proof_class": "behavioral",
       "proof_surface": "duplicate rejection and observed process replacement after failure",
       "required_receipt_fields": [
@@ -494,6 +520,7 @@
       "architectural_role": "Compilers, DSLs, formal models, financial logic, and correctness-sensitive transformations.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "compiles",
+      "evidence_tier": "runnable_reference",
       "expected_failure_cases": [
         "absolute path",
         "parent traversal",
@@ -508,7 +535,8 @@
         "protobuf",
         "ffi"
       ],
-      "maturity_tier": "verified-reference",
+      "maturity_tier": "runnable_reference",
+      "promotion_gate": {},
       "proof_class": "compile",
       "proof_surface": "algebraic decisions, lexical path safety and deterministic receipt",
       "required_receipt_fields": [
@@ -530,6 +558,7 @@
       "architectural_role": "Experiments, Bayesian analysis, biostatistics, forecasting, and reproducible reports.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "tested",
+      "evidence_tier": "tested_implementation",
       "expected_failure_cases": [
         "invalid counts",
         "empty posterior",
@@ -545,7 +574,8 @@
         "arrow",
         "sql"
       ],
-      "maturity_tier": "proof-grade",
+      "maturity_tier": "tested_implementation",
+      "promotion_gate": {},
       "proof_class": "behavioral",
       "proof_surface": "ROPE, HDI and expected loss without MCMC or Bayes-factor overclaim",
       "required_receipt_fields": [
@@ -567,6 +597,7 @@
       "architectural_role": "ODE/PDE solvers, optimization, scientific machine learning, and simulation.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "tested",
+      "evidence_tier": "tested_implementation",
       "expected_failure_cases": [
         "invalid timestep",
         "nonfinite state",
@@ -581,7 +612,8 @@
         "arrow",
         "c_abi"
       ],
-      "maturity_tier": "proof-grade",
+      "maturity_tier": "tested_implementation",
+      "promotion_gate": {},
       "proof_class": "behavioral",
       "proof_surface": "velocity-Verlet propagation with conservation drift diagnostics",
       "required_receipt_fields": [
@@ -603,6 +635,7 @@
       "architectural_role": "Climate models, CFD, linear algebra, materials simulation, and legacy scientific stacks.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "tested",
+      "evidence_tier": "tested_implementation",
       "expected_failure_cases": [
         "FTCS stability breach",
         "numerical instability",
@@ -618,7 +651,8 @@
         "mpi",
         "openmp"
       ],
-      "maturity_tier": "proof-grade",
+      "maturity_tier": "tested_implementation",
+      "promotion_gate": {},
       "proof_class": "behavioral",
       "proof_surface": "FTCS stability bound, Dirichlet boundaries, discrete energy dissipation audit",
       "required_receipt_fields": [
@@ -642,6 +676,7 @@
       "architectural_role": "Canonical state, analytics, audit records, knowledge graphs, and embedding search.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "service_gated",
+      "evidence_tier": "gated_reference",
       "expected_failure_cases": [
         "cross-tenant access",
         "invalid dimension",
@@ -656,7 +691,8 @@
         "postgresql",
         "arrow"
       ],
-      "maturity_tier": "explicitly-gated-reference",
+      "maturity_tier": "gated_reference",
+      "promotion_gate": {},
       "proof_class": "integration",
       "proof_surface": "HNSW retrieval, RLS, constraints and bounded search function",
       "required_receipt_fields": [
@@ -672,11 +708,12 @@
       "technology": "SQL / pgvector"
     },
     {
-      "activation_condition": "Use when building custom high-performance GPU kernels, FlashAttention fused operators, or Tensor Core matrix acceleration.",
+      "activation_condition": "Select only after the target GPU, CUDA toolkit, kernel receipt, and baseline performance are verified.",
       "advanced_exhibit": "languages/cuda/advanced_nvidia_flash_attention_kernel.cu",
-      "architectural_role": "Frontier AI LLM cluster training, FlashAttention-v2/v3 kernels, CUDA streams, and PTX assembly acceleration.",
+      "architectural_role": "NVIDIA GPU services, inference kernels, and numerical workloads requiring measured device acceleration.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
-      "evidence_state": "production_reference",
+      "evidence_state": "illustrative",
+      "evidence_tier": "concept_only",
       "expected_failure_cases": [
         "out of memory",
         "warp divergence",
@@ -692,8 +729,9 @@
         "ptx_asm",
         "tensor_cores"
       ],
-      "maturity_tier": "proof-grade",
-      "proof_class": "behavioral",
+      "maturity_tier": "concept_only",
+      "promotion_gate": {},
+      "proof_class": "illustrative",
       "proof_surface": "NVIDIA FlashAttention-v2 shared-memory tiled GPU kernel",
       "required_receipt_fields": [
         "status",
@@ -706,7 +744,7 @@
         "simulate_flash_attention_tile",
         "FlashAttentionConfig"
       ],
-      "technology": "CUDA C++ / PTX (NVIDIA Flagship)"
+      "technology": "CUDA C++ / PTX (gated kernel runtime)"
     },
     {
       "activation_condition": "Use after profiling shows framework kernels are inadequate and the target GPU is supported.",
@@ -714,6 +752,7 @@
       "architectural_role": "Fused attention, normalization, quantization, MoE routing, and custom inference operations.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "hardware_gated",
+      "evidence_tier": "gated_reference",
       "expected_failure_cases": [
         "Triton unavailable",
         "shape mismatch",
@@ -729,7 +768,8 @@
         "dlpack",
         "mlir"
       ],
-      "maturity_tier": "explicitly-gated-reference",
+      "maturity_tier": "gated_reference",
+      "promotion_gate": {},
       "proof_class": "benchmark",
       "proof_surface": "one-program fusion, Torch oracle and latency benchmark",
       "required_receipt_fields": [
@@ -750,6 +790,7 @@
       "architectural_role": "AI kernels, SIMD tensor code, model serving components, and MLIR-backed optimization.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "toolchain_gated",
+      "evidence_tier": "gated_reference",
       "expected_failure_cases": [
         "toolchain unavailable",
         "invalid length",
@@ -765,7 +806,8 @@
         "python",
         "mlir"
       ],
-      "maturity_tier": "explicitly-gated-reference",
+      "maturity_tier": "gated_reference",
+      "promotion_gate": {},
       "proof_class": "compile",
       "proof_surface": "explicit pointers and vector width without unsupported TPU branding",
       "required_receipt_fields": [
@@ -786,6 +828,7 @@
       "architectural_role": "Model exchange, runtime deployment, graph inspection, optimization, and hardware-provider selection.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "tested",
+      "evidence_tier": "tested_implementation",
       "expected_failure_cases": [
         "invalid expert count",
         "shape mismatch",
@@ -801,7 +844,8 @@
         "tensorrt",
         "coreml"
       ],
-      "maturity_tier": "proof-grade",
+      "maturity_tier": "tested_implementation",
+      "promotion_gate": {},
       "proof_class": "behavioral",
       "proof_surface": "model checking, reference execution and deterministic expert ordering",
       "required_receipt_fields": [
@@ -823,6 +867,7 @@
       "architectural_role": "Compiler pipelines, tensor lowering, accelerator backends, DSLs, and hardware-specific optimization.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "toolchain_gated",
+      "evidence_tier": "gated_reference",
       "expected_failure_cases": [
         "shape mismatch",
         "invalid type",
@@ -838,7 +883,8 @@
         "triton",
         "mojo"
       ],
-      "maturity_tier": "explicitly-gated-reference",
+      "maturity_tier": "gated_reference",
+      "promotion_gate": {},
       "proof_class": "compile",
       "proof_surface": "SSA tensor contract prepared for canonicalization and loop/vector passes",
       "required_receipt_fields": [
@@ -859,6 +905,7 @@
       "architectural_role": "Browser modules, plugin systems, edge runtimes, and zero-trust agent tools.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "tested",
+      "evidence_tier": "tested_implementation",
       "expected_failure_cases": [
         "fuel exhaustion",
         "memory bound",
@@ -873,7 +920,8 @@
         "wasi",
         "component_model"
       ],
-      "maturity_tier": "proof-grade",
+      "maturity_tier": "tested_implementation",
+      "promotion_gate": {},
       "proof_class": "behavioral",
       "proof_surface": "memory bounds, denied-operation immutability and audit counters",
       "required_receipt_fields": [
@@ -894,6 +942,7 @@
       "architectural_role": "Service contracts, telemetry, receipts, registries, and cross-language mission envelopes.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "tested",
+      "evidence_tier": "tested_implementation",
       "expected_failure_cases": [
         "unknown command",
         "missing authority",
@@ -909,7 +958,8 @@
         "binary",
         "protojson"
       ],
-      "maturity_tier": "proof-grade",
+      "maturity_tier": "tested_implementation",
+      "promotion_gate": {},
       "proof_class": "behavioral",
       "proof_surface": "schema evolution, oneof authority, deterministic serialization and hashes",
       "required_receipt_fields": [
@@ -930,6 +980,7 @@
       "architectural_role": "Games, mobile state, telemetry, embedded inference, and latency-sensitive local IPC.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "compiles",
+      "evidence_tier": "runnable_reference",
       "expected_failure_cases": [
         "invalid identifier",
         "broken prior hash",
@@ -944,7 +995,8 @@
         "binary",
         "shared_memory"
       ],
-      "maturity_tier": "verified-reference",
+      "maturity_tier": "runnable_reference",
+      "promotion_gate": {},
       "proof_class": "compile",
       "proof_surface": "typed samples, file identity and prior-frame integrity field",
       "required_receipt_fields": [
@@ -965,6 +1017,7 @@
       "architectural_role": "Low-latency distributed systems, secure object capabilities, storage engines, and agent IPC.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "compiles",
+      "evidence_tier": "runnable_reference",
       "expected_failure_cases": [
         "missing capability",
         "unauthorized call",
@@ -979,7 +1032,8 @@
         "capability_rpc",
         "binary"
       ],
-      "maturity_tier": "verified-reference",
+      "maturity_tier": "runnable_reference",
+      "promotion_gate": {},
       "proof_class": "compile",
       "proof_surface": "authority-bearing specialist references and typed receipts",
       "required_receipt_fields": [
@@ -1000,6 +1054,7 @@
       "architectural_role": "FPGA prototypes, ASIC blocks, counters, pipelines, and arithmetic units.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "compiles",
+      "evidence_tier": "runnable_reference",
       "expected_failure_cases": [
         "reset",
         "signed overflow boundary",
@@ -1014,7 +1069,8 @@
         "axi",
         "rtl"
       ],
-      "maturity_tier": "verified-reference",
+      "maturity_tier": "runnable_reference",
+      "promotion_gate": {},
       "proof_class": "compile",
       "proof_surface": "registered coefficients, widened signed accumulation and valid timing",
       "required_receipt_fields": [
@@ -1035,6 +1091,7 @@
       "architectural_role": "ASIC/FPGA design, protocol interfaces, constrained verification, and accelerator pipelines.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "compiles",
+      "evidence_tier": "runnable_reference",
       "expected_failure_cases": [
         "reset invariant",
         "valid sequencing",
@@ -1050,7 +1107,8 @@
         "rtl",
         "sva"
       ],
-      "maturity_tier": "verified-reference",
+      "maturity_tier": "runnable_reference",
+      "promotion_gate": {},
       "proof_class": "compile",
       "proof_surface": "explicit systolic dataflow and temporal accumulator invariants",
       "required_receipt_fields": [
@@ -1071,6 +1129,7 @@
       "architectural_role": "Aerospace, defense, FPGA control logic, safety-critical digital systems, and reusable IP.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "compiles",
+      "evidence_tier": "runnable_reference",
       "expected_failure_cases": [
         "single-lane fault",
         "all lanes disagree",
@@ -1084,7 +1143,8 @@
       "interfaces": [
         "rtl"
       ],
-      "maturity_tier": "verified-reference",
+      "maturity_tier": "runnable_reference",
+      "promotion_gate": {},
       "proof_class": "compile",
       "proof_surface": "majority result, mismatch signal and all-lanes-disagree assertion",
       "required_receipt_fields": [
@@ -1105,6 +1165,7 @@
       "architectural_role": "RISC-V processors, reusable accelerators, networks-on-chip, and parameterized hardware families.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "toolchain_gated",
+      "evidence_tier": "gated_reference",
       "expected_failure_cases": [
         "invalid destination",
         "backpressure",
@@ -1119,7 +1180,8 @@
         "firrtl",
         "verilog"
       ],
-      "maturity_tier": "explicitly-gated-reference",
+      "maturity_tier": "gated_reference",
+      "promotion_gate": {},
       "proof_class": "compile",
       "proof_surface": "destination routing, round-robin arbitration and Decoupled backpressure",
       "required_receipt_fields": [
@@ -1141,6 +1203,7 @@
       "architectural_role": "Safety invariants, receipt-chain correctness, mathematics, and verified decision gates.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "formally_verified",
+      "evidence_tier": "tested_implementation",
       "expected_failure_cases": [
         "authority downgrade",
         "out-of-order action",
@@ -1154,7 +1217,8 @@
       "interfaces": [
         "proof_certificate"
       ],
-      "maturity_tier": "proof-grade",
+      "maturity_tier": "tested_implementation",
+      "promotion_gate": {},
       "proof_class": "formal",
       "proof_surface": "kernel-checked action ordering and non-regressing sequence property",
       "required_receipt_fields": [
@@ -1175,6 +1239,7 @@
       "architectural_role": "Verified compilers, protocols, cryptography, semantics, and critical algorithms.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "formally_verified",
+      "evidence_tier": "tested_implementation",
       "expected_failure_cases": [
         "broken link",
         "unordered list",
@@ -1188,7 +1253,8 @@
       "interfaces": [
         "proof_certificate"
       ],
-      "maturity_tier": "proof-grade",
+      "maturity_tier": "tested_implementation",
+      "promotion_gate": {},
       "proof_class": "formal",
       "proof_surface": "constructive chain-step and ordered-list invariants",
       "required_receipt_fields": [
@@ -1209,6 +1275,7 @@
       "architectural_role": "Protocol models, type-safe DSLs, mathematical structures, and certified transformations.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "formally_verified",
+      "evidence_tier": "tested_implementation",
       "expected_failure_cases": [
         "destructive downgrade",
         "non-transitive relation",
@@ -1223,7 +1290,8 @@
         "proof_certificate",
         "haskell"
       ],
-      "maturity_tier": "proof-grade",
+      "maturity_tier": "tested_implementation",
+      "promotion_gate": {},
       "proof_class": "formal",
       "proof_surface": "total transitivity proof and impossible destructive downgrade case",
       "required_receipt_fields": [
@@ -1244,6 +1312,7 @@
       "architectural_role": "Linux kernel tracing, Cilium networking, Falco security auditing, and socket performance profiling.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "compiles",
+      "evidence_tier": "runnable_reference",
       "expected_failure_cases": [
         "unapproved syscall",
         "map allocation failure",
@@ -1258,7 +1327,8 @@
         "c_abi",
         "bpf_map"
       ],
-      "maturity_tier": "verified-reference",
+      "maturity_tier": "runnable_reference",
+      "promotion_gate": {},
       "proof_class": "compile",
       "proof_surface": "kernel syscall execve sentinel",
       "required_receipt_fields": [
@@ -1279,6 +1349,7 @@
       "architectural_role": "IBM Quantum, AWS Braket, Rigetti, QPU simulators, and quantum error correction algorithms.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "toolchain_gated",
+      "evidence_tier": "gated_reference",
       "expected_failure_cases": [
         "qubit decoherence",
         "gate fidelity error",
@@ -1292,7 +1363,8 @@
       "interfaces": [
         "qasm_ir"
       ],
-      "maturity_tier": "explicitly-gated-reference",
+      "maturity_tier": "gated_reference",
+      "promotion_gate": {},
       "proof_class": "compile",
       "proof_surface": "3-qubit Grover oracle superposition and diffusion",
       "required_receipt_fields": [
@@ -1313,6 +1385,7 @@
       "architectural_role": "Starknet, STARK-based L2 rollups, verifiable AI inference, and privacy-preserving audit ledgers.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "toolchain_gated",
+      "evidence_tier": "gated_reference",
       "expected_failure_cases": [
         "unapproved action",
         "invalid proof",
@@ -1327,7 +1400,8 @@
         "stark_proof",
         "sierra"
       ],
-      "maturity_tier": "explicitly-gated-reference",
+      "maturity_tier": "gated_reference",
+      "promotion_gate": {},
       "proof_class": "compile",
       "proof_surface": "STARK state governor receipt verification",
       "required_receipt_fields": [
@@ -1343,11 +1417,12 @@
       "technology": "Cairo"
     },
     {
-      "activation_condition": "Use when building high-performance LLMs (Grok-scale), custom automatic differentiation, or XLA-compiled tensor transforms.",
+      "activation_condition": "Select only after JAX imports, jax.jit or pjit executes, and the requested sharding/backend receipt is captured.",
       "advanced_exhibit": "languages/jax/advanced_grok_distributed_mesh.py",
-      "architectural_role": "Grok LLM training pipelines, xAI cluster orchestration, TPU/GPU distributed attention, and neural dynamics.",
+      "architectural_role": "Verified JAX runtimes with a declared CPU/GPU/TPU backend and reproducible device tests.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
-      "evidence_state": "production_reference",
+      "evidence_state": "illustrative",
+      "evidence_tier": "concept_only",
       "expected_failure_cases": [
         "shape mismatch",
         "XLA compilation failure",
@@ -1363,8 +1438,9 @@
         "python_api",
         "mesh_sharding"
       ],
-      "maturity_tier": "proof-grade",
-      "proof_class": "behavioral",
+      "maturity_tier": "concept_only",
+      "promotion_gate": {},
+      "proof_class": "illustrative",
       "proof_surface": "Grok-3 distributed LLM mesh with RoPE attention, KV-caching, and sharding",
       "required_receipt_fields": [
         "status",
@@ -1378,7 +1454,7 @@
         "GrokJaxDistributedEngine",
         "multi_head_attention_kv_cache"
       ],
-      "technology": "JAX (xAI Grok Flagship)"
+      "technology": "JAX + XLA (gated autodiff runtime)"
     },
     {
       "activation_condition": "Use when declarative rule-based query evaluation across large code graphs is required.",
@@ -1386,6 +1462,7 @@
       "architectural_role": "Vulnerability scanning, compiler program analysis, access control evaluation, and static call graph analysis.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "compiles",
+      "evidence_tier": "runnable_reference",
       "expected_failure_cases": [
         "unbound relation",
         "cyclic vulnerability",
@@ -1399,7 +1476,8 @@
       "interfaces": [
         "datalog_facts"
       ],
-      "maturity_tier": "verified-reference",
+      "maturity_tier": "runnable_reference",
+      "promotion_gate": {},
       "proof_class": "compile",
       "proof_surface": "declarative vulnerability taint flow",
       "required_receipt_fields": [
@@ -1415,11 +1493,12 @@
       "technology": "Souffl\u00e9 Datalog"
     },
     {
-      "activation_condition": "Use when fitting massive MoE or dense LLMs onto minimal GPU VRAM hardware without perplexity degradation.",
+      "activation_condition": "Select only after a real backend implementation, baseline comparison, memory measurement, throughput measurement, and quality delta are verified.",
       "advanced_exhibit": "languages/rhl_quant/advanced_rhl_quant_engine.py",
-      "architectural_role": "Frontier LLM deployment, VRAM constrained edge clusters, bitwise GPU matrix multiplication, and ultra-low memory inference.",
+      "architectural_role": "Benchmark harnesses for model compression after a backend, dataset, quality metric, and rollback path are defined.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
-      "evidence_state": "production_reference",
+      "evidence_state": "illustrative",
+      "evidence_tier": "concept_only",
       "expected_failure_cases": [
         "outlier overflow",
         "zero scale factor",
@@ -1434,8 +1513,9 @@
         "python_api",
         "quantization_mesh"
       ],
-      "maturity_tier": "proof-grade",
-      "proof_class": "behavioral",
+      "maturity_tier": "concept_only",
+      "promotion_gate": {},
+      "proof_class": "illustrative",
       "proof_surface": "1.58-bit Base Ternary Lattice with 2-bit Sparse Delta HLO Outlier Mesh",
       "required_receipt_fields": [
         "status",
@@ -1449,7 +1529,7 @@
         "quantize_weight_tensor",
         "dequantize_and_matmul"
       ],
-      "technology": "RHL-Quant (1.58b Ternary Quantization Flagship)"
+      "technology": "RHL-Quant reference quantizer (unbenchmarked)"
     }
   ],
   "generated_by": "tools/audit_advanced_exhibits.py",

@@ -1,4 +1,4 @@
-// Flagship Exhibit: NVIDIA FlashAttention-v2 Shared-Memory Tiled GPU Kernel (CUDA C++ / PTX)
+// Reference Exhibit: host-side attention tile simulation (CUDA kernel not executed)
 // Demonstrates:
 // 1. Tiled Query-Key-Value Shared Memory Blocks (__shared__)
 // 2. Warp-level Shuffle Reductions (__shfl_xor_sync) & PTX Assembly
@@ -103,8 +103,8 @@ int main() {
     simulate_flash_attention_tile(h_Q, h_K, h_V, h_O, cfg);
 
     printf("{\n");
-    printf("  \"status\": \"VERIFIED\",\n");
-    printf("  \"flagship_tier\": \"NVIDIA_CUDA_FLASH_ATTENTION_V2\",\n");
+    printf("  \"status\": \"REFERENCE_ONLY\",\n");
+    printf("  \"flagship_tier\": \"HOST_REFERENCE_ATTENTION_TILE\",\n");
     printf("  \"cuda_arch\": {\n");
     printf("    \"compute_capability\": \"sm_90a (Hopper/Blackwell)\",\n");
     printf("    \"shared_memory_tile_kb\": 48,\n");
@@ -115,7 +115,7 @@ int main() {
     printf("    \"seq_len\": %d,\n", seq_len);
     printf("    \"head_dim\": %d,\n", head_dim);
     printf("    \"tile_size\": %d,\n", TILE_SIZE);
-    printf("    \"online_softmax_status\": \"STABLE\"\n");
+    printf("    \"online_softmax_status\": \"REFERENCE_STABLE\"\n");
     printf("  }\n");
     printf("}\n");
 
