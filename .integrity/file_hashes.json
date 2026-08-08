@@ -192,7 +192,7 @@
     "src/tower/spiral.py": "5c80a0cf64a5e8d265281707bcdd2c665905f8f9ec58289e2df42d8eee52ba17",
     "src/tower/visualize.py": "7e1e9cd9129c1562bbdf6c43be38ae295d0f9913b3fb071331c2de8116e00781",
     "tests/test_advanced_exhibits.py": "d56da11a901b4010bd6a75ab78f0f18e43f570c6adc0384d2ea0fcfd7991f7a5",
-    "tests/test_claim_contracts.py": "770c98ab1d38e2a966a4f7fb6255c57ce179078d874c4673e9e660c803efc1c8",
+    "tests/test_claim_contracts.py": "ad794c2d4db277a3e0a8cb8db705187bd656b4f362e6e04829d15e450f9e988d",
     "tests/test_cuda_nvidia_flagship.py": "f6da21a614cd4a102e9ad7e310a484489b516d4efe6d87d1c5edd1d49e5bc667",
     "tests/test_evidence_promotion_requirements.py": "7eb8ce9601e60f374be7f93a9faee60554c3f75a13f7508e288ec030daf4cebc",
     "tests/test_flagship.py": "6f467f5638c9e729a484566bb0eb9c01da38ab0afa394b21f94e8dc6cab714c9",
