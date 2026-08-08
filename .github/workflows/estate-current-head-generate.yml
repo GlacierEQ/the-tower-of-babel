@@ -32,7 +32,7 @@ jobs:
           set -euo pipefail
           tower validate
           tower generate
-          python tools/audit_advanced_exhibits.py
+          python tools/audit_advanced_exhibits.py --write
           tower generate --check
           python tools/audit_advanced_exhibits.py --check
       - name: Remove ephemeral generator workflow
