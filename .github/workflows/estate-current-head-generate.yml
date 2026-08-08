@@ -32,15 +32,17 @@ jobs:
           set -euo pipefail
           tower validate
           tower generate
+          python tools/audit_advanced_exhibits.py
+          tower generate --check
           python tools/audit_advanced_exhibits.py --check
       - name: Remove ephemeral generator workflow
         run: rm .github/workflows/estate-current-head-generate.yml
-      - name: Commit only current-head generated surfaces
+      - name: Commit only current-head derived surfaces
         run: |
           set -euo pipefail
           git config user.name "GlacierEQ Estate Evolution"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add README.md src/babel_registry.py generated/ .github/workflows/estate-current-head-generate.yml
+          git add README.md ADVANCED_EXHIBITS.md src/babel_registry.py generated/ quality/advanced_exhibit_atlas.json .github/workflows/estate-current-head-generate.yml
           git diff --cached --exit-code && exit 1 || true
           git commit -m "chore(generate): materialize fresh-head evidence surfaces"
           git push origin HEAD:synthesize/operational-evidence-selection-20260807
