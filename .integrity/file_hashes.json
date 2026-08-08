@@ -1,5 +1,5 @@
 {
-  "file_count": 200,
+  "file_count": 202,
   "hash_algorithm": "sha256",
   "hashes": {
     ".github/CODEOWNERS": "1bab6343d9ba3956c423f706c698ef4a8d9afbd1863b3196900e8440be1ffebe",
@@ -26,6 +26,7 @@
     "docs/BUILD_ORDER.md": "c836b724c3f274ff531260a79c6d95a9e007361d98d89f6e8bce01122f3eb538",
     "docs/JOB_APPLICATION_INTEGRATION.md": "b6e3afeab6b8d4a4a380bf44175a679f6f04363cab64f8e7ad5710c8328d80c5",
     "docs/POST_AUDIT_HARDENING_RECEIPT.md": "eb9dfd2758c618791d8d88f5dee5bb81e491b2d538e3629e1b86f61770a3c00b",
+    "docs/SPACEFLIGHT_EXPANSION_AUDIT.md": "c6d1692a1f2463d3a9b46ac4dbff213f1a2c372c2f839a95410b5f61e28953e2",
     "docs/SPIRAL_ENGINE.md": "5e9917bc723450b63fd918bc80a156c5ede9cb40f2109a57630e8d39e8d3191b",
     "docs/SUPPLY_CHAIN_AND_PROTECTION.md": "7148e2bf32a9ffc8b27ee006187717e7fa73115289f30b1f8ea82f32507c4aa9",
     "examples/spiral/civilization_capability.json": "67d9839fa12dcb6ee5540e10a2f93068832fc841de09f203907c2f12a500737a",
@@ -154,6 +155,7 @@
     "quality/exhibit_status.json": "c5cde5309cdb3eb5a307dd8f9e6d4857eba49ef29b3c7b635d3dce6a820073cd",
     "quality/job_application_integration.json": "4a13c8a094468005cff723df110f16a49fef0ae8954224358d59bf0996c850f8",
     "registry/advanced-claim-contracts.json": "4df0664f92e2057229ae87b2e87c4e7506c57b6896c91270f26c554341cd083f",
+    "registry/proposals/spaceflight-expansion.candidates.json": "939e16e6224a45a24e8418126c07e317fe65b3db4507263ff48a0f7206987376",
     "registry/tower.d/compute-graphs.json": "f40045e208e611c72729c1e7676ec7938c019f13bdf98dd6fc1d2515cefa7b65",
     "registry/tower.d/contracts-hardware.json": "9897dfe95a7f80a7501c7411a319bad0f2310ac531315e74dc388ea7a4f20661",
     "registry/tower.d/formal.json": "a7a73157c251202203125a0aaa3f31d30326edcd1cd4571ba5be21bbb0ce2464",
@@ -186,7 +188,7 @@
     "src/tower/integrity.py": "cdb699c2fc09618b29e68c418b8fcecad5c1e17ff5cfb87072dc548d730aeb48",
     "src/tower/proofs.py": "3fed0c0b7abf6be82b50ace36d7b0f841a7fb4093cc00011ccc74188ccae105f",
     "src/tower/receipt.py": "cbc441f5f412685e9f246955e6b2cfa7ac33acad032b5fd4d3312789d34a9585",
-    "src/tower/registry.py": "0c30252d1930ad0522a790dee356160dff9164f3f8b90540f6652e23173341b2",
+    "src/tower/registry.py": "99f3cb92c372bf154a83b7ae0f1a15a477fb002eb2dc45fdc63e8516bc11f19e",
     "src/tower/spiral.py": "5c80a0cf64a5e8d265281707bcdd2c665905f8f9ec58289e2df42d8eee52ba17",
     "src/tower/visualize.py": "7e1e9cd9129c1562bbdf6c43be38ae295d0f9913b3fb071331c2de8116e00781",
     "tests/test_advanced_exhibits.py": "d56da11a901b4010bd6a75ab78f0f18e43f570c6adc0384d2ea0fcfd7991f7a5",
