@@ -1,0 +1,84 @@
+name: Estate Claim Contract Synthesis
+
+on:
+  push:
+    branches:
+      - synthesize/claim-contract-evidence-gates-20260807
+    paths:
+      - .github/workflows/estate-claim-contract-synthesis.yml
+
+permissions:
+  contents: write
+
+jobs:
+  synthesize:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout exact synthesis branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: synthesize/claim-contract-evidence-gates-20260807
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Patch only residual evidence contracts
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          paths = [
+              Path('registry/advanced-claim-contracts.json'),
+              Path('src/tower/data/advanced-claim-contracts.json'),
+          ]
+          payload = json.loads(paths[0].read_text(encoding='utf-8'))
+          contracts = payload['contracts']
+
+          contracts['cuda']['proof_surface'] = 'Host-side reference math only until a real nvcc-built and GPU-executed kernel receipt exists'
+          contracts['cuda']['signature_innovation'] = 'Reference attention tile simulation with an explicit CUDA admission gate'
+          contracts['cuda']['promotion_requirements'] = {
+              'minimum_evidence_state': 'tested',
+              'required_source_patterns': ['__global__', 'cudaMalloc|cudaMemcpy|cudaLaunchKernel'],
+              'required_receipt_fields': ['cuda_arch', 'kernel_metrics', 'gpu_backend'],
+          }
+
+          contracts['jax']['proof_surface'] = 'Python reference behavior only until JAX/XLA execution and real sharding are evidenced'
+          contracts['jax']['signature_innovation'] = 'Reference distributed-mesh shape simulation with an explicit JAX/XLA admission gate'
+          contracts['jax']['promotion_requirements'] = {
+              'minimum_evidence_state': 'tested',
+              'required_source_patterns': ['import\\s+jax', 'jax\\.jit|jax\\.pjit', 'NamedSharding|PartitionSpec'],
+              'required_receipt_fields': ['xla_backend', 'device_count', 'sharding_receipt'],
+          }
+
+          contracts['rhl_quant']['proof_surface'] = 'Numerical reference only until HLO/accelerator execution and baseline quality/performance receipts exist'
+          contracts['rhl_quant']['signature_innovation'] = 'Reference ternary/residual quantizer with an explicit accelerator and benchmark admission gate'
+          contracts['rhl_quant']['promotion_requirements'] = {
+              'minimum_evidence_state': 'benchmark',
+              'required_source_patterns': ['numpy|torch', 'baseline|reference', 'max_error|relative_error'],
+              'required_receipt_fields': ['backend', 'memory_bytes', 'quality_delta', 'throughput'],
+          }
+
+          text = json.dumps(payload, indent=2, sort_keys=False) + '\n'
+          for path in paths:
+              path.write_text(text, encoding='utf-8')
+          PY
+      - name: Verify focused contract and repository gates
+        run: |
+          set -euo pipefail
+          python -m pip install --require-hashes -r requirements/ci.lock
+          python -m pip install --no-deps --no-build-isolation -e .
+          pytest -q tests/test_evidence_promotion_requirements.py tests/test_claim_contracts.py
+          tower validate
+          tower generate --check
+      - name: Remove ephemeral synthesis workflow
+        run: rm .github/workflows/estate-claim-contract-synthesis.yml
+      - name: Commit semantic residual only
+        run: |
+          set -euo pipefail
+          git config user.name "GlacierEQ Estate Evolution"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add registry/advanced-claim-contracts.json src/tower/data/advanced-claim-contracts.json tests/test_evidence_promotion_requirements.py .github/workflows/estate-claim-contract-synthesis.yml
+          git commit -m "fix(claims): require executable promotion evidence"
+          git push origin HEAD:synthesize/claim-contract-evidence-gates-20260807
