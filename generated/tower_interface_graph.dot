@@ -152,7 +152,7 @@ digraph TowerOfBabel {
     style = "filled";
     color = "lightgrey";
     fillcolor = "#f8f9fa";
-    "cuda" [label="CUDA C++ / PTX (NVIDIA Flagship)\n[behavioral]", fillcolor="#e3f2fd"];
+    "cuda" [label="CUDA C++ / PTX (gated kernel runtime)\n[illustrative]", fillcolor="#e3f2fd"];
   }
 
   subgraph cluster_gpu_kernel_dsl {
@@ -297,7 +297,7 @@ digraph TowerOfBabel {
     style = "filled";
     color = "lightgrey";
     fillcolor = "#f8f9fa";
-    "jax" [label="JAX (xAI Grok Flagship)\n[behavioral]", fillcolor="#e3f2fd"];
+    "jax" [label="JAX + XLA (gated autodiff runtime)\n[illustrative]", fillcolor="#e3f2fd"];
   }
 
   subgraph cluster_declarative_static_analysis {
@@ -313,7 +313,7 @@ digraph TowerOfBabel {
     style = "filled";
     color = "lightgrey";
     fillcolor = "#f8f9fa";
-    "rhl_quant" [label="RHL-Quant (1.58b Ternary Quantization Flagship)\n[behavioral]", fillcolor="#e3f2fd"];
+    "rhl_quant" [label="RHL-Quant reference quantizer (unbenchmarked)\n[illustrative]", fillcolor="#e3f2fd"];
   }
 
   "cpp" -> "protobuf" [label="protobuf"];

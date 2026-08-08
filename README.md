@@ -25,7 +25,7 @@ It is not a language collection built for display. It is a governed engineering 
 |---|---:|
 | Technology floors | **40** |
 | Easy + advanced exhibits | **80** |
-| Behavioral proof floors | **20** |
+| Behavioral proof floors | **17** |
 | Formal proof floors | **3** |
 | Explicitly gated floors | **9** |
 
@@ -169,6 +169,16 @@ See [`flagship/README.md`](flagship/README.md) and run `python flagship/run_pipe
 | `integrated` | The floor participates in the flagship multi-language system. |
 | `production_reference` | Operational failure handling, observability, and deployment evidence exist. |
 
+| Evidence tier | Runtime admission meaning |
+|---|---|
+| `concept_only` | Reference material; never eligible for runtime selection. |
+| `gated_reference` | Candidate blocked by a declared toolchain, service, or hardware requirement. |
+| `runnable_reference` | Build or schema acceptance exists; behavioral correctness is not implied. |
+| `tested_implementation` | Automated behavior or formal proof has been reproduced. |
+| `benchmarked_implementation` | Reproducible comparative performance evidence exists. |
+| `integrated_capability` | The capability is exercised through a verified system boundary. |
+| `production_reference` | Operational failure handling, observability, and deployment evidence exist. |
+
 ## Advanced Exhibit Atlas
 
 The easy exhibit teaches the technology. The advanced exhibit must own a real engineering boundary, expose failure behavior, and terminate in proof or an exact blocker. [`ADVANCED_EXHIBITS.md`](ADVANCED_EXHIBITS.md) publishes the signature engineering move and claim boundary for all 40 floors; [`quality/advanced_exhibit_atlas.json`](quality/advanced_exhibit_atlas.json) provides the same map to agents and automation.
@@ -200,7 +210,7 @@ The matrix is generated from the canonical registry. Change the registry and exh
 | 16 | **Julia** `.jl` | language | Combines high-level mathematical syntax with JIT-compiled numerical performance. | ODE/PDE solvers, optimization, scientific machine learning, and simulation. | Use when researchers need expressive mathematics without abandoning native-speed kernels. | Multiple dispatch and LLVM compilation unify interactive modeling with high-performance methods. | `tested` / `behavioral` | [easy_matrix.jl](languages/julia/easy_matrix.jl) | [advanced_orbital_differential.jl](languages/julia/advanced_orbital_differential.jl) |
 | 17 | **Fortran** `.f90` | language | Delivers high-performance numerical and scientific kernels with mature array semantics. | Climate models, CFD, linear algebra, materials simulation, and legacy scientific stacks. | Use when dense numerical loops, long-lived scientific codes, or HPC libraries dominate. | It remains the performance and maintainability baseline for large-scale numerical computing. | `tested` / `behavioral` | [easy_hello.f90](languages/fortran/easy_hello.f90) | [advanced_heat_diffusion.f90](languages/fortran/advanced_heat_diffusion.f90) |
 | 18 | **SQL / pgvector** `.sql` | query_language | Declares relational transformations, constraints, transactions, and vector retrieval. | Canonical state, analytics, audit records, knowledge graphs, and embedding search. | Use when durable data relationships and set-oriented operations belong inside the database. | The query planner, transactions, indexes, and constraints centralize data correctness and performance. | `service_gated` / `integration` | [easy_table.sql](languages/sql/easy_table.sql) | [advanced_pgvector_hnsw.sql](languages/sql/advanced_pgvector_hnsw.sql) |
-| 19 | **CUDA C++ / PTX (NVIDIA Flagship)** `.cu` | gpu_kernel | NVIDIA parallel computing platform and programming model for GPU-accelerated SIMT/tensor compute. | Frontier AI LLM cluster training, FlashAttention-v2/v3 kernels, CUDA streams, and PTX assembly acceleration. | Use when building custom high-performance GPU kernels, FlashAttention fused operators, or Tensor Core matrix acceleration. | Powering NVIDIA Blackwell, Hopper (H100/H200), and Grace-Hopper supercomputers for FlashAttention, TensorRT-LLM, and Megatron-LM. | `production_reference` / `behavioral` | [easy_vector_add.cu](languages/cuda/easy_vector_add.cu) | [advanced_nvidia_flash_attention_kernel.cu](languages/cuda/advanced_nvidia_flash_attention_kernel.cu) |
+| 19 | **CUDA C++ / PTX (gated kernel runtime)** `.cu` | gpu_kernel | NVIDIA GPU programming platform; this record is a reference-only host simulation until a real CUDA kernel is executed. | NVIDIA GPU services, inference kernels, and numerical workloads requiring measured device acceleration. | Select only after the target GPU, CUDA toolkit, kernel receipt, and baseline performance are verified. | Use for custom GPU kernels only when nvcc, a supported NVIDIA GPU, runtime launch evidence, and comparative measurements are available. | `illustrative` / `illustrative` | [easy_vector_add.cu](languages/cuda/easy_vector_add.cu) | [advanced_nvidia_flash_attention_kernel.cu](languages/cuda/advanced_nvidia_flash_attention_kernel.cu) |
 | 20 | **Triton** `.py` | kernel_language | Defines high-throughput GPU kernels with Python syntax and compiler-managed block programming. | Fused attention, normalization, quantization, MoE routing, and custom inference operations. | Use after profiling shows framework kernels are inadequate and the target GPU is supported. | It exposes GPU performance without hand-authoring all CUDA indexing and scheduling details. | `hardware_gated` / `benchmark` | [easy_vector_add.py](languages/triton/easy_vector_add.py) | [advanced_fused_attention.py](languages/triton/advanced_fused_attention.py) |
 | 21 | **Mojo** `.mojo` | language | Combines Python-like authoring with systems-level types, ownership, and accelerator-oriented compilation. | AI kernels, SIMD tensor code, model serving components, and MLIR-backed optimization. | Use when Python ergonomics must reach native or accelerator performance in one language. | Its compiler stack targets heterogeneous AI hardware while retaining familiar syntax. | `toolchain_gated` / `compile` | [easy_simd.mojo](languages/mojo/easy_simd.mojo) | [advanced_simd_tensor_kernel.mojo](languages/mojo/advanced_simd_tensor_kernel.mojo) |
 | 22 | **ONNX** `.onnx` | model_format | Represents machine-learning computation as a portable typed graph independent of the training framework. | Model exchange, runtime deployment, graph inspection, optimization, and hardware-provider selection. | Use when a model must move between frameworks or run across multiple inference backends. | It separates learned graph semantics from any one training library and enables portable validation. | `tested` / `behavioral` | [easy_linear_model.py](languages/onnx/easy_linear_model.py) | [advanced_moe_router.py](languages/onnx/advanced_moe_router.py) |
@@ -219,9 +229,9 @@ The matrix is generated from the canonical registry. Change the registry and exh
 | 35 | **eBPF** `.bpf.c` | bytecode | Executes sandboxed bytecode inside the Linux kernel without modifying kernel source code. | Linux kernel tracing, Cilium networking, Falco security auditing, and socket performance profiling. | Use when kernel-level observability, network packet filtering, or syscall enforcement is required at line rate. | It enables programmable zero-overhead packet filtering, syscall tracing, and real-time security auditing. | `compiles` / `compile` | [easy_packet_filter.bpf.c](languages/ebpf/easy_packet_filter.bpf.c) | [advanced_syscall_sentinel.bpf.c](languages/ebpf/advanced_syscall_sentinel.bpf.c) |
 | 36 | **OpenQASM 3.0** `.qasm` | circuit_description | Describes quantum circuits, entanglement gates, and classical feedback loops for QPUs. | IBM Quantum, AWS Braket, Rigetti, QPU simulators, and quantum error correction algorithms. | Use when constructing quantum circuits, Bell states, or hybrid quantum-classical algorithms. | It provides a hardware-agnostic intermediate representation for gate-based quantum compilation. | `toolchain_gated` / `compile` | [easy_bell_state.qasm](languages/openqasm/easy_bell_state.qasm) | [advanced_grover_oracle.qasm](languages/openqasm/advanced_grover_oracle.qasm) |
 | 37 | **Cairo** `.cairo` | turing_complete_zk | A Turing-complete language for writing STARK-provable programs and zero-knowledge verification logic. | Starknet, STARK-based L2 rollups, verifiable AI inference, and privacy-preserving audit ledgers. | Use when off-chain state execution must produce cryptographically verifiable proof of correctness. | It allows complex off-chain execution to be mathematically proven on-chain via succinct cryptographic receipts. | `toolchain_gated` / `compile` | [easy_fib_proof.cairo](languages/cairo/easy_fib_proof.cairo) | [advanced_stark_governor.cairo](languages/cairo/advanced_stark_governor.cairo) |
-| 38 | **JAX (xAI Grok Flagship)** `.py` | tensor_autodiff | Autograd and XLA compiler framework for high-performance functional neural network compute. | Grok LLM training pipelines, xAI cluster orchestration, TPU/GPU distributed attention, and neural dynamics. | Use when building high-performance LLMs (Grok-scale), custom automatic differentiation, or XLA-compiled tensor transforms. | Powering Grok (xAI) and Gemini models with functional purity, automatic differentiation, and XLA kernel compilation. | `production_reference` / `behavioral` | [easy_grad_jit.py](languages/jax/easy_grad_jit.py) | [advanced_grok_distributed_mesh.py](languages/jax/advanced_grok_distributed_mesh.py) |
+| 38 | **JAX + XLA (gated autodiff runtime)** `.py` | tensor_autodiff | Python autodiff and XLA compilation framework; this record is a pure-Python shape simulation until JAX executes. | Verified JAX runtimes with a declared CPU/GPU/TPU backend and reproducible device tests. | Select only after JAX imports, jax.jit or pjit executes, and the requested sharding/backend receipt is captured. | Use when JAX/XLA provides a measured advantage for autodiff, compilation, or device parallelism. | `illustrative` / `illustrative` | [easy_grad_jit.py](languages/jax/easy_grad_jit.py) | [advanced_grok_distributed_mesh.py](languages/jax/advanced_grok_distributed_mesh.py) |
 | 39 | **Soufflé Datalog** `.dl` | logic_rules | Declarative logic programming language for high-speed static code analysis and security verification. | Vulnerability scanning, compiler program analysis, access control evaluation, and static call graph analysis. | Use when declarative rule-based query evaluation across large code graphs is required. | It resolves complex graph reachability, pointer analysis, and security policy rules in parallel C++ code. | `compiles` / `compile` | [easy_reachability.dl](languages/datalog/easy_reachability.dl) | [advanced_vulnerability_scanner.dl](languages/datalog/advanced_vulnerability_scanner.dl) |
-| 40 | **RHL-Quant (1.58b Ternary Quantization Flagship)** `.py` | tensor_compression | Post-training 2-level quantum-lattice quantization engine combining 1.58-bit ternary base with 2-bit sparse residual delta HLO mesh. | Frontier LLM deployment, VRAM constrained edge clusters, bitwise GPU matrix multiplication, and ultra-low memory inference. | Use when fitting massive MoE or dense LLMs onto minimal GPU VRAM hardware without perplexity degradation. | Shrinks 314-billion parameter LLM weights (Grok-1) from 628 GB down to ~65 GB, enabling full 314B MoE inference on a single 80GB H100 GPU. | `production_reference` / `behavioral` | [easy_ternary_scale.py](languages/rhl_quant/easy_ternary_scale.py) | [advanced_rhl_quant_engine.py](languages/rhl_quant/advanced_rhl_quant_engine.py) |
+| 40 | **RHL-Quant reference quantizer (unbenchmarked)** `.py` | tensor_compression | Reference ternary/residual quantization experiment; no accelerator, model-scale, memory, or quality result is established here. | Benchmark harnesses for model compression after a backend, dataset, quality metric, and rollback path are defined. | Select only after a real backend implementation, baseline comparison, memory measurement, throughput measurement, and quality delta are verified. | A candidate compression path, not an operational choice, until numerical baselines and hardware measurements are reproduced. | `illustrative` / `illustrative` | [easy_ternary_scale.py](languages/rhl_quant/easy_ternary_scale.py) | [advanced_rhl_quant_engine.py](languages/rhl_quant/advanced_rhl_quant_engine.py) |
 
 </details>
 
@@ -242,9 +252,9 @@ The matrix is generated from the canonical registry. Change the registry and exh
 - **Embeddable Scripting** — Lua
 - **Fault Tolerant Distributed** — Elixir
 - **Formal Verification** — Lean 4, Coq
-- **Functional Ai Systems** — JAX (xAI Grok Flagship)
+- **Functional Ai Systems** — JAX + XLA (gated autodiff runtime)
 - **Gpu Kernel Dsl** — Triton
-- **Gpu Parallel Compute** — CUDA C++ / PTX (NVIDIA Flagship)
+- **Gpu Parallel Compute** — CUDA C++ / PTX (gated kernel runtime)
 - **Hardware Construction** — Chisel
 - **Hardware Description** — Verilog
 - **Hardware Verification** — SystemVerilog
@@ -258,7 +268,7 @@ The matrix is generated from the canonical registry. Change the registry and exh
 - **Orchestration And Ai** — Python
 - **Portable Systems** — Zig
 - **Pure Functional** — Haskell
-- **Quantization And Compression** — RHL-Quant (1.58b Ternary Quantization Flagship)
+- **Quantization And Compression** — RHL-Quant reference quantizer (unbenchmarked)
 - **Quantum Compute** — OpenQASM 3.0
 - **Sandbox Runtime** — WebAssembly
 - **Scientific Computing** — Julia
@@ -319,7 +329,8 @@ External links describe curated portfolio relationships, not a claim that every 
 
 - `main` is the living worker; completed functionality lands there.
 - Generated surfaces are never hand-edited; `tower generate --check` rejects drift.
-- Every claim carries an evidence state, proof class, and registry-owned semantic claim contract.
+- Every claim carries an evidence state, explicit evidence tier, proof class, and registry-owned semantic claim contract.
+- Concept-only and gated references are excluded from runtime selection by default.
 - Blocked hardware, tools, and services remain visible and machine-readable.
 - Cross-language interfaces are explicit and versioned.
 - Megamind consumes Tower exports and does not maintain a competing registry.
@@ -344,7 +355,7 @@ See [`AGENTS.md`](AGENTS.md) and [`BRANCH_POLICY.md`](BRANCH_POLICY.md).
 
 ## Truth boundary
 
-The Tower is an **operational-alpha engineering authority**. It makes strong claims only where checked-in evidence supports them. Toolchain-, hardware-, and service-gated floors remain explicitly gated. Smithery publication is not claimed. External portfolio relationships are architectural contracts unless a repository contains and verifies a live adapter.
+The Tower is an **operational-alpha engineering authority**. It makes strong claims only where checked-in evidence supports them. Concept-only records are references, not capabilities; toolchain-, hardware-, and service-gated floors remain explicitly gated; the selector will not admit them without the required proof. Smithery publication is not claimed. External portfolio relationships are architectural contracts unless a repository contains and verifies a live adapter.
 
 ## License
 

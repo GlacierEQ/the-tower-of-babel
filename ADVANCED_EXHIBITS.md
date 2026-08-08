@@ -2,7 +2,7 @@
 
 > A generated map of the engineering boundary, source assertions, failure cases, proof surface, and truthful claim limit for every advanced Tower exhibit.
 
-The Atlas is generated from `registry/tower.yml` and `registry/advanced-claim-contracts.json`. It exposes distinctive implementation choices without converting them into unsupported novelty or production claims.
+The Atlas is generated from `registry/tower.yml` and `registry/advanced-claim-contracts.json`. It exposes operational implementation choices without converting simulations into execution proof or unsupported novelty claims.
 
 | Technology | Signature engineering move | Evidence | Advanced exhibit |
 |---|---|---|---|
@@ -24,7 +24,7 @@ The Atlas is generated from `registry/tower.yml` and `registry/advanced-claim-co
 | **Julia** | Energy-audited orbital integration — velocity-Verlet propagation with conservation drift diagnostics | `tested` / `behavioral` | [`advanced_orbital_differential.jl`](languages/julia/advanced_orbital_differential.jl) |
 | **Fortran** | Dissipative 1D heat diffusion with energy audit — FTCS stability bound, Dirichlet boundaries, discrete energy dissipation audit | `tested` / `behavioral` | [`advanced_heat_diffusion.f90`](languages/fortran/advanced_heat_diffusion.f90) |
 | **SQL / pgvector** | Tenant-isolated vector evidence store — HNSW retrieval, RLS, constraints and bounded search function | `service_gated` / `integration` | [`advanced_pgvector_hnsw.sql`](languages/sql/advanced_pgvector_hnsw.sql) |
-| **CUDA C++ / PTX (NVIDIA Flagship)** | NVIDIA FlashAttention-v2 GPU kernel — NVIDIA FlashAttention-v2 shared-memory tiled GPU kernel | `production_reference` / `behavioral` | [`advanced_nvidia_flash_attention_kernel.cu`](languages/cuda/advanced_nvidia_flash_attention_kernel.cu) |
+| **CUDA C++ / PTX (gated kernel runtime)** | NVIDIA FlashAttention-v2 GPU kernel — NVIDIA FlashAttention-v2 shared-memory tiled GPU kernel | `illustrative` / `illustrative` | [`advanced_nvidia_flash_attention_kernel.cu`](languages/cuda/advanced_nvidia_flash_attention_kernel.cu) |
 | **Triton** | Bounded fused single-query attention — one-program fusion, Torch oracle and latency benchmark | `hardware_gated` / `benchmark` | [`advanced_fused_attention.py`](languages/triton/advanced_fused_attention.py) |
 | **Mojo** | SIMD affine-clamp tensor kernel — explicit pointers and vector width without unsupported TPU branding | `toolchain_gated` / `compile` | [`advanced_simd_tensor_kernel.mojo`](languages/mojo/advanced_simd_tensor_kernel.mojo) |
 | **ONNX** | Portable top-k MoE router graph — model checking, reference execution and deterministic expert ordering | `tested` / `behavioral` | [`advanced_moe_router.py`](languages/onnx/advanced_moe_router.py) |
@@ -43,9 +43,9 @@ The Atlas is generated from `registry/tower.yml` and `registry/advanced-claim-co
 | **eBPF** | Kernel syscall sentinel — kernel syscall execve sentinel | `compiles` / `compile` | [`advanced_syscall_sentinel.bpf.c`](languages/ebpf/advanced_syscall_sentinel.bpf.c) |
 | **OpenQASM 3.0** | Grover search oracle circuit — 3-qubit Grover oracle superposition and diffusion | `toolchain_gated` / `compile` | [`advanced_grover_oracle.qasm`](languages/openqasm/advanced_grover_oracle.qasm) |
 | **Cairo** | STARK-provable state governor — STARK state governor receipt verification | `toolchain_gated` / `compile` | [`advanced_stark_governor.cairo`](languages/cairo/advanced_stark_governor.cairo) |
-| **JAX (xAI Grok Flagship)** | Grok-3 JAX distributed LLM mesh — Grok-3 distributed LLM mesh with RoPE attention, KV-caching, and sharding | `production_reference` / `behavioral` | [`advanced_grok_distributed_mesh.py`](languages/jax/advanced_grok_distributed_mesh.py) |
+| **JAX + XLA (gated autodiff runtime)** | Grok-3 JAX distributed LLM mesh — Grok-3 distributed LLM mesh with RoPE attention, KV-caching, and sharding | `illustrative` / `illustrative` | [`advanced_grok_distributed_mesh.py`](languages/jax/advanced_grok_distributed_mesh.py) |
 | **Soufflé Datalog** | Declarative static security scanner — declarative vulnerability taint flow | `compiles` / `compile` | [`advanced_vulnerability_scanner.dl`](languages/datalog/advanced_vulnerability_scanner.dl) |
-| **RHL-Quant (1.58b Ternary Quantization Flagship)** | Residual HLO-Lattice Quantization (RHL-Quant) — 1.58-bit Base Ternary Lattice with 2-bit Sparse Delta HLO Outlier Mesh | `production_reference` / `behavioral` | [`advanced_rhl_quant_engine.py`](languages/rhl_quant/advanced_rhl_quant_engine.py) |
+| **RHL-Quant reference quantizer (unbenchmarked)** | Residual HLO-Lattice Quantization (RHL-Quant) — 1.58-bit Base Ternary Lattice with 2-bit Sparse Delta HLO Outlier Mesh | `illustrative` / `illustrative` | [`advanced_rhl_quant_engine.py`](languages/rhl_quant/advanced_rhl_quant_engine.py) |
 
 ## Machine-enforced claim contract
 
@@ -53,7 +53,7 @@ Every row is backed by registry-owned source patterns, expected failure cases, r
 
 ## Promotion standard
 
-An exhibit is advanced only when it owns a meaningful boundary, rejects invalid or unsafe states, exposes an observable result, and carries a proof command or exact environmental blocker. File size, exotic syntax, and dramatic naming are not evidence.
+An exhibit is admitted to operations only when it owns a meaningful boundary, rejects invalid or unsafe states, exposes an observable result, and carries executable proof or an exact environmental blocker. Concept-only references are never eligible for runtime selection. File size, exotic syntax, and dramatic naming are not evidence.
 
 ## Originality boundary
 

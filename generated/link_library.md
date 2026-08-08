@@ -113,7 +113,7 @@
 - https://www.postgresql.org/docs/current/queries.html
 - https://www.postgresql.org/docs/current/sql.html
 
-## CUDA C++ / PTX (NVIDIA Flagship)
+## CUDA C++ / PTX (gated kernel runtime)
 - https://developer.nvidia.com/cuda-zone
 - https://github.com/Dao-AILab/FlashAttention
 
@@ -189,14 +189,14 @@
 ## Cairo
 - https://cairo-lang.org/docs/
 
-## JAX (xAI Grok Flagship)
+## JAX + XLA (gated autodiff runtime)
 - https://jax.readthedocs.io/
 - https://x.ai/blog/grok-1
 
 ## Soufflé Datalog
 - https://souffle-lang.github.io/
 
-## RHL-Quant (1.58b Ternary Quantization Flagship)
+## RHL-Quant reference quantizer (unbenchmarked)
 - https://github.com/GlacierEQ/residual-lattice-quantization
 - https://arxiv.org/abs/2402.17764
 
