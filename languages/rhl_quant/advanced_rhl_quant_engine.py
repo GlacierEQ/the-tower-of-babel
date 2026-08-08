@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Advanced Flagship Exhibit: Residual HLO-Lattice Quantization Engine (RHL-Quant)
+Reference Exhibit: ternary/residual quantization experiment (unbenchmarked)
 Demonstrates:
   1. Base Lattice: 1.58-bit Ternary Matrix {-1, 0, +1} (85% magnitude).
   2. Sparse Residual Outlier Mesh: 2-bit Delta HLO map for outlier activation channels.
-  3. Dequantized Bitwise POPCNT Hardware Accelerator Simulation.
-  4. Shrinks 314B Grok-1 from 628 GB to 65 GB (fits on 1x 80GB H100 GPU!).
+  3. Reference-only POPCNT-style accounting; no hardware execution claim.
+  4. Does not validate 314B/Grok-1/H100 memory, quality, or deployment claims.
 """
 import math
 import json
@@ -69,21 +69,21 @@ class RHLQuantEngine:
         elapsed_ms = round((time.perf_counter() - t0) * 1000, 3)
 
         return {
-            "status": "VERIFIED",
-            "flagship_tier": "NOVEL_RHL_QUANTIZATION_ENGINE",
-            "novel_quantization": "Residual HLO-Lattice Quantization (RHL-Quant)",
+            "status": "REFERENCE_ONLY",
+            "flagship_tier": "REFERENCE_QUANTIZATION_EXPERIMENT",
+            "novel_quantization": "Reference ternary/residual quantization",
             "quant_metrics": {
                 "num_weights": num_weights,
                 "fp16_memory_bytes": fp16_bytes,
                 "rhl_quant_memory_bytes": rhl_bytes,
                 "compression_ratio": f"{compression_ratio}x reduction",
-                "vram_314b_grok_fit": f"{round(628 / compression_ratio, 1)} GB (Fits on 1x H100 80GB GPU!)",
+                "memory_projection_reference_only": f"{round(628 / compression_ratio, 1)} GB (not validated for any 314B model or GPU)",
                 "outlier_mesh_coverage": f"{round((len(outliers) / num_weights) * 100, 2)}%"
             },
             "matmul_output": result,
             "performance": {
                 "quantization_time_ms": elapsed_ms,
-                "hardware_acceleration": "Bitwise POPCNT + Tensor Core Matrix Multiply"
+                "hardware_acceleration": "NOT_EXECUTED_REFERENCE_ONLY"
             }
         }
 
