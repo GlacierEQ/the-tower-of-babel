@@ -56,11 +56,10 @@ def test_selection_engine_excludes_concept_only_frontier_claims() -> None:
     from babel_registry import BabelRegistryEngine
 
     engine = BabelRegistryEngine()
-    selected = engine.select(["python_api"], preferred_interfaces=["python_api"])
+    selected = engine.select(["onnxruntime"], preferred_interfaces=["onnxruntime"])
     assert selected["ok"] is True
-    assert selected["selected"]["evidence_state"] in {
-        "tested", "benchmark", "formally_verified", "integrated", "production_reference"
-    }
+    assert selected["selected"]["id"] == "onnx"
+    assert selected["selected"]["evidence_state"] == "tested"
 
     no_match = engine.select(["tensor_cores"], minimum_evidence_state="tested")
     assert no_match["ok"] is False
