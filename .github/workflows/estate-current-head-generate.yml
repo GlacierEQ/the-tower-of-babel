@@ -1,0 +1,46 @@
+name: Estate Current-Head Generate
+
+on:
+  push:
+    branches:
+      - synthesize/operational-evidence-selection-20260807
+    paths:
+      - .github/workflows/estate-current-head-generate.yml
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout exact synthesis head
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: synthesize/operational-evidence-selection-20260807
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install governed Tower environment
+        run: |
+          python -m pip install --require-hashes -r requirements/ci.lock
+          python -m pip install --no-deps --no-build-isolation -e .
+      - name: Materialize from current fresh-head authority
+        run: |
+          set -euo pipefail
+          tower validate
+          tower generate
+          python tools/audit_advanced_exhibits.py --check
+      - name: Remove ephemeral generator workflow
+        run: rm .github/workflows/estate-current-head-generate.yml
+      - name: Commit only current-head generated surfaces
+        run: |
+          set -euo pipefail
+          git config user.name "GlacierEQ Estate Evolution"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md src/babel_registry.py generated/ .github/workflows/estate-current-head-generate.yml
+          git diff --cached --exit-code && exit 1 || true
+          git commit -m "chore(generate): materialize fresh-head evidence surfaces"
+          git push origin HEAD:synthesize/operational-evidence-selection-20260807
