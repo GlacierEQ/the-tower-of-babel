@@ -1,0 +1,1 @@
+object App extends App { println('Hi') }

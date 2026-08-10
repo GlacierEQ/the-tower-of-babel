@@ -1,0 +1,1 @@
+import 'dart:isolate'; void worker(SendPort p) { p.send('ok'); }

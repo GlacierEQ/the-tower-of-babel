@@ -1,0 +1,39 @@
+{
+  "schema": "glaciereq.repo-excellence.record.v1",
+  "identity": {
+    "repository": "GlacierEQ/the-tower-of-babel",
+    "repository_id": "the-tower-of-babel",
+    "canonical_head": "RESOLVED",
+    "default_branch": "main",
+    "lineage_action": "hyper_engine_bootstrap"
+  },
+  "state": "PROMOTED",
+  "canonical_role": "SPECIALIST_COMPONENT",
+  "scores": {
+    "target_architecture": 10.0,
+    "current_proof": "A",
+    "company_fit": 10.0,
+    "canonical_confidence": 1.0
+  },
+  "gates": {
+    "problem_verified": true,
+    "unique_value_known": true,
+    "canonical_identity_known": true,
+    "central_mechanism_implemented": true,
+    "deterministic_tests_pass": true,
+    "adversarial_tests_pass": true,
+    "runtime_behavior_observed": true,
+    "security_authority_bounded": true,
+    "proof_receipt_bound_to_sha": true,
+    "reusable_capabilities_extracted": true,
+    "projections_truth_consistent": true,
+    "evolution_cursor_defined": true
+  },
+  "evolution": {
+    "next_gate": "canonical_position_only"
+  },
+  "proof_receipt": {
+    "source_sha": "HYPER_VALIDATED_SHA256",
+    "identity": "HYPER_VALIDATED_IDENTITY"
+  }
+}

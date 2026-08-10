@@ -1,0 +1,1 @@
+val rdd = sc.parallelize(1 to 100); rdd.map(_ * 2).collect()

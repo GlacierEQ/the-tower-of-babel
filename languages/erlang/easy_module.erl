@@ -1,0 +1,1 @@
+-module(easy).\n-export([hello/0]).\nhello() -> ok.

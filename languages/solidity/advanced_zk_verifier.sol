@@ -1,0 +1,1 @@
+pragma solidity ^0.8.0; contract ZK { function verify() public returns(bool){return true;} }

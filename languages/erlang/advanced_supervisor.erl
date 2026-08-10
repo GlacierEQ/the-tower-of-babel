@@ -1,0 +1,1 @@
+-module(adv_sup).\n-behaviour(supervisor).\ninit(_) -> {ok, {{one_for_one, 1, 5}, []}}.

@@ -1,0 +1,1 @@
+public struct SimState { public int bounds; public void Step() {} }
