@@ -1,1 +1,1 @@
-fun main() { println('Hello') }
+fun main() { println("Hello") }
