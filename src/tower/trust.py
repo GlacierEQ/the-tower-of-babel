@@ -354,9 +354,8 @@ def validate_excellence_projection(
     proof_gate = gates.get("PROOF_RECEIPT_BOUND", {})
     if isinstance(proof_gate, dict) and proof_gate.get("status") == "PASS":
         proof_ref = payload.get("proof_receipt_ref", "machine/proof_receipt.json")
-        proof_path = repo_root / proof_ref if isinstance(proof_ref, str) else Path("")
-        if not isinstance(proof_ref, str) or not proof_path.is_file():
-            errors.append("PROOF_RECEIPT_BOUND cannot PASS without a checked-in proof receipt")
+        if not isinstance(proof_ref, str) or _contained_file(repo_root, proof_ref) is None:
+            errors.append("PROOF_RECEIPT_BOUND cannot PASS without a contained checked-in proof receipt")
 
     target_gate = gates.get("TARGET_CONTRACT_FROZEN", {})
     if isinstance(target_gate, dict) and target_gate.get("status") == "PASS":
