@@ -1,1 +1,18 @@
-{"hmac_grant": "auto_granted"}
+{
+  "schema": "glaciereq.promotion-authority-boundary.v1",
+  "subject": "GlacierEQ/the-tower-of-babel",
+  "mode": "not_granted",
+  "reason": "A repository is not a trustworthy issuer of its own promotion authority. Local code may prove behavior and emit receipts, but promotion above the repository-local OPERABLE ceiling requires verification by an authority outside this repository's trust boundary.",
+  "external_requirements": [
+    "revision-bound proof receipt",
+    "independent authority identity",
+    "verifiable grant bound to the exact subject revision",
+    "projection readback that cannot exceed the verified evidence ceiling"
+  ],
+  "forbidden_local_shortcuts": [
+    "auto_granted",
+    "self_attested_promotion",
+    "placeholder_hash",
+    "external_reputation_as_local_proof"
+  ]
+}
