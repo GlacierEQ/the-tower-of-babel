@@ -7,7 +7,8 @@ technologies that should own those functions *now*.
 The selector is deliberately conservative:
 - one technology is not rewarded merely for existing in the registry;
 - gated or under-proven floors cannot satisfy a mission above their evidence;
-- the smallest covering set wins before optional interface helpers are added;
+- the smallest proven functional cover wins;
+- preferred interfaces rank function owners but never create extra floors;
 - every choice carries W4H placement and evidence state so callers can inspect
   not just *what* was selected, but *why/where/when/how* it belongs.
 """
@@ -112,10 +113,8 @@ def _capability_score(capability: str, tokens: set[str]) -> int:
             )
         )
     }
-    # Exact single-word technology/function requests should remain decisive.
     if len(_words(capability)) == 1 and hits:
         return 100
-    # Multi-word capabilities need meaningful overlap, not a single accidental word.
     minimum_hits = 2 if len(requested) >= 4 else 1
     return len(hits) if len(hits) >= minimum_hits else 0
 
@@ -150,14 +149,11 @@ def select_technologies(
             raise ValueError(f"technology {row['id']} has unknown proof class: {proof_name}")
 
         tokens = _tokens(row)
-        capability_scores = {
-            value: _capability_score(value, tokens)
-            for value in required
-        }
+        capability_scores = {value: _capability_score(value, tokens) for value in required}
         capability_hits = {value for value, score in capability_scores.items() if score > 0}
         interfaces = {item.casefold() for item in row.get("interfaces", []) if isinstance(item, str)}
         interface_hits = preferred_interfaces & interfaces
-        if not capability_hits and not interface_hits:
+        if not capability_hits:
             continue
 
         evidence_state = str(row.get("evidence_state", ""))
@@ -181,7 +177,6 @@ def select_technologies(
     uncovered = set(required)
     remaining = list(ranked)
 
-    # Greedy set cover: prefer the smallest set that actually covers the mission.
     while uncovered and remaining:
         remaining.sort(
             key=lambda item: (
@@ -196,16 +191,6 @@ def select_technologies(
             break
         selected.append(candidate)
         uncovered -= candidate[3]
-
-    # Once functions are covered, add only interface-relevant helpers, bounded to 5 floors.
-    if not uncovered:
-        for candidate in ranked:
-            if len(selected) >= 5:
-                break
-            if candidate in selected:
-                continue
-            if any(reason.startswith("interface:") for reason in candidate[2]):
-                selected.append(candidate)
 
     registry_sha = hashlib.sha256(registry.canonical_bytes()).hexdigest()
     agents = sorted({
