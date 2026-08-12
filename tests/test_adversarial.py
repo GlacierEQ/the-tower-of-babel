@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from scripts import operate as operate_script
 from tower.registry import REPO_ROOT, load_registry
 from tower.trust import (
     PROMOTION_AUTHORITY,
@@ -207,6 +208,17 @@ def test_revision_bound_local_receipt_allows_production_reference(tmp_path: Path
         "local_production_receipt": "receipts/synthetic-production.json",
     }
     assert validate_production_reference_row(row, repo_root=tmp_path) == []
+
+
+def test_operate_generation_exception_is_structured(monkeypatch) -> None:
+    def explode(*_args, **_kwargs):
+        raise KeyError("malformed generated surface")
+
+    monkeypatch.setattr(operate_script, "generate", explode)
+    report = operate_script._generation_report()
+    assert report["ok"] is False
+    assert report["drift"] == []
+    assert report["errors"] == ["KeyError: 'malformed generated surface'"]
 
 
 def test_frontier_contracts_preserve_promotion_requirements_without_freezing_state() -> None:
