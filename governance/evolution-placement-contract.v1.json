@@ -3,6 +3,7 @@
   "authority": {
     "repository": "GlacierEQ/the-tower-of-babel",
     "registry": "registry/tower.yml",
+    "technology_catalog": "generated/smithery.registry.json",
     "quality_contract": "QUALITY_CONTRACT.md",
     "role": "technology_placement_and_language_diversity_authority"
   },
