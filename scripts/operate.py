@@ -3,8 +3,9 @@
 
 This command is intentionally read-only. It does not repair drift, grant authority,
 or promote state. It reports the exact condition of the canonical registry,
-generated projections, immutable integrity ledger, and machine trust boundary and
-returns non-zero whenever any required local invariant is false.
+generated projections, immutable integrity ledger, machine trust boundary, and
+technology-diversification policy, and returns non-zero whenever a required local
+invariant is false.
 """
 from __future__ import annotations
 
@@ -16,6 +17,7 @@ from typing import Any, Callable
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
+from tower.diversification import validate_diversification_policy
 from tower.generate import generate
 from tower.integrity import verify_integrity
 from tower.registry import load_registry, validate_registry
@@ -60,6 +62,18 @@ def _generation_report() -> dict[str, Any]:
     }
 
 
+def _diversification_report() -> dict[str, Any]:
+    try:
+        errors = validate_diversification_policy(ROOT / "machine" / "diversification-policy.json")
+    except Exception as exc:
+        return _exception_report(exc)
+    return {
+        "ok": not errors,
+        "default_decision": "reuse_existing_floor",
+        "errors": errors,
+    }
+
+
 def _safe_report(check: Callable[[], dict[str, Any]]) -> dict[str, Any]:
     try:
         report = check()
@@ -80,6 +94,7 @@ def build_operational_report() -> dict[str, Any]:
         "generated_surfaces": _generation_report(),
         "integrity": _safe_report(verify_integrity),
         "machine_trust": _safe_report(lambda: build_machine_trust_report(ROOT)),
+        "technology_diversification": _diversification_report(),
     }
     ok = all(check.get("ok") is True for check in checks.values())
     return {
