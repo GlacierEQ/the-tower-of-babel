@@ -110,6 +110,35 @@ def test_unexecuted_candidate_cannot_claim_operable_state(tmp_path: Path) -> Non
     assert any("OPERABLE requires OPERABLE_AND_OBSERVABLE=PASS" in error for error in errors)
 
 
+def test_proof_receipt_gate_rejects_absolute_external_path(tmp_path: Path) -> None:
+    repo_root = tmp_path / "repo"
+    repo_root.mkdir()
+    external = _write(
+        tmp_path / "external-proof.json",
+        {"schema": "fake.external-proof.v1"},
+    )
+    projection = _write(
+        repo_root / "excellence.json",
+        {
+            "principal_state": "IMPLEMENTED",
+            "state": "IMPLEMENTED",
+            "proof_receipt_ref": str(external),
+            "gates": {
+                "PROOF_RECEIPT_BOUND": {"status": "PASS"},
+                "AUTHORITY_BOUND": {"status": "PENDING"},
+            },
+            "scores_ref": None,
+        },
+    )
+    errors = validate_excellence_projection(
+        projection,
+        repo_root=repo_root,
+        promotion_path=PROMOTION_AUTHORITY,
+        target_path=TARGET_CONTRACT,
+    )
+    assert any("contained checked-in proof receipt" in error for error in errors)
+
+
 def test_projection_truth_gate_rejects_missing_proof_disguised_as_pass(tmp_path: Path) -> None:
     projection = _write(
         tmp_path / "excellence.json",
