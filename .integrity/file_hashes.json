@@ -1,5 +1,5 @@
 {
-  "file_count": 226,
+  "file_count": 228,
   "hash_algorithm": "sha256",
   "hashes": {
     ".github/CODEOWNERS": "1bab6343d9ba3956c423f706c698ef4a8d9afbd1863b3196900e8440be1ffebe",
@@ -54,6 +54,7 @@
     "generated/tower_topology.json": "c97a8db520505d42d9e1ddf1ddf63af7cd2aa27c0495d747da0440831b8c4bc1",
     "go.mod": "c43c5b01ff709c50b6999f135f4e17ca70144f678e530fcf13cbc30f018898a4",
     "governance/akos-nervous-system.v1.json": "ce6a7a111a8c134566a1f6542da0fcfcbac110254c5dffb663c2680aeb8a935d",
+    "governance/evolution-placement-contract.v1.json": "5424739b4bf94eabd03771a36794abe1c8e82ddf356b0277682e31aaa7c028a4",
     "governance/main-ruleset.required.json": "90f74ad8f5b0c25e01b1472b4e7a6243747a96d3c348055656070d0e34d7af5b",
     "integrations/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "integrations/megamind/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -218,6 +219,7 @@
     "tests/test_claim_contracts.py": "ad794c2d4db277a3e0a8cb8db705187bd656b4f362e6e04829d15e450f9e988d",
     "tests/test_cuda_nvidia_flagship.py": "f6da21a614cd4a102e9ad7e310a484489b516d4efe6d87d1c5edd1d49e5bc667",
     "tests/test_evidence_promotion_requirements.py": "7eb8ce9601e60f374be7f93a9faee60554c3f75a13f7508e288ec030daf4cebc",
+    "tests/test_evolution_placement_contract.py": "c584612828e29e24ba54bdffbccbe96fe29d4e460c30bcdf300af1c0373fd9ac",
     "tests/test_flagship.py": "6f467f5638c9e729a484566bb0eb9c01da38ab0afa394b21f94e8dc6cab714c9",
     "tests/test_jax_grok_flagship.py": "a108d174e8c9f986c942f1f6bf1f59e7d78e5bf676edbaeb23bf30fbd0d5e4c0",
     "tests/test_main_ruleset_contract.py": "b1dddcff6ffa5e6404944c700653e4bbc41f5d039ced45793be9f5200673e133",
