@@ -1,75 +1,76 @@
 {
   "schema": "glaciereq.repo-excellence-state.v1",
   "repository": "GlacierEQ/the-tower-of-babel",
-  "principal_state": "PROMOTED",
+  "principal_state": "OPERABLE",
+  "state": "OPERABLE",
+  "local_state_ceiling": "OPERABLE",
   "gates": {
     "IDENTITY_RESOLVED": {
       "status": "PASS",
       "at": "2026-08-10T06:25Z",
-      "evidence": "github GlacierEQ/the-tower-of-babel"
+      "evidence": "GitHub repository identity GlacierEQ/the-tower-of-babel"
     },
     "PROBLEM_VERIFIED": {
       "status": "PASS",
-      "at": "2026-08-10T06:25Z",
-      "evidence": "README/ISSUE_CONTRACT problem bound"
+      "at": "2026-08-12T08:27Z",
+      "evidence": "README plus machine/target-contract.json bind the interoperability and evidence-inflation problem"
     },
     "TARGET_CONTRACT_FROZEN": {
       "status": "PASS",
-      "at": "2026-08-10T06:25Z",
-      "evidence": "machine/target-contract.json"
+      "at": "2026-08-12T08:27Z",
+      "evidence": "machine/target-contract.json defines canonical authority, semantic invariants, and promotion boundary"
     },
     "DONOR_PLAN_RESOLVED": {
       "status": "PASS",
       "at": "2026-08-10T06:25Z",
-      "evidence": "elite bar seed; donor_reuse=none"
+      "evidence": "working canonical mechanisms are extended rather than rewritten for novelty"
     },
     "VERTICAL_SLICE_ALIVE": {
       "status": "PASS",
-      "at": "2026-08-10T06:25Z",
-      "evidence": "src mechanism + scripts/operate.py"
+      "at": "2026-08-12T08:27Z",
+      "evidence": "registry -> selection -> flagship cross-language pipeline -> deterministic receipts"
     },
     "CENTRAL_MECHANISM_PRESENT": {
       "status": "PASS",
-      "at": "2026-08-10T06:25Z",
-      "evidence": "central mechanism in src/"
+      "at": "2026-08-12T08:27Z",
+      "evidence": "src/tower registry, build, proof, receipt, Spiral, and trust mechanisms"
     },
     "DETERMINISTIC_PROOF_GREEN": {
       "status": "PASS",
       "at": "2026-08-10T06:25Z",
-      "evidence": "dual-run green tests"
+      "evidence": "repository tests and Tower verification exercise deterministic registry/proof behavior"
     },
     "ADVERSARIAL_SURVIVAL": {
       "status": "PASS",
-      "at": "2026-08-10T06:25Z",
-      "evidence": "tests/test_adversarial.py"
+      "at": "2026-08-12T08:27Z",
+      "evidence": "tests/test_adversarial.py exercises self-promotion, placeholder-proof, and external-reference inflation failures"
     },
     "OPERABLE_AND_OBSERVABLE": {
       "status": "PASS",
-      "at": "2026-08-10T06:25Z",
-      "evidence": "scripts/operate.py dual-run PASS; primary ok"
+      "at": "2026-08-12T08:27Z",
+      "evidence": "scripts/operate.py emits a structured fail-closed report over registry, generation, integrity, and machine-trust checks"
     },
     "PROOF_RECEIPT_BOUND": {
-      "status": "PASS",
-      "at": "2026-08-10T06:25Z",
-      "evidence": "machine/proof_receipt.json bound"
+      "status": "PENDING",
+      "evidence": "Tower CI emits revision evidence as workflow artifacts; no checked-in machine/proof_receipt.json is claimed here"
     },
     "AUTHORITY_BOUND": {
-      "status": "PASS",
-      "at": "2026-08-10T06:25Z",
-      "evidence": "promotion_authority.json local HMAC grant"
+      "status": "PENDING",
+      "evidence": "machine/promotion_authority.json explicitly denies repository-local self-promotion; external authority is required"
     },
     "PROJECTION_TRUTH_CLOSED": {
       "status": "PASS",
-      "at": "2026-08-10T06:25Z",
-      "evidence": "proof=missing; authority=94d9e8849902aeb5; operability=missing; claim_ceiling=leaf-native; nonclaims=non_affiliation_preserved; projection_role=monolith_projection_only; readback=operate_content_checked+validator_PASS"
+      "at": "2026-08-12T08:27Z",
+      "evidence": "repository-local projection ceiling=OPERABLE; external production references cannot promote local evidence; missing proof or authority remains PENDING"
     },
     "CANONICAL_POSITION_RESOLVED": {
-      "status": "PENDING"
+      "status": "PENDING",
+      "evidence": "estate-level canonical role remains an external control-plane decision"
     },
     "EVOLUTION_CURSOR_DEFINED": {
       "status": "PASS",
-      "at": "2026-08-10T06:25Z",
-      "evidence": "next:canonical_position_only_if_estate_role_resolved"
+      "at": "2026-08-12T08:27Z",
+      "evidence": "next:bind_revision_proof_then_external_promotion_authority"
     },
     "problem_verified": true,
     "unique_value_known": true,
@@ -79,7 +80,7 @@
     "adversarial_tests_pass": true,
     "runtime_behavior_observed": true,
     "security_authority_bounded": true,
-    "proof_receipt_bound_to_sha": true,
+    "proof_receipt_bound_to_sha": false,
     "reusable_capabilities_extracted": true,
     "projections_truth_consistent": true,
     "evolution_cursor_defined": true
@@ -90,107 +91,77 @@
       "from": "DISCOVERED",
       "to": "IDENTITY_RESOLVED",
       "gate": "IDENTITY_RESOLVED",
-      "result": "PASS",
-      "note": "github GlacierEQ/the-tower-of-babel"
+      "result": "PASS"
     },
     {
       "at": "2026-08-10T06:25Z",
       "from": "IDENTITY_RESOLVED",
       "to": "PROBLEM_VERIFIED",
       "gate": "PROBLEM_VERIFIED",
-      "result": "PASS",
-      "note": "README/ISSUE_CONTRACT problem bound"
+      "result": "PASS"
     },
     {
       "at": "2026-08-10T06:25Z",
       "from": "PROBLEM_VERIFIED",
       "to": "TARGET_CONTRACTED",
       "gate": "TARGET_CONTRACT_FROZEN",
-      "result": "PASS",
-      "note": "machine/target-contract.json"
+      "result": "PASS"
     },
     {
       "at": "2026-08-10T06:25Z",
       "from": "TARGET_CONTRACTED",
       "to": "SEEDED",
       "gate": "DONOR_PLAN_RESOLVED",
-      "result": "PASS",
-      "note": "elite bar seed; donor_reuse=none"
+      "result": "PASS"
     },
     {
       "at": "2026-08-10T06:25Z",
       "from": "SEEDED",
       "to": "VERTICAL_SLICE",
       "gate": "VERTICAL_SLICE_ALIVE",
-      "result": "PASS",
-      "note": "src mechanism + scripts/operate.py"
+      "result": "PASS"
     },
     {
       "at": "2026-08-10T06:25Z",
       "from": "VERTICAL_SLICE",
       "to": "IMPLEMENTED",
       "gate": "CENTRAL_MECHANISM_PRESENT",
-      "result": "PASS",
-      "note": "central mechanism in src/"
+      "result": "PASS"
     },
     {
       "at": "2026-08-10T06:25Z",
       "from": "IMPLEMENTED",
       "to": "TESTED",
       "gate": "DETERMINISTIC_PROOF_GREEN",
-      "result": "PASS",
-      "note": "dual-run green tests"
+      "result": "PASS"
     },
     {
-      "at": "2026-08-10T06:25Z",
+      "at": "2026-08-12T08:27Z",
       "from": "TESTED",
       "to": "ADVERSARIAL_VERIFIED",
       "gate": "ADVERSARIAL_SURVIVAL",
-      "result": "PASS",
-      "note": "tests/test_adversarial.py"
+      "result": "PASS"
     },
     {
-      "at": "2026-08-10T06:25Z",
+      "at": "2026-08-12T08:27Z",
       "from": "ADVERSARIAL_VERIFIED",
       "to": "OPERABLE",
       "gate": "OPERABLE_AND_OBSERVABLE",
-      "result": "PASS",
-      "note": "scripts/operate.py dual-run PASS; primary ok"
-    },
-    {
-      "at": "2026-08-10T06:25Z",
-      "from": "OPERABLE",
-      "to": "PROOF_REPRODUCED",
-      "gate": "PROOF_RECEIPT_BOUND",
-      "result": "PASS",
-      "note": "machine/proof_receipt.json bound"
-    },
-    {
-      "at": "2026-08-10T06:25Z",
-      "from": "PROOF_REPRODUCED",
-      "to": "PROMOTED",
-      "gate": "AUTHORITY_BOUND",
-      "result": "PASS",
-      "note": "promotion_authority + PROJECTION_TRUTH_CLOSED"
+      "result": "PASS"
     }
   ],
-  "contract_ref": "machine/target-contract.json",
-  "scores_ref": "machine/excellence-scores.json",
-  "evolution_cursor": "next:canonical_position_only_if_estate_role_resolved",
-  "wave": {
-    "id": "ELITE-ESTATE-SCHEMA-MIGRATE-2026-08-10",
-    "proof_ok": true,
-    "operable_ok": true,
-    "migrated_at": "2026-08-10T05:56Z",
-    "from_schema": "glaciereq.repo-excellence.record.v1",
-    "history_repaired_at": "2026-08-10T06:12Z",
-    "history_source": "monolith-legal-hops",
-    "projection_truth_closed_at": "2026-08-10T06:25Z",
-    "policy": "glaciereq.repo-excellence.promotion-policy.v1"
+  "superseded_projection": {
+    "state": "PROMOTED",
+    "superseded_at": "2026-08-12T08:27Z",
+    "reason": "The prior local projection depended on self-granted authority, placeholder proof identifiers, and placeholder operability/adversarial artifacts. Those assertions are intentionally not preserved as canonical history."
   },
-  "state": "PROMOTED",
-  "proof_receipt": {
-    "source_sha": "HYPER_VALIDATED_SHA256",
-    "identity": "HYPER_VALIDATED_IDENTITY"
+  "contract_ref": "machine/target-contract.json",
+  "scores_ref": null,
+  "evolution_cursor": "next:bind_revision_proof_then_external_promotion_authority",
+  "wave": {
+    "id": "TOWER-TRUTH-BOUNDARY-HARDENING-2026-08-11",
+    "policy": "local-proof-before-promotion",
+    "local_state_ceiling": "OPERABLE",
+    "projection_truth_closed": true
   }
 }
