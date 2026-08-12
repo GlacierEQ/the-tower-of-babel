@@ -1,0 +1,58 @@
+{
+  "schema": "glaciereq.tower-evolution-placement-contract.v1",
+  "authority": {
+    "repository": "GlacierEQ/the-tower-of-babel",
+    "registry": "registry/tower.yml",
+    "quality_contract": "QUALITY_CONTRACT.md",
+    "role": "technology_placement_and_language_diversity_authority"
+  },
+  "integration": {
+    "consumer": "GlacierEQ/job-application",
+    "placement_receipt_path": "machine/tower-placement.json",
+    "placement_required_before_material_evolution": true,
+    "retroactively_invalidates_existing_excellence_state": false
+  },
+  "decisions": ["KEEP", "ADD", "SPLIT", "EXPERIMENT"],
+  "proof_tiers": ["A", "B", "C"],
+  "required_receipt_fields": [
+    "schema",
+    "repository",
+    "evolution_cursor",
+    "tower_authority",
+    "decision",
+    "current_languages",
+    "boundaries",
+    "diversity_value",
+    "nonclaims"
+  ],
+  "boundary_required_fields": [
+    "responsibility",
+    "decision",
+    "incumbent_technology",
+    "candidate_technology",
+    "activation_condition",
+    "why_existing_boundary_is_insufficient",
+    "interface_contract",
+    "proof_tier",
+    "parity_required",
+    "parity_contract"
+  ],
+  "policy": {
+    "language_count_is_not_a_success_metric": true,
+    "presentation_need_cannot_force_language_change": true,
+    "existing_working_implementation_is_preserved_by_default": true,
+    "add_requires_unique_architectural_responsibility": true,
+    "split_requires_explicit_interface_contract": true,
+    "experiment_precedes_adoption_when_placement_is_uncertain": true,
+    "semantic_overlap_requires_cross_runtime_parity_or_explicit_non_equivalence": true,
+    "new_runtime_requires_declared_proof_tier": true,
+    "toolchain_or_external_unavailability_must_remain_blocked_not_passed": true
+  },
+  "decision_semantics": {
+    "KEEP": "The incumbent technology remains correct for the named responsibility; the receipt must state why adding another runtime would not improve the boundary.",
+    "ADD": "A new technology owns a new architectural responsibility while the incumbent implementation remains intact unless separately superseded by proof.",
+    "SPLIT": "A responsibility moves behind an explicit interface into another technology; functional and proof parity are required for overlapping semantics.",
+    "EXPERIMENT": "Competing technology placement is benchmarked or exercised in a bounded path before adoption; the incumbent remains authoritative until the experiment passes its declared proof tier."
+  },
+  "diversity_objective": "Maximize useful language and runtime diversity by assigning each technology a defensible responsibility, activation condition, interface, and proof burden; never add languages merely to increase the count."
+}
