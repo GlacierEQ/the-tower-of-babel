@@ -84,12 +84,38 @@ def test_repository_local_projection_cannot_promote_itself(tmp_path: Path) -> No
     assert any("AUTHORITY_BOUND cannot PASS" in error for error in errors)
 
 
-def test_projection_truth_gate_rejects_missing_proof_disguised_as_pass(tmp_path: Path) -> None:
+def test_unexecuted_candidate_cannot_claim_operable_state(tmp_path: Path) -> None:
     projection = _write(
         tmp_path / "excellence.json",
         {
             "principal_state": "OPERABLE",
             "state": "OPERABLE",
+            "gates": {
+                "DETERMINISTIC_PROOF_GREEN": {"status": "PENDING"},
+                "ADVERSARIAL_SURVIVAL": {"status": "PENDING"},
+                "OPERABLE_AND_OBSERVABLE": {"status": "PENDING"},
+                "AUTHORITY_BOUND": {"status": "PENDING"},
+            },
+            "scores_ref": None,
+        },
+    )
+    errors = validate_excellence_projection(
+        projection,
+        repo_root=REPO_ROOT,
+        promotion_path=PROMOTION_AUTHORITY,
+        target_path=TARGET_CONTRACT,
+    )
+    assert any("OPERABLE requires DETERMINISTIC_PROOF_GREEN=PASS" in error for error in errors)
+    assert any("OPERABLE requires ADVERSARIAL_SURVIVAL=PASS" in error for error in errors)
+    assert any("OPERABLE requires OPERABLE_AND_OBSERVABLE=PASS" in error for error in errors)
+
+
+def test_projection_truth_gate_rejects_missing_proof_disguised_as_pass(tmp_path: Path) -> None:
+    projection = _write(
+        tmp_path / "excellence.json",
+        {
+            "principal_state": "IMPLEMENTED",
+            "state": "IMPLEMENTED",
             "gates": {
                 "PROJECTION_TRUTH_CLOSED": {
                     "status": "PASS",
@@ -118,10 +144,32 @@ def test_external_reference_cannot_create_local_production_reference(tmp_path: P
     assert any("local_production_receipt" in error for error in errors)
 
 
-def test_revision_bound_local_receipt_allows_production_reference(tmp_path: Path) -> None:
+def test_existing_but_unbound_receipt_cannot_create_production_reference(tmp_path: Path) -> None:
     _write(
         tmp_path / "receipts" / "synthetic-production.json",
         {"schema": "test.production-receipt.v1", "revision": "abc123"},
+    )
+    row = {
+        "id": "synthetic-frontier",
+        "evidence_state": "production_reference",
+        "local_production_receipt": "receipts/synthetic-production.json",
+    }
+    errors = validate_production_reference_row(row, repo_root=tmp_path)
+    assert any("invalid schema" in error for error in errors)
+    assert any("source_revision" in error for error in errors)
+    assert any("artifact_sha256" in error for error in errors)
+
+
+def test_revision_bound_local_receipt_allows_production_reference(tmp_path: Path) -> None:
+    _write(
+        tmp_path / "receipts" / "synthetic-production.json",
+        {
+            "schema": "glaciereq.local-production-receipt.v1",
+            "technology_id": "synthetic-frontier",
+            "source_revision": "a" * 40,
+            "artifact_sha256": "b" * 64,
+            "proof": ["artifacts/production-smoke.json"],
+        },
     )
     row = {
         "id": "synthetic-frontier",
