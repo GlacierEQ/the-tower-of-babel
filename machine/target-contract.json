@@ -4,12 +4,15 @@
   "repository": "GlacierEQ/the-tower-of-babel",
   "canonical_authority": "registry/tower.yml",
   "selector_authority": "src/tower/selector.py",
-  "primary_function": "Given a real system function or mission requirement, determine which governed language, runtime, format, compiler layer, hardware description, proof system, or interoperability technology should own that function now; explain What/Where/When/Why/How; reject choices whose evidence is below the requested proof floor; and return the smallest interoperable proven technology set.",
-  "problem": "Heterogeneous engineering functions need different implementation technologies, but arbitrary polyglot growth creates semantic drift, duplicated responsibility, integration cost, evidence inflation, and authority confusion. The system therefore needs one governed authority that maps function to the right technology at the right time for the right reason.",
-  "unique_value": "The Tower is an executable function-to-technology unification authority. It converts mission requirements into the smallest evidence-qualified technology set, binds every selection to W4H placement, interfaces, ownership, proof state, blockers, and the canonical registry, then preserves interoperability without forcing one language to own every function.",
+  "primary_function": "Given a real system function or mission requirement, determine which governed languages, runtimes, formats, compiler layers, hardware descriptions, proof systems, and interoperability technologies should participate now; assign each to the function or benefit it owns best; explain What/Where/When/Why/How; reject claims below their proof floor; and keep adding evidence-qualified specialists while each contributes positive distinct system value.",
+  "problem": "Heterogeneous engineering functions benefit from specialization, but arbitrary polyglot growth creates semantic drift, duplicated responsibility, integration cost, evidence inflation, and authority confusion. The system therefore needs one governed authority that intelligently expands technology composition whenever specialization produces real net benefit while preserving interoperability and proof.",
+  "unique_value": "The Tower is an executable polyglot systems architect and function-to-technology unification authority. It maps mission requirements to proven owners, then continues composing specialists for verified performance, memory, safety, data-layout, interoperability, model-portability, zero-copy, hardware, compression, sandboxing, formal-proof, resilience, portability, or development advantages instead of minimizing language count.",
+  "optimization_goal": "maximize_verified_system_advantage_without_redundant_responsibility",
   "invariants": [
     "function_precedes_technology_choice",
-    "smallest_proven_cover_wins",
+    "coverage_is_floor_not_stopping_condition",
+    "positive_verified_marginal_benefit_adds_specialists",
+    "minimal_language_count_is_not_an_objective",
     "plurality_preserved",
     "local_authority_not_reinterpreted",
     "proof_before_promotion",
@@ -23,5 +26,5 @@
     "revision_bound_proof_required": true,
     "external_reference_is_not_local_proof": true
   },
-  "success_condition": "For a mission requirement, the Tower can deterministically choose and explain the smallest currently proven technology set; expose gated or under-proven alternatives instead of selecting them; preserve typed interoperability across chosen boundaries; and bind the decision to the canonical registry revision and evidence state."
+  "success_condition": "For a mission, the Tower deterministically establishes functional ownership, then continues evaluating and adding evidence-qualified specialists whose distinct marginal benefit is positive after integration and operational cost. It exposes gated or under-proven candidates rather than pretending they are ready, preserves typed interoperability across every selected boundary, and binds the complete composition decision to the canonical registry revision and evidence state."
 }
