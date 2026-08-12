@@ -48,6 +48,9 @@ jobs:
       - name: Verify immutable integrity ledger
         run: tower integrity verify
 
+      - name: Require fail-closed operational trust report
+        run: python scripts/operate.py
+
   native-toolchains:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
