@@ -1,1 +1,23 @@
-{"unique_value": "hyper-optimization"}
+{
+  "schema": "glaciereq.tower-target-contract.v1",
+  "system_id": "glaciereq.tower-of-babel.v1",
+  "repository": "GlacierEQ/the-tower-of-babel",
+  "canonical_authority": "registry/tower.yml",
+  "problem": "Heterogeneous languages, runtimes, proof systems, hardware descriptions, and agent interfaces must compose without semantic drift, evidence inflation, duplicated responsibility, or authority leaking across system boundaries.",
+  "unique_value": "The Tower provides governed semantic interoperability: each technology keeps a bounded native responsibility while canonical contracts, executable gates, exact blockers, and deterministic receipts make cross-language composition inspectable and truth-preserving.",
+  "invariants": [
+    "plurality_preserved",
+    "local_authority_not_reinterpreted",
+    "proof_before_promotion",
+    "explicit_blockers_not_false_success",
+    "external_references_do_not_promote_local_evidence",
+    "deterministic_receipts"
+  ],
+  "promotion_policy": {
+    "local_projection_ceiling": "OPERABLE",
+    "external_authority_required": true,
+    "revision_bound_proof_required": true,
+    "external_reference_is_not_local_proof": true
+  },
+  "success_condition": "A mission can cross technology boundaries without changing its governed meaning, and every promoted capability can be traced to revision-bound local proof plus authority that the subject repository did not grant to itself."
+}
