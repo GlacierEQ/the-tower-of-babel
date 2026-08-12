@@ -10,6 +10,9 @@ CONTRACT = json.loads(
     )
 )
 REGISTRY = json.loads((ROOT / "registry" / "tower.yml").read_text(encoding="utf-8"))
+CATALOG = json.loads(
+    (ROOT / "generated" / "smithery.registry.json").read_text(encoding="utf-8")
+)
 QUALITY = (ROOT / "QUALITY_CONTRACT.md").read_text(encoding="utf-8")
 
 
@@ -17,6 +20,10 @@ def test_tower_owns_evolution_placement_without_rewriting_excellence_history():
     assert CONTRACT["schema"] == "glaciereq.tower-evolution-placement-contract.v1"
     assert CONTRACT["authority"]["repository"] == "GlacierEQ/the-tower-of-babel"
     assert CONTRACT["authority"]["registry"] == "registry/tower.yml"
+    assert (
+        CONTRACT["authority"]["technology_catalog"]
+        == "generated/smithery.registry.json"
+    )
     assert CONTRACT["integration"]["consumer"] == "GlacierEQ/job-application"
     assert CONTRACT["integration"]["placement_required_before_material_evolution"] is True
     assert CONTRACT["integration"]["retroactively_invalidates_existing_excellence_state"] is False
@@ -55,6 +62,10 @@ def test_cross_runtime_overlap_requires_parity_and_proof():
 def test_contract_is_consistent_with_canonical_tower_and_quality_authorities():
     assert REGISTRY["tower_id"] == "glaciereq.tower-of-babel.v1"
     assert REGISTRY["governance"]["canonical_source"] == "registry/tower.yml"
+    assert CATALOG["source"] == "registry/tower.yml"
+    assert "technology:python" in CATALOG["capabilities"]
+    assert "technology:go" in CATALOG["capabilities"]
+    assert "technology:rust" in CATALOG["capabilities"]
     assert set(REGISTRY["governance"]["proof_classes"]) >= {
         "compile",
         "behavioral",
