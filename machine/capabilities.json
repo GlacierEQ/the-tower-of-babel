@@ -1,1 +1,18 @@
-{"capabilities": ["hyper-scaling"]}
+{
+  "schema": "glaciereq.machine-capabilities.v1",
+  "system_id": "glaciereq.tower-of-babel.v1",
+  "capabilities": [
+    "governed-technology-placement",
+    "proof-gated-semantic-interoperability",
+    "cross-language-mission-composition",
+    "deterministic-evidence-receipts",
+    "fail-closed-capability-admission"
+  ],
+  "evidence_refs": {
+    "governed-technology-placement": "registry/tower.yml",
+    "proof-gated-semantic-interoperability": "src/tower/registry.py",
+    "cross-language-mission-composition": "flagship/run_pipeline.py",
+    "deterministic-evidence-receipts": "src/tower/receipt.py",
+    "fail-closed-capability-admission": "src/tower/spiral.py"
+  }
+}
