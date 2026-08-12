@@ -37,6 +37,7 @@ An advanced exhibit need not be a complete product. It must be honest evidence o
 - `tested`, `compiles`, `benchmark`, `formally_verified`, and stronger states require corresponding execution evidence.
 - Missing toolchains, services, dependencies, or hardware produce exact blockers, never false success.
 - Structural presence is not compiler proof, and compiler proof is not production proof.
+- External production usage is contextual evidence only; it cannot promote a local implementation without revision-bound local execution evidence.
 - `generated/maturity.json` is the generated maturity surface; `quality/exhibit_status.json` may add review notes but cannot override it.
 
 ## Repository invariants
@@ -48,8 +49,13 @@ CI fails when:
 - an easy or advanced exhibit is missing or malformed;
 - native portable checks fail;
 - a declared proof state conflicts with execution evidence;
-- the immutable integrity ledger does not match the governed tree.
+- the immutable integrity ledger does not match the governed tree;
+- a repository-local projection claims a state above `OPERABLE` without independently verified external authority;
+- a machine gate cites missing proof, placeholder hashes, unconditional-success tests, print-only operation, or a self-granted promotion token as evidence;
+- an external project's production reputation is used to upgrade local evidence.
 
 ## Promotion rule
 
 A capability becomes active only after its declared evidence gate succeeds and the Spiral Engine returns a valid admission receipt. Branch completion is not promotion: exact-head verification and integration into `main` are required.
+
+Repository-level promotion is a separate authority decision. The subject repository may establish local operability and emit revision-bound proof, but it may not promote itself. `machine/promotion_authority.json` therefore remains fail-closed locally; a higher state requires independently verifiable authority outside the repository's trust boundary.
