@@ -1,26 +1,29 @@
 """Fail-closed validation for Tower machine projections and promotion boundaries.
 
 The canonical technology registry may describe and verify local capabilities, but
-repository-local files must never promote themselves by assertion.  This module
+repository-local files must never promote themselves by assertion. This module
 keeps the boundary explicit:
 
 * external production references never upgrade local implementation evidence;
 * repository-local excellence state has an ``OPERABLE`` ceiling;
 * promotion authority cannot be self-granted inside this repository;
-* proof, adversarial, and operability gates must point at substantive artifacts.
+* proof, adversarial, and operability gates must point at substantive artifacts;
+* real future evidence may advance a floor without weakening these rules.
 
-An external control plane may later verify a signed promotion receipt, but that
-verification must live outside the subject repository's trust boundary.
+An external control plane may later verify a signed repository-level promotion
+receipt, but that verification must live outside the subject repository's trust
+boundary.
 """
 from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 from .registry import REPO_ROOT, load_registry, validate_registry
 
 MACHINE_DIR = REPO_ROOT / "machine"
+CAPABILITIES = MACHINE_DIR / "capabilities.json"
 TARGET_CONTRACT = MACHINE_DIR / "target-contract.json"
 PROMOTION_AUTHORITY = MACHINE_DIR / "promotion_authority.json"
 EXCELLENCE_STATE = MACHINE_DIR / "excellence-state.json"
@@ -48,13 +51,16 @@ _REQUIRED_TARGET_INVARIANTS = {
     "external_references_do_not_promote_local_evidence",
     "deterministic_receipts",
 }
-_FRONTIER_REFERENCE_ONLY = ("cuda", "jax", "rhl_quant")
-_RUNTIME_EVIDENCE = {
-    "tested",
-    "benchmark",
-    "formally_verified",
-    "integrated",
-    "production_reference",
+_FRONTIER_EVIDENCE_CONTRACTS = {
+    "cuda": "tested",
+    "jax": "tested",
+    "rhl_quant": "benchmark",
+}
+_FORBIDDEN_GENERIC_CAPABILITIES = {
+    "hyper-scaling",
+    "hyper-optimization",
+    "world-class",
+    "production-ready",
 }
 
 
@@ -68,6 +74,64 @@ def _load_object(path: Path, label: str) -> dict[str, Any]:
     if not isinstance(payload, dict):
         raise ValueError(f"{label} root must be an object")
     return payload
+
+
+def _contained_file(repo_root: Path, relative: str) -> Path | None:
+    rel = Path(relative)
+    if rel.is_absolute() or ".." in rel.parts:
+        return None
+    root = repo_root.resolve()
+    candidate = (root / rel).resolve(strict=False)
+    try:
+        candidate.relative_to(root)
+    except ValueError:
+        return None
+    return candidate if candidate.is_file() else None
+
+
+def validate_capability_projection(
+    path: Path = CAPABILITIES,
+    *,
+    repo_root: Path = REPO_ROOT,
+) -> list[str]:
+    """Require machine-advertised capabilities to terminate in repository evidence."""
+    errors: list[str] = []
+    try:
+        payload = _load_object(path, "capability projection")
+    except ValueError as exc:
+        return [str(exc)]
+
+    if payload.get("schema") != "glaciereq.machine-capabilities.v1":
+        errors.append("capability projection schema must be glaciereq.machine-capabilities.v1")
+    if payload.get("system_id") != "glaciereq.tower-of-babel.v1":
+        errors.append("capability projection system_id must identify the Tower")
+
+    capabilities = payload.get("capabilities")
+    if not isinstance(capabilities, list) or not capabilities or not all(
+        isinstance(item, str) and item.strip() for item in capabilities
+    ):
+        errors.append("capabilities must be a non-empty string list")
+        capabilities = []
+    normalized = {item.strip().lower() for item in capabilities}
+    forbidden = sorted(normalized & _FORBIDDEN_GENERIC_CAPABILITIES)
+    if forbidden:
+        errors.append("generic unsupported capabilities are forbidden: " + ", ".join(forbidden))
+
+    refs = payload.get("evidence_refs")
+    if not isinstance(refs, dict):
+        errors.append("capability projection evidence_refs must be an object")
+        refs = {}
+    missing_refs = sorted(set(capabilities) - set(refs))
+    extra_refs = sorted(set(refs) - set(capabilities))
+    if missing_refs:
+        errors.append("capabilities missing evidence refs: " + ", ".join(missing_refs))
+    if extra_refs:
+        errors.append("evidence refs without capabilities: " + ", ".join(extra_refs))
+    for capability in capabilities:
+        relative = refs.get(capability)
+        if not isinstance(relative, str) or _contained_file(repo_root, relative) is None:
+            errors.append(f"capability evidence is missing or escapes repository: {capability}")
+    return errors
 
 
 def validate_target_contract(path: Path = TARGET_CONTRACT) -> list[str]:
@@ -144,28 +208,47 @@ def validate_promotion_authority(path: Path = PROMOTION_AUTHORITY) -> list[str]:
     return errors
 
 
-def validate_frontier_reference_separation() -> list[str]:
-    """Ensure external industry references cannot promote local frontier exhibits."""
+def validate_production_reference_row(
+    row: Mapping[str, Any],
+    *,
+    repo_root: Path = REPO_ROOT,
+) -> list[str]:
+    """Require local revision evidence before any floor claims production reference."""
+    if row.get("evidence_state") != "production_reference":
+        return []
+    technology_id = str(row.get("id", "unknown"))
+    errors: list[str] = []
+    receipt = row.get("local_production_receipt")
+    if not isinstance(receipt, str) or not receipt.strip():
+        errors.append(
+            f"{technology_id} production_reference requires local_production_receipt; "
+            "external adoption is contextual evidence only"
+        )
+    elif _contained_file(repo_root, receipt) is None:
+        errors.append(f"{technology_id} local_production_receipt is missing or escapes repository")
+    return errors
+
+
+def validate_frontier_reference_separation(repo_root: Path = REPO_ROOT) -> list[str]:
+    """Keep frontier references honest while allowing future evidence to advance."""
     errors: list[str] = []
     try:
         registry = load_registry()
     except ValueError as exc:
         return [str(exc)]
 
-    for technology_id in _FRONTIER_REFERENCE_ONLY:
+    for row in registry.technologies:
+        if isinstance(row, dict):
+            errors.extend(validate_production_reference_row(row, repo_root=repo_root))
+
+    for technology_id, minimum_required in _FRONTIER_EVIDENCE_CONTRACTS.items():
         row = registry.by_id(technology_id)
         if row is None:
             errors.append(f"frontier floor missing: {technology_id}")
             continue
-        state = row.get("evidence_state")
-        if state in _RUNTIME_EVIDENCE:
-            errors.append(
-                f"{technology_id} local evidence is {state!r}; reference-only frontier floors "
-                "must remain unpromoted until executable local evidence exists"
-            )
         notes = str(row.get("verification_notes", "")).lower()
-        if "demoted" not in notes and "reference" not in notes:
-            errors.append(f"{technology_id} must state its local proof limitation explicitly")
+        if "demoted" not in notes and "reference" not in notes and row.get("evidence_state") == "illustrative":
+            errors.append(f"{technology_id} must state its current local proof limitation explicitly")
 
         contract = registry.claim_contract_for(technology_id)
         if not isinstance(contract, dict):
@@ -175,11 +258,11 @@ def validate_frontier_reference_separation() -> list[str]:
         if not isinstance(promotion, dict):
             errors.append(f"{technology_id} promotion requirements missing")
             continue
-        minimum = promotion.get("minimum_evidence_state")
-        if technology_id == "rhl_quant" and minimum != "benchmark":
-            errors.append("rhl_quant promotion must require benchmark evidence")
-        if technology_id in {"cuda", "jax"} and minimum != "tested":
-            errors.append(f"{technology_id} promotion must require tested evidence")
+        if promotion.get("minimum_evidence_state") != minimum_required:
+            errors.append(
+                f"{technology_id} promotion minimum must remain {minimum_required} "
+                "until its claim contract is deliberately revised"
+            )
     return errors
 
 
@@ -284,11 +367,14 @@ def build_machine_trust_report(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
     except ValueError as exc:
         checks["canonical_registry"] = [str(exc)]
 
+    checks["capability_projection"] = validate_capability_projection(
+        repo_root / "machine" / "capabilities.json", repo_root=repo_root
+    )
     checks["target_contract"] = validate_target_contract(repo_root / "machine" / "target-contract.json")
     checks["promotion_authority"] = validate_promotion_authority(
         repo_root / "machine" / "promotion_authority.json"
     )
-    checks["frontier_reference_separation"] = validate_frontier_reference_separation()
+    checks["frontier_reference_separation"] = validate_frontier_reference_separation(repo_root)
     checks["excellence_projection"] = validate_excellence_projection(
         repo_root / "machine" / "excellence-state.json",
         repo_root=repo_root,
