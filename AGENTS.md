@@ -54,6 +54,27 @@ interoperability boundary, owner, and proof gate are explicit. Existing working
 components are preserved; no refactor is permitted merely to introduce another
 language.
 
+## Machine trust boundary
+
+The Tower exists to make heterogeneous systems interoperable without collapsing
+their independent authority. That rule applies to the Tower itself.
+
+- `registry/tower.yml` governs **local Tower technology claims**; it does not
+  reinterpret another repository's authority or inherit another project's proof.
+- External production adoption may be cited as context, but it never upgrades a
+  local exhibit's evidence state. Local promotion requires local, revision-bound
+  executable evidence.
+- Repository-local excellence projection has an `OPERABLE` ceiling. A subject
+  repository may prove behavior, but it may not grant itself `PROMOTED` status.
+- `machine/promotion_authority.json` must remain fail-closed locally. Any higher
+  promotion requires independently verified authority outside this repository's
+  trust boundary.
+- Placeholder proof is forbidden everywhere, including unconditional-success
+  tests, synthetic hash labels, print-only operators, and self-attested grants.
+- `scripts/operate.py` is a read-only operational gate. It must report exact
+  registry, generated-surface, integrity, and machine-trust failures and return
+  non-zero instead of repairing or hiding them.
+
 ## Generated files
 
 Generated surfaces must not be hand-edited. They are overwritten by
