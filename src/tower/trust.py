@@ -17,6 +17,7 @@ boundary.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -62,6 +63,8 @@ _FORBIDDEN_GENERIC_CAPABILITIES = {
     "world-class",
     "production-ready",
 }
+_SHA1_RE = re.compile(r"^[0-9a-f]{40}$")
+_SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
 
 def _load_object(path: Path, label: str) -> dict[str, Any]:
@@ -208,6 +211,31 @@ def validate_promotion_authority(path: Path = PROMOTION_AUTHORITY) -> list[str]:
     return errors
 
 
+def validate_local_production_receipt(path: Path, technology_id: str) -> list[str]:
+    """Validate the minimum revision-bound contract for local production evidence."""
+    errors: list[str] = []
+    try:
+        receipt = _load_object(path, "local production receipt")
+    except ValueError as exc:
+        return [str(exc)]
+    if receipt.get("schema") != "glaciereq.local-production-receipt.v1":
+        errors.append(f"{technology_id} local production receipt has invalid schema")
+    if receipt.get("technology_id") != technology_id:
+        errors.append(f"{technology_id} local production receipt is bound to another technology")
+    revision = receipt.get("source_revision")
+    if not isinstance(revision, str) or not _SHA1_RE.fullmatch(revision):
+        errors.append(f"{technology_id} local production receipt requires a 40-hex source_revision")
+    digest = receipt.get("artifact_sha256")
+    if not isinstance(digest, str) or not _SHA256_RE.fullmatch(digest):
+        errors.append(f"{technology_id} local production receipt requires artifact_sha256")
+    proof = receipt.get("proof")
+    if not isinstance(proof, list) or not proof or not all(
+        isinstance(item, str) and item.strip() for item in proof
+    ):
+        errors.append(f"{technology_id} local production receipt requires non-empty proof refs")
+    return errors
+
+
 def validate_production_reference_row(
     row: Mapping[str, Any],
     *,
@@ -217,16 +245,16 @@ def validate_production_reference_row(
     if row.get("evidence_state") != "production_reference":
         return []
     technology_id = str(row.get("id", "unknown"))
-    errors: list[str] = []
     receipt = row.get("local_production_receipt")
     if not isinstance(receipt, str) or not receipt.strip():
-        errors.append(
+        return [
             f"{technology_id} production_reference requires local_production_receipt; "
             "external adoption is contextual evidence only"
-        )
-    elif _contained_file(repo_root, receipt) is None:
-        errors.append(f"{technology_id} local_production_receipt is missing or escapes repository")
-    return errors
+        ]
+    receipt_path = _contained_file(repo_root, receipt)
+    if receipt_path is None:
+        return [f"{technology_id} local_production_receipt is missing or escapes repository"]
+    return validate_local_production_receipt(receipt_path, technology_id)
 
 
 def validate_frontier_reference_separation(repo_root: Path = REPO_ROOT) -> list[str]:
@@ -288,11 +316,14 @@ def validate_excellence_projection(
     if state != principal_state:
         errors.append("excellence projection state must equal principal_state")
     if isinstance(principal_state, str) and principal_state in _STATE_ORDER:
-        if _STATE_ORDER[principal_state] > _STATE_ORDER[LOCAL_STATE_CEILING]:
+        state_rank = _STATE_ORDER[principal_state]
+        if state_rank > _STATE_ORDER[LOCAL_STATE_CEILING]:
             errors.append(
                 f"repository-local excellence state cannot exceed {LOCAL_STATE_CEILING}; "
                 "promotion belongs to an external authority"
             )
+    else:
+        state_rank = -1
 
     serialized = json.dumps(payload, sort_keys=True)
     for forbidden in ("HYPER_VALIDATED_SHA256", "HYPER_VALIDATED_IDENTITY", "auto_granted"):
@@ -303,6 +334,17 @@ def validate_excellence_projection(
     if not isinstance(gates, dict):
         errors.append("excellence projection gates must be an object")
         return errors
+
+    required_state_gates = (
+        ("TESTED", "DETERMINISTIC_PROOF_GREEN"),
+        ("ADVERSARIAL_VERIFIED", "ADVERSARIAL_SURVIVAL"),
+        ("OPERABLE", "OPERABLE_AND_OBSERVABLE"),
+    )
+    for minimum_state, gate_name in required_state_gates:
+        if state_rank >= _STATE_ORDER[minimum_state]:
+            gate = gates.get(gate_name)
+            if not isinstance(gate, dict) or gate.get("status") != "PASS":
+                errors.append(f"{principal_state} requires {gate_name}=PASS")
 
     authority_gate = gates.get("AUTHORITY_BOUND", {})
     if promotion.get("mode") == "not_granted" and isinstance(authority_gate, dict):
