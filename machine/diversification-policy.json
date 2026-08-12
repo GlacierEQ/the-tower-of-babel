@@ -1,0 +1,110 @@
+{
+  "schema": "glaciereq.technology-diversification-policy.v1",
+  "system_id": "glaciereq.tower-of-babel.v1",
+  "default_decision": "reuse_existing_floor",
+  "principle": "A new language, runtime, format, compiler IR, serialization system, or hardware boundary is admitted only when an existing floor fails a declared requirement and the candidate demonstrates a measurable advantage that exceeds its integration and operational cost.",
+  "decision_record": {
+    "required_fields": [
+      "problem_boundary",
+      "incumbent_floor",
+      "candidate_floor",
+      "measurable_requirement",
+      "comparison_method",
+      "integration_cost",
+      "failure_modes",
+      "interop_boundary",
+      "proof_gate",
+      "rollback_path"
+    ]
+  },
+  "admission_gates": [
+    "boundary_is_real_not_novelty",
+    "incumbent_limitation_demonstrated",
+    "candidate_advantage_measured",
+    "interop_contract_explicit",
+    "operational_cost_bounded",
+    "failure_and_rollback_defined",
+    "required_evidence_gate_passed"
+  ],
+  "claim_rules": {
+    "performance_or_compression": "benchmark",
+    "hardware_acceleration": "hardware_gated",
+    "runtime_behavior": "tested",
+    "syntax_or_toolchain_presence": "compiles",
+    "production_reference": "revision_bound_local_production_receipt"
+  },
+  "anti_patterns": [
+    "language_count_as_quality",
+    "resume_signaling_as_architecture",
+    "rewrite_for_novelty",
+    "external_reputation_as_local_proof",
+    "performance_claim_without_baseline",
+    "format_selected_for_a_job_it_does_not_own"
+  ],
+  "role_examples": {
+    "protobuf": {
+      "owns": [
+        "evolvable typed cross-language messages",
+        "rpc and telemetry contracts",
+        "compact control and receipt envelopes"
+      ],
+      "does_not_own": [
+        "bulk dense model weights",
+        "zero-copy hot-path tensor access",
+        "general human-authored configuration"
+      ]
+    },
+    "flatbuffers": {
+      "owns": [
+        "schema-driven low-allocation binary access",
+        "latency-sensitive local ipc and telemetry"
+      ],
+      "does_not_own": [
+        "general rpc semantics",
+        "training checkpoints"
+      ]
+    },
+    "onnx": {
+      "owns": [
+        "portable typed machine-learning compute graphs",
+        "model exchange and inference-backend portability",
+        "graph inspection and optimization boundaries"
+      ],
+      "does_not_own": [
+        "general application configuration",
+        "arbitrary training checkpoints",
+        "proof of model quality by file existence"
+      ]
+    },
+    "odin": {
+      "owns": [
+        "data-oriented native loops",
+        "explicit allocator and memory-context control",
+        "predictable SIMD-friendly layouts when its toolchain is proven"
+      ],
+      "does_not_own": [
+        "all memory-safe systems by default",
+        "cross-language contracts",
+        "automatic replacement of proven C Rust or Zig components"
+      ]
+    },
+    "rust": {
+      "owns": [
+        "memory-safe native authority boundaries",
+        "concurrency-sensitive security and evidence components"
+      ],
+      "does_not_own": [
+        "every low-level component regardless of interoperability cost"
+      ]
+    },
+    "rhl_quant": {
+      "owns": [
+        "experimental model quantization and compression research after benchmark admission"
+      ],
+      "does_not_own": [
+        "production compression before quality memory throughput and backend benchmarks",
+        "model serialization contracts"
+      ]
+    }
+  }
+}
