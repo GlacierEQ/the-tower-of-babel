@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Run the Tower's repository-local operational readiness gate.
 
-This command is intentionally read-only.  It does not repair drift, grant authority,
-or promote state.  It reports the exact condition of the canonical registry,
+This command is intentionally read-only. It does not repair drift, grant authority,
+or promote state. It reports the exact condition of the canonical registry,
 generated projections, immutable integrity ledger, and machine trust boundary and
 returns non-zero whenever any required local invariant is false.
 """
@@ -11,7 +11,7 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
@@ -22,16 +22,22 @@ from tower.registry import load_registry, validate_registry
 from tower.trust import build_machine_trust_report
 
 
+def _exception_report(exc: Exception) -> dict[str, Any]:
+    return {
+        "ok": False,
+        "errors": [f"{type(exc).__name__}: {exc}"],
+    }
+
+
 def _registry_report() -> dict[str, Any]:
     try:
         registry = load_registry()
-    except ValueError as exc:
+        errors = validate_registry(registry)
+    except Exception as exc:  # CLI trust boundary must remain machine-readable.
         return {
-            "ok": False,
+            **_exception_report(exc),
             "technology_count": 0,
-            "errors": [str(exc)],
         }
-    errors = validate_registry(registry)
     return {
         "ok": not errors,
         "technology_count": len(registry.technologies),
@@ -42,8 +48,11 @@ def _registry_report() -> dict[str, Any]:
 def _generation_report() -> dict[str, Any]:
     try:
         drift = generate(check=True)
-    except (OSError, ValueError) as exc:
-        return {"ok": False, "drift": [], "errors": [str(exc)]}
+    except Exception as exc:  # Renderer/schema defects are readiness failures too.
+        return {
+            **_exception_report(exc),
+            "drift": [],
+        }
     return {
         "ok": not drift,
         "drift": list(drift),
@@ -51,18 +60,26 @@ def _generation_report() -> dict[str, Any]:
     }
 
 
+def _safe_report(check: Callable[[], dict[str, Any]]) -> dict[str, Any]:
+    try:
+        report = check()
+    except Exception as exc:  # Never replace a fail-closed report with a traceback.
+        return _exception_report(exc)
+    if not isinstance(report, dict):
+        return {
+            "ok": False,
+            "errors": [f"TypeError: readiness check returned {type(report).__name__}, expected dict"],
+        }
+    return report
+
+
 def build_operational_report() -> dict[str, Any]:
     """Build one deterministic, machine-readable readiness report."""
-    registry = _registry_report()
-    generated = _generation_report()
-    integrity = verify_integrity()
-    trust = build_machine_trust_report(ROOT)
-
     checks = {
-        "canonical_registry": registry,
-        "generated_surfaces": generated,
-        "integrity": integrity,
-        "machine_trust": trust,
+        "canonical_registry": _registry_report(),
+        "generated_surfaces": _generation_report(),
+        "integrity": _safe_report(verify_integrity),
+        "machine_trust": _safe_report(lambda: build_machine_trust_report(ROOT)),
     }
     ok = all(check.get("ok") is True for check in checks.values())
     return {
@@ -75,7 +92,17 @@ def build_operational_report() -> dict[str, Any]:
 
 
 def main() -> int:
-    report = build_operational_report()
+    try:
+        report = build_operational_report()
+    except Exception as exc:  # Last-resort JSON envelope; KeyboardInterrupt/SystemExit pass through.
+        report = {
+            "schema": "glaciereq.tower-operational-readiness.v1",
+            "repository": "GlacierEQ/the-tower-of-babel",
+            "mode": "read_only_fail_closed",
+            "ok": False,
+            "checks": {},
+            "fatal": _exception_report(exc),
+        }
     print(json.dumps(report, indent=2, sort_keys=True))
     return 0 if report["ok"] else 1
 
