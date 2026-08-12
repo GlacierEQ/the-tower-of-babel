@@ -82,6 +82,8 @@ jobs:
         run: pytest -q
       - name: Verify immutable integrity ledger
         run: tower integrity verify
+      - name: Require fail-closed operational trust report
+        run: python scripts/operate.py
       - name: Build governed floors with explicit blockers
         run: tower build --all --allow-blocked --output artifacts/build-report.json
       - name: Benchmark portable floors
