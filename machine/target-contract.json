@@ -3,9 +3,13 @@
   "system_id": "glaciereq.tower-of-babel.v1",
   "repository": "GlacierEQ/the-tower-of-babel",
   "canonical_authority": "registry/tower.yml",
-  "problem": "Heterogeneous languages, runtimes, proof systems, hardware descriptions, and agent interfaces must compose without semantic drift, evidence inflation, duplicated responsibility, or authority leaking across system boundaries.",
-  "unique_value": "The Tower provides governed semantic interoperability: each technology keeps a bounded native responsibility while canonical contracts, executable gates, exact blockers, and deterministic receipts make cross-language composition inspectable and truth-preserving.",
+  "selector_authority": "src/tower/selector.py",
+  "primary_function": "Given a real system function or mission requirement, determine which governed language, runtime, format, compiler layer, hardware description, proof system, or interoperability technology should own that function now; explain What/Where/When/Why/How; reject choices whose evidence is below the requested proof floor; and return the smallest interoperable proven technology set.",
+  "problem": "Heterogeneous engineering functions need different implementation technologies, but arbitrary polyglot growth creates semantic drift, duplicated responsibility, integration cost, evidence inflation, and authority confusion. The system therefore needs one governed authority that maps function to the right technology at the right time for the right reason.",
+  "unique_value": "The Tower is an executable function-to-technology unification authority. It converts mission requirements into the smallest evidence-qualified technology set, binds every selection to W4H placement, interfaces, ownership, proof state, blockers, and the canonical registry, then preserves interoperability without forcing one language to own every function.",
   "invariants": [
+    "function_precedes_technology_choice",
+    "smallest_proven_cover_wins",
     "plurality_preserved",
     "local_authority_not_reinterpreted",
     "proof_before_promotion",
@@ -19,5 +23,5 @@
     "revision_bound_proof_required": true,
     "external_reference_is_not_local_proof": true
   },
-  "success_condition": "A mission can cross technology boundaries without changing its governed meaning, and every promoted capability can be traced to revision-bound local proof plus authority that the subject repository did not grant to itself."
+  "success_condition": "For a mission requirement, the Tower can deterministically choose and explain the smallest currently proven technology set; expose gated or under-proven alternatives instead of selecting them; preserve typed interoperability across chosen boundaries; and bind the decision to the canonical registry revision and evidence state."
 }
