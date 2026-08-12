@@ -72,7 +72,13 @@ def test_contract_is_consistent_with_canonical_tower_and_quality_authorities():
         "benchmark",
         "integration",
     }
-    assert "Tier A" in QUALITY
-    assert "Tier B" in QUALITY
-    assert "Tier C" in QUALITY
-    assert "Polyglot quality semantics" in QUALITY
+    # The placement contract owns A/B/C tier labels. The canonical quality
+    # contract owns the evidence semantics those tiers must satisfy; do not
+    # force a second tier vocabulary into QUALITY_CONTRACT.md just to appease
+    # this test.
+    assert "Typed or explicit inputs and outputs" in QUALITY
+    assert "Validation and failure behavior" in QUALITY
+    assert "A meaningful invariant or policy boundary" in QUALITY
+    assert "A runnable demonstration, proof, benchmark, or test vector" in QUALITY
+    assert "Missing toolchains, services, dependencies, or hardware produce exact blockers" in QUALITY
+    assert "Structural presence is not compiler proof, and compiler proof is not production proof" in QUALITY
