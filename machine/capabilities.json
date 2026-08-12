@@ -5,6 +5,7 @@
     "governed-technology-placement",
     "proof-gated-semantic-interoperability",
     "cross-language-mission-composition",
+    "proof-gated-technology-diversification",
     "deterministic-evidence-receipts",
     "fail-closed-capability-admission"
   ],
@@ -12,6 +13,7 @@
     "governed-technology-placement": "registry/tower.yml",
     "proof-gated-semantic-interoperability": "src/tower/registry.py",
     "cross-language-mission-composition": "flagship/run_pipeline.py",
+    "proof-gated-technology-diversification": "src/tower/diversification.py",
     "deterministic-evidence-receipts": "src/tower/receipt.py",
     "fail-closed-capability-admission": "src/tower/spiral.py"
   }
