@@ -1,9 +1,9 @@
-"""Proof-gated technology diversification for the Tower.
+"""Proof-gated additive technology diversification for the Tower.
 
-The Tower is not rewarded for language count. Existing floors win by default.
-A candidate is admissible only when a concrete boundary is identified, the
-incumbent limitation is stated, the candidate has a measurable comparison plan,
-and the candidate's current local evidence meets the requested proof gate.
+The Tower does not optimize for the fewest technologies. It evaluates whether a
+candidate contributes a distinct system benefit that is worth its integration
+and operational cost. Existing technologies may remain excellent in their own
+roles while a specialist is added for another role.
 """
 from __future__ import annotations
 
@@ -17,8 +17,9 @@ POLICY_PATH = REPO_ROOT / "machine" / "diversification-policy.json"
 
 _REQUIRED_DECISION_FIELDS = {
     "problem_boundary",
-    "incumbent_floor",
+    "existing_composition",
     "candidate_floor",
+    "benefit_dimension",
     "measurable_requirement",
     "comparison_method",
     "integration_cost",
@@ -29,8 +30,9 @@ _REQUIRED_DECISION_FIELDS = {
 }
 _REQUIRED_ADMISSION_GATES = {
     "boundary_is_real_not_novelty",
-    "incumbent_limitation_demonstrated",
-    "candidate_advantage_measured",
+    "candidate_has_distinct_system_role",
+    "marginal_benefit_is_positive",
+    "benefit_claim_matches_required_evidence",
     "interop_contract_explicit",
     "operational_cost_bounded",
     "failure_and_rollback_defined",
@@ -43,8 +45,11 @@ _EVIDENCE_ORDER = {
     "service_gated": 1,
     "hardware_gated": 1,
     "tested": 2,
+    "behavioral": 2,
     "benchmark": 3,
+    "hardware": 3,
     "formally_verified": 4,
+    "formal": 4,
     "integrated": 5,
     "production_reference": 6,
 }
@@ -61,7 +66,7 @@ def _load_object(path: Path, label: str) -> dict[str, Any]:
 
 
 def validate_diversification_policy(path: Path = POLICY_PATH) -> list[str]:
-    """Validate the authored technology-selection policy against the registry."""
+    """Validate the authored additive specialization policy against the registry."""
     errors: list[str] = []
     try:
         policy = _load_object(path, "diversification policy")
@@ -69,12 +74,29 @@ def validate_diversification_policy(path: Path = POLICY_PATH) -> list[str]:
     except ValueError as exc:
         return [str(exc)]
 
-    if policy.get("schema") != "glaciereq.technology-diversification-policy.v1":
-        errors.append("diversification policy schema is invalid")
+    if policy.get("schema") != "glaciereq.technology-diversification-policy.v2":
+        errors.append("diversification policy schema must be v2 additive specialization")
     if policy.get("system_id") != "glaciereq.tower-of-babel.v1":
         errors.append("diversification policy system_id must identify the Tower")
-    if policy.get("default_decision") != "reuse_existing_floor":
-        errors.append("diversification must default to reuse_existing_floor")
+    if policy.get("default_decision") != "evaluate_additive_benefit":
+        errors.append("diversification must default to evaluate_additive_benefit")
+    if policy.get("optimization_goal") != "maximize_verified_system_advantage_without_redundant_responsibility":
+        errors.append("diversification optimization goal must maximize verified system advantage")
+
+    dimensions = policy.get("benefit_dimensions")
+    if not isinstance(dimensions, list) or not dimensions or not all(
+        isinstance(item, str) and item.strip() for item in dimensions
+    ):
+        errors.append("diversification benefit_dimensions must be a non-empty string list")
+        dimensions = []
+
+    proof_floor = policy.get("benefit_proof_floor")
+    if not isinstance(proof_floor, dict):
+        errors.append("benefit_proof_floor must be an object")
+    else:
+        missing_floors = sorted(set(dimensions) - set(proof_floor))
+        if missing_floors:
+            errors.append("benefit dimensions missing proof floors: " + ", ".join(missing_floors))
 
     decision = policy.get("decision_record")
     fields = decision.get("required_fields") if isinstance(decision, dict) else None
@@ -92,6 +114,10 @@ def validate_diversification_policy(path: Path = POLICY_PATH) -> list[str]:
         missing = sorted(_REQUIRED_ADMISSION_GATES - set(gates))
         if missing:
             errors.append("diversification policy missing gates: " + ", ".join(missing))
+
+    anti_patterns = policy.get("anti_patterns")
+    if not isinstance(anti_patterns, list) or "minimal_language_count_as_quality" not in anti_patterns:
+        errors.append("policy must explicitly reject minimal language count as a quality objective")
 
     role_examples = policy.get("role_examples")
     if not isinstance(role_examples, dict) or not role_examples:
@@ -119,9 +145,8 @@ def evaluate_candidate(
     *,
     policy_path: Path = POLICY_PATH,
 ) -> dict[str, Any]:
-    """Evaluate one proposed diversification decision without mutating the registry."""
-    policy_errors = validate_diversification_policy(policy_path)
-    errors = list(policy_errors)
+    """Evaluate one additive specialization decision without mutating the registry."""
+    errors = list(validate_diversification_policy(policy_path))
     missing = sorted(
         field
         for field in _REQUIRED_DECISION_FIELDS
@@ -130,39 +155,63 @@ def evaluate_candidate(
     if missing:
         errors.append("decision record missing substantive fields: " + ", ".join(missing))
 
-    incumbent = str(record.get("incumbent_floor", "")).strip()
     candidate = str(record.get("candidate_floor", "")).strip()
-    if incumbent and candidate and incumbent == candidate:
-        errors.append("candidate_floor must differ from incumbent_floor")
+    benefit = str(record.get("benefit_dimension", "")).strip()
 
     try:
+        policy = _load_object(policy_path, "diversification policy")
         registry = load_registry()
     except ValueError as exc:
         errors.append(str(exc))
+        policy = {}
         registry = None
 
     candidate_row = registry.by_id(candidate) if registry is not None and candidate else None
     if candidate and candidate_row is None:
         errors.append(f"candidate floor is not governed by the Tower: {candidate}")
-    if incumbent and incumbent != "none" and registry is not None and registry.by_id(incumbent) is None:
-        errors.append(f"incumbent floor is not governed by the Tower: {incumbent}")
+
+    dimensions = set(policy.get("benefit_dimensions", [])) if isinstance(policy, dict) else set()
+    if benefit and benefit not in dimensions:
+        errors.append(f"unknown benefit_dimension: {benefit}")
 
     proof_gate = str(record.get("proof_gate", "")).strip()
     current_state = str(candidate_row.get("evidence_state", "")) if candidate_row else ""
-    if proof_gate in _EVIDENCE_ORDER and current_state in _EVIDENCE_ORDER:
-        if _EVIDENCE_ORDER[current_state] < _EVIDENCE_ORDER[proof_gate]:
+    current_proof = str(candidate_row.get("proof_class", "")) if candidate_row else ""
+
+    if proof_gate in _EVIDENCE_ORDER:
+        candidate_level = max(
+            _EVIDENCE_ORDER.get(current_state, -1),
+            _EVIDENCE_ORDER.get(current_proof, -1),
+        )
+        if candidate_level < _EVIDENCE_ORDER[proof_gate]:
             errors.append(
-                f"candidate evidence_state {current_state!r} does not meet proof_gate {proof_gate!r}"
+                f"candidate proof {current_state!r}/{current_proof!r} does not meet proof_gate {proof_gate!r}"
             )
-    elif proof_gate and proof_gate not in _EVIDENCE_ORDER:
+    elif proof_gate:
         errors.append(f"unknown proof_gate evidence state: {proof_gate}")
 
+    benefit_floors = policy.get("benefit_proof_floor", {}) if isinstance(policy, dict) else {}
+    required_floor = benefit_floors.get(benefit)
+    if benefit and isinstance(required_floor, str) and required_floor in _EVIDENCE_ORDER:
+        candidate_level = max(
+            _EVIDENCE_ORDER.get(current_state, -1),
+            _EVIDENCE_ORDER.get(current_proof, -1),
+        )
+        if candidate_level < _EVIDENCE_ORDER[required_floor]:
+            errors.append(
+                f"benefit {benefit!r} requires {required_floor!r} evidence; "
+                f"candidate has {current_state!r}/{current_proof!r}"
+            )
+
     return {
-        "schema": "glaciereq.technology-admission-decision.v1",
+        "schema": "glaciereq.technology-admission-decision.v2",
         "decision": "ADMIT" if not errors else "REJECT",
-        "default": "reuse_existing_floor",
+        "default": "evaluate_additive_benefit",
+        "optimization_goal": "maximize_verified_system_advantage_without_redundant_responsibility",
         "candidate_floor": candidate,
-        "incumbent_floor": incumbent,
+        "benefit_dimension": benefit or None,
         "candidate_evidence_state": current_state or None,
+        "candidate_proof_class": current_proof or None,
+        "existing_composition_preserved": True,
         "errors": errors,
     }
