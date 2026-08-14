@@ -1,0 +1,8 @@
+{
+  "schema": "glaciereq.masterskill-parent.v1",
+  "masterskill": "glaciereq-nervous-system",
+  "source": "GlacierEQ/antigravity-awesome-skills/skills/glaciereq-nervous-system/SKILL.md",
+  "source_commit": "6e3bcf71e8d79c682dbe8993a012b761d0a19390",
+  "local_role": "technology_placement_interoperability_proof",
+  "activation_rule": "Use Tower when a composed mission changes language, runtime, schema, interface, toolchain, hardware dependency, benchmark claim, or formal proof boundary."
+}
