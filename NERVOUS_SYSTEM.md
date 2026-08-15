@@ -16,7 +16,7 @@ Aspen Grove memory
 → verified persistent system response
 ```
 
-## Canonical entrypoints
+## APEX entrypoints
 
 - [AKOS](https://github.com/GlacierEQ/AKOS)
 - [Aspen Grove Core](https://github.com/GlacierEQ/aspen-grove-core)

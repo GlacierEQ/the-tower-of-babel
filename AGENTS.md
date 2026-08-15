@@ -1,10 +1,12 @@
-# Tower Agent Doctrine
+# Tower Agent Doctrine — APEX
 
-## Authority
+## Authority model
 
-The canonical registry rooted at `registry/tower.yml` is the only authority for:
+Casey Barton's intended GlacierEQ architecture is the sole human authority over project direction. The Tower does not acquire project authority. Its job is narrower and harder: **select and prove the strongest technology for each engineering boundary**.
 
-- technology admission;
+`registry/tower.yml` is the APEX technology source registry for:
+
+- technology observation and admission;
 - W4H+How placement;
 - easy and advanced exhibit paths;
 - evidence state and proof class;
@@ -13,26 +15,44 @@ The canonical registry rooted at `registry/tower.yml` is the only authority for:
 - cross-language interfaces;
 - Megamind agent and piston ownership.
 
-Do not add a language, format, compiler, HDL, proof system, or runtime by editing
-the README, sidecar, generated files, or Megamind maps directly.
+The registry records Tower state. It does not redefine Casey's intended system into a smaller projection.
+
+Do not add a language, format, compiler, HDL, proof system, runtime, database, or accelerator by editing generated surfaces directly.
+
+## APEX objective
+
+The Tower optimizes **boundary fitness and whole-system coherent power**, not language count, minimum scope, or architectural uniformity.
+
+For every real boundary:
+
+1. identify what the boundary must accomplish;
+2. identify the strongest credible current technologies for it;
+3. compose candidates when one technology cannot dominate the whole boundary;
+4. build the strongest justified reversible experiment;
+5. measure function, performance, reliability, interface cost, resource behavior, observability, and failure isolation;
+6. preserve every unique prior gain;
+7. select the non-dominated winner or preserve multiple frontier candidates when the tradeoff is real;
+8. repeat as the frontier changes.
+
+A six-language repository is correct when six languages each own a boundary they are unusually good at. A one-language repository is correct when one language actually dominates all its boundaries. Uniformity itself has zero score.
 
 ## Required workflow
 
-1. Change the canonical index or one of its declared fragments.
-2. Add or update both exhibits.
-3. Add or update the proof gate.
-4. Run `tower validate`.
-5. Run `tower generate`.
-6. Run `pytest`.
-7. Run `tower build --all --allow-blocked`.
-8. Generate and verify integrity.
-9. Generate the deterministic receipt.
-10. Review generated drift before commit.
+1. Start from Casey's APEX intent and the actual system bottleneck.
+2. Inspect the APEX technology registry and fresh frontier sources.
+3. Change the registry index or a declared fragment when the technology map changes.
+4. Add or update exhibits that demonstrate the real boundary.
+5. Add or update proof appropriate to the claim.
+6. Run `tower validate`.
+7. Run `tower generate`.
+8. Run repository tests and the relevant native/toolchain/hardware path.
+9. Compare against the incumbent boundary, not against an empty baseline.
+10. Generate and verify integrity and deterministic receipts.
+11. Preserve the winner, rollback path, prior unique gains, and next frontier cursor.
 
 ## Truth classes
 
-A file name containing `advanced` does not establish production maturity.
-Use the declared evidence state:
+A file name containing `advanced` does not establish production maturity. Use the declared evidence state:
 
 - illustrative
 - compiles
@@ -45,16 +65,16 @@ Use the declared evidence state:
 - integrated
 - production_reference
 
-Never promote a floor without corresponding evidence.
+Evidence limits claims. It does not prohibit an ambitious reversible experiment.
 
-## Language-diversification rule
+## Language-diversification law
 
-New technology is admitted only when its What, Where, When, Why, How,
-interoperability boundary, owner, and proof gate are explicit. Existing working
-components are preserved; no refactor is permitted merely to introduce another
-language.
+New technology is admitted when its What, Where, When, Why, How, interoperability boundary, owner, and proof are explicit **and it strengthens the APEX architecture vector for that boundary**.
+
+Do not refactor merely to add another language. Do not refuse a better language merely to reduce language count. Existing working components are preserved until the replacement proves it retains or exceeds their unique value.
 
 ## Generated files
 
-Generated surfaces must not be hand-edited. They are overwritten by
-`python3 -m tower.generate`.
+Generated surfaces must not be hand-edited. They are overwritten by `python3 -m tower.generate`.
+
+Historical files and receipts may contain the retired term `canonical`. That term is historical metadata only and has no governing force over APEX intent or current engineering direction.

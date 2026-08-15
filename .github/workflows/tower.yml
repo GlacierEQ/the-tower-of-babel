@@ -43,7 +43,7 @@ jobs:
           if-no-files-found: error
           retention-days: 3
 
-  governance:
+  apex-proof:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
@@ -74,14 +74,16 @@ jobs:
           python -m pip install --no-deps --no-build-isolation -e .
       - name: Install declared portable benchmark tools
         run: sudo apt-get update && sudo apt-get install -y protobuf-compiler wabt
-      - name: Validate canonical registry
+      - name: Validate APEX registry
         run: tower validate
       - name: Reject generated-surface drift
         run: tower generate --check
-      - name: Run Python governance tests
-        run: pytest -q
-      - name: Verify immutable integrity ledger
+      - name: Verify exact checkout integrity before execution
         run: tower integrity verify
+      - name: Run Python APEX proof tests
+        run: pytest -q
+      - name: Reject test-induced tracked source mutation
+        run: git diff --exit-code -- . ':(exclude).integrity/approved_delta.json'
       - name: Build governed floors with explicit blockers
         run: tower build --all --allow-blocked --output artifacts/build-report.json
       - name: Benchmark portable floors
@@ -93,7 +95,7 @@ jobs:
           --benchmark-report artifacts/benchmarks.json
           --allow-blocked
           --output artifacts/proof-report.json
-      - name: Emit deterministic release receipt
+      - name: Emit deterministic APEX release receipt
         run: tower receipt --build-report artifacts/build-report.json --output artifacts/tower_receipt.json
       - name: Attest Tower evidence with OIDC-bound Sigstore provenance
         id: attest
@@ -105,10 +107,10 @@ jobs:
             artifacts/tower_receipt.json
             artifacts/benchmarks.json
             artifacts/proof-report.json
-      - name: Upload Tower governance receipts
+      - name: Upload Tower APEX receipts
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: tower-governance-receipts
+          name: tower-apex-receipts
           path: |
             artifacts/build-report.json
             artifacts/tower_receipt.json
@@ -120,7 +122,7 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: tower-governance-attestation
+          name: tower-apex-attestation
           path: ${{ steps.attest.outputs.bundle-path }}
           if-no-files-found: error
           retention-days: 30
@@ -210,12 +212,12 @@ jobs:
   required-tower-verification:
     name: required-tower-verification
     if: always()
-    needs: [integrity-candidate, governance, flagship-portable, portable-floor-compile]
+    needs: [integrity-candidate, apex-proof, flagship-portable, portable-floor-compile]
     runs-on: ubuntu-24.04
     steps:
-      - name: Require every Tower verification job
+      - name: Require every Tower APEX verification job
         run: |
           test "${{ needs.integrity-candidate.result }}" = "success"
-          test "${{ needs.governance.result }}" = "success"
+          test "${{ needs.apex-proof.result }}" = "success"
           test "${{ needs.flagship-portable.result }}" = "success"
           test "${{ needs.portable-floor-compile.result }}" = "success"

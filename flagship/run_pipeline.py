@@ -103,7 +103,7 @@ def _require_string_list(payload: dict, field: str) -> list[str]:
     return [item.strip() for item in value]
 
 
-def canonical_mission(payload: dict) -> dict:
+def normalized_mission(payload: dict) -> dict:
     """Validate and normalize the cross-language mission hash contract."""
     unsigned = dict(payload)
     unsigned.pop("input_sha256", None)
@@ -127,13 +127,13 @@ def canonical_mission(payload: dict) -> dict:
     }
 
 
-def canonical_json_sha256(payload: dict) -> str:
-    canonical = json.dumps(
-        canonical_mission(payload),
+def stable_json_sha256(payload: dict) -> str:
+    stable = json.dumps(
+        normalized_mission(payload),
         separators=(",", ":"),
         ensure_ascii=False,
     ).encode("utf-8")
-    return hashlib.sha256(canonical).hexdigest()
+    return hashlib.sha256(stable).hexdigest()
 
 
 def write_fallback_mission(source: Path, mission: Path) -> None:
@@ -141,10 +141,10 @@ def write_fallback_mission(source: Path, mission: Path) -> None:
     payload = json.loads(source.read_text(encoding="utf-8"))
     if not isinstance(payload, dict):
         raise ValueError("mission input must be an object")
-    canonical = canonical_mission(payload)
-    canonical["input_sha256"] = canonical_json_sha256(canonical)
+    normalized = normalized_mission(payload)
+    normalized["input_sha256"] = stable_json_sha256(normalized)
     mission.write_text(
-        json.dumps(canonical, indent=2, ensure_ascii=False) + "\n",
+        json.dumps(normalized, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
 
@@ -171,11 +171,11 @@ def main() -> int:
     source_payload = json.loads(source.read_text(encoding="utf-8"))
     if not isinstance(source_payload, dict):
         raise ValueError("mission input must be an object")
-    expected_input_sha256 = canonical_json_sha256(source_payload)
-    expected_maximum_action = canonical_mission(source_payload)["maximum_action"]
+    expected_input_sha256 = stable_json_sha256(source_payload)
+    expected_maximum_action = normalized_mission(source_payload)["maximum_action"]
 
     registry = load_registry()
-    expected_registry_sha256 = hashlib.sha256(registry.canonical_bytes()).hexdigest()
+    expected_registry_sha256 = hashlib.sha256(registry.apex_bytes()).hexdigest()
     allowed_technology_ids = ",".join(sorted(technology["id"] for technology in registry.technologies))
 
     mission = WORK / "mission.json"
@@ -216,7 +216,7 @@ def main() -> int:
             planner = {
                 "stage": "python_planner",
                 "status": "FAILED",
-                "blocker": "TypeScript ingress hash does not match the canonical source mission",
+                "blocker": "TypeScript ingress hash does not match the APEX source mission",
             }
             results.append(planner)
         else:

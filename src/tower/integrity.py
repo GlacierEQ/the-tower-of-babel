@@ -1,7 +1,8 @@
-"""Deterministic integrity manifest and reviewed evolution verification."""
+"""Deterministic integrity manifest and reviewed APEX evolution verification."""
 from __future__ import annotations
 
 import hashlib
+import hmac
 import json
 import re
 from pathlib import Path
@@ -79,6 +80,11 @@ def collect_hashes(manifest_path: Path | None = None) -> dict[str, str]:
     }
 
 
+def _digest_equal(expected: str, actual: str) -> bool:
+    """Compare validated hexadecimal digests as raw ASCII bytes."""
+    return hmac.compare_digest(expected.encode("ascii"), actual.encode("ascii"))
+
+
 def write_manifest(path: Path = MANIFEST) -> dict[str, Any]:
     """Write a new squashed full integrity snapshot."""
     hashes = collect_hashes(manifest_path=path)
@@ -102,6 +108,7 @@ def _invalid_manifest(error: str, manifest_sha256: str = "") -> dict[str, Any]:
         "manifest_sha256": manifest_sha256,
         "missing": [],
         "changed": [],
+        "changed_details": {},
         "unexpected": [],
     }
 
@@ -112,13 +119,7 @@ def _load_delta(
     base_manifest_sha256: str,
     expected_hashes: dict[str, str],
 ) -> tuple[dict[str, str], dict[str, Any]]:
-    """Apply one reviewed evolution delta to a full immutable base snapshot.
-
-    The delta is deliberately excluded from the governed file set, just like the
-    full manifest itself. Its trust anchor is the reviewed Git commit plus an
-    exact SHA-256 binding to the immutable base manifest. Any undeclared drift
-    still fails verification.
-    """
+    """Apply one reviewed APEX evolution delta to a full immutable base snapshot."""
     if not delta_path.is_file():
         return dict(expected_hashes), {"applied": False, "sha256": ""}
 
@@ -172,12 +173,12 @@ def _load_delta(
 
 
 def _default_delta_for(path: Path) -> Path:
-    """Use repository evolution approval only for the canonical repository manifest."""
+    """Use reviewed APEX evolution approval only for the primary repository manifest."""
     try:
-        canonical = path.resolve() == MANIFEST.resolve()
+        primary_manifest = path.resolve() == MANIFEST.resolve()
     except OSError:
-        canonical = path == MANIFEST
-    if canonical:
+        primary_manifest = path == MANIFEST
+    if primary_manifest:
         return DELTA_MANIFEST
     return path.parent / ".no-approved-delta"
 
@@ -187,7 +188,7 @@ def verify_integrity(
     *,
     delta_path: Path | None = None,
 ) -> dict[str, Any]:
-    """Verify a manifest, applying reviewed evolution only to the canonical one."""
+    """Verify a manifest, applying reviewed evolution only to the primary one."""
     if not path.is_file():
         return {
             "ok": False,
@@ -195,6 +196,7 @@ def verify_integrity(
             "manifest_sha256": "",
             "missing": [],
             "changed": [],
+            "changed_details": {},
             "unexpected": [],
         }
     if delta_path is None:
@@ -242,12 +244,23 @@ def verify_integrity(
     current = collect_hashes()
     missing = sorted(set(resolved_hashes) - set(current))
     unexpected = sorted(set(current) - set(resolved_hashes))
-    changed = sorted(
-        file_path
-        for file_path in set(resolved_hashes) & set(current)
-        if resolved_hashes[file_path] != current[file_path]
-    )
+    digest_details = {
+        file_path: {
+            "expected_sha256": resolved_hashes[file_path],
+            "actual_sha256": current[file_path],
+        }
+        for file_path in sorted(set(resolved_hashes) & set(current))
+    }
+    changed_details = {
+        file_path: detail
+        for file_path, detail in digest_details.items()
+        if not _digest_equal(detail["expected_sha256"], detail["actual_sha256"])
+    }
+    changed = sorted(changed_details)
     ok = not missing and not unexpected and not changed
+    module_path = Path(__file__).resolve()
+    agents_expected = resolved_hashes.get("AGENTS.md", "")
+    agents_actual = current.get("AGENTS.md", "")
     return {
         "ok": ok,
         "status": "VERIFIED" if ok else "DRIFT",
@@ -257,5 +270,13 @@ def verify_integrity(
         "integrity_delta": delta,
         "missing": missing,
         "changed": changed,
+        "changed_details": changed_details,
         "unexpected": unexpected,
+        "verifier_runtime": {
+            "module_path": str(module_path),
+            "module_sha256": hash_file(module_path),
+            "agents_expected_sha256": agents_expected or None,
+            "agents_actual_sha256": agents_actual or None,
+            "agents_compare_digest": bool(agents_expected and agents_actual and _digest_equal(agents_expected, agents_actual)),
+        },
     }

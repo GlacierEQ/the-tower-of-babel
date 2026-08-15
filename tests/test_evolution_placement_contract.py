@@ -59,9 +59,10 @@ def test_cross_runtime_overlap_requires_parity_and_proof():
     }.issubset(required)
 
 
-def test_contract_is_consistent_with_canonical_tower_and_quality_authorities():
+def test_contract_is_consistent_with_apex_tower_and_quality_sources():
     assert REGISTRY["tower_id"] == "glaciereq.tower-of-babel.v1"
-    assert REGISTRY["governance"]["canonical_source"] == "registry/tower.yml"
+    assert REGISTRY["governance"]["apex_source"] == "registry/tower.yml"
+    assert REGISTRY["governance"]["apex_model"] == "indexed_frontier_registry"
     assert CATALOG["source"] == "registry/tower.yml"
     assert "technology:python" in CATALOG["capabilities"]
     assert "technology:go" in CATALOG["capabilities"]
@@ -72,10 +73,9 @@ def test_contract_is_consistent_with_canonical_tower_and_quality_authorities():
         "benchmark",
         "integration",
     }
-    # The placement contract owns A/B/C tier labels. The canonical quality
-    # contract owns the evidence semantics those tiers must satisfy; do not
-    # force a second tier vocabulary into QUALITY_CONTRACT.md just to appease
-    # this test.
+    # The placement contract owns A/B/C tier labels. The APEX quality contract
+    # owns the evidence semantics those tiers must satisfy; do not force a
+    # second tier vocabulary into QUALITY_CONTRACT.md merely to satisfy a test.
     assert "Typed or explicit inputs and outputs" in QUALITY
     assert "Validation and failure behavior" in QUALITY
     assert "A meaningful invariant or policy boundary" in QUALITY
