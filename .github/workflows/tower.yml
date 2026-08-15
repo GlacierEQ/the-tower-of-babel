@@ -78,10 +78,12 @@ jobs:
         run: tower validate
       - name: Reject generated-surface drift
         run: tower generate --check
+      - name: Verify exact checkout integrity before execution
+        run: tower integrity verify
       - name: Run Python APEX proof tests
         run: pytest -q
-      - name: Verify immutable integrity ledger
-        run: tower integrity verify
+      - name: Reject test-induced tracked source mutation
+        run: git diff --exit-code -- . ':(exclude).integrity/approved_delta.json'
       - name: Build governed floors with explicit blockers
         run: tower build --all --allow-blocked --output artifacts/build-report.json
       - name: Benchmark portable floors
