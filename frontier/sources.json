@@ -1,0 +1,46 @@
+{
+  "schema": "glaciereq.frontier-sources.v1",
+  "policy": "Primary sources are observation inputs, not automatic admission authority.",
+  "sources": [
+    {
+      "id": "openai-release-notes",
+      "class": "model_api_vendor",
+      "url": "https://openai.com/products/release-notes/"
+    },
+    {
+      "id": "google-gemini-api-changelog",
+      "class": "model_api_vendor",
+      "url": "https://ai.google.dev/gemini-api/docs/changelog"
+    },
+    {
+      "id": "anthropic-docs",
+      "class": "model_api_vendor",
+      "url": "https://docs.anthropic.com/en/docs/welcome"
+    },
+    {
+      "id": "huggingface-blog",
+      "class": "open_model_ecosystem",
+      "url": "https://huggingface.co/blog"
+    },
+    {
+      "id": "github-changelog",
+      "class": "developer_platform",
+      "url": "https://github.blog/changelog/"
+    },
+    {
+      "id": "pytorch-blog",
+      "class": "ai_runtime",
+      "url": "https://pytorch.org/blog/"
+    },
+    {
+      "id": "jax-changelog",
+      "class": "ai_runtime",
+      "url": "https://docs.jax.dev/en/latest/changelog.html"
+    },
+    {
+      "id": "nvidia-developer-blog",
+      "class": "accelerated_compute",
+      "url": "https://developer.nvidia.com/blog/"
+    }
+  ]
+}
