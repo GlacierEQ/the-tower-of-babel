@@ -171,12 +171,23 @@ def _load_delta(
     }
 
 
+def _default_delta_for(path: Path) -> Path:
+    """Use repository evolution approval only for the canonical repository manifest."""
+    try:
+        canonical = path.resolve() == MANIFEST.resolve()
+    except OSError:
+        canonical = path == MANIFEST
+    if canonical:
+        return DELTA_MANIFEST
+    return path.parent / ".no-approved-delta"
+
+
 def verify_integrity(
     path: Path = MANIFEST,
     *,
-    delta_path: Path = DELTA_MANIFEST,
+    delta_path: Path | None = None,
 ) -> dict[str, Any]:
-    """Verify the immutable base snapshot plus an optional reviewed evolution delta."""
+    """Verify a manifest, applying reviewed evolution only to the canonical one."""
     if not path.is_file():
         return {
             "ok": False,
@@ -186,6 +197,8 @@ def verify_integrity(
             "changed": [],
             "unexpected": [],
         }
+    if delta_path is None:
+        delta_path = _default_delta_for(path)
     try:
         manifest_bytes = path.read_bytes()
     except OSError as exc:
