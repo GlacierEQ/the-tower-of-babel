@@ -1,12 +1,15 @@
 {
   "schema": "glaciereq.integrity-delta.v1",
   "base_manifest_sha256": "b72f14c2f02467b076ccdaeb45d097fbe9b7cdb69d7851f9b833b1e9772bf9de",
-  "reason": "Reviewed Tower of Babel innovation-engine restoration plus previously untracked governed files discovered by fail-closed verification, the durable 2026-08-14 and 2026-08-15 HST frontier receipts, and the bounded protobuf compatibility widening on the current canonical base.",
+  "reason": "Reviewed Tower of Babel APEX restoration, prior innovation-engine restoration, previously discovered governed files, durable frontier receipts, and bounded compatibility updates. Historical state is preserved while active engineering doctrine advances to maximum coherent capability.",
   "changes": {
     ".github/workflows/frontier-metabolism.yml": "f50a2af0ca7bd732bc4260eb0f28cd6353c9d53e306e094abb3dcf406c0e2ec2",
     ".glaciereq/masterskill-parent.json": "a93bda8b800b03ee4f564a6191b9020c17494198296c86f00747f3900808fc8e",
+    "AGENTS.md": "f724802c8c715b4ee19c977e5910a225760e074dacd9959b11d590945b60995b",
     "ARCHITECTURE_LAW.md": "25e7ea6d729d9ff2c9abc51782290510a11890de4df4660b9ba0534bf110b8c5",
     "NERVOUS_SYSTEM.md": "7bca2b4603c28f360a65e54da9d9307af3667e0deb31695fa3a7e4876428d603",
+    "QUALITY_CONTRACT.md": "6907ff3fead2aac863ccd1cd8908ea55ab782671a87de9c8e5245a4e47014133",
+    "docs/SPIRAL_ENGINE.md": "b98c74ea377d1e31193e25de0cf7dcb7f5484f8f4257746e406a6c14c344f8e9",
     "frontier/receipts/2026-08-14.json": "1ca3511b72fb3cd8d66ae4ec9f0e72cca7346595f7fe10e9afbb131ee8e92383",
     "frontier/receipts/2026-08-15.json": "4e05b8f6a566dcbb19323be3fc1265acdd2cb6469ea50d27a438c8b1c7e70f5e",
     "frontier/sources.json": "8127c32622a79719e569ec18acca98953168fbe7c687ec19ae970507b9acff7a",
