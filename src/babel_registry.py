@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """Operational facade for the APEX Tower technology registry.
 
-The facade deliberately refuses to turn a technology name into an execution
-choice without an evidence threshold, capability match, and deterministic
-selection receipt.
+The facade refuses to turn a technology name into an execution choice without an
+evidence threshold, capability match, and deterministic selection receipt.
 """
 from __future__ import annotations
 
@@ -12,7 +11,6 @@ from pathlib import Path
 from typing import Iterable
 
 from tower.registry import load_registry, validate_registry
-
 
 _EVIDENCE_RANK = {
     "illustrative": 0,
@@ -64,12 +62,6 @@ class BabelRegistryEngine:
         minimum_evidence_state: str = "tested",
         available_hardware: Iterable[str] = (),
     ) -> dict:
-        """Select a verified technology and emit a deterministic decision receipt.
-
-        Capability matching is intentionally conservative: every requested
-        capability must match an ID, name, category, or declared interface.
-        Gated hardware is admitted only when the caller supplies hardware proof.
-        """
         required = tuple(sorted({str(x).strip().casefold() for x in required_capabilities if str(x).strip()}))
         preferred = tuple(sorted({str(x).strip().casefold() for x in preferred_interfaces if str(x).strip()}))
         if minimum_evidence_state not in _EVIDENCE_RANK:
