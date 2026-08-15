@@ -1,4 +1,4 @@
-"""Deterministic integrity manifest and reviewed evolution verification."""
+"""Deterministic integrity manifest and reviewed APEX evolution verification."""
 from __future__ import annotations
 
 import hashlib
@@ -112,7 +112,7 @@ def _load_delta(
     base_manifest_sha256: str,
     expected_hashes: dict[str, str],
 ) -> tuple[dict[str, str], dict[str, Any]]:
-    """Apply one reviewed evolution delta to a full immutable base snapshot.
+    """Apply one reviewed APEX evolution delta to a full immutable base snapshot.
 
     The delta is deliberately excluded from the governed file set, just like the
     full manifest itself. Its trust anchor is the reviewed Git commit plus an
@@ -172,12 +172,12 @@ def _load_delta(
 
 
 def _default_delta_for(path: Path) -> Path:
-    """Use repository evolution approval only for the canonical repository manifest."""
+    """Use reviewed APEX evolution approval only for the primary repository manifest."""
     try:
-        canonical = path.resolve() == MANIFEST.resolve()
+        primary_manifest = path.resolve() == MANIFEST.resolve()
     except OSError:
-        canonical = path == MANIFEST
-    if canonical:
+        primary_manifest = path == MANIFEST
+    if primary_manifest:
         return DELTA_MANIFEST
     return path.parent / ".no-approved-delta"
 
@@ -187,7 +187,7 @@ def verify_integrity(
     *,
     delta_path: Path | None = None,
 ) -> dict[str, Any]:
-    """Verify a manifest, applying reviewed evolution only to the canonical one."""
+    """Verify a manifest, applying reviewed evolution only to the primary one."""
     if not path.is_file():
         return {
             "ok": False,
