@@ -58,7 +58,7 @@ Tradeoffs must remain visible. Policy may not manufacture a winner by deleting d
 
 - `tested`, `compiles`, `benchmark`, `formally_verified`, and stronger states require corresponding execution evidence.
 - Missing toolchains, services, dependencies, or hardware produce exact blockers, never false success.
-- Structural presence is not compiler proof, and compiler proof is not operational proof.
+- Structural presence is not compiler proof, and compiler proof is not production proof.
 - Evidence constrains claims, not reversible experimentation.
 - A failed ambitious experiment is useful evidence when its failure mode is preserved and fed back into the next design.
 
