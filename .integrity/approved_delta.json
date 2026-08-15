@@ -1,12 +1,13 @@
 {
   "schema": "glaciereq.integrity-delta.v1",
   "base_manifest_sha256": "b72f14c2f02467b076ccdaeb45d097fbe9b7cdb69d7851f9b833b1e9772bf9de",
-  "reason": "Reviewed Tower of Babel innovation-engine restoration plus previously untracked governed files discovered by fail-closed verification, the durable 2026-08-15 HST frontier receipt, and the bounded protobuf compatibility widening on the current canonical base.",
+  "reason": "Reviewed Tower of Babel innovation-engine restoration plus previously untracked governed files discovered by fail-closed verification, the durable 2026-08-14 and 2026-08-15 HST frontier receipts, and the bounded protobuf compatibility widening on the current canonical base.",
   "changes": {
     ".github/workflows/frontier-metabolism.yml": "f50a2af0ca7bd732bc4260eb0f28cd6353c9d53e306e094abb3dcf406c0e2ec2",
     ".glaciereq/masterskill-parent.json": "a93bda8b800b03ee4f564a6191b9020c17494198296c86f00747f3900808fc8e",
     "ARCHITECTURE_LAW.md": "25e7ea6d729d9ff2c9abc51782290510a11890de4df4660b9ba0534bf110b8c5",
     "NERVOUS_SYSTEM.md": "7bca2b4603c28f360a65e54da9d9307af3667e0deb31695fa3a7e4876428d603",
+    "frontier/receipts/2026-08-14.json": "1ca3511b72fb3cd8d66ae4ec9f0e72cca7346595f7fe10e9afbb131ee8e92383",
     "frontier/receipts/2026-08-15.json": "4e05b8f6a566dcbb19323be3fc1265acdd2cb6469ea50d27a438c8b1c7e70f5e",
     "frontier/sources.json": "8127c32622a79719e569ec18acca98953168fbe7c687ec19ae970507b9acff7a",
     "pyproject.toml": "5e753447395b9d5286c17310ebbe5dadee62482403d544d5185691bf147a5a99",
@@ -21,5 +22,5 @@
     "tests/test_integrity_delta.py": "a434b92a58388f9d907fb94e4a58e83b5d15037a808cdf36fe9d58e9f180b397"
   },
   "removals": [],
-  "resulting_file_count": 239
+  "resulting_file_count": 240
 }
