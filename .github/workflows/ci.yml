@@ -36,7 +36,7 @@ jobs:
       - name: Compile Python sources
         run: python -m compileall -q src tests integrations mastermind_sidecar.py languages/python languages/protobuf scripts tools
 
-      - name: Validate canonical registry and generated surfaces
+      - name: Validate APEX registry and generated surfaces
         run: |
           tower validate
           tower generate --check
