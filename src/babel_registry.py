@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Operational facade for the canonical Tower registry.
+"""Operational facade for the APEX Tower technology registry.
 
 The facade deliberately refuses to turn a technology name into an execution
 choice without an evidence threshold, capability match, and deterministic
@@ -36,7 +36,7 @@ def _validated_registry(repo_root=None):
         registry = load_registry()
     errors = validate_registry(registry)
     if errors:
-        raise RuntimeError("Invalid Tower registry: " + "; ".join(errors))
+        raise RuntimeError("Invalid Tower APEX registry: " + "; ".join(errors))
     return registry
 
 
@@ -104,7 +104,7 @@ class BabelRegistryEngine:
                 "reason": "capabilities_and_evidence_match",
             })
         candidates.sort(key=lambda item: (-item["score"], item["id"]))
-        registry_sha256 = hashlib.sha256(self.registry.canonical_bytes()).hexdigest()
+        registry_sha256 = hashlib.sha256(self.registry.apex_bytes()).hexdigest()
         if not candidates:
             return {
                 "ok": False,
@@ -134,4 +134,4 @@ BABEL_REGISTRY = {row["id"]: row for row in _REGISTRY.technologies}
 
 
 if __name__ == "__main__":
-    print(f"Tower of Babel Registry Initialized: {len(_REGISTRY.technologies)} Technologies Registered.")
+    print(f"Tower of Babel APEX Registry Initialized: {len(_REGISTRY.technologies)} Technologies Registered.")
