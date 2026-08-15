@@ -244,18 +244,19 @@ def verify_integrity(
     current = collect_hashes()
     missing = sorted(set(resolved_hashes) - set(current))
     unexpected = sorted(set(current) - set(resolved_hashes))
-    changed = sorted(
-        file_path
-        for file_path in set(resolved_hashes) & set(current)
-        if resolved_hashes[file_path] != current[file_path]
-    )
-    changed_details = {
+    digest_details = {
         file_path: {
             "expected_sha256": resolved_hashes[file_path],
             "actual_sha256": current[file_path],
         }
-        for file_path in changed
+        for file_path in sorted(set(resolved_hashes) & set(current))
     }
+    changed_details = {
+        file_path: detail
+        for file_path, detail in digest_details.items()
+        if detail["expected_sha256"] != detail["actual_sha256"]
+    }
+    changed = sorted(changed_details)
     ok = not missing and not unexpected and not changed
     return {
         "ok": ok,
