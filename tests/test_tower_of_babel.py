@@ -1,4 +1,4 @@
-"""System tests for the governed Tower."""
+"""System tests for the APEX Tower."""
 from __future__ import annotations
 
 import json
@@ -18,16 +18,9 @@ from tower.receipt import build_receipt
 from tower.registry import REPO_ROOT, TowerRegistry, load_registry, validate_registry
 
 
-def test_canonical_registry_governs_all_advertised_floors():
+def test_apex_registry_governs_all_advertised_floors():
     registry = load_registry()
     assert len(registry.technologies) == 40
-
-def test_receipt_is_deterministic():
-    first = build_receipt({"counts": {"VERIFIED": 3}})
-    second = build_receipt({"counts": {"VERIFIED": 3}})
-    assert first == second
-    assert len(first["receipt_sha256"]) == 64
-    assert first["technology_count"] == 36
     assert not validate_registry(registry)
     assert {row["id"] for row in registry.technologies} >= {
         "python", "c", "rust", "typescript", "cuda", "verilog", "r",
@@ -54,7 +47,7 @@ def test_generated_surfaces_do_not_drift():
     assert generate(check=True) == []
 
 
-def test_generator_emits_one_canonical_build_contract_per_floor():
+def test_generator_emits_one_apex_build_contract_per_floor():
     registry = load_registry()
     surfaces = build_surfaces(registry)
     path = REPO_ROOT / "generated" / "build_commands.json"
@@ -68,12 +61,12 @@ def test_generator_emits_one_canonical_build_contract_per_floor():
         assert contract["execution"]["ci_tier"], technology_id
 
 
-def test_runtime_registry_is_thin_canonical_facade():
+def test_runtime_registry_is_thin_apex_facade():
     import babel_registry
 
-    canonical = load_registry()
-    assert len(babel_registry.BABEL_REGISTRY) == len(canonical.technologies)
-    assert babel_registry.BabelRegistryEngine().get_spec("rust")["what"] == canonical.by_id("rust")["what"]
+    apex = load_registry()
+    assert len(babel_registry.BABEL_REGISTRY) == len(apex.technologies)
+    assert babel_registry.BabelRegistryEngine().get_spec("rust")["what"] == apex.by_id("rust")["what"]
 
 
 def test_sidecar_has_no_hardcoded_floor_count():
@@ -167,12 +160,14 @@ def test_receipt_is_deterministic():
     assert first == second
     assert len(first["receipt_sha256"]) == 64
     assert first["technology_count"] == len(load_registry().technologies)
+    assert first["engineering_mode"] == "APEX"
 
 
 def test_tower_proto_contains_registry_and_megamind_contracts():
     tower_proto = (REPO_ROOT / "proto/tower.proto").read_text(encoding="utf-8")
     bridge_proto = (REPO_ROOT / "integrations/megamind/tower_adapter.proto").read_text(encoding="utf-8")
     assert "message TechnologySpec" in tower_proto
+    assert "string apex_source_sha256 = 4" in tower_proto
     assert "service TowerAuthority" in tower_proto
     assert "service TowerMegamindBridge" in bridge_proto
 
@@ -195,12 +190,12 @@ def test_proof_report_binds_declared_gate_to_build_status():
     assert lean["proof_status"] == "BLOCKED"
 
 
-def test_packaged_registry_is_exact_canonical_mirror():
-    canonical = load_registry(REPO_ROOT / "registry/tower.yml")
+def test_packaged_registry_is_exact_apex_mirror():
+    apex_source = load_registry(REPO_ROOT / "registry/tower.yml")
     packaged = load_registry(REPO_ROOT / "src/tower/data/tower.yml")
-    assert packaged.payload == canonical.payload
-    assert packaged.canonical_bytes() == canonical.canonical_bytes()
-    assert len(packaged.source_files) == len(canonical.source_files)
+    assert packaged.payload == apex_source.payload
+    assert packaged.apex_bytes() == apex_source.apex_bytes()
+    assert len(packaged.source_files) == len(apex_source.source_files)
 
 
 def test_registry_fragments_are_contained_and_unique(tmp_path):
@@ -208,7 +203,10 @@ def test_registry_fragments_are_contained_and_unique(tmp_path):
     index.write_text(
         json.dumps({
             "tower_id": "glaciereq.tower-of-babel.v1",
-            "governance": {"canonical_source": "registry/tower.yml"},
+            "governance": {
+                "apex_source": "registry/tower.yml",
+                "apex_model": "indexed_frontier_registry",
+            },
             "fragments": ["../outside.json"],
         }),
         encoding="utf-8",
@@ -253,4 +251,3 @@ def test_registry_search():
     assert any(tech["id"] == "python" for tech in python_matches)
     verilog_matches = search_registry(registry, "hardware")
     assert len(verilog_matches) > 0
-
