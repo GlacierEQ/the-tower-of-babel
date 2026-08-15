@@ -42,11 +42,14 @@ jobs:
           tower generate --check
           python tools/audit_advanced_exhibits.py --check
 
+      - name: Verify exact checkout integrity before execution
+        run: tower integrity verify
+
       - name: Run governed repository tests
         run: pytest -q
 
-      - name: Verify immutable integrity ledger
-        run: tower integrity verify
+      - name: Reject test-induced tracked source mutation
+        run: git diff --exit-code -- . ':(exclude).integrity/approved_delta.json'
 
   native-toolchains:
     runs-on: ubuntu-24.04
