@@ -4,7 +4,7 @@
     ".github/workflows/apex-regenerate.yml": "f2c22ad054ad4c61014746cb6dde81935c39ba4dab1fa570b3cf46352cee5748",
     ".github/workflows/frontier-metabolism.yml": "f50a2af0ca7bd732bc4260eb0f28cd6353c9d53e306e094abb3dcf406c0e2ec2",
     ".glaciereq/masterskill-parent.json": "a93bda8b800b03ee4f564a6191b9020c17494198296c86f00747f3900808fc8e",
-    "AGENTS.md": "f724802c8c715b4ee19c977e5910a225760e074dacd9959b11d590945b60995b",
+    "AGENTS.md": "f724802c8c715b4ee19f977e5910a225760e074dacd9959b11d590945b60995b",
     "ARCHITECTURE_LAW.md": "25e7ea6d729d9ff2c9abc51782290510a11890de4df4660b9ba0534bf110b8c5",
     "NERVOUS_SYSTEM.md": "3e2ee12d9ac8f6c4bf6d032d8b41629e4d5078071245f5d71cb8ad9e4c7b707c",
     "QUALITY_CONTRACT.md": "6907ff3fead2aac863ccd1cd8908ea55ab782671a87de9c8e5245a4e47014133",
@@ -41,6 +41,7 @@
     "tests/test_integrity_delta.py": "a434b92a58388f9d907fb94e4a58e83b5d15037a808cdf36fe9d58e9f180b397",
     "tests/test_tower_of_babel.py": "88d92813379a2bf25463397e3a3fe88ce313b548b8fc0eb8584d8d28864284a4"
   },
+  "engineering_mode": "APEX",
   "reason": "Reviewed APEX foundation migration: active Tower source state, runtime contracts, generated projections, and proof surfaces now express maximum coherent advance while preserving immutable historical base truth.",
   "removals": [],
   "resulting_file_count": 241,
