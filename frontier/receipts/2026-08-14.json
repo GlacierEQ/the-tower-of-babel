@@ -1,0 +1,78 @@
+{
+  "schema": "glaciereq.frontier-receipt.v1",
+  "hst_date": "2026-08-14",
+  "tower_law_head_before": "1c4fc345c58d935782c2919f0c05af590b5ed89d",
+  "registry": "frontier/sources.json",
+  "window": {
+    "basis": "first daily rotor sweep in HST",
+    "lookback_hours": 24
+  },
+  "sources_checked": [
+    {
+      "id": "openai-release-notes",
+      "pointer": "https://openai.com/products/release-notes/",
+      "latest_observed_release_date": "2026-07-30",
+      "decision": "IGNORE_WITH_REASON",
+      "reason": "No primary-source release in the prior 24 hours was observed; no architecture delta justified."
+    },
+    {
+      "id": "google-gemini-api-changelog",
+      "pointer": "https://ai.google.dev/gemini-api/docs/changelog",
+      "latest_observed_release_date": "2026-07-21",
+      "decision": "IGNORE_WITH_REASON",
+      "reason": "No primary-source API release in the prior 24 hours was observed."
+    },
+    {
+      "id": "github-changelog",
+      "pointer": "https://github.blog/changelog/",
+      "latest_observed_release_date": "2026-07-28",
+      "decision": "IGNORE_WITH_REASON",
+      "reason": "No new platform capability in the prior 24 hours was observed that changes the current estate repair boundary."
+    },
+    {
+      "id": "pytorch-blog",
+      "pointer": "https://pytorch.org/blog/",
+      "latest_observed_release_date": "2026-07-23",
+      "decision": "IGNORE_WITH_REASON",
+      "reason": "No fresh runtime/compiler release in the prior 24 hours was observed."
+    },
+    {
+      "id": "jax-changelog",
+      "pointer": "https://docs.jax.dev/en/latest/changelog.html",
+      "latest_observed_release_date": "2026-07-16",
+      "decision": "IGNORE_WITH_REASON",
+      "reason": "No fresh JAX release in the prior 24 hours was observed."
+    },
+    {
+      "id": "nvidia-developer-blog",
+      "pointer": "https://developer.nvidia.com/blog/",
+      "latest_observed_release_date": "2026-07-29",
+      "decision": "IGNORE_WITH_REASON",
+      "reason": "No primary-source accelerated-compute release in the prior 24 hours was observed."
+    },
+    {
+      "id": "huggingface-blog",
+      "pointer": "https://huggingface.co/blog",
+      "decision": "WATCH",
+      "reason": "Recent community articles exist, but no current-day primary-source signal was admitted solely from community reporting."
+    },
+    {
+      "id": "anthropic-docs",
+      "pointer": "https://docs.anthropic.com/",
+      "decision": "WATCH",
+      "reason": "No independently confirmed current-day primary release note was found in this sweep; preserve as registry watch input."
+    }
+  ],
+  "material_signals": [],
+  "experiments_started": [],
+  "architecture_decisions": [
+    {
+      "lane": "runtime_projection",
+      "target_repository": "GlacierEQ/apex-cli",
+      "decision": "RETAIN",
+      "reason": "The active blocker is provenance-complete projection of pinned apex-boot-core bytes, not a technology-placement bottleneck. Introducing a new runtime/compiler language would not falsify or repair the current defect."
+    }
+  ],
+  "result": "NO_NEW_FRONTIER_ADMISSION",
+  "next_cursor": "Do not repeat the daily sweep on 2026-08-14 HST. Continue bounded estate work; reevaluate frontier sources on the next HST calendar day or on a directly observed release event."
+}
