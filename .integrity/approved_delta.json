@@ -2,6 +2,7 @@
   "base_manifest_sha256": "b72f14c2f02467b076ccdaeb45d097fbe9b7cdb69d7851f9b833b1e9772bf9de",
   "changes": {
     ".github/workflows/apex-regenerate.yml": "f2c22ad054ad4c61014746cb6dde81935c39ba4dab1fa570b3cf46352cee5748",
+    ".github/workflows/ci.yml": "f6dadb2f5d23544ce565978df3121f0572ce5817ca2c9896eb64a662661a5608",
     ".github/workflows/frontier-metabolism.yml": "f50a2af0ca7bd732bc4260eb0f28cd6353c9d53e306e094abb3dcf406c0e2ec2",
     ".glaciereq/masterskill-parent.json": "a93bda8b800b03ee4f564a6191b9020c17494198296c86f00747f3900808fc8e",
     "AGENTS.md": "f724802c8c715b4ee19c977e5910a225760e074dacd9959b11d590945b60995b",
