@@ -1,12 +1,11 @@
-"""Capability activation for Tower of Babel.
+"""Capability activation and execution for Tower of Babel.
 
-Governance should classify and shape power, not reduce every request to DENY.
-This module is the deliberate activation plane beneath the registry validator:
-source can be inspected, composed, and executed when its declared boundary is
-present; promotion and external effects remain separately gated.
+Governance shapes power; it must not collapse every usable capability into a
+planning-only denial. This module resolves a capability and, for a declared
+local execution boundary, hands it to Tower's existing build engine.
 
-This is a planning and policy primitive. It does not grant provider access,
-execute arbitrary commands, or authorize external mutations.
+External effects, provider access, promotion, and destructive actions remain
+separate boundaries. Local declared build/test execution is real execution.
 """
 from __future__ import annotations
 
@@ -44,12 +43,7 @@ def resolve_activation(
     *,
     external_effects: bool = False,
 ) -> ActivationDecision:
-    """Resolve the strongest safe activation for one governed technology.
-
-    The policy is intentionally asymmetric: safe local capability is enabled
-    by declared source boundaries, while promotion and external effects require
-    stronger proof or a separate caller-owned approval boundary.
-    """
+    """Resolve the strongest capability available for one technology."""
     technology_id = _text(technology, "id") or "UNIDENTIFIED_TECHNOLOGY"
     try:
         mode = requested if isinstance(requested, ActivationMode) else ActivationMode(requested)
@@ -58,15 +52,17 @@ def resolve_activation(
 
     if mode is ActivationMode.INSPECT:
         return ActivationDecision(technology_id, mode, True, mode, "inspection-is-always-available")
-
     if external_effects:
-        return ActivationDecision(technology_id, mode, False, ActivationMode.INSPECT, "external-effects-require-separate-mutation-approval", blocked_capabilities=("external-effects",))
-
+        return ActivationDecision(
+            technology_id, mode, False, ActivationMode.INSPECT,
+            "external-effects-require-separate-mutation-approval",
+            blocked_capabilities=("external-effects",),
+        )
     if mode is ActivationMode.COMPOSE:
         interfaces = technology.get("interfaces")
         if isinstance(interfaces, list) and interfaces:
             return ActivationDecision(technology_id, mode, True, mode, "declared-interface-boundary-present")
-        return ActivationDecision(technology_id, mode, False, ActivationMode.INSPECT, "composition-requires-declared-interfaces", required_proof=("interfaces",))
+        return ActivationDecision(technology_id, mode, False, ActivationMode.INSPECT, "composition-requires-declared-interfaces", ("interfaces",))
 
     toolchain = technology.get("toolchain")
     execution = technology.get("execution")
@@ -76,21 +72,63 @@ def resolve_activation(
         if declared_tool and declared_execution:
             return ActivationDecision(technology_id, mode, True, mode, "declared-execution-boundary-present")
         missing = tuple(name for name, present in (("toolchain.tool", declared_tool), ("execution.ci_tier", declared_execution)) if not present)
-        return ActivationDecision(technology_id, mode, False, ActivationMode.INSPECT, "execution-boundary-incomplete", required_proof=missing)
+        return ActivationDecision(technology_id, mode, False, ActivationMode.INSPECT, "execution-boundary-incomplete", missing)
 
     evidence_state = _text(technology, "evidence_state")
     proof_class = _text(technology, "proof_class")
     promotable_states = {"tested", "benchmark", "integrated", "production_reference", "formally_verified"}
     if evidence_state in promotable_states and proof_class:
         return ActivationDecision(technology_id, mode, True, mode, "promotion-proof-class-present")
-    return ActivationDecision(technology_id, mode, False, ActivationMode.EXECUTE if declared_tool and declared_execution else ActivationMode.INSPECT, "promotion-requires-earned-evidence", required_proof=("evidence_state", "proof_class"))
+    return ActivationDecision(
+        technology_id, mode, False,
+        ActivationMode.EXECUTE if declared_tool and declared_execution else ActivationMode.INSPECT,
+        "promotion-requires-earned-evidence", ("evidence_state", "proof_class"),
+    )
+
+
+def activate_execution(technology: Mapping[str, Any], *, external_effects: bool = False) -> dict[str, Any]:
+    """Actually execute the declared local build/test floor.
+
+    This is the missing power path: activation is not merely a report. Once the
+    technology declares a toolchain and execution tier, the existing governed
+    ``build_floor`` engine runs it. Its argv allowlist, timeout, dependency,
+    hardware, and service boundaries still apply. No provider or mutation
+    authority is created here.
+    """
+    decision = resolve_activation(technology, ActivationMode.EXECUTE, external_effects=external_effects)
+    if not decision.allowed:
+        return {
+            "technology_id": decision.technology_id,
+            "status": "ACTIVATION_BLOCKED",
+            "decision": decision,
+        }
+    from .build import build_floor
+    result = build_floor(dict(technology))
+    return {
+        **result,
+        "activation": {
+            "mode": ActivationMode.EXECUTE.value,
+            "reason": decision.reason,
+            "governance": "shaping-and-audit",
+        },
+    }
 
 
 def activation_surface(technology: Mapping[str, Any]) -> dict[str, Any]:
-    """Return the available capability surface without executing anything."""
+    """Return capability visibility without executing anything."""
     decisions = [resolve_activation(technology, mode) for mode in ActivationMode]
     return {
         "technology_id": _text(technology, "id") or "UNIDENTIFIED_TECHNOLOGY",
         "available": [decision.effective_mode.value for decision in decisions if decision.allowed],
-        "decisions": [{"requested": decision.requested.value, "allowed": decision.allowed, "effective_mode": decision.effective_mode.value, "reason": decision.reason, "required_proof": list(decision.required_proof), "blocked_capabilities": list(decision.blocked_capabilities)} for decision in decisions],
+        "decisions": [
+            {
+                "requested": decision.requested.value,
+                "allowed": decision.allowed,
+                "effective_mode": decision.effective_mode.value,
+                "reason": decision.reason,
+                "required_proof": list(decision.required_proof),
+                "blocked_capabilities": list(decision.blocked_capabilities),
+            }
+            for decision in decisions
+        ],
     }
