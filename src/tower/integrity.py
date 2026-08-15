@@ -113,13 +113,7 @@ def _load_delta(
     base_manifest_sha256: str,
     expected_hashes: dict[str, str],
 ) -> tuple[dict[str, str], dict[str, Any]]:
-    """Apply one reviewed APEX evolution delta to a full immutable base snapshot.
-
-    The delta is deliberately excluded from the governed file set, just like the
-    full manifest itself. Its trust anchor is the reviewed Git commit plus an
-    exact SHA-256 binding to the immutable base manifest. Any undeclared drift
-    still fails verification.
-    """
+    """Apply one reviewed APEX evolution delta to a full immutable base snapshot."""
     if not delta_path.is_file():
         return dict(expected_hashes), {"applied": False, "sha256": ""}
 
@@ -258,6 +252,7 @@ def verify_integrity(
     }
     changed = sorted(changed_details)
     ok = not missing and not unexpected and not changed
+    module_path = Path(__file__).resolve()
     return {
         "ok": ok,
         "status": "VERIFIED" if ok else "DRIFT",
@@ -269,4 +264,11 @@ def verify_integrity(
         "changed": changed,
         "changed_details": changed_details,
         "unexpected": unexpected,
+        "verifier_runtime": {
+            "module_path": str(module_path),
+            "module_sha256": hash_file(module_path),
+            "agents_expected_sha256": resolved_hashes.get("AGENTS.md"),
+            "agents_actual_sha256": current.get("AGENTS.md"),
+            "agents_equal": resolved_hashes.get("AGENTS.md") == current.get("AGENTS.md"),
+        },
     }
