@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import hmac
 import json
 import re
 from pathlib import Path
@@ -77,6 +78,11 @@ def collect_hashes(manifest_path: Path | None = None) -> dict[str, str]:
         for path in sorted(REPO_ROOT.rglob("*"))
         if _eligible(path, manifest_path=manifest_path)
     }
+
+
+def _digest_equal(expected: str, actual: str) -> bool:
+    """Compare validated hexadecimal digests as raw ASCII bytes."""
+    return hmac.compare_digest(expected.encode("ascii"), actual.encode("ascii"))
 
 
 def write_manifest(path: Path = MANIFEST) -> dict[str, Any]:
@@ -248,11 +254,13 @@ def verify_integrity(
     changed_details = {
         file_path: detail
         for file_path, detail in digest_details.items()
-        if detail["expected_sha256"] != detail["actual_sha256"]
+        if not _digest_equal(detail["expected_sha256"], detail["actual_sha256"])
     }
     changed = sorted(changed_details)
     ok = not missing and not unexpected and not changed
     module_path = Path(__file__).resolve()
+    agents_expected = resolved_hashes.get("AGENTS.md", "")
+    agents_actual = current.get("AGENTS.md", "")
     return {
         "ok": ok,
         "status": "VERIFIED" if ok else "DRIFT",
@@ -267,8 +275,8 @@ def verify_integrity(
         "verifier_runtime": {
             "module_path": str(module_path),
             "module_sha256": hash_file(module_path),
-            "agents_expected_sha256": resolved_hashes.get("AGENTS.md"),
-            "agents_actual_sha256": current.get("AGENTS.md"),
-            "agents_equal": resolved_hashes.get("AGENTS.md") == current.get("AGENTS.md"),
+            "agents_expected_sha256": agents_expected or None,
+            "agents_actual_sha256": agents_actual or None,
+            "agents_compare_digest": bool(agents_expected and agents_actual and _digest_equal(agents_expected, agents_actual)),
         },
     }
