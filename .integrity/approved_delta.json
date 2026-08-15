@@ -34,7 +34,7 @@
     "src/tower/architecture.py": "208d93d1b082156a369f8879c8c5ade4f6ae79dff3706891b79c767b3453a184",
     "src/tower/data/tower.yml": "80b477254f5f33938ab9c64f826a41d181628cf9f88f5f916dcf51693450468e",
     "src/tower/generate.py": "cca82214929e87d1929a207da77a153f32cd10e0c42ee3f4fa074044a3b9893a",
-    "src/tower/integrity.py": "3ffb9862dd68927fc7663c6d6c519eab7f0971c1bdb397fd54ad85b1314be21d",
+    "src/tower/integrity.py": "d75d196bb3c76113a2ab5ee96f5dc1ad310152ea9a7ce95406a3dc9770e3e1b1",
     "src/tower/receipt.py": "df084169592f9f388b3b1048e7d9ea560094542354880edfd44025b168f4e672",
     "src/tower/registry.py": "933f99f6d34987270348012a96fafccccc1b7b699a99ca9756e8c9412ecc212f",
     "src/tower/spiral.py": "a3d78d4879f3fec5ac7951131e49f0792d22947d4e970eac5a7f5bf5f9f208e5",
@@ -45,7 +45,7 @@
   },
   "engineering_mode": "APEX",
   "owner_binding": "Casey Barton controls GlacierEQ project direction; this receipt binds implementation evidence only.",
-  "reason": "Reviewed APEX migration: active Tower source state, runtime contracts, generated projections, proof ordering, and explicit regeneration now express maximum coherent advance while preserving immutable historical base truth.",
+  "reason": "Reviewed APEX migration: active Tower source state, runtime contracts, generated projections, proof ordering, explicit regeneration, and the current integrity verifier now express maximum coherent advance while preserving immutable historical base truth.",
   "removals": [],
   "resulting_file_count": 241,
   "schema": "glaciereq.integrity-delta.v1"
