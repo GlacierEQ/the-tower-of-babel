@@ -1,7 +1,7 @@
 {
   "schema": "glaciereq.integrity-delta.v1",
   "base_manifest_sha256": "b72f14c2f02467b076ccdaeb45d097fbe9b7cdb69d7851f9b833b1e9772bf9de",
-  "reason": "Reviewed Tower of Babel innovation-engine restoration plus previously untracked governed files discovered by fail-closed verification, the durable 2026-08-14 and 2026-08-15 HST frontier receipts, and the bounded protobuf compatibility widening on the current canonical base.",
+  "reason": "Reviewed Tower of Babel innovation-engine restoration, durable frontier receipts, protobuf compatibility widening, and the APEX maximum-boundary-fitness optimizer with specialization tests.",
   "changes": {
     ".github/workflows/frontier-metabolism.yml": "f50a2af0ca7bd732bc4260eb0f28cd6353c9d53e306e094abb3dcf406c0e2ec2",
     ".glaciereq/masterskill-parent.json": "a93bda8b800b03ee4f564a6191b9020c17494198296c86f00747f3900808fc8e",
@@ -16,9 +16,9 @@
     "src/tower/__main__.py": "6d817a528242508d3e13ca991d86c3a2cd3de866f54065093d45bfbd281b305a",
     "src/tower/activation.py": "b1933a219d1a7c90f2ab0c69247196351cb56c00572b4e2d523cec9def2d8af5",
     "src/tower/activation_cli.py": "a5ecbf6ddd4ebf43f7565660bbc98adb05ce0aa47db86a8445a7877d624c8b4d",
-    "src/tower/architecture.py": "208d93d1b082156a369f8879c8c5ade4f6ae79dff3706891b79c767b3453a184",
+    "src/tower/architecture.py": "e762b92789f7317ee0607cca5826759a9556411493d202fde5de14b8f8044574",
     "src/tower/integrity.py": "09c7657a235152b2dbc506a54e7d666e660eeefc3224ca515282e669de7acdb1",
-    "tests/test_architecture_law.py": "b06caa0e6ca95c276fad06c9c248df07ab1112f28bd562d49564971e89883550",
+    "tests/test_architecture_law.py": "e65ce5d35f23883bc4e77d3e45fdfde8c3af9694fd915a0becb31ee275a2709b",
     "tests/test_integrity_delta.py": "a434b92a58388f9d907fb94e4a58e83b5d15037a808cdf36fe9d58e9f180b397"
   },
   "removals": [],
