@@ -1,3 +1,12 @@
-"""The Tower of Babel governance and execution package."""
+"""The Tower of Babel governance, activation, and execution package."""
 
-__version__ = "1.1.0"
+from .activation import ActivationDecision, ActivationMode, activation_surface, resolve_activation
+
+__version__ = "1.2.0"
+
+__all__ = [
+    "ActivationDecision",
+    "ActivationMode",
+    "activation_surface",
+    "resolve_activation",
+]
