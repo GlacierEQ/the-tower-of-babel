@@ -102,6 +102,7 @@ def _invalid_manifest(error: str, manifest_sha256: str = "") -> dict[str, Any]:
         "manifest_sha256": manifest_sha256,
         "missing": [],
         "changed": [],
+        "changed_details": {},
         "unexpected": [],
     }
 
@@ -195,6 +196,7 @@ def verify_integrity(
             "manifest_sha256": "",
             "missing": [],
             "changed": [],
+            "changed_details": {},
             "unexpected": [],
         }
     if delta_path is None:
@@ -247,6 +249,13 @@ def verify_integrity(
         for file_path in set(resolved_hashes) & set(current)
         if resolved_hashes[file_path] != current[file_path]
     )
+    changed_details = {
+        file_path: {
+            "expected_sha256": resolved_hashes[file_path],
+            "actual_sha256": current[file_path],
+        }
+        for file_path in changed
+    }
     ok = not missing and not unexpected and not changed
     return {
         "ok": ok,
@@ -257,5 +266,6 @@ def verify_integrity(
         "integrity_delta": delta,
         "missing": missing,
         "changed": changed,
+        "changed_details": changed_details,
         "unexpected": unexpected,
     }
