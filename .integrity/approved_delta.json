@@ -13,7 +13,7 @@
     "NERVOUS_SYSTEM.md": "7bca2b4603c28f360a65e54da9d9307af3667e0deb31695fa3a7e4876428d603",
     "frontier/receipts/2026-08-14.json": "1ca3511b72fb3cd8d66ae4ec9f0e72cca7346595f7fe10e9afbb131ee8e92383",
     "frontier/receipts/2026-08-15.json": "4e05b8f6a566dcbb19323be3fc1265acdd2cb6469ea50d27a438c8b1c7e70f5e",
-    "frontier/sources.json": "8127c32622a79719e569ec19ae970507b9acff7a",
+    "frontier/sources.json": "8127c32622a79719e569ec18acca98953168fbe7c687ec19ae970507b9acff7a",
     "pyproject.toml": "5e753447395b9d5286c17310ebbe5dadee62482403d544d5185691bf147a5a99",
     "scripts/frontier_metabolism.py": "827885f3eaba4ca9e490e2d854bf727c26092ca4a94155e57b73448181176634",
     "src/tower/__init__.py": "242a511ab566b30cd6ecbd6191298386939a1827204aa0960ad220f940e117e5",
