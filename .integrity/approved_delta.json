@@ -1,9 +1,9 @@
 {
   "schema": "glaciereq.integrity-delta.v1",
   "base_manifest_sha256": "b72f14c2f02467b076ccdaeb45d097fbe9b7cdb69d7851f9b833b1e9772bf9de",
-  "reason": "Reviewed Tower of Babel innovation-engine restoration, durable frontier receipts, protobuf compatibility widening, and the APEX maximum-boundary-fitness optimizer with specialization tests.",
+  "reason": "Reviewed Tower of Babel innovation-engine restoration, durable frontier receipts, protobuf compatibility widening, the APEX maximum-boundary-fitness optimizer with specialization tests, and the fresh frontier-metabolism action runtime upgrade to setup-python v7 plus upload-artifact v7.0.1.",
   "changes": {
-    ".github/workflows/frontier-metabolism.yml": "f50a2af0ca7bd732bc4260eb0f28cd6353c9d53e306e094abb3dcf406c0e2ec2",
+    ".github/workflows/frontier-metabolism.yml": "83071b9becb64c75ab89b5e9e93842daca5511e9f58dfc077b95ffdd7d239d8c",
     ".glaciereq/masterskill-parent.json": "a93bda8b800b03ee4f564a6191b9020c17494198296c86f00747f3900808fc8e",
     "ARCHITECTURE_LAW.md": "25e7ea6d729d9ff2c9abc51782290510a11890de4df4660b9ba0534bf110b8c5",
     "NERVOUS_SYSTEM.md": "7bca2b4603c28f360a65e54da9d9307af3667e0deb31695fa3a7e4876428d603",
