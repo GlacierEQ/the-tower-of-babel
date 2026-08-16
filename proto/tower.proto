@@ -59,7 +59,7 @@ message TowerRegistry {
   string tower_id = 1;
   string schema_version = 2;
   repeated TechnologySpec technologies = 3;
-  string canonical_source_sha256 = 4;
+  string apex_source_sha256 = 4;
 }
 
 enum BuildStatus {
@@ -103,7 +103,7 @@ message TowerReceipt {
   string registry_sha256 = 2;
   string integrity_manifest_sha256 = 3;
   string build_report_sha256 = 4;
-  // SHA-256 of the canonical receipt body before body_sha256 is added.
+  // SHA-256 of the deterministic receipt body before body_sha256 is added.
   string body_sha256 = 5;
   repeated BuildResult results = 6;
 }

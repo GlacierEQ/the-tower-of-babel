@@ -1,4 +1,4 @@
-"""Deterministic Tower release receipt."""
+"""Deterministic Tower APEX release receipt."""
 from __future__ import annotations
 
 import hashlib
@@ -10,7 +10,7 @@ from .integrity import verify_integrity
 from .registry import load_registry, validate_registry
 
 
-def _canonical(value: Any) -> bytes:
+def _stable_json(value: Any) -> bytes:
     return json.dumps(value, separators=(",", ":"), sort_keys=True, ensure_ascii=False).encode("utf-8")
 
 
@@ -49,11 +49,11 @@ def build_receipt(build_report: dict[str, Any]) -> dict[str, Any]:
     governed_ids = {technology["id"] for technology in registry.technologies}
     build_errors = _validate_build_report(build_report, governed_ids)
     integrity = verify_integrity()
-    registry_sha = hashlib.sha256(registry.canonical_bytes()).hexdigest()
+    registry_sha = hashlib.sha256(registry.apex_bytes()).hexdigest()
     manifest_sha = str(integrity.get("manifest_sha256", ""))
-    build_sha = hashlib.sha256(_canonical(build_report)).hexdigest()
+    build_sha = hashlib.sha256(_stable_json(build_report)).hexdigest()
     body = {
-        "schema_version": "1.0.0",
+        "schema_version": "1.1.0",
         "tower_id": registry.payload["tower_id"],
         "registry_sha256": registry_sha,
         "integrity_manifest_sha256": manifest_sha,
@@ -66,11 +66,12 @@ def build_receipt(build_report: dict[str, Any]) -> dict[str, Any]:
         "build_report_errors": build_errors,
         "integrity": integrity,
         "build_summary": build_report.get("counts", {}),
+        "engineering_mode": "APEX",
     }
-    body_sha = hashlib.sha256(_canonical(body)).hexdigest()
+    body_sha = hashlib.sha256(_stable_json(body)).hexdigest()
     return {
         **body,
-        "receipt_id": f"tower-{registry_sha[:12]}-{manifest_sha[:12]}-{build_sha[:12]}",
+        "receipt_id": f"tower-apex-{registry_sha[:12]}-{manifest_sha[:12]}-{build_sha[:12]}",
         "body_sha256": body_sha,
         "receipt_sha256": body_sha,
     }

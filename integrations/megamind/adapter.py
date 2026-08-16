@@ -1,4 +1,4 @@
-"""Tower-to-Megamind technology selection adapter."""
+"""Tower-to-Megamind APEX technology selection adapter."""
 from __future__ import annotations
 
 import hashlib
@@ -125,7 +125,7 @@ def select_technologies(
             if any(reason.startswith("interface:") for reason in candidate[2]):
                 selected.append(candidate)
 
-    registry_sha = hashlib.sha256(registry.canonical_bytes()).hexdigest()
+    registry_sha = hashlib.sha256(registry.apex_bytes()).hexdigest()
     agents = sorted({
         agent
         for _, row, _, _ in selected
