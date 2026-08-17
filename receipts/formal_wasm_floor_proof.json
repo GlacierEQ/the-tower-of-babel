@@ -1,0 +1,79 @@
+{
+  "companion": "wasm_lean_placement",
+  "floor": {
+    "boundary": "placement_inventory_not_machine_checked_verification",
+    "claim": "Formal/Wasm floors are present as placement exhibits; do not treat presence as machine-checked VERIFIED proof without harness.",
+    "complete": true,
+    "lean": [
+      {
+        "bytes": 49,
+        "non_empty": true,
+        "path": "languages/lean4/easy_logic.lean",
+        "present": true
+      },
+      {
+        "bytes": 1086,
+        "non_empty": true,
+        "path": "languages/lean4/advanced_truth_gate_proof.lean",
+        "present": true
+      },
+      {
+        "bytes": 77,
+        "non_empty": true,
+        "path": "lakefile.lean",
+        "present": true
+      },
+      {
+        "bytes": 25,
+        "non_empty": true,
+        "path": "lean-toolchain",
+        "present": true
+      }
+    ],
+    "lean_complete": true,
+    "missing": [],
+    "plane": "IMPLEMENTED",
+    "wat": [
+      {
+        "bytes": 128,
+        "non_empty": true,
+        "path": "languages/wat/easy_add.wat",
+        "present": true
+      },
+      {
+        "bytes": 2592,
+        "non_empty": true,
+        "path": "languages/wat/advanced_wasm_sandbox.wat",
+        "present": true
+      }
+    ],
+    "wat_complete": true
+  },
+  "mechanism_id": "engineered_first_class",
+  "ok": true,
+  "placement": {
+    "anti_pattern": "polyglot theater without floors",
+    "lanes": {
+      "lean4": {
+        "owns": "machine-checked invariants / formal floor exhibits",
+        "paths": [
+          "languages/lean4/easy_logic.lean",
+          "languages/lean4/advanced_truth_gate_proof.lean",
+          "lakefile.lean",
+          "lean-toolchain"
+        ],
+        "proof_class": "formal"
+      },
+      "wat_wasm": {
+        "owns": "sandboxed portable execution boundary exhibits",
+        "paths": [
+          "languages/wat/easy_add.wat",
+          "languages/wat/advanced_wasm_sandbox.wat"
+        ],
+        "proof_class": "build_or_validate"
+      }
+    },
+    "law": "Language earns place only with boundary + contract + proof path"
+  },
+  "schema": "glaciereq.babel.formal-wasm-floor.v1"
+}
