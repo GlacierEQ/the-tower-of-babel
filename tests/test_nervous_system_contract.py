@@ -5,15 +5,18 @@ import subprocess
 import sys
 
 
-def test_pinned_nervous_system_contract_is_reproducible() -> None:
+def test_apex_nervous_system_contract_is_current_and_revisable() -> None:
     completed = subprocess.run(
-        [sys.executable, "scripts/validate_nervous_system.py"],
+        [sys.executable, "scripts/validate_nervous_system.py", "--freshness"],
         check=True,
         capture_output=True,
         text=True,
     )
     payload = json.loads(completed.stdout)
     assert payload["status"] == "verified"
-    assert payload["source"] == "pinned_snapshot"
-    assert payload["manifest_commit"] == "5ef48a8068a8079f3cbca3f83c5800909b1d5239"
-    assert payload["manifest_sha256"] == "ce6a7a111a8c134566a1f6542da0fcfcbac110254c5dffb663c2680aeb8a935d"
+    assert payload["source"] == "current_apex_mesh"
+    assert payload["selection_mode"] == "CURRENT_BEST_REVISABLE"
+    assert payload["apex_role"] == "ACTIVE_POLYGLOT_ENGINEERING_CAPABILITY_DONOR"
+    assert payload["manifest_version"] == "2.0.0"
+    assert payload["freshness_status"] == "current_fetch"
+    assert len(payload["manifest_sha256"]) == 64
