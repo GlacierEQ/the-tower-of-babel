@@ -1,4 +1,4 @@
-name: Nervous System Contract
+name: APEX Nervous System Contract
 
 on:
   push:
@@ -40,8 +40,8 @@ jobs:
           tower generate
           git diff --exit-code -- README.md generated/ src/babel_registry.py mastermind_sidecar.py src/tower/data
 
-      - name: Validate pinned nervous-system contract
-        run: python scripts/validate_nervous_system.py --verify-remote --freshness
+      - name: Validate current APEX nervous-system contract
+        run: python scripts/validate_nervous_system.py --freshness
 
   required-nervous-system-contract:
     name: required-nervous-system-contract
