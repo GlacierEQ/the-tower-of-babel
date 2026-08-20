@@ -36,7 +36,7 @@ jobs:
       - name: Compile Python sources
         run: python -m compileall -q src tests integrations mastermind_sidecar.py languages/python languages/protobuf scripts tools
 
-      - name: Validate canonical registry and generated surfaces
+      - name: Validate current registry and generated surfaces
         run: |
           tower validate
           tower generate --check
@@ -45,7 +45,7 @@ jobs:
       - name: Run governed repository tests
         run: pytest -q
 
-      - name: Verify immutable integrity ledger
+      - name: Verify current Git integrity
         run: tower integrity verify
 
   native-toolchains:

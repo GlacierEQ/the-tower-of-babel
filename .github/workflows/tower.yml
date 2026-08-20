@@ -28,18 +28,18 @@ jobs:
         run: |
           python -m pip install --require-hashes -r requirements/ci.lock
           python -m pip install --no-deps --no-build-isolation -e .
-      - name: Generate branch-head integrity candidate
+      - name: Generate branch-head evidence snapshot
         run: |
           mkdir -p artifacts
           python - <<'PY'
           from pathlib import Path
           from tower.integrity import write_manifest
-          write_manifest(Path("artifacts/file_hashes.json"))
+          write_manifest(Path("artifacts/integrity-snapshot.json"))
           PY
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: tower-integrity-candidate
-          path: artifacts/file_hashes.json
+          path: artifacts/integrity-snapshot.json
           if-no-files-found: error
           retention-days: 3
 
@@ -74,13 +74,13 @@ jobs:
           python -m pip install --no-deps --no-build-isolation -e .
       - name: Install declared portable benchmark tools
         run: sudo apt-get update && sudo apt-get install -y protobuf-compiler wabt
-      - name: Validate registry
+      - name: Validate current registry
         run: tower validate
       - name: Reject generated-surface drift
         run: tower generate --check
       - name: Run Python governance tests
         run: pytest -q
-      - name: Verify immutable integrity ledger
+      - name: Verify current Git integrity
         run: tower integrity verify
       - name: Build governed floors with explicit blockers
         run: tower build --all --allow-blocked --output artifacts/build-report.json
