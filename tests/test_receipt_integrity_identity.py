@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from tower.receipt import build_receipt
-from tower.registry import load_registry
+from tower.registry import REPO_ROOT, load_registry
 
 
 def complete_build_report() -> dict:
@@ -36,3 +36,15 @@ def test_release_receipt_is_deterministic_for_same_head_and_report() -> None:
     first = build_receipt(report)
     second = build_receipt(report)
     assert first == second
+
+
+def test_protobuf_receipt_contract_preserves_wire_number_with_new_identity_name() -> None:
+    proto = (REPO_ROOT / "proto" / "tower.proto").read_text(encoding="utf-8")
+    assert "string integrity_identity_sha256 = 3;" in proto
+    assert "string integrity_manifest_sha256 = 3;" not in proto
+    assert "string integrity_commit_sha = 7;" in proto
+    assert "string integrity_tree_sha = 8;" in proto
+    assert "string integrity_mode = 9;" in proto
+    assert "service TowerSelectionService" in proto
+    assert "service TowerAuthority" in proto
+    assert "option deprecated = true;" in proto
