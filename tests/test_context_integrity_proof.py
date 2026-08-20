@@ -36,6 +36,35 @@ def test_context_integrity_proof_cli_reports_load_failure_with_nonzero_status(mo
     assert "fixture registry is unavailable" in rendered["error"]
 
 
+def test_context_integrity_proof_reports_manifest_write_failure(monkeypatch):
+    def fail_write_manifest(_path):
+        raise OSError("fixture manifest write failed")
+
+    monkeypatch.setattr(run_context_integrity_proof, "write_manifest", fail_write_manifest)
+
+    receipt = run_context_integrity_proof.run()
+
+    assert receipt["status"] == "failed"
+    assert receipt["failed_stage"] == "write_manifest"
+    assert "fixture manifest write failed" in receipt["error"]
+
+
+def test_context_integrity_proof_cli_preserves_receipt_when_output_write_fails(monkeypatch, capsys, tmp_path):
+    monkeypatch.setattr(
+        run_context_integrity_proof,
+        "run",
+        lambda: {"schema": "fixture.v1", "status": "verified"},
+    )
+    blocked_parent = tmp_path / "blocked-output"
+    blocked_parent.write_text("not a directory", encoding="utf-8")
+
+    assert run_context_integrity_proof.main(["--output", str(blocked_parent / "proof.json")]) == 1
+
+    rendered = json.loads(capsys.readouterr().out)
+    assert rendered["status"] == "verified"
+    assert "output_write_error" in rendered
+
+
 def test_context_integrity_proof_surfaces_invalid_receipt_validity(monkeypatch):
     def invalid_receipt(_build_report):
         return {

@@ -59,10 +59,16 @@ def run() -> dict[str, Any]:
     try:
         with tempfile.TemporaryDirectory() as directory:
             manifest_path = Path(directory) / "integrity.json"
-            manifest = write_manifest(manifest_path)
-            integrity = verify_integrity(manifest_path)
+            try:
+                manifest = write_manifest(manifest_path)
+            except Exception as exc:
+                return _failure_receipt("write_manifest", exc)
+            try:
+                integrity = verify_integrity(manifest_path)
+            except Exception as exc:
+                return _failure_receipt("verify_integrity", exc)
     except Exception as exc:
-        return _failure_receipt("verify_integrity", exc)
+        return _failure_receipt("temporary_manifest", exc)
 
     try:
         receipt = build_receipt(_non_execution_build_report(registry))
@@ -107,15 +113,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     receipt = run()
     rendered = json.dumps(receipt, indent=2, sort_keys=True) + "\n"
+    output_write_error = ""
     if args.output:
         try:
             args.output.parent.mkdir(parents=True, exist_ok=True)
             args.output.write_text(rendered, encoding="utf-8")
         except OSError as exc:
-            receipt = _failure_receipt("write_output", exc)
+            output_write_error = f"{type(exc).__name__}: {exc}"
+            receipt = {**receipt, "output_write_error": output_write_error}
             rendered = json.dumps(receipt, indent=2, sort_keys=True) + "\n"
     print(rendered, end="")
-    return 0 if receipt["status"] == "verified" else 1
+    return 0 if receipt["status"] == "verified" and not output_write_error else 1
 
 
 if __name__ == "__main__":
