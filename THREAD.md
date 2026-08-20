@@ -13,13 +13,13 @@ PYTHONPATH=src:. pytest -q tests/test_tower_of_babel.py tests/test_context_integ
 PYTHONPATH=src:. python3 scripts/run_context_integrity_proof.py --output tower_context_integrity_proof.json
 ```
 
-The proof validates the registry, checks generated-file integrity in a temporary manifest, constructs a topology graph, and emits a deterministic receipt. It does not invoke a technology-specific toolchain.
+The proof loads the registry, invokes `validate_registry()` for semantic validation, checks generated-file integrity in a temporary manifest, constructs a topology graph, and emits a deterministic receipt. A failed validation or internal proof step is serialized as a structured failure and exits nonzero. It does not invoke a technology-specific toolchain.
 
 ## Published Capability Surfaces
 
 | Surface | Promise |
 |---|---|
-| `tower.registry.load_registry()` | Loads the complete 40-technology source registry and validates source-file containment and floor metadata. |
+| `tower.registry.load_registry()` | Loads the complete 40-technology source registry and enforces source-file containment, fragment linkage, record-object shape, and duplicate identifiers. Consumers requiring semantic floor validation must also call `validate_registry()`. |
 | `tower.integrity.write_manifest()` / `verify_integrity()` | Produces and verifies a local content-integrity manifest for registry-governed files. |
 | `tower.visualize.build_topology_graph()` | Builds a queryable technology topology from the registry without changing a floor’s source or execution authority. |
 | `tower.build.build_floor()` | Reports missing toolchains and hardware gates as explicit blocked statuses rather than presenting unavailable work as success. |
