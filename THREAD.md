@@ -10,7 +10,7 @@ Run the focused local contract with:
 
 ```bash
 PYTHONPATH=src:. pytest -q tests/test_tower_of_babel.py tests/test_context_integrity_proof.py
-PYTHONPATH=src:. python3 scripts/run_context_integrity_proof.py --output tower_context_integrity_proof.json
+PYTHONPATH=src:. python3 scripts/run_context_integrity_proof.py --output artifacts/tower_context_integrity_proof.json
 ```
 
 The proof loads the registry, invokes `validate_registry()` for semantic validation, checks generated-file integrity in a temporary manifest, constructs a topology graph, and emits a deterministic receipt. A failed validation or internal proof step is serialized as a structured failure and exits nonzero. It does not invoke a technology-specific toolchain.

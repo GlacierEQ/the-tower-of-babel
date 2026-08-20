@@ -33,6 +33,18 @@ def _failure_receipt(stage: str, error: Exception) -> dict[str, Any]:
     }
 
 
+def _non_execution_build_report(registry: Any) -> dict[str, Any]:
+    """Describe every governed floor without claiming that its toolchain was executed."""
+    technology_count = len(registry.technologies)
+    return {
+        "counts": {"NOT_EXECUTED": technology_count},
+        "results": [
+            {"technology_id": technology["id"], "status": "NOT_EXECUTED"}
+            for technology in registry.technologies
+        ],
+    }
+
+
 def run() -> dict[str, Any]:
     try:
         registry = load_registry()
@@ -53,7 +65,7 @@ def run() -> dict[str, Any]:
         return _failure_receipt("verify_integrity", exc)
 
     try:
-        receipt = build_receipt({"counts": {"VERIFIED": len(registry.technologies)}})
+        receipt = build_receipt(_non_execution_build_report(registry))
     except Exception as exc:
         return _failure_receipt("build_receipt", exc)
 
@@ -67,6 +79,10 @@ def run() -> dict[str, Any]:
         failure_reasons.append("registry_validation")
     if not integrity["ok"]:
         failure_reasons.append("integrity_verification")
+    if not receipt["registry_valid"]:
+        failure_reasons.append("receipt_registry_validation")
+    if not receipt["build_report_valid"]:
+        failure_reasons.append("receipt_build_report_validation")
 
     return {
         "schema": PROOF_SCHEMA,
@@ -78,6 +94,9 @@ def run() -> dict[str, Any]:
         "integrity_verified": integrity["ok"],
         "topology_node_count": topology["node_count"],
         "receipt_sha256": receipt["receipt_sha256"],
+        "receipt_registry_valid": receipt["registry_valid"],
+        "receipt_integrity_valid": receipt["integrity_valid"],
+        "receipt_build_report_valid": receipt["build_report_valid"],
         "truth_boundary": TRUTH_BOUNDARY,
     }
 
