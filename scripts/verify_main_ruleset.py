@@ -81,8 +81,8 @@ def compare(required: dict[str, Any], live: dict[str, Any]) -> list[str]:
         if required_parameters.get("strict_required_status_checks_policy") is True and live_parameters.get("strict_required_status_checks_policy") is not True:
             errors.append("strict required-status-check policy is disabled")
 
-    required_pr = required_rules.get("required_pull_request")
-    live_pr = live_rules.get("required_pull_request")
+    required_pr = required_rules.get("pull_request")
+    live_pr = live_rules.get("pull_request")
     if required_pr and live_pr:
         required_parameters = required_pr.get("parameters", {})
         live_parameters = live_pr.get("parameters", {})
