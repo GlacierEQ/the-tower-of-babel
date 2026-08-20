@@ -17,6 +17,6 @@ def test_apex_nervous_system_contract_is_current_and_revisable() -> None:
     assert payload["source"] == "current_apex_mesh"
     assert payload["selection_mode"] == "CURRENT_BEST_REVISABLE"
     assert payload["apex_role"] == "ACTIVE_POLYGLOT_ENGINEERING_CAPABILITY_DONOR"
-    assert payload["manifest_version"] == "2.0.0"
+    assert payload["manifest_version"] == "2.1.0"
     assert payload["freshness_status"] == "current_fetch"
     assert len(payload["manifest_sha256"]) == 64
