@@ -10,7 +10,7 @@ from .integrity import verify_integrity
 from .registry import load_registry, validate_registry
 
 
-def _canonical(value: Any) -> bytes:
+def _stable_json(value: Any) -> bytes:
     return json.dumps(value, separators=(",", ":"), sort_keys=True, ensure_ascii=False).encode("utf-8")
 
 
@@ -50,27 +50,42 @@ def build_receipt(build_report: dict[str, Any]) -> dict[str, Any]:
     build_errors = _validate_build_report(build_report, governed_ids)
     integrity = verify_integrity()
     registry_sha = hashlib.sha256(registry.canonical_bytes()).hexdigest()
-    manifest_sha = str(integrity.get("manifest_sha256", ""))
-    build_sha = hashlib.sha256(_canonical(build_report)).hexdigest()
+    integrity_identity_sha = str(integrity.get("receipt_sha256", ""))
+    build_sha = hashlib.sha256(_stable_json(build_report)).hexdigest()
+
+    integrity_errors: list[str] = []
+    if integrity.get("mode") != "GIT_INDEX_LIVE":
+        integrity_errors.append("release receipt requires GIT_INDEX_LIVE integrity")
+    if not integrity.get("ok"):
+        integrity_errors.append("release receipt requires verified live Git integrity")
+    if len(integrity_identity_sha) != 64:
+        integrity_errors.append("live Git integrity receipt_sha256 is missing or invalid")
+    if not integrity.get("commit_sha") or not integrity.get("tree_sha"):
+        integrity_errors.append("live Git integrity commit/tree identity is incomplete")
+
     body = {
-        "schema_version": "1.0.0",
+        "schema_version": "2.0.0",
         "tower_id": registry.payload["tower_id"],
         "registry_sha256": registry_sha,
-        "integrity_manifest_sha256": manifest_sha,
+        "integrity_identity_sha256": integrity_identity_sha,
+        "integrity_mode": integrity.get("mode"),
+        "integrity_commit_sha": integrity.get("commit_sha"),
+        "integrity_tree_sha": integrity.get("tree_sha"),
         "build_report_sha256": build_sha,
         "technology_count": len(registry.technologies),
         "registry_valid": not validation_errors,
-        "integrity_valid": bool(integrity.get("ok")),
+        "integrity_valid": not integrity_errors,
         "build_report_valid": not build_errors,
         "validation_errors": validation_errors,
+        "integrity_errors": integrity_errors,
         "build_report_errors": build_errors,
         "integrity": integrity,
         "build_summary": build_report.get("counts", {}),
     }
-    body_sha = hashlib.sha256(_canonical(body)).hexdigest()
+    body_sha = hashlib.sha256(_stable_json(body)).hexdigest()
     return {
         **body,
-        "receipt_id": f"tower-{registry_sha[:12]}-{manifest_sha[:12]}-{build_sha[:12]}",
+        "receipt_id": f"tower-{registry_sha[:12]}-{integrity_identity_sha[:12]}-{build_sha[:12]}",
         "body_sha256": body_sha,
         "receipt_sha256": body_sha,
     }
