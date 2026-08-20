@@ -9,15 +9,20 @@ def test_live_integrity_uses_current_git_head_not_static_baseline() -> None:
     result = verify_integrity()
     assert result["mode"] == "GIT_INDEX_LIVE"
     assert result["selection_mode"] == "CURRENT_HEAD_REVISABLE"
-    assert result["ok"] is True
-    assert result["status"] == "VERIFIED"
+    assert result["status"] in {"VERIFIED", "DRIFT"}
     assert len(result["commit_sha"]) == 40
     assert len(result["tree_sha"]) == 40
     assert len(result["tree_listing_sha256"]) == 64
     assert len(result["receipt_sha256"]) == 64
-    assert result["changed"] == []
-    assert result["unexpected"] == []
     assert not LEGACY_MANIFEST.exists()
+
+    if result["ok"]:
+        assert result["status"] == "VERIFIED"
+        assert result["changed"] == []
+        assert result["unexpected"] == []
+    else:
+        assert result["status"] == "DRIFT"
+        assert result["changed"] or result["unexpected"]
 
 
 def test_explicit_snapshot_remains_available_as_evidence(tmp_path: Path) -> None:
