@@ -1,4 +1,4 @@
-'''Generate all derived Tower surfaces from the canonical registry.'''
+'''Generate derived Tower surfaces from the current selected registry.'''
 from __future__ import annotations
 
 import argparse
@@ -88,7 +88,7 @@ It is not a language collection built for display. It is a governed engineering 
 | **Executable learning path** | Pairs each floor with an approachable exhibit and a substantive advanced implementation. |
 | **Truthful verification** | Compiles, tests, benchmarks, integrates, or formally verifies a claim; unavailable dependencies return exact blockers instead of false success. |
 | **Cross-language composition** | Publishes versioned interfaces so components cooperate without duplicating responsibility. |
-| **Agent-readable authority** | Generates contracts for Megamind, Spiral Engine, Smithery publication metadata, build orchestration, maturity, and integration planning. |
+| **Agent-readable selection contracts** | Generates current placement, proof, orchestration, maturity, and integration contracts for Megamind, Spiral Engine, and Smithery surfaces. |
 | **Deterministic evidence** | Seals governed files and emits reproducible proof and release receipts. |
 
 | Governed surface | Count |
@@ -108,7 +108,7 @@ human objective / agent mission / system requirement
               Spiral or Megamind request
                          │
                          ▼
-          canonical Tower technology contract
+           current Tower technology contract
        placement · interfaces · owners · proof gate
                          │
                          ▼
@@ -125,7 +125,7 @@ human objective / agent mission / system requirement
  deterministic evidence receipt
 ```
 
-A recruiter can see what the system accomplishes. An engineer can inspect execution and failure semantics. An agent initializes from the same canonical contracts without inventing a competing architecture.
+A recruiter can see what the system accomplishes. An engineer can inspect execution and failure semantics. An agent initializes from the same current verified contracts while remaining free to compare stronger compatible routes.
 
 ## Start the Tower
 
@@ -166,7 +166,7 @@ tower receipt \\
 
 ## Inside the engine
 
-`registry/tower.yml` is the root authority. It indexes governed `registry/tower.d/*.json` technology fragments and `registry/advanced-claim-contracts.json`; the README, Atlas, and every machine-readable projection are derived from that combined authority.
+`registry/tower.yml` is the current authored selection index. It indexes `registry/tower.d/*.json` technology fragments and `registry/advanced-claim-contracts.json`; the README, Atlas, and machine-readable projections are derived from that current reviewed state and remain revisable through verified engineering.
 
 ```text
 registry/tower.yml + tower.d fragments + advanced claim contracts
@@ -209,11 +209,11 @@ TypeScript ingress
     → ProtoJSON mission contract
 Python planner
     → capability plan
-Rust authority governor
+Rust decision governor
     → allow / block decision
 Go telemetry emitter
     → execution event
-SQL canonical state
+SQL selected state
     → persisted mission
 WebAssembly sandbox
     → constrained tool boundary
@@ -255,7 +255,7 @@ The easy exhibit teaches the technology. The advanced exhibit must own a real en
 
 ## The thirty-floor map
 
-The matrix is generated from the canonical registry. Change the registry and exhibits—not this README—to change a floor.
+The matrix is generated from the current reviewed registry. Change the registry and exhibits, not this README, to change a floor.
 
 <details>
 <summary><strong>Open the complete placement, proof, and exhibit matrix</strong></summary>
@@ -270,7 +270,7 @@ The matrix is generated from the canonical registry. Change the registry and exh
 
 ## Machine entrypoint
 
-An AI system should treat the Tower as an authority service, not prose to imitate.
+An AI system should treat the Tower as a technology-selection and proof service, not prose to imitate.
 
 1. **Initialize** from `registry/tower.yml` or the generated Megamind map.
 2. **Resolve** a mission into capabilities and interfaces.
@@ -284,8 +284,8 @@ An AI system should treat the Tower as an authority service, not prose to imitat
 
 | Surface | Role | Status |
 |---|---|---|
-| [`registry/tower.yml`](registry/tower.yml) | Canonical index and governance root | **Authored authority** |
-| [`registry/advanced-claim-contracts.json`](registry/advanced-claim-contracts.json) | Source assertions, failure obligations, receipt fields, and truthful claim boundaries | **Authored authority** |
+| [`registry/tower.yml`](registry/tower.yml) | Current authored technology index | **Selected, revisable** |
+| [`registry/advanced-claim-contracts.json`](registry/advanced-claim-contracts.json) | Source assertions, failure obligations, receipt fields, and truthful claim boundaries | **Authored evidence contract** |
 | [`generated/build_commands.json`](generated/build_commands.json) | Toolchains, pins, build/test commands, and execution tiers | Generated |
 | [`generated/interfaces.json`](generated/interfaces.json) | Cross-language interface graph | Generated |
 | [`generated/maturity.json`](generated/maturity.json) | Evidence state, proof class, and exhibit locations | Generated |
@@ -295,21 +295,21 @@ An AI system should treat the Tower as an authority service, not prose to imitat
 | [`src/tower/spiral.py`](src/tower/spiral.py) | Question, admission, override, audit, and receipt runtime | Operational-alpha |
 | [`generated/smithery.registry.json`](generated/smithery.registry.json) | Smithery capability and publication contract | **Declared, not published** |
 | [`generated/link_library.md`](generated/link_library.md) | Curated primary evidence for every floor | Generated library |
-| [`.integrity/file_hashes.json`](.integrity/file_hashes.json) | SHA-256 ledger for governed artifacts | Sealed surface |
+| [`src/tower/integrity.py`](src/tower/integrity.py) | Git-HEAD/index integrity plus optional evidence snapshots | Evolvable verification |
 | [`docs/SUPPLY_CHAIN_AND_PROTECTION.md`](docs/SUPPLY_CHAIN_AND_PROTECTION.md) | Hash-locked CI, OIDC attestations, ruleset verification, and deletion receipts | Operational contract |
 
 ### Portfolio mesh
 
-The Tower owns technology placement and proof. Connected repositories retain their own operational authority and consume Tower exports rather than maintaining competing registries.
+The Tower provides technology placement and proof capability. Connected repositories remain peers and may consume, challenge, or compose Tower exports according to the current objective.
 
 | Repository | Relationship | Boundary |
 |---|---|---|
-| [`GlacierEQ/AKOS`](https://github.com/GlacierEQ/AKOS) | Governance and agent-orchestration authority | Canonical governance, evidence, completion, and operating-sequence contract. |
-| [`GlacierEQ/aspen-grove-core`](https://github.com/GlacierEQ/aspen-grove-core) | Memory and context-continuity peer | Preserves durable context and continuity without competing with Tower placement authority. |
+| [`GlacierEQ/AKOS`](https://github.com/GlacierEQ/AKOS) | Architecture, evidence, and evolution route | Current APEX selection/evolution contract; challengeable and objective-driven. |
+| [`GlacierEQ/aspen-grove-core`](https://github.com/GlacierEQ/aspen-grove-core) | Memory and context-continuity peer | Preserves durable context and contributes routing capability without permanent hierarchy. |
 | [`GlacierEQ/apex-boot-core`](https://github.com/GlacierEQ/apex-boot-core) | Identity and initialization peer | Activates identity, capability, and initialization contracts before governed execution. |
 | [`GlacierEQ/Pro_Code`](https://github.com/GlacierEQ/Pro_Code) | Engineering doctrine peer | Publishes standards, doctrine, and playbooks consumed by implementation systems. |
 | [`GlacierEQ/pro-code`](https://github.com/GlacierEQ/pro-code) | Governed engineering-execution peer | Executes, verifies, cures, and persists engineering changes under shared governance. |
-| [`GlacierEQ/job-app-helix`](https://github.com/GlacierEQ/job-app-helix) | Portfolio projection and evidence mesh | Presents capability and proof without becoming the technology authority. |
+| [`GlacierEQ/job-app-helix`](https://github.com/GlacierEQ/job-app-helix) | Portfolio projection and evidence mesh | Presents capability and proof without freezing the engineering source state. |
 | [`GlacierEQ/apex-control-plane`](https://github.com/GlacierEQ/apex-control-plane) | Control-plane peer | Execution and automation surface that can consume governed selections. |
 | [`GlacierEQ/apex-cli`](https://github.com/GlacierEQ/apex-cli) | Operator-facing peer | Command surface for downstream control-plane workflows. |
 | [`flagship/`](flagship/) | In-repository integration proof | Executes the strict polyglot mission contract. |
@@ -330,14 +330,14 @@ External links describe curated portfolio relationships, not a claim that every 
 - Integrity, build evidence, proof reports, and receipts remain deterministic review surfaces; `main` receipts additionally receive OIDC-bound Sigstore provenance.
 
 ```text
-edit canonical fragment
+edit selected fragment
     → update easy + advanced exhibits
     → add or strengthen the proof gate
     → tower validate
     → tower generate
     → pytest
     → tower build --all --allow-blocked
-    → reseal integrity
+    → verify current Git integrity
     → emit receipt
     → review exact-head CI
 ```
@@ -346,7 +346,7 @@ See [`AGENTS.md`](AGENTS.md) and [`BRANCH_POLICY.md`](BRANCH_POLICY.md).
 
 ## Truth boundary
 
-The Tower is an **operational-alpha engineering authority**. It makes strong claims only where checked-in evidence supports them. Concept-only records are references, not capabilities; toolchain-, hardware-, and service-gated floors remain explicitly gated; the selector will not admit them without the required proof. Smithery publication is not claimed. External portfolio relationships are architectural contracts unless a repository contains and verifies a live adapter.
+The Tower is an **operational-alpha engineering selection and proof system**. It makes strong claims only where checked-in evidence supports them. Concept-only records are references, not capabilities; toolchain-, hardware-, and service-gated floors remain explicitly gated; the selector will not admit them without the required proof. Smithery publication is not claimed. External portfolio relationships are architectural contracts unless a repository contains and verifies a live adapter.
 
 ## License
 
@@ -354,7 +354,7 @@ MIT — see [`LICENSE`](LICENSE).
 """
 
 def render_runtime_registry(registry: TowerRegistry) -> str:
-    return '#!/usr/bin/env python3\n"""Operational facade for the canonical Tower registry.\n\nThe facade deliberately refuses to turn a technology name into an execution\nchoice without an evidence threshold, capability match, and deterministic\nselection receipt.\n"""\nfrom __future__ import annotations\n\nimport hashlib\nfrom pathlib import Path\nfrom typing import Iterable\n\nfrom tower.registry import load_registry, validate_registry\n\n\n_EVIDENCE_RANK = {\n    "illustrative": 0,\n    "toolchain_gated": 1,\n    "service_gated": 1,\n    "hardware_gated": 1,\n    "compiles": 2,\n    "tested": 3,\n    "benchmark": 4,\n    "formally_verified": 4,\n    "integrated": 5,\n    "production_reference": 6,\n}\n\n\ndef _validated_registry(repo_root=None):\n    if repo_root is not None:\n        target = Path(repo_root) / "registry" / "tower.yml"\n        registry = load_registry(target)\n    else:\n        registry = load_registry()\n    errors = validate_registry(registry)\n    if errors:\n        raise RuntimeError("Invalid Tower registry: " + "; ".join(errors))\n    return registry\n\n\ndef _tokens(row: dict) -> set[str]:\n    values = [row.get("id", ""), row.get("name", ""), row.get("category", "")]\n    values.extend(row.get("interfaces", []))\n    return {str(value).casefold() for value in values if value}\n\n\nclass BabelRegistryEngine:\n    def __init__(self, repo_root=None):\n        self.registry = _validated_registry(repo_root=repo_root)\n\n    def get_spec(self, lang_key: str):\n        row = self.registry.by_id(lang_key)\n        if row is None:\n            return {"status": "UNKNOWN_SPEC", "ok": False}\n        return {**row, "status": "VALIDATED_W4H_SPEC", "ok": True}\n\n    def select(\n        self,\n        required_capabilities: Iterable[str],\n        preferred_interfaces: Iterable[str] = (),\n        *,\n        minimum_evidence_state: str = "tested",\n        available_hardware: Iterable[str] = (),\n    ) -> dict:\n        """Select a verified technology and emit a deterministic decision receipt.\n\n        Capability matching is intentionally conservative: every requested\n        capability must match an ID, name, category, or declared interface.\n        Gated hardware is admitted only when the caller supplies hardware proof.\n        """\n        required = tuple(sorted({str(x).strip().casefold() for x in required_capabilities if str(x).strip()}))\n        preferred = tuple(sorted({str(x).strip().casefold() for x in preferred_interfaces if str(x).strip()}))\n        if minimum_evidence_state not in _EVIDENCE_RANK:\n            raise ValueError(f"unknown evidence state: {minimum_evidence_state}")\n        minimum_rank = _EVIDENCE_RANK[minimum_evidence_state]\n        hardware = {str(x).strip().casefold() for x in available_hardware if str(x).strip()}\n        candidates = []\n        excluded = []\n        for row in sorted(self.registry.technologies, key=lambda item: item["id"]):\n            state = row["evidence_state"]\n            rank = _EVIDENCE_RANK.get(state, -1)\n            tokens = _tokens(row)\n            missing = [cap for cap in required if not any(cap in token for token in tokens)]\n            if missing:\n                excluded.append({"id": row["id"], "reason": "missing_capabilities", "missing": missing})\n                continue\n            if rank < minimum_rank:\n                excluded.append({"id": row["id"], "reason": "insufficient_evidence", "evidence_state": state})\n                continue\n            gate = str(row.get("execution", {}).get("hardware_gate", ""))\n            if gate and state in {"hardware_gated", "toolchain_gated", "service_gated"} and not hardware:\n                excluded.append({"id": row["id"], "reason": "runtime_gate_unmet", "gate": gate})\n                continue\n            interface_hits = sum(1 for item in preferred if any(item in token for token in tokens))\n            score = (rank * 100) + (interface_hits * 10) - len(row["id"])\n            candidates.append({\n                "id": row["id"],\n                "name": row["name"],\n                "evidence_state": state,\n                "score": score,\n                "interface_hits": interface_hits,\n                "reason": "capabilities_and_evidence_match",\n            })\n        candidates.sort(key=lambda item: (-item["score"], item["id"]))\n        registry_sha256 = hashlib.sha256(self.registry.canonical_bytes()).hexdigest()\n        if not candidates:\n            return {\n                "ok": False,\n                "status": "NO_VERIFIED_MATCH",\n                "required_capabilities": list(required),\n                "minimum_evidence_state": minimum_evidence_state,\n                "registry_sha256": registry_sha256,\n                "candidates": [],\n                "excluded": excluded,\n            }\n        selected = candidates[0]\n        return {\n            "ok": True,\n            "status": "SELECTED_VERIFIED_TECHNOLOGY",\n            "selected": selected,\n            "required_capabilities": list(required),\n            "preferred_interfaces": list(preferred),\n            "minimum_evidence_state": minimum_evidence_state,\n            "registry_sha256": registry_sha256,\n            "candidates": candidates,\n            "excluded": excluded,\n        }\n\n\n_REGISTRY = _validated_registry()\nBABEL_REGISTRY = {row["id"]: row for row in _REGISTRY.technologies}\n\n\nif __name__ == "__main__":\n    print(f"Tower of Babel Registry Initialized: {len(_REGISTRY.technologies)} Technologies Registered.")\n'
+    return '#!/usr/bin/env python3\n"""Operational facade for the current selected Tower registry.\n\nThe facade deliberately refuses to turn a technology name into an execution\nchoice without an evidence threshold, capability match, and deterministic\nselection receipt.\n"""\nfrom __future__ import annotations\n\nimport hashlib\nfrom pathlib import Path\nfrom typing import Iterable\n\nfrom tower.registry import load_registry, validate_registry\n\n\n_EVIDENCE_RANK = {\n    "illustrative": 0,\n    "toolchain_gated": 1,\n    "service_gated": 1,\n    "hardware_gated": 1,\n    "compiles": 2,\n    "tested": 3,\n    "benchmark": 4,\n    "formally_verified": 4,\n    "integrated": 5,\n    "production_reference": 6,\n}\n\n\ndef _validated_registry(repo_root=None):\n    if repo_root is not None:\n        target = Path(repo_root) / "registry" / "tower.yml"\n        registry = load_registry(target)\n    else:\n        registry = load_registry()\n    errors = validate_registry(registry)\n    if errors:\n        raise RuntimeError("Invalid Tower registry: " + "; ".join(errors))\n    return registry\n\n\ndef _tokens(row: dict) -> set[str]:\n    values = [row.get("id", ""), row.get("name", ""), row.get("category", "")]\n    values.extend(row.get("interfaces", []))\n    return {str(value).casefold() for value in values if value}\n\n\nclass BabelRegistryEngine:\n    def __init__(self, repo_root=None):\n        self.registry = _validated_registry(repo_root=repo_root)\n\n    def get_spec(self, lang_key: str):\n        row = self.registry.by_id(lang_key)\n        if row is None:\n            return {"status": "UNKNOWN_SPEC", "ok": False}\n        return {**row, "status": "VALIDATED_W4H_SPEC", "ok": True}\n\n    def select(\n        self,\n        required_capabilities: Iterable[str],\n        preferred_interfaces: Iterable[str] = (),\n        *,\n        minimum_evidence_state: str = "tested",\n        available_hardware: Iterable[str] = (),\n    ) -> dict:\n        """Select a verified technology and emit a deterministic decision receipt.\n\n        Capability matching is intentionally conservative: every requested\n        capability must match an ID, name, category, or declared interface.\n        Gated hardware is admitted only when the caller supplies hardware proof.\n        """\n        required = tuple(sorted({str(x).strip().casefold() for x in required_capabilities if str(x).strip()}))\n        preferred = tuple(sorted({str(x).strip().casefold() for x in preferred_interfaces if str(x).strip()}))\n        if minimum_evidence_state not in _EVIDENCE_RANK:\n            raise ValueError(f"unknown evidence state: {minimum_evidence_state}")\n        minimum_rank = _EVIDENCE_RANK[minimum_evidence_state]\n        hardware = {str(x).strip().casefold() for x in available_hardware if str(x).strip()}\n        candidates = []\n        excluded = []\n        for row in sorted(self.registry.technologies, key=lambda item: item["id"]):\n            state = row["evidence_state"]\n            rank = _EVIDENCE_RANK.get(state, -1)\n            tokens = _tokens(row)\n            missing = [cap for cap in required if not any(cap in token for token in tokens)]\n            if missing:\n                excluded.append({"id": row["id"], "reason": "missing_capabilities", "missing": missing})\n                continue\n            if rank < minimum_rank:\n                excluded.append({"id": row["id"], "reason": "insufficient_evidence", "evidence_state": state})\n                continue\n            gate = str(row.get("execution", {}).get("hardware_gate", ""))\n            if gate and state in {"hardware_gated", "toolchain_gated", "service_gated"} and not hardware:\n                excluded.append({"id": row["id"], "reason": "runtime_gate_unmet", "gate": gate})\n                continue\n            interface_hits = sum(1 for item in preferred if any(item in token for token in tokens))\n            score = (rank * 100) + (interface_hits * 10) - len(row["id"])\n            candidates.append({\n                "id": row["id"],\n                "name": row["name"],\n                "evidence_state": state,\n                "score": score,\n                "interface_hits": interface_hits,\n                "reason": "capabilities_and_evidence_match",\n            })\n        candidates.sort(key=lambda item: (-item["score"], item["id"]))\n        registry_sha256 = hashlib.sha256(self.registry.canonical_bytes()).hexdigest()\n        if not candidates:\n            return {\n                "ok": False,\n                "status": "NO_VERIFIED_MATCH",\n                "required_capabilities": list(required),\n                "minimum_evidence_state": minimum_evidence_state,\n                "registry_sha256": registry_sha256,\n                "candidates": [],\n                "excluded": excluded,\n            }\n        selected = candidates[0]\n        return {\n            "ok": True,\n            "status": "SELECTED_VERIFIED_TECHNOLOGY",\n            "selected": selected,\n            "required_capabilities": list(required),\n            "preferred_interfaces": list(preferred),\n            "minimum_evidence_state": minimum_evidence_state,\n            "registry_sha256": registry_sha256,\n            "candidates": candidates,\n            "excluded": excluded,\n        }\n\n\n_REGISTRY = _validated_registry()\nBABEL_REGISTRY = {row["id"]: row for row in _REGISTRY.technologies}\n\n\nif __name__ == "__main__":\n    print(f"Tower of Babel Registry Initialized: {len(_REGISTRY.technologies)} Technologies Registered.")\n'
 
 def render_sidecar() -> str:
     return '''#!/usr/bin/env python3
@@ -422,7 +422,7 @@ def build_surfaces(registry: TowerRegistry) -> dict[Path, bytes]:
     }
     spiral = {
         "family": "tower-of-babel",
-        "role": "canonical-technology-authority",
+        "role": "current-technology-selection-and-proof",
         "activation_status": "declared",
         "activation_rule": "A capability becomes active only after Spiral Engine returns an admission receipt.",
         "nodes": [row["id"] for row in registry.technologies],

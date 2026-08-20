@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Operational facade for the canonical Tower registry.
+"""Operational facade for the current selected Tower registry.
 
 The facade deliberately refuses to turn a technology name into an execution
 choice without an evidence threshold, capability match, and deterministic
