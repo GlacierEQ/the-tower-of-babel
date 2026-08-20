@@ -18,7 +18,7 @@ def test_main_ruleset_contract_has_stable_required_contexts() -> None:
     assert contract["enforcement"] == "active"
     assert contract["conditions"]["ref_name"]["include"] == ["refs/heads/main"]
     rules = {rule["type"]: rule for rule in contract["rules"]}
-    assert {"deletion", "non_fast_forward", "required_pull_request", "required_status_checks"} <= set(rules)
+    assert {"deletion", "non_fast_forward", "pull_request", "required_status_checks"} <= set(rules)
     contexts = {
         row["context"]
         for row in rules["required_status_checks"]["parameters"]["required_status_checks"]

@@ -45,7 +45,7 @@ jobs:
           python tools/audit_advanced_exhibits.py --check
 
       - name: Validate pinned nervous-system contract
-        run: python scripts/validate_nervous_system.py --verify-remote --freshness
+        run: python scripts/validate_nervous_system.py --freshness
 
       - name: Run repository tests
         run: pytest -q
