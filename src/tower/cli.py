@@ -13,6 +13,8 @@ from .integrity import verify_integrity, write_manifest
 from .proofs import build_proof_report, write_proof_report
 from .receipt import write_receipt
 from .registry import load_registry, validate_registry
+from .resource_memory import DEFAULT_OUTPUT as DEFAULT_PREFLIGHT_OUTPUT
+from .resource_memory import write_preflight
 from .spiral import (
     build_admission_receipt,
     generate_civilization_question,
@@ -53,6 +55,14 @@ def main() -> int:
     gen.add_argument("--check", action="store_true")
     spec = sub.add_parser("spec")
     spec.add_argument("technology")
+
+    preflight = sub.add_parser("preflight")
+    preflight.add_argument("--mission", required=True)
+    preflight.add_argument("--memory")
+    preflight.add_argument("--require-memory", action="store_true")
+    preflight.add_argument("--checkpoint-receipt")
+    preflight.add_argument("--output", default=str(DEFAULT_PREFLIGHT_OUTPUT))
+
     build = sub.add_parser("build")
     build.add_argument("technologies", nargs="*")
     build.add_argument("--all", action="store_true")
@@ -101,6 +111,22 @@ def main() -> int:
     args = parser.parse_args()
 
     try:
+        # Preflight intentionally runs before registry loading. Its job includes
+        # diagnosing a missing or malformed registry and must survive that damage.
+        if args.command == "preflight":
+            memory_path = Path(args.memory) if args.memory else None
+            checkpoint_receipt = Path(args.checkpoint_receipt) if args.checkpoint_receipt else None
+            payload = write_preflight(
+                Path(args.output),
+                args.mission,
+                memory_path=memory_path,
+                checkpoint_receipt=checkpoint_receipt,
+            )
+            _print(payload)
+            if args.require_memory and payload["memory_analysis"]["status"] != "ANALYZED":
+                return 2
+            return 0 if payload["resource_analysis"]["resource_gaps"] == [] else 1
+
         registry = load_registry()
         if args.command == "validate":
             errors = validate_registry(registry)
