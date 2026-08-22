@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+import subprocess
+import sys
+
 import pytest
 
 from tower.portfolio import (
@@ -121,6 +126,36 @@ def test_decision_keeps_selection_below_execution_and_operator_authority(registr
     assert payload["selection_is_ownership"] is False
     assert "does not prove runtime execution" in payload["truth_boundary"]
     assert len(payload["decision_sha256"]) == 64
+
+
+def test_receipt_cli_executes_real_registry_selection(tmp_path: Path) -> None:
+    output = tmp_path / "decision.json"
+    receipt_path = tmp_path / "receipt.json"
+    subprocess.run(
+        [
+            sys.executable,
+            "tools/resolve_portfolio.py",
+            "--input",
+            "examples/tower-portfolio-demand.json",
+            "--preference",
+            "minimal_stack",
+            "--output",
+            str(output),
+            "--receipt",
+            str(receipt_path),
+        ],
+        check=True,
+        text=True,
+        capture_output=True,
+    )
+    decision = json.loads(output.read_text(encoding="utf-8"))
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    ids = {row["technology_id"] for row in decision["selected"]["technologies"]}
+    assert ids == {"ebpf", "datalog"}
+    assert receipt["decision_sha256"] == decision["decision_sha256"]
+    assert receipt["verified_state"] == "DETERMINISTIC_PORTFOLIO_MODEL_EXECUTED"
+    assert receipt["execution_claim"] == "PORTFOLIO_SELECTED_TECHNOLOGIES_NOT_YET_EXECUTED"
+    assert receipt["project_direction_authority"] == "OPERATOR"
 
 
 def test_empty_mission_and_unknown_required_id_are_rejected(registry) -> None:
