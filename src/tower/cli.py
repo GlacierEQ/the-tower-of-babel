@@ -60,6 +60,7 @@ def main() -> int:
     preflight.add_argument("--mission", required=True)
     preflight.add_argument("--memory")
     preflight.add_argument("--require-memory", action="store_true")
+    preflight.add_argument("--checkpoint-receipt")
     preflight.add_argument("--output", default=str(DEFAULT_PREFLIGHT_OUTPUT))
 
     build = sub.add_parser("build")
@@ -110,6 +111,22 @@ def main() -> int:
     args = parser.parse_args()
 
     try:
+        # Preflight intentionally runs before registry loading. Its job includes
+        # diagnosing a missing or malformed registry and must survive that damage.
+        if args.command == "preflight":
+            memory_path = Path(args.memory) if args.memory else None
+            checkpoint_receipt = Path(args.checkpoint_receipt) if args.checkpoint_receipt else None
+            payload = write_preflight(
+                Path(args.output),
+                args.mission,
+                memory_path=memory_path,
+                checkpoint_receipt=checkpoint_receipt,
+            )
+            _print(payload)
+            if args.require_memory and payload["memory_analysis"]["status"] != "ANALYZED":
+                return 2
+            return 0 if payload["resource_analysis"]["resource_gaps"] == [] else 1
+
         registry = load_registry()
         if args.command == "validate":
             errors = validate_registry(registry)
@@ -123,17 +140,6 @@ def main() -> int:
             row = registry.by_id(args.technology)
             _print(row or {"error": "UNKNOWN_TECHNOLOGY", "technology": args.technology})
             return 0 if row else 1
-        if args.command == "preflight":
-            memory_path = Path(args.memory) if args.memory else None
-            payload = write_preflight(
-                Path(args.output),
-                args.mission,
-                memory_path=memory_path,
-            )
-            _print(payload)
-            if args.require_memory and payload["memory_analysis"]["status"] != "ANALYZED":
-                return 2
-            return 0 if payload["resource_analysis"]["resource_gaps"] == [] else 1
         if args.command == "build":
             selected = None if args.all else args.technologies
             if not args.all and not selected:
