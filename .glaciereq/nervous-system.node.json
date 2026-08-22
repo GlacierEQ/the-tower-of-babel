@@ -1,13 +1,21 @@
 {
   "schema_id": "glaciereq.nervous-system-node.v2",
-  "nervous_system_schema_id": "glaciereq.nervous-system.v2",
+  "contract_version": "2.2.0",
   "repository": "GlacierEQ/the-tower-of-babel",
   "role": "polyglot_placement_interoperability_proof",
   "apex_role": "ACTIVE_POLYGLOT_ENGINEERING_CAPABILITY_DONOR",
-  "apex_manifest": "https://raw.githubusercontent.com/GlacierEQ/AKOS/main/governance/glaciereq.nervous-system.v2.json",
+  "contract_source": "REPOSITORY_LOCAL_CAPABILITY_CONTRACT",
+  "external_registration_required": false,
+  "peer_mesh_observation": "OPTIONAL_NONAUTHORITATIVE_EVIDENCE",
+  "project_direction_authority": "OPERATOR",
+  "machine_project_direction_authority": false,
   "selection_mode": "CURRENT_BEST_REVISABLE",
+  "selection_state_semantics": "EXECUTION_AND_CAPABILITY_METADATA_ONLY_NOT_PROJECT_AUTHORITY",
   "challengeable": true,
   "capability_donor_preservation": true,
+  "selection_is_ownership": false,
+  "topology_is_authority": false,
   "operating_sequence": ["context", "discover", "compare", "cure", "innovate", "execute", "verify", "persist", "evolve"],
-  "placement_law": "Language and runtime placement are evidence-backed engineering decisions. Better interoperable implementations may challenge current placements when verified stronger."
+  "required_readme_terms": ["tower", "polyglot", "proof"],
+  "placement_law": "Language and runtime placement are evidence-backed engineering decisions. Better interoperable implementations may challenge current placements when verified stronger. Current placement, registration, topology, or selection never creates project authority or repository ownership."
 }
