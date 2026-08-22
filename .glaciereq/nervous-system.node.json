@@ -9,5 +9,15 @@
   "challengeable": true,
   "capability_donor_preservation": true,
   "operating_sequence": ["context", "discover", "compare", "cure", "innovate", "execute", "verify", "persist", "evolve"],
-  "placement_law": "Language and runtime placement are evidence-backed engineering decisions. Better interoperable implementations may challenge current placements when verified stronger."
+  "placement_law": "Language and runtime placement are evidence-backed engineering decisions. Better interoperable implementations may challenge current placements when verified stronger.",
+  "resource_memory_preflight": {
+    "required_before_mutation": true,
+    "command": "tower preflight --mission <objective> --memory <external-memory.json> --require-memory",
+    "receipt": "artifacts/resource-memory-preflight.json",
+    "memory_ownership": "EXTERNAL",
+    "memory_requires_source_pointer_for_proof": true,
+    "duplicate_content_is_independent_corroboration": false,
+    "continuity_rule": "LAST_VERIFIED_STATE + NEW_VERIFIED_DELTA",
+    "preserve_material_contradictions": true
+  }
 }
