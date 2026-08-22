@@ -13,6 +13,8 @@ from .integrity import verify_integrity, write_manifest
 from .proofs import build_proof_report, write_proof_report
 from .receipt import write_receipt
 from .registry import load_registry, validate_registry
+from .resource_memory import DEFAULT_OUTPUT as DEFAULT_PREFLIGHT_OUTPUT
+from .resource_memory import write_preflight
 from .spiral import (
     build_admission_receipt,
     generate_civilization_question,
@@ -53,6 +55,13 @@ def main() -> int:
     gen.add_argument("--check", action="store_true")
     spec = sub.add_parser("spec")
     spec.add_argument("technology")
+
+    preflight = sub.add_parser("preflight")
+    preflight.add_argument("--mission", required=True)
+    preflight.add_argument("--memory")
+    preflight.add_argument("--require-memory", action="store_true")
+    preflight.add_argument("--output", default=str(DEFAULT_PREFLIGHT_OUTPUT))
+
     build = sub.add_parser("build")
     build.add_argument("technologies", nargs="*")
     build.add_argument("--all", action="store_true")
@@ -114,6 +123,17 @@ def main() -> int:
             row = registry.by_id(args.technology)
             _print(row or {"error": "UNKNOWN_TECHNOLOGY", "technology": args.technology})
             return 0 if row else 1
+        if args.command == "preflight":
+            memory_path = Path(args.memory) if args.memory else None
+            payload = write_preflight(
+                Path(args.output),
+                args.mission,
+                memory_path=memory_path,
+            )
+            _print(payload)
+            if args.require_memory and payload["memory_analysis"]["status"] != "ANALYZED":
+                return 2
+            return 0 if payload["resource_analysis"]["resource_gaps"] == [] else 1
         if args.command == "build":
             selected = None if args.all else args.technologies
             if not args.all and not selected:
