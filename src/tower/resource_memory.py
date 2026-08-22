@@ -53,9 +53,12 @@ def _git(root: Path, *args: str) -> str | None:
     return proc.stdout.strip()
 
 
-def _iter_files(root: Path) -> Iterable[Path]:
+def _iter_files(root: Path, excluded: set[Path] | None = None) -> Iterable[Path]:
+    excluded = {path.resolve() for path in (excluded or set())}
     for path in sorted(root.rglob("*")):
         if not path.is_file():
+            continue
+        if path.resolve() in excluded:
             continue
         rel = path.relative_to(root)
         if any(part in _EXCLUDED_PARTS for part in rel.parts):
@@ -87,12 +90,17 @@ def _resource_role(relative: str) -> str:
     return "REPOSITORY_RESOURCE"
 
 
-def inventory_resources(root: Path = REPO_ROOT) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+def inventory_resources(
+    root: Path = REPO_ROOT,
+    *,
+    exclude_paths: Iterable[Path] = (),
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """Inventory resources and collapse same-byte copies into one lineage."""
     root = root.resolve()
+    excluded = {Path(path).resolve() for path in exclude_paths}
     resources: list[dict[str, Any]] = []
     by_hash: dict[str, list[str]] = {}
-    for path in _iter_files(root):
+    for path in _iter_files(root, excluded):
         rel = path.relative_to(root).as_posix()
         digest = _sha256(path)
         resources.append(
@@ -186,6 +194,7 @@ def build_preflight(
     *,
     root: Path = REPO_ROOT,
     memory_path: Path | None = None,
+    exclude_paths: Iterable[Path] = (),
 ) -> dict[str, Any]:
     """Build a deterministic resource + memory reconstruction receipt."""
     mission = mission.strip()
@@ -193,7 +202,7 @@ def build_preflight(
         raise ValueError("mission must be a non-empty string")
 
     root = root.resolve()
-    resources, duplicates = inventory_resources(root)
+    resources, duplicates = inventory_resources(root, exclude_paths=exclude_paths)
     memory_status, memory_findings, memory_gaps = _read_memory_snapshot(memory_path)
     head = _git(root, "rev-parse", "HEAD")
     tree = _git(root, "rev-parse", "HEAD^{tree}")
@@ -214,7 +223,11 @@ def build_preflight(
         if required not in locators:
             resource_gaps.append(f"required Tower resource missing: {required}")
 
-    status = "COMPLETE" if not resource_gaps and memory_status == "ANALYZED" else "PARTIAL"
+    status = (
+        "COMPLETE"
+        if not resource_gaps and memory_status == "ANALYZED" and not memory_gaps
+        else "PARTIAL"
+    )
     return {
         "schema": "glaciereq.tower.resource-memory-preflight.v1",
         "mission": mission,
@@ -262,7 +275,13 @@ def write_preflight(
     root: Path = REPO_ROOT,
     memory_path: Path | None = None,
 ) -> dict[str, Any]:
-    payload = build_preflight(mission, root=root, memory_path=memory_path)
+    output = output.resolve()
+    payload = build_preflight(
+        mission,
+        root=root,
+        memory_path=memory_path,
+        exclude_paths=(output,),
+    )
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return payload
