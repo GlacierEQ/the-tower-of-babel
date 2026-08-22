@@ -2,9 +2,9 @@
 
 The Tower of Babel is the **polyglot architecture, technology-placement, interoperability, innovation, and proof spine** of the GlacierEQ nervous system.
 
-It does not choose languages for display and it does not impose one estate-wide implementation stack. It receives a mission, decomposes the real engineering boundaries, assigns each boundary to the technology that fits it best, verifies the interfaces, measures the result, and keeps the placement revisable as the frontier moves.
+It does not choose languages for display and it does not impose one estate-wide implementation stack. It receives a mission, reconstructs the relevant prior state, decomposes the real engineering boundaries, assigns each boundary to the technology that fits it best, verifies the interfaces, measures the result, and keeps the placement revisable as the frontier moves.
 
-The executable architecture law lives in [`ARCHITECTURE_LAW.md`](ARCHITECTURE_LAW.md) and `src/tower/architecture.py`.
+The executable architecture law lives in [`ARCHITECTURE_LAW.md`](ARCHITECTURE_LAW.md) and `src/tower/architecture.py`. Resource and memory reconstruction lives in `src/tower/resource_memory.py` and [`docs/RESOURCE_MEMORY_PREFLIGHT.md`](docs/RESOURCE_MEMORY_PREFLIGHT.md).
 
 ```text
 Aspen Grove memory
@@ -12,22 +12,17 @@ Aspen Grove memory
 → AKOS authority and evidence law
 → Pro_Code doctrine
 → pro-code implementation
+→ Tower resource + memory reconstruction
 → Tower boundary decomposition / placement / interface / experiment / proof
 → verified persistent system response
 ```
-
-## Canonical entrypoints
-
-- [AKOS](https://github.com/GlacierEQ/AKOS)
-- [Aspen Grove Core](https://github.com/GlacierEQ/aspen-grove-core)
-- [Apex Boot Core](https://github.com/GlacierEQ/apex-boot-core)
-- [Pro_Code](https://github.com/GlacierEQ/Pro_Code)
-- [pro-code](https://github.com/GlacierEQ/pro-code)
 
 ## Nervous-system responsibility
 
 The Tower owns:
 
+- reconstruction of its current technology, proof, interface, and resource state before mutation;
+- analysis of externally supplied continuity memory without claiming ownership of that memory;
 - decomposition of a system into explicit architecture lanes;
 - technology placement by measurable boundary advantage;
 - language/runtime ownership for each lane;
@@ -53,13 +48,18 @@ The Tower does not own:
 ## Required operating sequence
 
 ```text
-MEMORY → TOOL → CURE → INNOVATE → RESPOND
+MEMORY → RESOURCE → TOOL → CURE → INNOVATE → RESPOND
 ```
 
 For Tower-governed work this expands to:
 
 ```text
-recover context
+recover external memory / continuity context
+→ inventory current Tower resources and prior work
+→ identify the last verified checkpoint
+→ collapse duplicate copies into one evidence lineage
+→ preserve disputed / invalidated / source-missing memory states
+→ compute the new delta
 → identify the real engineering boundaries
 → inspect existing lane owners and interfaces
 → observe relevant frontier changes
@@ -68,9 +68,33 @@ recover context
 → verify at the strongest applicable proof level
 → measure reliability, performance, intelligence, and interface cost
 → promote / retain / hybridize / retire
-→ persist the receipt
+→ persist the receipts
 → return the result to AKOS
 ```
+
+Executable preflight:
+
+```bash
+tower preflight --mission "<exact engineering objective>" --memory <external-memory.json> --require-memory
+```
+
+Default receipt: `artifacts/resource-memory-preflight.json`.
+
+## Resource + memory truth law
+
+Tower must continue from prior verified state instead of repeatedly rediscovering the system.
+
+```text
+CURRENT_STATE = LAST_VERIFIED_STATE + NEW_VERIFIED_DELTA
+```
+
+Memory is a continuity and discovery surface, not self-authenticating proof. A memory finding requires a source pointer before it can support evidence promotion.
+
+Repeated copies of the same underlying bytes do not create independent corroboration. The preflight hashes resources and explicitly groups duplicate content.
+
+A current search miss means `NOT_FOUND_IN_CURRENT_SEARCH`, not `NEVER_EXISTED`.
+
+A contradiction is preserved until resolved. It cannot be removed merely because it weakens the preferred technology placement.
 
 ## Polyglot law
 
@@ -94,21 +118,24 @@ News never becomes architecture by excitement alone. Equally, a new capability i
 
 ## Reliability law
 
-Reliability is not immobility. The Tower treats evolvability as part of reliability: deterministic tests, adversarial tests, runtime observation, observability, failure isolation, rollback, and exact receipts make aggressive improvement safer.
+Reliability is not immobility. The Tower treats evolvability as part of reliability: deterministic tests, adversarial tests, runtime observation, observability, failure isolation, rollback, exact receipts, and resource-memory continuity make aggressive improvement safer.
 
 ## Machine relationship contract
 
 ```yaml
-schema: glaciereq.nervous-system-node.v2
+schema: glaciereq.nervous-system-node.v3
 repository: GlacierEQ/the-tower-of-babel
 role: polyglot_innovation_governor
 inputs:
   - governed_mission
+  - external_memory_context
+  - current_resource_state
   - architecture_boundaries
   - constraints
   - existing_component_map
   - frontier_signals
 outputs:
+  - resource_memory_preflight
   - language_lanes
   - technology_placement
   - interface_contracts
@@ -129,4 +156,7 @@ prohibitions:
   - proof_claim_without_gate
   - governance_as_stagnation
   - frontier_claim_without_fresh_observation
+  - memory_promoted_without_source
+  - duplicate_copy_counted_as_corroboration
+  - restart_without_resource_reconstruction
 ```
