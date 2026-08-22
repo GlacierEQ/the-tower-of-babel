@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from tower.resource_memory import build_preflight, inventory_resources
+from tower.resource_memory import build_preflight, inventory_resources, write_preflight
 
 
 def _seed_minimal_tower(root: Path) -> None:
@@ -49,10 +49,12 @@ def test_memory_without_source_remains_unverified(tmp_path: Path) -> None:
     payload = build_preflight("compare lane owner", root=tmp_path, memory_path=memory)
 
     assert payload["state"] == "RESOURCE_RECONSTRUCTED"
+    assert payload["status"] == "PARTIAL"
     assert payload["memory_analysis"]["status"] == "ANALYZED"
     finding = payload["memory_analysis"]["findings"][0]
     assert finding["status"] == "RECALLED_NEEDS_SOURCE"
     assert finding["source_pointer"] is None
+    assert payload["memory_analysis"]["gaps"]
     assert payload["promotion_gate"]["may_use_memory_as_proof_without_source"] is False
 
 
@@ -92,3 +94,30 @@ def test_missing_memory_is_explicit_not_silent(tmp_path: Path) -> None:
     assert payload["memory_analysis"]["status"] == "NOT_PROVIDED"
     assert payload["memory_analysis"]["gaps"]
     assert payload["tower_boundary"]["owns_operator_memory"] is False
+
+
+def test_receipt_does_not_inventory_itself(tmp_path: Path) -> None:
+    _seed_minimal_tower(tmp_path)
+    memory = tmp_path / "memory.json"
+    memory.write_text(
+        json.dumps(
+            {
+                "findings": [
+                    {
+                        "finding": "Existing lane is source-bound.",
+                        "status": "VERIFIED_WITH_SOURCE",
+                        "source_pointer": "registry/tower.yml",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    output = tmp_path / "artifacts" / "resource-memory-preflight.json"
+
+    first = write_preflight(output, "continue current lane", root=tmp_path, memory_path=memory)
+    second = write_preflight(output, "continue current lane", root=tmp_path, memory_path=memory)
+
+    assert first == second
+    locators = {row["locator"] for row in second["resource_analysis"]["resources"]}
+    assert "artifacts/resource-memory-preflight.json" not in locators
