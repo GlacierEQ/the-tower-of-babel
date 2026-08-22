@@ -123,9 +123,9 @@ Reliability is not immobility. The Tower treats evolvability as part of reliabil
 ## Machine relationship contract
 
 ```yaml
-schema: glaciereq.nervous-system-node.v3
+schema: glaciereq.nervous-system-node.v2
 repository: GlacierEQ/the-tower-of-babel
-role: polyglot_innovation_governor
+role: polyglot_placement_interoperability_proof
 inputs:
   - governed_mission
   - external_memory_context
