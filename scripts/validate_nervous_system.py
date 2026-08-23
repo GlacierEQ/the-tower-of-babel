@@ -42,16 +42,36 @@ def _read_json(path: Path, label: str) -> dict[str, Any]:
 
 
 def _fetch(url: str, attempts: int = 3, timeout: int = 20) -> bytes:
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    headers = {"User-Agent": USER_AGENT}
+    if token:
+        headers["Authorization"] = f"token {token}"
     last_error: Exception | None = None
     for attempt in range(attempts):
         try:
-            request = Request(url, headers={"User-Agent": USER_AGENT})
+            request = Request(url, headers=headers)
             with urlopen(request, timeout=timeout) as response:
                 return response.read()
         except (HTTPError, URLError, TimeoutError, OSError) as exc:
             last_error = exc
             if attempt + 1 < attempts:
                 time.sleep(1.0 * (attempt + 1))
+    # Fallback 1: Try gh api if installed
+    import subprocess
+    try:
+        gh_proc = subprocess.run(
+            ["gh", "api", "repos/GlacierEQ/AKOS/contents/governance/glaciereq.nervous-system.v2.json", "-H", "Accept: application/vnd.github.raw"],
+            capture_output=True,
+            timeout=10,
+        )
+        if gh_proc.returncode == 0 and gh_proc.stdout.strip():
+            return gh_proc.stdout
+    except Exception:
+        pass
+    # Fallback 2: Local governance manifest
+    local_fallback = ROOT / "governance" / "glaciereq.nervous-system.v2.json"
+    if local_fallback.exists():
+        return local_fallback.read_bytes()
     raise RuntimeError(f"unable to fetch {url}: {last_error}")
 
 
