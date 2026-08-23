@@ -1,6 +1,7 @@
 """Executable entrypoint for Tower's local activation path."""
 from __future__ import annotations
-import argparse, json
+import argparse
+import json
 from typing import Any
 from .activation import activate_execution
 from .registry import load_registry

@@ -1,7 +1,6 @@
 """Reference test for the pure-Python mesh simulation; it does not prove JAX/XLA execution."""
 from __future__ import annotations
 
-import json
 from languages.jax.advanced_grok_distributed_mesh import GrokJaxDistributedEngine
 
 

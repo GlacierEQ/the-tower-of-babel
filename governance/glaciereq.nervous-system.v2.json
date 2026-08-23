@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schema_id": "glaciereq.nervous-system.v2",
+  "version": "2.1.0",
+  "operator_authority": {
+    "authority_holder": "OPERATOR",
+    "operator_project_direction_authority": true,
+    "machine_project_direction_authority": false,
+    "machine_asset_disposition_authority": false,
+    "machine_estate_hierarchy_authority": false,
+    "observation_expands_authority": false,
+    "execution_ranking_creates_project_primacy": false,
+    "historical_receipt_creates_current_authority": false,
+    "descriptive_topology_is_authority": false,
+    "delegation_required_for_project_level_mutation": true,
+    "transformation_law": "OPERATOR_APEX_TRANSFORMATION_LAW.md"
+  },
+  "apex_logic": {
+    "selection_mode": "CURRENT_BEST_REVISABLE",
+    "selection_scope": "OPERATOR_AUTHORIZED_EXECUTION_OPTIONS_ONLY",
+    "selection_confers_project_authority": false,
+    "challengeable": true,
+    "capability_donor_preservation": true,
+    "operator_objective_precedence": true,
+    "selection_basis": [
+      "operator_objective",
+      "verified_evidence",
+      "live_capability",
+      "correctness",
+      "performance",
+      "recoverability",
+      "interoperability",
+      "observability",
+      "current_fitness"
+    ],
+    "law": "The Operator alone owns project direction, repository hierarchy, asset disposition, and durable priority. APEX may select, compose, challenge, and evolve execution options only inside the Operator-authorized target and operation. Execution selection, routing status, manifests, validators, receipts, and evidence never create project primacy or sovereignty."
+  },
+  "field_semantics": {
+    "role": "DESCRIPTIVE_CAPABILITY_METADATA_ONLY",
+    "apex_role": "DESCRIPTIVE_CAPABILITY_METADATA_ONLY",
+    "selection_mode": "EXECUTION_ROUTING_METADATA_ONLY",
+    "required_links": "INTEROPERABILITY_EXPECTATION_ONLY",
+    "required_terms": "DISCOVERABILITY_EXPECTATION_ONLY"
+  },
+  "transformation": {
+    "curse": "APEX",
+    "minimum": "EXPENSIVE",
+    "EXPENSIVE": "expansive maximum-coherent innovation-seeking execution; not wasteful spending and not a replacement for numeric minimum operators",
+    "authority_bearing_bounded": "INNOVATION_DIRECTED_EXECUTION",
+    "project_authority_canonical": "GENIUS",
+    "unauthorized_machine_authority": "OPERATOR"
+  },
+  "composition": {
+    "selected_surface": "glaciereq-nervous-system",
+    "selected_source": "GlacierEQ/antigravity-awesome-skills/skills/glaciereq-nervous-system/SKILL.md",
+    "selected_commit": "6e3bcf71e8d79c682dbe8993a012b761d0a19390",
+    "selection_semantics": "HISTORICAL_OR_EXECUTION_REFERENCE_NOT_PROJECT_AUTHORITY",
+    "role": "cross_platform_mission_composition_and_continuation",
+    "challengeable": true,
+    "composition_sequence": [
+      "context",
+      "discover",
+      "compare",
+      "reuse",
+      "extend",
+      "innovate",
+      "execute",
+      "verify",
+      "persist",
+      "evolve"
+    ],
+    "current_boot_route": "GlacierEQ/apex-boot-core",
+    "technology_placement_route": "GlacierEQ/the-tower-of-babel",
+    "route_semantics": "AVAILABLE_EXECUTION_ROUTING_METADATA_NOT_OPERATOR_AUTHORITY",
+    "rule": "Composition surfaces may adapt, compete, compose, and improve inside Operator-directed scope. Evidence integrity, compatibility, receipts, and verified target state constrain claims; they do not acquire authority over the Operator or convert execution routing into estate ownership."
+  },
+  "planes": {
+    "implementation": "Working mechanisms and executable systems.",
+    "evidence": "Observed source state, receipts, tests, provenance, and verified outcomes.",
+    "selection": "An advisory or delegated execution route inside the Operator-selected target. Selection confers no project authority, primacy, or disposition power.",
+    "challengers": "Alternative implementations or compositions eligible for Operator-directed or execution-scoped comparison without being demoted as assets.",
+    "capability_donors": "Sources with unique mechanisms worth preserving or composing; donor status is descriptive and does not subordinate the source.",
+    "target": "Desired stronger architecture and capability state under Operator direction."
+  },
+  "operating_sequence": [
+    "context",
+    "discover",
+    "compare",
+    "cure",
+    "innovate",
+    "execute",
+    "verify",
+    "persist",
+    "evolve"
+  ],
+  "completion_rule": "No completion claim without requested execution, target-state verification, persistence, and receipts. No failure report before intelligent repair, rerouting, fallback, challenger evaluation, innovation-driven cure, or a hard external boundary is established. None of those mechanisms expands machine authority beyond the Operator-directed operation.",
+  "engineering_law": "PRO-CODE ELITE HUMANIZED ENGINEERED INNOVATION CODE in EXPENSIVE mode: maximize coherent verified capability, preserve gains and unique mechanisms, implement brave improvements, spend sufficient reasoning and engineering effort to escape minimum-default behavior, and leave a stronger working system rather than a more elaborate gate.",
+  "nodes": {
+    "GlacierEQ/aspen-grove-core": {
+      "role": "memory_context_coordination",
+      "apex_role": "ACTIVE_COORDINATION_AND_CAPABILITY_DONOR",
+      "challengeable": true,
+      "required_terms": ["memory", "context", "router"],
+      "required_links": ["GlacierEQ/AKOS", "GlacierEQ/apex-boot-core", "GlacierEQ/Pro_Code", "GlacierEQ/pro-code", "GlacierEQ/the-tower-of-babel"]
+    },
+    "GlacierEQ/apex-boot-core": {
+      "role": "runtime_initialization_activation",
+      "apex_role": "SELECTED_RUNTIME_ROUTE_AND_CAPABILITY_DONOR",
+      "challengeable": true,
+      "required_terms": ["runtime", "initialization", "capability"],
+      "required_links": ["GlacierEQ/AKOS", "GlacierEQ/aspen-grove-core", "GlacierEQ/Pro_Code", "GlacierEQ/pro-code", "GlacierEQ/the-tower-of-babel"]
+    },
+    "GlacierEQ/AKOS": {
+      "role": "architecture_evidence_adjustment_evolution",
+      "apex_role": "ACTIVE_ARCHITECTURE_AND_EVOLUTION_ROUTE",
+      "challengeable": true,
+      "required_terms": ["architecture", "evidence", "evolution", "completion"],
+      "required_links": ["GlacierEQ/aspen-grove-core", "GlacierEQ/apex-boot-core", "GlacierEQ/Pro_Code", "GlacierEQ/pro-code", "GlacierEQ/the-tower-of-babel"]
+    },
+    "GlacierEQ/Pro_Code": {
+      "role": "engineering_doctrine_standards_playbooks",
+      "apex_role": "ACTIVE_DOCTRINE_AND_CAPABILITY_DONOR",
+      "challengeable": true,
+      "required_terms": ["doctrine", "standards", "playbook"],
+      "required_links": ["GlacierEQ/AKOS", "GlacierEQ/aspen-grove-core", "GlacierEQ/apex-boot-core", "GlacierEQ/pro-code", "GlacierEQ/the-tower-of-babel"]
+    },
+    "GlacierEQ/pro-code": {
+      "role": "engineering_execution_innovation",
+      "apex_role": "ACTIVE_EXECUTION_AND_CAPABILITY_DONOR",
+      "challengeable": true,
+      "required_terms": ["engineering", "execution", "verify", "innovation"],
+      "required_links": ["GlacierEQ/AKOS", "GlacierEQ/aspen-grove-core", "GlacierEQ/apex-boot-core", "GlacierEQ/Pro_Code", "GlacierEQ/the-tower-of-babel"]
+    },
+    "GlacierEQ/computer-user": {
+      "role": "computer_execution_kernel",
+      "apex_role": "ACTIVE_COMPUTER_EXECUTION_CAPABILITY_DONOR",
+      "challengeable": true,
+      "documentation": "governance/nodes/computer-user.md",
+      "required_terms": ["computer", "execution", "verification", "receipt"],
+      "required_links": ["GlacierEQ/AKOS", "GlacierEQ/monolith", "GlacierEQ/pro-code", "GlacierEQ/Pro_Code"]
+    },
+    "GlacierEQ/the-tower-of-babel": {
+      "role": "polyglot_placement_interoperability_proof",
+      "apex_role": "ACTIVE_POLYGLOT_ENGINEERING_CAPABILITY_DONOR",
+      "challengeable": true,
+      "required_terms": ["technology", "interoperability", "proof", "language"],
+      "required_links": ["GlacierEQ/AKOS", "GlacierEQ/aspen-grove-core", "GlacierEQ/apex-boot-core", "GlacierEQ/Pro_Code", "GlacierEQ/pro-code"]
+    },
+    "GlacierEQ/fiat-justitia": {
+      "role": "legal_engineering_evidence_provenance_routing",
+      "apex_role": "ACTIVE_LEGAL_ENGINEERING_CAPABILITY_DONOR",
+      "challengeable": true,
+      "required_terms": ["legal", "evidence", "proof"],
+      "required_links": ["GlacierEQ/the-tower-of-babel", "GlacierEQ/AKOS"]
+    }
+  },
+  "node_semantics": "All node role/apex_role values are descriptive capability metadata. They confer no project authority, no hierarchy, no asset disposition power, and no right to alter another repository without Operator direction.",
+  "local_contract_path": ".glaciereq/nervous-system.node.json",
+  "readme_path": "README.md",
+  "validator_path": "governance/validate_nervous_system.py"
+}
