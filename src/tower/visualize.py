@@ -1,11 +1,9 @@
 """Interface topology and visualization engine for the Tower registry."""
 from __future__ import annotations
 
-import json
-from pathlib import Path
 from typing import Any
 
-from .registry import TowerRegistry, load_registry
+from .registry import TowerRegistry
 
 
 def build_topology_graph(registry: TowerRegistry) -> dict[str, Any]:
