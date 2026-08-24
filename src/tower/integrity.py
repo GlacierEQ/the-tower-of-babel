@@ -27,6 +27,7 @@ _EXCLUDED_PARTS = {
     "dist",
     "node_modules",
     ".venv",
+    "receipts",
 }
 _EXCLUDED_FILES = {
     ".integrity/file_hashes.json",
