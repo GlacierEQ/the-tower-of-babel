@@ -36,12 +36,8 @@ theorem truth_gate_safety_invariant (f : EpistemicFact) :
   intro h
   cases h with
   | inl hL0 =>
-    simp [can_execute_action]
-    rw [hL0]
-    cases f.authority_granted <;> rfl
+    simp [can_execute_action, hL0]
   | inr hL1 =>
-    simp [can_execute_action]
-    rw [hL1]
-    cases f.authority_granted <;> rfl
+    simp [can_execute_action, hL1]
 
 end APEX.TruthGate
