@@ -12,7 +12,7 @@
         "present": true
       },
       {
-        "bytes": 1086,
+        "bytes": 1578,
         "non_empty": true,
         "path": "languages/lean4/advanced_truth_gate_proof.lean",
         "present": true
