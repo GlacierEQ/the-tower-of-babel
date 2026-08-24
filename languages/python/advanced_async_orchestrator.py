@@ -210,8 +210,8 @@ class Orchestrator:
         if max_retries < 0:
             raise ValueError("max_retries cannot be negative")
         loop = asyncio.get_running_loop()
-        canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"))
-        seed = f"{self._sequence}:{capability}:{canonical}"
+        sovereign = json.dumps(payload, sort_keys=True, separators=(",", ":"))
+        seed = f"{self._sequence}:{capability}:{sovereign}"
         self._sequence += 1
         work = Work(
             task_id=hashlib.sha256(seed.encode()).hexdigest()[:16],

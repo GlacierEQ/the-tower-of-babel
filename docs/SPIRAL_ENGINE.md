@@ -63,10 +63,10 @@ Each receipt includes:
 - the candidate SHA-256
 - the exact decision, score, controls, evidence count, coverage, and blockers
 - a stable receipt ID
-- a receipt SHA-256 over canonical JSON
+- a receipt SHA-256 over sovereign JSON
 
 The receipt intentionally excludes wall-clock time so identical inputs produce identical receipts. External systems may timestamp, sign, notarize, or append the receipt without changing the Tower's deterministic decision.
 
 ## Activation status
 
-This branch is a runtime candidate. The generated Tower registry remains `declared` until the implementation passes repository governance and is intentionally promoted through the canonical generation path.
+This branch is a runtime candidate. The generated Tower registry remains `declared` until the implementation passes repository governance and is intentionally promoted through the sovereign generation path.

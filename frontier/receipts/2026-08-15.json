@@ -69,7 +69,7 @@
       "lane": "runtime_projection_and_cli_proof",
       "target_repository": "GlacierEQ/apex-cli",
       "decision": "RETAIN",
-      "reason": "The active completion boundary is exact-head canonical reconciliation and proof integrity, not a technology-placement bottleneck. No frontier candidate observed in the sweep justifies replacing the current runtime/control-plane languages before that truth boundary is closed."
+      "reason": "The active completion boundary is exact-head sovereign reconciliation and proof integrity, not a technology-placement bottleneck. No frontier candidate observed in the sweep justifies replacing the current runtime/control-plane languages before that truth boundary is closed."
     }
   ],
   "result": "NO_NEW_FRONTIER_ADMISSION",

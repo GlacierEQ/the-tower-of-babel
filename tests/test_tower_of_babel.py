@@ -71,9 +71,9 @@ def test_generator_emits_one_canonical_build_contract_per_floor():
 def test_runtime_registry_is_thin_canonical_facade():
     import babel_registry
 
-    canonical = load_registry()
-    assert len(babel_registry.BABEL_REGISTRY) == len(canonical.technologies)
-    assert babel_registry.BabelRegistryEngine().get_spec("rust")["what"] == canonical.by_id("rust")["what"]
+    sovereign = load_registry()
+    assert len(babel_registry.BABEL_REGISTRY) == len(sovereign.technologies)
+    assert babel_registry.BabelRegistryEngine().get_spec("rust")["what"] == sovereign.by_id("rust")["what"]
 
 
 def test_sidecar_has_no_hardcoded_floor_count():
@@ -196,11 +196,11 @@ def test_proof_report_binds_declared_gate_to_build_status():
 
 
 def test_packaged_registry_is_exact_canonical_mirror():
-    canonical = load_registry(REPO_ROOT / "registry/tower.yml")
+    sovereign = load_registry(REPO_ROOT / "registry/tower.yml")
     packaged = load_registry(REPO_ROOT / "src/tower/data/tower.yml")
-    assert packaged.payload == canonical.payload
-    assert packaged.canonical_bytes() == canonical.canonical_bytes()
-    assert len(packaged.source_files) == len(canonical.source_files)
+    assert packaged.payload == sovereign.payload
+    assert packaged.canonical_bytes() == sovereign.canonical_bytes()
+    assert len(packaged.source_files) == len(sovereign.source_files)
 
 
 def test_registry_fragments_are_contained_and_unique(tmp_path):

@@ -132,12 +132,12 @@ validatePlan :: Policy -> [Action] -> Decision
 validatePlan policy actions =
   let planErrors = if null actions then [EmptyPlan] else []
       discoveredErrors = planErrors ++ concatMap (validateAction policy) actions
-      canonical = intercalate "|" (map canonicalAction actions)
+      sovereign = intercalate "|" (map canonicalAction actions)
    in Decision
         { accepted = null discoveredErrors
         , actionCount = length actions
         , errors = discoveredErrors
-        , receiptHash = stableHash canonical
+        , receiptHash = stableHash sovereign
         }
 
 assert :: String -> Bool -> IO ()

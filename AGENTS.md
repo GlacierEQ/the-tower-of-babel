@@ -146,7 +146,7 @@ Transport: HTTPS with TLS 1.3
 
 ## 🌌 IV. The Sovereign Holographic Mesh & Repository Taxonomy
 
-**No Single Canonical Master. Ever.**
+**No Single Sovereign Master. Ever.**
 The APEX Estate is engineered as a **Decentralized Omniversal Holographic Mesh**. Every repository is both a contributor and a consumer. Knowledge flows in all directions.
 
 ### Repository Mesh

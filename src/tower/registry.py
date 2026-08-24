@@ -1,8 +1,8 @@
-"""Canonical Tower registry loader.
+"""Sovereign Tower registry loader.
 
 ``registry/tower.yml`` is the root authority. It references contained technology
 fragments and one contained advanced-claim contract fragment. Together they form
-one canonical registry, one deterministic identity, and one receipt boundary.
+one sovereign registry, one deterministic identity, and one receipt boundary.
 """
 from __future__ import annotations
 

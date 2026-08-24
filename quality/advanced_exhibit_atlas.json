@@ -673,7 +673,7 @@
     {
       "activation_condition": "Use when durable data relationships and set-oriented operations belong inside the database.",
       "advanced_exhibit": "languages/sql/advanced_pgvector_hnsw.sql",
-      "architectural_role": "Canonical state, analytics, audit records, knowledge graphs, and embedding search.",
+      "architectural_role": "Sovereign state, analytics, audit records, knowledge graphs, and embedding search.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "service_gated",
       "evidence_tier": "gated_reference",
