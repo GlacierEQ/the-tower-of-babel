@@ -1,0 +1,14 @@
+steps:
+  - label: ":building_construction: Tower Portable L2 Verification"
+    command:
+      - "PYTHONPATH=src python3 -m unittest discover -s tests -p 'test_*.py'"
+    env:
+      PYTHONPATH: "src"
+
+  - label: ":lock: Nervous System Node Validation"
+    command:
+      - "python3 scripts/validate_nervous_system.py --freshness"
+
+  - label: ":white_check_mark: Tower Quality Gate"
+    command:
+      - "python3 -c 'from tower.registry import REPO_ROOT; print(\"Tower Registry Root:\", REPO_ROOT)'"
