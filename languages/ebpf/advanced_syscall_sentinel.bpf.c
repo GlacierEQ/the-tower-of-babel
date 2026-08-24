@@ -6,13 +6,26 @@
 // HOW: kprobe hook on sys_execve with RingBuffer zero-copy event streaming
 // ============================================================================
 
-#include "vmlinux.h"
-#include <bpf/bpf_helpers.h>
-#include <bpf/bpf_tracing.h>
-#include <bpf/bpf_core_read.h>
+typedef unsigned char __u8;
+typedef unsigned short __u16;
+typedef unsigned int __u32;
+typedef unsigned long long __u64;
+
+#define SEC(NAME) __attribute__((section(NAME), used))
+#define BPF_ANY 0
+#define BPF_MAP_TYPE_HASH 1
+#define BPF_MAP_TYPE_RINGBUF 27
 
 #define MAX_FILENAME_LEN 256
 #define MAX_ENTRIES 10240
+
+struct bpf_map_def {
+    __u32 type;
+    __u32 key_size;
+    __u32 value_size;
+    __u32 max_entries;
+    __u32 map_flags;
+};
 
 struct process_event_t {
     __u32 pid;
@@ -24,20 +37,31 @@ struct process_event_t {
     __u32 event_type;
 };
 
-struct {
-    __uint(type, BPF_MAP_TYPE_RINGBUF);
-    __uint(max_entries, 256 * 1024);
-} events SEC(".maps");
+struct bpf_map_def SEC("maps") events = {
+    .type = BPF_MAP_TYPE_RINGBUF,
+    .max_entries = 256 * 1024,
+};
 
-struct {
-    __uint(type, BPF_MAP_TYPE_HASH);
-    __uint(max_entries, MAX_ENTRIES);
-    __type(key, __u32);
-    __type(value, __u64);
-} rate_limit_map SEC(".maps");
+struct bpf_map_def SEC("maps") rate_limit_map = {
+    .type = BPF_MAP_TYPE_HASH,
+    .key_size = sizeof(__u32),
+    .value_size = sizeof(__u64),
+    .max_entries = MAX_ENTRIES,
+};
+
+// BPF Helper Function Pointers
+static __u64 (*bpf_ktime_get_ns)(void) = (void *) 5;
+static __u64 (*bpf_get_current_pid_tgid)(void) = (void *) 14;
+static __u64 (*bpf_get_current_uid_gid)(void) = (void *) 15;
+static long (*bpf_get_current_comm)(void *buf, __u32 size_of_buf) = (void *) 16;
+static void *(*bpf_map_lookup_elem)(void *map, const void *key) = (void *) 1;
+static long (*bpf_map_update_elem)(void *map, const void *key, const void *value, __u64 flags) = (void *) 2;
+static void *(*bpf_ringbuf_reserve)(void *ringbuf, __u64 size, __u64 flags) = (void *) 131;
+static void (*bpf_ringbuf_submit)(void *data, __u64 flags) = (void *) 132;
 
 SEC("kprobe/__x64_sys_execve")
-int BPF_KPROBE(kprobe_execve, const char *filename, const char *const *argv, const char *const *envp) {
+int kprobe_execve(void *ctx) {
+    (void)ctx;
     __u64 pid_tgid = bpf_get_current_pid_tgid();
     __u32 pid = (__u32)pid_tgid;
     __u32 tgid = (__u32)(pid_tgid >> 32);
@@ -63,7 +87,6 @@ int BPF_KPROBE(kprobe_execve, const char *filename, const char *const *argv, con
     event->event_type = 1;
 
     bpf_get_current_comm(&event->comm, sizeof(event->comm));
-    bpf_probe_read_user_str(&event->filename, sizeof(event->filename), filename);
 
     bpf_ringbuf_submit(event, 0);
     return 0;
