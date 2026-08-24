@@ -2,7 +2,7 @@
 
 ## P0 — Truth convergence
 
-- `registry/tower.yml` is the canonical root and its declared fragments are the technology records.
+- `registry/tower.yml` is the sovereign root and its declared fragments are the technology records.
 - All advertised technologies are registered.
 - README, runtime registry, sidecar, mesh maps, maturity data, build commands,
   interface graph, per-floor manifests, and integrity data derive from it.

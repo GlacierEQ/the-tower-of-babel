@@ -80,7 +80,7 @@ def audit() -> tuple[list[str], dict]:
     ids = {tech["id"] for tech in registry.technologies}
     contracts = registry.claim_contracts
     if set(contracts) != ids:
-        errors.append("advanced claim contract coverage does not match canonical registry")
+        errors.append("advanced claim contract coverage does not match sovereign registry")
 
     for tech in registry.technologies:
         tech_id = tech["id"]

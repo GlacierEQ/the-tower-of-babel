@@ -2,7 +2,7 @@
 
 The Tower is a governed systems portfolio, not a file-extension collection. Every exhibit must state truthfully what it proves, which toolchain evaluated it, and which limitations remain.
 
-## Canonical authority
+## Sovereign authority
 
 `registry/tower.yml` and its contained `registry/tower.d/*.json` fragments are the sole authored technology authority. Generated maturity, interface, build, Smithery, Spiral, and Megamind surfaces derive from that registry. This document defines quality expectations; it does not maintain a competing technology list or maturity ledger.
 
@@ -30,7 +30,7 @@ An advanced exhibit demonstrates a credible engineering boundary. It must includ
 7. **No placeholders** such as empty bodies, unconditional success, `pass`, or identity stubs.
 8. **Bounded resource behavior** where concurrency, memory, network, hardware, or untrusted input is involved.
 
-An advanced exhibit need not be a complete product. It must be honest evidence of the capability named in the canonical registry.
+An advanced exhibit need not be a complete product. It must be honest evidence of the capability named in the sovereign registry.
 
 ## Evidence and blockers
 
@@ -43,7 +43,7 @@ An advanced exhibit need not be a complete product. It must be honest evidence o
 
 CI fails when:
 
-- the canonical registry is invalid or its fragments escape their governed boundary;
+- the sovereign registry is invalid or its fragments escape their governed boundary;
 - generated surfaces drift from the registry;
 - an easy or advanced exhibit is missing or malformed;
 - native portable checks fail;

@@ -92,9 +92,9 @@ fn main() {
         && coverage_complete;
 
     let reason = if allowed {
-        "mission, capability coverage, technology membership, action boundary, ingress hash, and canonical registry gates passed"
+        "mission, capability coverage, technology membership, action boundary, ingress hash, and sovereign registry gates passed"
     } else if !registry_matches {
-        "plan registry hash does not match the canonical Tower registry"
+        "plan registry hash does not match the sovereign Tower registry"
     } else if !input_matches {
         "plan input hash does not match the TypeScript-bound mission"
     } else if !action_allowed {

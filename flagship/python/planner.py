@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Plan a mission through the canonical Tower-to-Megamind adapter."""
+"""Plan a mission through the sovereign Tower-to-Megamind adapter."""
 from __future__ import annotations
 
 import json

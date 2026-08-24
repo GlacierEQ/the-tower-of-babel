@@ -72,7 +72,7 @@ def test_contract_is_consistent_with_canonical_tower_and_quality_authorities():
         "benchmark",
         "integration",
     }
-    # The placement contract owns A/B/C tier labels. The canonical quality
+    # The placement contract owns A/B/C tier labels. The sovereign quality
     # contract owns the evidence semantics those tiers must satisfy; do not
     # force a second tier vocabulary into QUALITY_CONTRACT.md just to appease
     # this test.

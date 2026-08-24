@@ -122,7 +122,7 @@
       },
       "what": "Declares relational transformations, constraints, transactions, and vector retrieval.",
       "when": "Use when durable data relationships and set-oriented operations belong inside the database.",
-      "where": "Canonical state, analytics, audit records, knowledge graphs, and embedding search.",
+      "where": "Sovereign state, analytics, audit records, knowledge graphs, and embedding search.",
       "why": "The query planner, transactions, indexes, and constraints centralize data correctness and performance."
     }
   ]

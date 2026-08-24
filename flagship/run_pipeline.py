@@ -128,12 +128,12 @@ def canonical_mission(payload: dict) -> dict:
 
 
 def canonical_json_sha256(payload: dict) -> str:
-    canonical = json.dumps(
+    sovereign = json.dumps(
         canonical_mission(payload),
         separators=(",", ":"),
         ensure_ascii=False,
     ).encode("utf-8")
-    return hashlib.sha256(canonical).hexdigest()
+    return hashlib.sha256(sovereign).hexdigest()
 
 
 def write_fallback_mission(source: Path, mission: Path) -> None:
@@ -141,10 +141,10 @@ def write_fallback_mission(source: Path, mission: Path) -> None:
     payload = json.loads(source.read_text(encoding="utf-8"))
     if not isinstance(payload, dict):
         raise ValueError("mission input must be an object")
-    canonical = canonical_mission(payload)
-    canonical["input_sha256"] = canonical_json_sha256(canonical)
+    sovereign = canonical_mission(payload)
+    sovereign["input_sha256"] = canonical_json_sha256(sovereign)
     mission.write_text(
-        json.dumps(canonical, indent=2, ensure_ascii=False) + "\n",
+        json.dumps(sovereign, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
 
@@ -216,7 +216,7 @@ def main() -> int:
             planner = {
                 "stage": "python_planner",
                 "status": "FAILED",
-                "blocker": "TypeScript ingress hash does not match the canonical source mission",
+                "blocker": "TypeScript ingress hash does not match the sovereign source mission",
             }
             results.append(planner)
         else:

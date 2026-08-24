@@ -27,7 +27,7 @@
       "integrated",
       "production_reference"
     ],
-    "fragment_rule": "All technology records live in contained fragments named by registry/tower.yml; the index, technology fragments, and claim-contract fragment form one canonical registry.",
+    "fragment_rule": "All technology records live in contained fragments named by registry/tower.yml; the index, technology fragments, and claim-contract fragment form one sovereign registry.",
     "generated_surfaces": [
       "README.md",
       "ADVANCED_EXHIBITS.md",
