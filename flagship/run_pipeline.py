@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Execute the flagship polyglot pipeline with strict proof or explicit blockers."""
+
 from __future__ import annotations
 
 import argparse
@@ -96,8 +97,10 @@ def _require_string(payload: dict, field: str) -> str:
 
 def _require_string_list(payload: dict, field: str) -> list[str]:
     value = payload.get(field)
-    if not isinstance(value, list) or not value or not all(
-        isinstance(item, str) and item.strip() for item in value
+    if (
+        not isinstance(value, list)
+        or not value
+        or not all(isinstance(item, str) and item.strip() for item in value)
     ):
         raise ValueError(f"mission.{field} must be a non-empty string list")
     return [item.strip() for item in value]
@@ -123,7 +126,9 @@ def canonical_mission(payload: dict) -> dict:
         "mission_id": _require_string(unsigned, "mission_id"),
         "objective": _require_string(unsigned, "objective"),
         "preferred_interfaces": _require_string_list(unsigned, "preferred_interfaces"),
-        "required_capabilities": _require_string_list(unsigned, "required_capabilities"),
+        "required_capabilities": _require_string_list(
+            unsigned, "required_capabilities"
+        ),
     }
 
 
@@ -176,7 +181,9 @@ def main() -> int:
 
     registry = load_registry()
     expected_registry_sha256 = hashlib.sha256(registry.canonical_bytes()).hexdigest()
-    allowed_technology_ids = ",".join(sorted(technology["id"] for technology in registry.technologies))
+    allowed_technology_ids = ",".join(
+        sorted(technology["id"] for technology in registry.technologies)
+    )
 
     mission = WORK / "mission.json"
     plan = WORK / "plan.json"
@@ -188,16 +195,30 @@ def main() -> int:
     if shutil.which("tsc") and shutil.which("node"):
         ts_out = WORK / "typescript"
         ts_out.mkdir()
-        compile_result = run([
-            "tsc", "--strict", "--target", "ES2022", "--module", "commonjs",
-            "--outDir", str(ts_out), "flagship/typescript/ingress.ts",
-        ])
+        compile_result = run(
+            [
+                "tsc",
+                "--strict",
+                "--target",
+                "ES2022",
+                "--module",
+                "commonjs",
+                "--outDir",
+                str(ts_out),
+                "flagship/typescript/ingress.ts",
+            ]
+        )
         compile_result["stage"] = "typescript_compile"
         results.append(compile_result)
         if compile_result["status"] == "VERIFIED":
-            ingress = run([
-                "node", str(ts_out / "ingress.js"), str(source), str(mission),
-            ])
+            ingress = run(
+                [
+                    "node",
+                    str(ts_out / "ingress.js"),
+                    str(source),
+                    str(mission),
+                ]
+            )
             ingress["stage"] = "typescript_ingress"
             results.append(ingress)
         else:
@@ -212,7 +233,10 @@ def main() -> int:
 
     if mission.is_file():
         mission_payload = json.loads(mission.read_text(encoding="utf-8"))
-        if not isinstance(mission_payload, dict) or mission_payload.get("input_sha256") != expected_input_sha256:
+        if (
+            not isinstance(mission_payload, dict)
+            or mission_payload.get("input_sha256") != expected_input_sha256
+        ):
             planner = {
                 "stage": "python_planner",
                 "status": "FAILED",
@@ -220,7 +244,9 @@ def main() -> int:
             }
             results.append(planner)
         else:
-            planner = run([sys.executable, "flagship/python/planner.py", str(mission), str(plan)])
+            planner = run(
+                [sys.executable, "flagship/python/planner.py", str(mission), str(plan)]
+            )
             planner["stage"] = "python_planner"
             results.append(planner)
     else:
@@ -228,11 +254,22 @@ def main() -> int:
         results.append(planner)
 
     if plan.is_file() and planner["status"] == "VERIFIED" and shutil.which("cargo"):
-        authority = run([
-            "cargo", "run", "--quiet", "--manifest-path", "flagship/rust/Cargo.toml",
-            "--", str(plan), str(decision), expected_registry_sha256,
-            expected_input_sha256, expected_maximum_action, allowed_technology_ids,
-        ])
+        authority = run(
+            [
+                "cargo",
+                "run",
+                "--quiet",
+                "--manifest-path",
+                "flagship/rust/Cargo.toml",
+                "--",
+                str(plan),
+                str(decision),
+                expected_registry_sha256,
+                expected_input_sha256,
+                expected_maximum_action,
+                allowed_technology_ids,
+            ]
+        )
         authority["stage"] = "rust_authority"
         results.append(authority)
     elif plan.is_file() and planner["status"] == "VERIFIED":
@@ -242,7 +279,9 @@ def main() -> int:
 
     go_binary = WORK / "tower-telemetry"
     if shutil.which("go"):
-        compile_go = run(["go", "build", "-o", str(go_binary), "flagship/go/telemetry.go"])
+        compile_go = run(
+            ["go", "build", "-o", str(go_binary), "flagship/go/telemetry.go"]
+        )
         compile_go["stage"] = "go_compile"
         results.append(compile_go)
     else:
@@ -258,26 +297,30 @@ def main() -> int:
         results.append(dependency_block("go_telemetry", "decision.json"))
 
     if all(path.is_file() for path in (mission, plan, decision, event)):
-        sql_result = run([
-            sys.executable,
-            "flagship/python/persist_state.py",
-            "flagship/sql/state.sql",
-            str(db),
-            str(mission),
-            str(decision),
-            str(event),
-            str(plan),
-            str(sql_readback),
-        ])
+        sql_result = run(
+            [
+                sys.executable,
+                "flagship/python/persist_state.py",
+                "flagship/sql/state.sql",
+                str(db),
+                str(mission),
+                str(decision),
+                str(event),
+                str(plan),
+                str(sql_readback),
+            ]
+        )
         sql_result["stage"] = "sql_state"
         results.append(sql_result)
     else:
-        results.append(dependency_block("sql_state", "mission/plan/decision/event chain"))
+        results.append(
+            dependency_block("sql_state", "mission/plan/decision/event chain")
+        )
 
     if shutil.which("wat2wasm"):
-        wasm = run([
-            "wat2wasm", "flagship/wat/sandbox.wat", "-o", str(WORK / "sandbox.wasm")
-        ])
+        wasm = run(
+            ["wat2wasm", "flagship/wat/sandbox.wat", "-o", str(WORK / "sandbox.wasm")]
+        )
         wasm["stage"] = "wasm_sandbox"
         results.append(wasm)
     else:
@@ -292,49 +335,56 @@ def main() -> int:
 
     if shutil.which("protoc"):
         descriptor = WORK / "tower-contracts.pb"
-        protobuf = run([
-            "protoc",
-            f"--descriptor_set_out={descriptor}",
-            "--include_imports",
-            "flagship/contracts/mission.proto",
-            "integrations/megamind/tower_adapter.proto",
-            "proto/tower.proto",
-        ])
+        protobuf = run(
+            [
+                "protoc",
+                f"--descriptor_set_out={descriptor}",
+                "--include_imports",
+                "flagship/contracts/mission.proto",
+                "integrations/megamind/tower_adapter.proto",
+                "proto/tower.proto",
+            ]
+        )
         protobuf["stage"] = "protobuf_contracts"
         results.append(protobuf)
     else:
         results.append(blocker("protoc", "protobuf_contracts"))
 
-    mission_payload = json.loads(mission.read_text(encoding="utf-8")) if mission.is_file() else {}
+    mission_payload = (
+        json.loads(mission.read_text(encoding="utf-8")) if mission.is_file() else {}
+    )
     report = {
         "pipeline_id": "tower-polyglot-mission-v1",
-        "mission_id": mission_payload.get("mission_id", "unavailable") if isinstance(mission_payload, dict) else "unavailable",
+        "mission_id": mission_payload.get("mission_id", "unavailable")
+        if isinstance(mission_payload, dict)
+        else "unavailable",
         "expected_registry_sha256": expected_registry_sha256,
         "expected_input_sha256": expected_input_sha256,
         "expected_maximum_action": expected_maximum_action,
         "strict": not args.allow_blocked,
         "results": results,
     }
-    report_bytes = json.dumps(report, separators=(",", ":"), sort_keys=True).encode("utf-8")
+    report_bytes = json.dumps(report, separators=(",", ":"), sort_keys=True).encode(
+        "utf-8"
+    )
     report["report_sha256"] = hashlib.sha256(report_bytes).hexdigest()
     (WORK / "pipeline.report.json").write_text(
         json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
     print(json.dumps(report, indent=2, sort_keys=True))
 
-    required_results = {row["stage"]: row for row in results if row.get("stage") in REQUIRED_STAGES}
+    required_results = {
+        row["stage"]: row for row in results if row.get("stage") in REQUIRED_STAGES
+    }
     missing = sorted(REQUIRED_STAGES - set(required_results))
-    failed = [
-        row for row in results
-        if str(row.get("status", "")).startswith("FAILED")
-    ]
+    failed = [row for row in results if str(row.get("status", "")).startswith("FAILED")]
     blocked = [
-        row for row in required_results.values()
+        row
+        for row in required_results.values()
         if str(row.get("status", "")).startswith("BLOCKED_")
     ]
     nonverified = [
-        row for row in required_results.values()
-        if row.get("status") != "VERIFIED"
+        row for row in required_results.values() if row.get("status") != "VERIFIED"
     ]
     if failed or missing:
         return 1

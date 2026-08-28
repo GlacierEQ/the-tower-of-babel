@@ -1,4 +1,5 @@
 """Honest per-floor toolchain execution with exact blockers."""
+
 from __future__ import annotations
 
 import importlib.util
@@ -15,73 +16,77 @@ from .registry import REPO_ROOT, TowerRegistry
 
 # Registry commands are data, not ambient authority. Only recognized compiler,
 # runtime, schema, proof, and build frontends may be launched from PATH.
-_SAFE_EXECUTABLES = frozenset({
-    "Rscript",
-    "agda",
-    "cabal",
-    "cairo-compile",
-    "capnp",
-    "cargo",
-    "clang",
-    "clang++",
-    "cmake",
-    "coqc",
-    "ctest",
-    "elixir",
-    "flatc",
-    "g++",
-    "gcc",
-    "gfortran",
-    "ghc",
-    "ghdl",
-    "go",
-    "iverilog",
-    "java",
-    "javac",
-    "julia",
-    "kotlinc",
-    "lake",
-    "lean",
-    "lua",
-    "make",
-    "mix",
-    "mlir-opt",
-    "mojo",
-    "ninja",
-    "node",
-    "nvcc",
-    "odin",
-    "opt",
-    "protoc",
-    "psql",
-    "python",
-    "python3",
-    "qasm3",
-    "rustc",
-    "sbt",
-    "scala",
-    "souffle",
-    "sqlite3",
-    "swift",
-    "swiftc",
-    "tsc",
-    "verilator",
-    "vhdl-ls",
-    "vvp",
-    "wat2wasm",
-    "wasmtime",
-    "zig",
-})
-_FORBIDDEN_EXECUTABLES = frozenset({
-    "bash",
-    "cmd",
-    "env",
-    "fish",
-    "powershell",
-    "pwsh",
-    "sh",
-    "zsh",
-})
+_SAFE_EXECUTABLES = frozenset(
+    {
+        "Rscript",
+        "agda",
+        "cabal",
+        "cairo-compile",
+        "capnp",
+        "cargo",
+        "clang",
+        "clang++",
+        "cmake",
+        "coqc",
+        "ctest",
+        "elixir",
+        "flatc",
+        "g++",
+        "gcc",
+        "gfortran",
+        "ghc",
+        "ghdl",
+        "go",
+        "iverilog",
+        "java",
+        "javac",
+        "julia",
+        "kotlinc",
+        "lake",
+        "lean",
+        "lua",
+        "make",
+        "mix",
+        "mlir-opt",
+        "mojo",
+        "ninja",
+        "node",
+        "nvcc",
+        "odin",
+        "opt",
+        "protoc",
+        "psql",
+        "python",
+        "python3",
+        "qasm3",
+        "rustc",
+        "sbt",
+        "scala",
+        "souffle",
+        "sqlite3",
+        "swift",
+        "swiftc",
+        "tsc",
+        "verilator",
+        "vhdl-ls",
+        "vvp",
+        "wat2wasm",
+        "wasmtime",
+        "zig",
+    }
+)
+_FORBIDDEN_EXECUTABLES = frozenset(
+    {
+        "bash",
+        "cmd",
+        "env",
+        "fish",
+        "powershell",
+        "pwsh",
+        "sh",
+        "zsh",
+    }
+)
 
 
 def _available(binary: str) -> bool:
@@ -107,7 +112,11 @@ def _validate_argv(argv: list[str]) -> str | None:
         relative = resolved.relative_to(REPO_ROOT)
     except ValueError:
         return f"Executable escapes repository root: {executable}"
-    if not relative.parts or relative.parts[0] not in {"build", "languages", "flagship"}:
+    if not relative.parts or relative.parts[0] not in {
+        "build",
+        "languages",
+        "flagship",
+    }:
         return f"Repository executable must live under build/, languages/, or flagship/: {executable}"
     return None
 
@@ -161,7 +170,9 @@ def _run(argv: list[str], timeout_s: int = 120) -> dict[str, Any]:
         }
 
 
-def _invalid(technology_id: str, blocker: str, commands: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+def _invalid(
+    technology_id: str, blocker: str, commands: list[dict[str, Any]] | None = None
+) -> dict[str, Any]:
     return {
         "technology_id": technology_id,
         "status": "INVALID_MANIFEST",
@@ -196,24 +207,36 @@ def build_floor(tech: dict[str, Any]) -> dict[str, Any]:
         return _invalid(tech_id, "execution must be an object.")
     tool = toolchain.get("tool")
     reference_pin = toolchain.get("reference_pin")
-    if not isinstance(tool, str) or not tool or not isinstance(reference_pin, str) or not reference_pin:
+    if (
+        not isinstance(tool, str)
+        or not tool
+        or not isinstance(reference_pin, str)
+        or not reference_pin
+    ):
         return _invalid(tech_id, "toolchain requires string tool and reference_pin.")
     if tool not in _SAFE_EXECUTABLES:
-        return _invalid(tech_id, f"Primary tool is not in the governed allowlist: {tool}")
+        return _invalid(
+            tech_id, f"Primary tool is not in the governed allowlist: {tool}"
+        )
 
     gate = execution.get("hardware_gate", "")
     tier = execution.get("ci_tier", "portable")
     if not isinstance(gate, str) or not isinstance(tier, str):
         return _invalid(tech_id, "execution gate and ci_tier must be strings.")
     python_modules = toolchain.get("python_modules", [])
-    if not isinstance(python_modules, list) or not all(isinstance(module, str) and module for module in python_modules):
+    if not isinstance(python_modules, list) or not all(
+        isinstance(module, str) and module for module in python_modules
+    ):
         return _invalid(tech_id, "python_modules must be a list of module names.")
-    missing_modules = [module for module in python_modules if importlib.util.find_spec(module) is None]
+    missing_modules = [
+        module for module in python_modules if importlib.util.find_spec(module) is None
+    ]
     if missing_modules:
         return {
             "technology_id": tech_id,
             "status": "BLOCKED_DEPENDENCY",
-            "blocker": "Required Python module(s) not found: " + ", ".join(missing_modules),
+            "blocker": "Required Python module(s) not found: "
+            + ", ".join(missing_modules),
             "tool": tool,
             "reference_pin": reference_pin,
             "commands": [],
@@ -221,7 +244,11 @@ def build_floor(tech: dict[str, Any]) -> dict[str, Any]:
 
     gate_key = re.sub(r"[^A-Z0-9]+", "_", tech_id.upper()).strip("_")
     if gate and os.environ.get(f"TOWER_ENABLE_{gate_key}") != "1":
-        status = "BLOCKED_SERVICE" if tier == "service" or "service" in gate.casefold() else "BLOCKED_HARDWARE"
+        status = (
+            "BLOCKED_SERVICE"
+            if tier == "service" or "service" in gate.casefold()
+            else "BLOCKED_HARDWARE"
+        )
         return {
             "technology_id": tech_id,
             "status": status,
@@ -246,20 +273,29 @@ def build_floor(tech: dict[str, Any]) -> dict[str, Any]:
         return _invalid(tech_id, "Build and test contracts must be lists.")
     declared_commands = build_commands + test_commands
     if not declared_commands:
-        return _invalid(tech_id, "At least one build or test command is required for VERIFIED status.")
+        return _invalid(
+            tech_id,
+            "At least one build or test command is required for VERIFIED status.",
+        )
 
     (REPO_ROOT / "build").mkdir(exist_ok=True)
     commands: list[dict[str, Any]] = []
     for argv in declared_commands:
         if not isinstance(argv, list):
-            return _invalid(tech_id, "Build/test commands must be argv lists.", commands)
+            return _invalid(
+                tech_id, "Build/test commands must be argv lists.", commands
+            )
         policy_error = _validate_argv(argv)
         if policy_error:
             return _invalid(tech_id, policy_error, commands)
         result = _run(argv)
         commands.append(result)
         if result.get("policy_error"):
-            return _invalid(tech_id, str(result.get("stderr", "Command policy rejected argv.")), commands)
+            return _invalid(
+                tech_id,
+                str(result.get("stderr", "Command policy rejected argv.")),
+                commands,
+            )
         if result.get("spawn_error"):
             return {
                 "technology_id": tech_id,
@@ -273,7 +309,9 @@ def build_floor(tech: dict[str, Any]) -> dict[str, Any]:
             return {
                 "technology_id": tech_id,
                 "status": "FAILED_TIMEOUT" if result.get("timeout") else "FAILED",
-                "blocker": "Command timed out." if result.get("timeout") else "Command failed.",
+                "blocker": "Command timed out."
+                if result.get("timeout")
+                else "Command failed.",
                 "tool": tool,
                 "reference_pin": reference_pin,
                 "commands": commands,
@@ -307,7 +345,9 @@ def build_many(
         if not selected or key in selected
     ]
     unknown = sorted({value for value in requested if value.casefold() not in known})
-    rows.extend(_invalid(value, f"Unknown technology requested: {value}") for value in unknown)
+    rows.extend(
+        _invalid(value, f"Unknown technology requested: {value}") for value in unknown
+    )
     counts: dict[str, int] = {}
     for row in rows:
         counts[row["status"]] = counts.get(row["status"], 0) + 1
@@ -321,4 +361,6 @@ def build_many(
 
 def write_report(report: dict[str, Any], path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    path.write_text(
+        json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )

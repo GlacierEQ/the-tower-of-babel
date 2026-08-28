@@ -1,4 +1,5 @@
 """Executable regression tests for Tower trust and process boundaries."""
+
 from __future__ import annotations
 
 import tempfile
@@ -31,7 +32,9 @@ class SecurityBoundaryTests(unittest.TestCase):
                 self.assertFalse(integrity._eligible(outside))
 
     def test_command_policy_rejects_shells_and_traversal(self) -> None:
-        self.assertIn("forbidden", build._validate_argv(["bash", "-lc", "echo unsafe"]).lower())
+        self.assertIn(
+            "forbidden", build._validate_argv(["bash", "-lc", "echo unsafe"]).lower()
+        )
         self.assertIn("escapes", build._validate_argv(["../outside-tool"]).lower())
         self.assertIsNone(build._validate_argv(["python3", "-m", "compileall", "src"]))
         self.assertIsNone(build._validate_argv(["build/generated-test-binary"]))
@@ -41,7 +44,15 @@ class SecurityBoundaryTests(unittest.TestCase):
         self.assertIsNone(build._validate_argv(["ghdl", "--version"]))
 
     def test_command_policy_admits_declared_specialized_toolchains(self) -> None:
-        for executable in ("lua", "javac", "kotlinc", "gfortran", "qasm3", "cairo-compile", "souffle"):
+        for executable in (
+            "lua",
+            "javac",
+            "kotlinc",
+            "gfortran",
+            "qasm3",
+            "cairo-compile",
+            "souffle",
+        ):
             with self.subTest(executable=executable):
                 self.assertIsNone(build._validate_argv([executable, "--version"]))
 
@@ -49,16 +60,18 @@ class SecurityBoundaryTests(unittest.TestCase):
         self.assertIsNone(build._validate_argv(["java", "-version"]))
 
     def test_build_floor_rejects_unapproved_primary_tool(self) -> None:
-        result = build.build_floor({
-            "id": "unsafe",
-            "toolchain": {
-                "tool": "curl",
-                "reference_pin": "1",
-                "build": [["curl", "https://example.invalid"]],
-                "test": [],
-            },
-            "execution": {"hardware_gate": "", "ci_tier": "portable"},
-        })
+        result = build.build_floor(
+            {
+                "id": "unsafe",
+                "toolchain": {
+                    "tool": "curl",
+                    "reference_pin": "1",
+                    "build": [["curl", "https://example.invalid"]],
+                    "test": [],
+                },
+                "execution": {"hardware_gate": "", "ci_tier": "portable"},
+            }
+        )
         self.assertEqual(result["status"], "INVALID_MANIFEST")
 
     def test_benchmark_failure_fails_proof_gate(self) -> None:

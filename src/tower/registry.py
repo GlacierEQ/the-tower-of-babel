@@ -4,6 +4,7 @@
 fragments and one contained advanced-claim contract fragment. Together they form
 one canonical registry, one deterministic identity, and one receipt boundary.
 """
+
 from __future__ import annotations
 
 import json
@@ -15,10 +16,15 @@ from typing import Any, Iterable
 REPO_ROOT = Path(__file__).resolve().parents[2]
 REPOSITORY_REGISTRY = REPO_ROOT / "registry" / "tower.yml"
 PACKAGED_REGISTRY = Path(__file__).resolve().parent / "data" / "tower.yml"
-DEFAULT_REGISTRY = REPOSITORY_REGISTRY if REPOSITORY_REGISTRY.is_file() else PACKAGED_REGISTRY
+DEFAULT_REGISTRY = (
+    REPOSITORY_REGISTRY if REPOSITORY_REGISTRY.is_file() else PACKAGED_REGISTRY
+)
 
 _REQUIRED_TECH_FIELDS = {
-    "id", "name", "evidence_state", "proof_class",
+    "id",
+    "name",
+    "evidence_state",
+    "proof_class",
 }
 _REQUIRED_CLAIM_FIELDS = {
     "signature_innovation",
@@ -81,7 +87,11 @@ class TowerRegistry:
     def claim_contract_for(self, technology_id: str) -> dict[str, Any] | None:
         key = technology_id.casefold()
         for contract_id, contract in self.claim_contracts.items():
-            if isinstance(contract_id, str) and contract_id.casefold() == key and isinstance(contract, dict):
+            if (
+                isinstance(contract_id, str)
+                and contract_id.casefold() == key
+                and isinstance(contract, dict)
+            ):
                 return dict(contract)
         return None
 
@@ -105,7 +115,9 @@ def _read_object(path: Path, label: str) -> dict[str, Any]:
     except OSError as exc:
         raise ValueError(f"{label} cannot be read: {path}: {exc}") from exc
     except json.JSONDecodeError as exc:
-        raise ValueError(f"{label} is not valid JSON-compatible YAML: {path}: {exc}") from exc
+        raise ValueError(
+            f"{label} is not valid JSON-compatible YAML: {path}: {exc}"
+        ) from exc
     if not isinstance(payload, dict):
         raise ValueError(f"{label} root must be an object: {path}")
     return payload
@@ -122,7 +134,9 @@ def _contained_fragment(index: Path, relative: str) -> Path:
     except ValueError:
         raise ValueError(f"Tower fragment escapes registry root: {relative}") from None
     if candidate == root:
-        raise ValueError(f"Tower fragment must name a file below registry root: {relative}")
+        raise ValueError(
+            f"Tower fragment must name a file below registry root: {relative}"
+        )
     return candidate
 
 
@@ -133,14 +147,18 @@ def load_registry(path: Path | str | None = None) -> TowerRegistry:
     inline = index.get("technologies", [])
     source_files: list[Path] = [source]
 
-    if not isinstance(fragments, list) or not all(isinstance(item, str) for item in fragments):
+    if not isinstance(fragments, list) or not all(
+        isinstance(item, str) for item in fragments
+    ):
         raise ValueError("Tower registry fragments must be a list of relative paths")
     if not isinstance(inline, list):
         raise ValueError("Tower registry technologies must be a list")
 
     if fragments:
         if inline:
-            raise ValueError("Tower registry cannot mix inline technologies and fragments")
+            raise ValueError(
+                "Tower registry cannot mix inline technologies and fragments"
+            )
         technologies: list[dict[str, Any]] = []
         seen: set[str] = set()
         for relative in fragments:
@@ -154,15 +172,21 @@ def load_registry(path: Path | str | None = None) -> TowerRegistry:
             if isinstance(rows, dict):
                 rows = list(rows.values())
             if not isinstance(rows, list):
-                raise ValueError(f"Tower fragment technologies must be a list: {relative}")
+                raise ValueError(
+                    f"Tower fragment technologies must be a list: {relative}"
+                )
             for row in rows:
                 if not isinstance(row, dict):
-                    raise ValueError(f"Tower fragment record must be an object: {relative}")
+                    raise ValueError(
+                        f"Tower fragment record must be an object: {relative}"
+                    )
                 technology_id = row.get("id")
                 if isinstance(technology_id, str):
                     normalized_id = technology_id.casefold()
                     if normalized_id in seen:
-                        raise ValueError(f"duplicate technology id across fragments: {technology_id}")
+                        raise ValueError(
+                            f"duplicate technology id across fragments: {technology_id}"
+                        )
                     seen.add(normalized_id)
                 technologies.append(row)
             source_files.append(fragment_path)
@@ -172,12 +196,16 @@ def load_registry(path: Path | str | None = None) -> TowerRegistry:
 
     contract_relative = index.get("claim_contracts")
     if not isinstance(contract_relative, str) or not contract_relative:
-        raise ValueError("Tower registry claim_contracts must name a contained contract fragment")
+        raise ValueError(
+            "Tower registry claim_contracts must name a contained contract fragment"
+        )
     contract_path = _contained_fragment(source, contract_relative)
     contract_payload = _read_object(contract_path, "Tower advanced claim contracts")
     contracts = contract_payload.get("contracts")
     if not isinstance(contracts, dict):
-        raise ValueError("Tower advanced claim contracts must contain a contracts object")
+        raise ValueError(
+            "Tower advanced claim contracts must contain a contracts object"
+        )
     source_files.append(contract_path)
     payload["claim_contract_source"] = contract_relative
     payload["claim_contracts"] = contracts
@@ -192,8 +220,12 @@ def load_registry(path: Path | str | None = None) -> TowerRegistry:
     )
 
 
-def _validate_string_list(value: Any, label: str, errors: list[str], *, nonempty: bool = True) -> list[str]:
-    if not isinstance(value, list) or not all(isinstance(item, str) and item.strip() for item in value):
+def _validate_string_list(
+    value: Any, label: str, errors: list[str], *, nonempty: bool = True
+) -> list[str]:
+    if not isinstance(value, list) or not all(
+        isinstance(item, str) and item.strip() for item in value
+    ):
         errors.append(f"{label} must be a list of non-empty strings")
         return []
     if nonempty and not value:
@@ -201,11 +233,18 @@ def _validate_string_list(value: Any, label: str, errors: list[str], *, nonempty
     return value
 
 
-def validate_registry(registry: TowerRegistry, *, check_paths: bool = True) -> list[str]:
+def validate_registry(
+    registry: TowerRegistry, *, check_paths: bool = True
+) -> list[str]:
     errors: list[str] = []
     payload = registry.payload
-    if payload.get("tower_id") not in {"glaciereq.tower-of-babel.v1", "glaciereq.fiat-justitia.v1"}:
-        errors.append("tower_id must be glaciereq.tower-of-babel.v1 or glaciereq.fiat-justitia.v1")
+    if payload.get("tower_id") not in {
+        "glaciereq.tower-of-babel.v1",
+        "glaciereq.fiat-justitia.v1",
+    }:
+        errors.append(
+            "tower_id must be glaciereq.tower-of-babel.v1 or glaciereq.fiat-justitia.v1"
+        )
     governance = payload.get("governance")
     if not isinstance(governance, dict):
         errors.append("governance must be an object")
@@ -217,7 +256,9 @@ def validate_registry(registry: TowerRegistry, *, check_paths: bool = True) -> l
         errors.append("fragments must be a list")
         fragments = []
     if fragments and len(registry.source_files) != len(fragments) + 2:
-        errors.append("every declared Tower technology and claim-contract fragment must be loaded")
+        errors.append(
+            "every declared Tower technology and claim-contract fragment must be loaded"
+        )
     technologies = payload.get("technologies")
     if not isinstance(technologies, list) or not technologies:
         return errors + ["technologies must be a non-empty list"]
@@ -237,10 +278,25 @@ def validate_registry(registry: TowerRegistry, *, check_paths: bool = True) -> l
         req_fields = {"id", "name", "evidence_state", "proof_class"}
         if "extension" in row or "toolchain" in row:
             req_fields = {
-                "id", "name", "extension", "category", "artifact_type",
-                "what", "where", "when", "why", "how",
-                "easy_example", "advanced_example", "evidence_state", "proof_class",
-                "toolchain", "execution", "interfaces", "megamind", "primary_evidence",
+                "id",
+                "name",
+                "extension",
+                "category",
+                "artifact_type",
+                "what",
+                "where",
+                "when",
+                "why",
+                "how",
+                "easy_example",
+                "advanced_example",
+                "evidence_state",
+                "proof_class",
+                "toolchain",
+                "execution",
+                "interfaces",
+                "megamind",
+                "primary_evidence",
             }
         missing = sorted(req_fields - set(row))
         if missing:
@@ -264,36 +320,63 @@ def validate_registry(registry: TowerRegistry, *, check_paths: bool = True) -> l
         names.add(normalized_name)
 
         for key in ("what", "where", "when", "why", "how"):
-            if key in row and (not isinstance(row.get(key), str) or len(row[key].strip()) < 12):
+            if key in row and (
+                not isinstance(row.get(key), str) or len(row[key].strip()) < 12
+            ):
                 errors.append(f"{tech_id}.{key} must be a substantive string")
-        if row.get("evidence_state") and row.get("evidence_state") not in allowed_states:
+        if (
+            row.get("evidence_state")
+            and row.get("evidence_state") not in allowed_states
+        ):
             errors.append(f"{tech_id}.evidence_state is not governed")
         if row.get("proof_class") and row.get("proof_class") not in allowed_proofs:
             errors.append(f"{tech_id}.proof_class is not governed")
         if "toolchain" in row:
             toolchain = row.get("toolchain")
-            if not isinstance(toolchain, dict) or not isinstance(toolchain.get("tool"), str) or not toolchain.get("tool") or not isinstance(toolchain.get("reference_pin"), str) or not toolchain.get("reference_pin"):
-                errors.append(f"{tech_id}.toolchain requires string tool and reference_pin")
+            if (
+                not isinstance(toolchain, dict)
+                or not isinstance(toolchain.get("tool"), str)
+                or not toolchain.get("tool")
+                or not isinstance(toolchain.get("reference_pin"), str)
+                or not toolchain.get("reference_pin")
+            ):
+                errors.append(
+                    f"{tech_id}.toolchain requires string tool and reference_pin"
+                )
         if "execution" in row:
             execution = row.get("execution")
-            if not isinstance(execution, dict) or not isinstance(execution.get("ci_tier"), str) or not execution.get("ci_tier"):
+            if (
+                not isinstance(execution, dict)
+                or not isinstance(execution.get("ci_tier"), str)
+                or not execution.get("ci_tier")
+            ):
                 errors.append(f"{tech_id}.execution requires ci_tier")
         if "interfaces" in row:
             interfaces = row.get("interfaces")
-            if not isinstance(interfaces, list) or not all(isinstance(item, str) for item in interfaces):
+            if not isinstance(interfaces, list) or not all(
+                isinstance(item, str) for item in interfaces
+            ):
                 errors.append(f"{tech_id}.interfaces must be a string list")
         if "megamind" in row:
             ownership = row.get("megamind")
-            if not isinstance(ownership, dict) or not isinstance(ownership.get("agents"), list) or not isinstance(ownership.get("pistons"), list):
+            if (
+                not isinstance(ownership, dict)
+                or not isinstance(ownership.get("agents"), list)
+                or not isinstance(ownership.get("pistons"), list)
+            ):
                 errors.append(f"{tech_id}.megamind requires agent and piston lists")
         if "primary_evidence" in row:
             evidence = row.get("primary_evidence")
             if not isinstance(evidence, list) or not evidence:
-                errors.append(f"{tech_id}.primary_evidence requires at least one source")
+                errors.append(
+                    f"{tech_id}.primary_evidence requires at least one source"
+                )
             else:
                 for uri in evidence:
                     if not isinstance(uri, str) or not uri.startswith("https://"):
-                        errors.append(f"{tech_id}.primary_evidence must contain HTTPS URLs")
+                        errors.append(
+                            f"{tech_id}.primary_evidence must contain HTTPS URLs"
+                        )
 
         if should_check_paths:
             for key in ("easy_example", "advanced_example"):
@@ -306,7 +389,9 @@ def validate_registry(registry: TowerRegistry, *, check_paths: bool = True) -> l
                         continue
                     rel = Path(value)
                     if rel.is_absolute() or ".." in rel.parts:
-                        errors.append(f"{tech_id}.{key} must stay inside the repository")
+                        errors.append(
+                            f"{tech_id}.{key} must stay inside the repository"
+                        )
                     elif not (REPO_ROOT / rel).is_file():
                         errors.append(f"{tech_id}.{key} missing: {rel}")
 
@@ -314,7 +399,9 @@ def validate_registry(registry: TowerRegistry, *, check_paths: bool = True) -> l
     normalized_contract_ids = {
         key.casefold() for key in contracts if isinstance(key, str)
     }
-    tech_contract_ids = {row["id"].casefold() for row in technologies if "advanced_example" in row}
+    tech_contract_ids = {
+        row["id"].casefold() for row in technologies if "advanced_example" in row
+    }
     if tech_contract_ids:
         missing = sorted(tech_contract_ids - normalized_contract_ids)
         if missing:
@@ -325,8 +412,13 @@ def validate_registry(registry: TowerRegistry, *, check_paths: bool = True) -> l
         errors.append("advanced claim contract authority must be registry/tower.yml")
     if metadata.get("contract_type") != "advanced_exhibit_semantic_claims":
         errors.append("advanced claim contract type is invalid")
-    if not isinstance(metadata.get("global_claim_boundary"), str) or len(metadata["global_claim_boundary"].strip()) < 40:
-        errors.append("advanced claim contracts require a substantive global_claim_boundary")
+    if (
+        not isinstance(metadata.get("global_claim_boundary"), str)
+        or len(metadata["global_claim_boundary"].strip()) < 40
+    ):
+        errors.append(
+            "advanced claim contracts require a substantive global_claim_boundary"
+        )
 
     for contract_id, contract in contracts.items():
         label = f"claim_contract[{contract_id}]"
@@ -338,7 +430,10 @@ def validate_registry(registry: TowerRegistry, *, check_paths: bool = True) -> l
             errors.append(f"{label} missing fields: {', '.join(missing)}")
             continue
         for key in ("signature_innovation", "proof_surface"):
-            if not isinstance(contract.get(key), str) or len(contract[key].strip()) < 12:
+            if (
+                not isinstance(contract.get(key), str)
+                or len(contract[key].strip()) < 12
+            ):
                 errors.append(f"{label}.{key} must be a substantive string")
         for key in (
             "required_source_patterns",
@@ -352,6 +447,8 @@ def validate_registry(registry: TowerRegistry, *, check_paths: bool = True) -> l
                     try:
                         re.compile(pattern, re.IGNORECASE)
                     except re.error as exc:
-                        errors.append(f"{label}.{key} contains invalid regex {pattern!r}: {exc}")
+                        errors.append(
+                            f"{label}.{key} contains invalid regex {pattern!r}: {exc}"
+                        )
 
     return errors

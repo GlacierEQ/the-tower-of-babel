@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Plan a mission through the canonical Tower-to-Megamind adapter."""
+
 from __future__ import annotations
 
 import json
@@ -22,7 +23,11 @@ def require_string(payload: dict, field: str) -> str:
 
 def require_string_list(payload: dict, field: str) -> tuple[str, ...]:
     value = payload.get(field)
-    if not isinstance(value, list) or not value or not all(isinstance(item, str) and item.strip() for item in value):
+    if (
+        not isinstance(value, list)
+        or not value
+        or not all(isinstance(item, str) and item.strip() for item in value)
+    ):
         raise ValueError(f"mission.{field} must be a non-empty string list")
     return tuple(item.strip() for item in value)
 
@@ -50,7 +55,9 @@ def main() -> int:
     plan["input_sha256"] = require_string(mission, "input_sha256")
     plan["maximum_action"] = require_string(mission, "maximum_action")
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(plan, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    output_path.write_text(
+        json.dumps(plan, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     print(json.dumps({"stage": "planner", "technologies": plan["technology_ids"]}))
     return 0
 

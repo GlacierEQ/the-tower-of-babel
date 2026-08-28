@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Audit and expose every Tower advanced exhibit from registry-owned claims."""
+
 from __future__ import annotations
 
 import argparse
@@ -80,7 +81,9 @@ def audit() -> tuple[list[str], dict]:
     ids = {tech["id"] for tech in registry.technologies}
     contracts = registry.claim_contracts
     if set(contracts) != ids:
-        errors.append("advanced claim contract coverage does not match canonical registry")
+        errors.append(
+            "advanced claim contract coverage does not match canonical registry"
+        )
 
     for tech in registry.technologies:
         tech_id = tech["id"]
@@ -91,7 +94,9 @@ def audit() -> tuple[list[str], dict]:
         path = REPO_ROOT / tech["advanced_example"]
         easy = REPO_ROOT / tech["easy_example"]
         if not path.is_file():
-            errors.append(f"{tech_id}: advanced exhibit missing: {tech['advanced_example']}")
+            errors.append(
+                f"{tech_id}: advanced exhibit missing: {tech['advanced_example']}"
+            )
             continue
         text = path.read_text(encoding="utf-8", errors="replace")
         # A reference exhibit must not emit a success receipt that downstream
@@ -106,25 +111,38 @@ def audit() -> tuple[list[str], dict]:
             minimum = promotion.get("minimum_evidence_state")
             required_runtime = promotion.get("required_source_patterns", [])
             if minimum not in EVIDENCE_RANK:
-                errors.append(f"{tech_id}: promotion gate has unknown minimum evidence state")
-            elif EVIDENCE_RANK.get(tech["evidence_state"], -1) >= EVIDENCE_RANK[minimum]:
+                errors.append(
+                    f"{tech_id}: promotion gate has unknown minimum evidence state"
+                )
+            elif (
+                EVIDENCE_RANK.get(tech["evidence_state"], -1) >= EVIDENCE_RANK[minimum]
+            ):
                 for pattern in required_runtime:
                     if not re.search(pattern, text, re.IGNORECASE | re.MULTILINE):
-                        errors.append(f"{tech_id}: promotion gate missing runtime proof {pattern!r}")
+                        errors.append(
+                            f"{tech_id}: promotion gate missing runtime proof {pattern!r}"
+                        )
 
         substantive = [
-            line for line in text.splitlines()
+            line
+            for line in text.splitlines()
             if line.strip() and not line.lstrip().startswith(("//", "#", ";;", "--"))
         ]
         if len(substantive) < 8:
-            errors.append(f"{tech_id}: advanced exhibit has only {len(substantive)} substantive lines")
+            errors.append(
+                f"{tech_id}: advanced exhibit has only {len(substantive)} substantive lines"
+            )
         if easy.is_file() and easy.read_bytes() == path.read_bytes():
             errors.append(f"{tech_id}: easy and advanced exhibits are identical")
         for pattern in PLACEHOLDERS:
             if pattern.search(text):
-                errors.append(f"{tech_id}: advanced exhibit contains placeholder pattern {pattern.pattern!r}")
+                errors.append(
+                    f"{tech_id}: advanced exhibit contains placeholder pattern {pattern.pattern!r}"
+                )
         if not Path(tech["advanced_example"]).name.startswith("advanced_"):
-            errors.append(f"{tech_id}: advanced exhibit filename must start with advanced_")
+            errors.append(
+                f"{tech_id}: advanced exhibit filename must start with advanced_"
+            )
 
         for source_pattern in contract["required_source_patterns"]:
             if not re.search(source_pattern, text, re.IGNORECASE | re.MULTILINE):
@@ -145,28 +163,34 @@ def audit() -> tuple[list[str], dict]:
             errors.append(f"{tech_id}: {state} evidence requires a build/proof command")
         if state in {"hardware_gated", "toolchain_gated", "service_gated"}:
             if not (tech["execution"].get("hardware_gate") or toolchain.get("tool")):
-                errors.append(f"{tech_id}: gated exhibit lacks an exact blocker surface")
+                errors.append(
+                    f"{tech_id}: gated exhibit lacks an exact blocker surface"
+                )
 
-        rows.append({
-            "id": tech_id,
-            "technology": tech["name"],
-            "advanced_exhibit": tech["advanced_example"],
-            "architectural_role": tech["where"],
-            "activation_condition": tech["when"],
-            "signature_innovation": contract["signature_innovation"],
-            "proof_surface": contract["proof_surface"],
-            "source_assertions": contract["required_source_patterns"],
-            "expected_failure_cases": contract["expected_failure_cases"],
-            "required_receipt_fields": contract["required_receipt_fields"],
-            "forbidden_claim_patterns": contract["forbidden_claim_patterns"],
-            "evidence_state": state,
-            "proof_class": tech["proof_class"],
-            "maturity_tier": classify(tech),
-            "evidence_tier": classify(tech),
-            "promotion_gate": contract.get("promotion_requirements", {}),
-            "interfaces": tech["interfaces"],
-            "claim_boundary": registry.claim_contract_metadata["global_claim_boundary"],
-        })
+        rows.append(
+            {
+                "id": tech_id,
+                "technology": tech["name"],
+                "advanced_exhibit": tech["advanced_example"],
+                "architectural_role": tech["where"],
+                "activation_condition": tech["when"],
+                "signature_innovation": contract["signature_innovation"],
+                "proof_surface": contract["proof_surface"],
+                "source_assertions": contract["required_source_patterns"],
+                "expected_failure_cases": contract["expected_failure_cases"],
+                "required_receipt_fields": contract["required_receipt_fields"],
+                "forbidden_claim_patterns": contract["forbidden_claim_patterns"],
+                "evidence_state": state,
+                "proof_class": tech["proof_class"],
+                "maturity_tier": classify(tech),
+                "evidence_tier": classify(tech),
+                "promotion_gate": contract.get("promotion_requirements", {}),
+                "interfaces": tech["interfaces"],
+                "claim_boundary": registry.claim_contract_metadata[
+                    "global_claim_boundary"
+                ],
+            }
+        )
 
     atlas = {
         "schema_version": 2,
@@ -201,21 +225,23 @@ def markdown(atlas: dict) -> str:
             f"`{row['evidence_state']}` / `{row['proof_class']}` | "
             f"[`{Path(row['advanced_exhibit']).name}`]({row['advanced_exhibit']}) |"
         )
-    lines.extend([
-        "",
-        "## Machine-enforced claim contract",
-        "",
-        "Every row is backed by registry-owned source patterns, expected failure cases, required receipt fields, and forbidden positive claims. The audit checks the source patterns and rejects unsupported positive claims while permitting explicit disclaimers and claim boundaries.",
-        "",
-        "## Promotion standard",
-        "",
-        "An exhibit is admitted to operations only when it owns a meaningful boundary, rejects invalid or unsafe states, exposes an observable result, and carries executable proof or an exact environmental blocker. Concept-only references are never eligible for runtime selection. File size, exotic syntax, and dramatic naming are not evidence.",
-        "",
-        "## Originality boundary",
-        "",
-        "The Tower highlights **distinctive synthesis**: original combinations of governance, receipts, bounded execution, cross-language interfaces, and proof surfaces. It does not claim that a standard algorithm, language feature, or architecture was invented here unless independently documented evidence supports that claim.",
-        "",
-    ])
+    lines.extend(
+        [
+            "",
+            "## Machine-enforced claim contract",
+            "",
+            "Every row is backed by registry-owned source patterns, expected failure cases, required receipt fields, and forbidden positive claims. The audit checks the source patterns and rejects unsupported positive claims while permitting explicit disclaimers and claim boundaries.",
+            "",
+            "## Promotion standard",
+            "",
+            "An exhibit is admitted to operations only when it owns a meaningful boundary, rejects invalid or unsafe states, exposes an observable result, and carries executable proof or an exact environmental blocker. Concept-only references are never eligible for runtime selection. File size, exotic syntax, and dramatic naming are not evidence.",
+            "",
+            "## Originality boundary",
+            "",
+            "The Tower highlights **distinctive synthesis**: original combinations of governance, receipts, bounded execution, cross-language interfaces, and proof surfaces. It does not claim that a standard algorithm, language feature, or architecture was invented here unless independently documented evidence supports that claim.",
+            "",
+        ]
+    )
     return "\n".join(lines)
 
 
@@ -233,14 +259,19 @@ def main() -> int:
         json_path.write_text(json_content, encoding="utf-8")
         md_path.write_text(md_content, encoding="utf-8")
     if args.check:
-        if not json_path.is_file() or json_path.read_text(encoding="utf-8") != json_content:
+        if (
+            not json_path.is_file()
+            or json_path.read_text(encoding="utf-8") != json_content
+        ):
             errors.append("quality/advanced_exhibit_atlas.json is missing or stale")
         if not md_path.is_file() or md_path.read_text(encoding="utf-8") != md_content:
             errors.append("ADVANCED_EXHIBITS.md is missing or stale")
     if errors:
         print("\n".join(errors))
         return 1
-    print(f"Advanced exhibit audit verified {atlas['advanced_exhibit_count']} exhibits.")
+    print(
+        f"Advanced exhibit audit verified {atlas['advanced_exhibit_count']} exhibits."
+    )
     return 0
 
 

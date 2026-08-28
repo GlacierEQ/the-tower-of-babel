@@ -25,8 +25,13 @@ def test_tower_owns_evolution_placement_without_rewriting_excellence_history():
         == "generated/smithery.registry.json"
     )
     assert CONTRACT["integration"]["consumer"] == "GlacierEQ/job-application"
-    assert CONTRACT["integration"]["placement_required_before_material_evolution"] is True
-    assert CONTRACT["integration"]["retroactively_invalidates_existing_excellence_state"] is False
+    assert (
+        CONTRACT["integration"]["placement_required_before_material_evolution"] is True
+    )
+    assert (
+        CONTRACT["integration"]["retroactively_invalidates_existing_excellence_state"]
+        is False
+    )
 
 
 def test_decisions_force_architectural_reasoning_not_language_counting():
@@ -42,9 +47,17 @@ def test_decisions_force_architectural_reasoning_not_language_counting():
 
 def test_cross_runtime_overlap_requires_parity_and_proof():
     policy = CONTRACT["policy"]
-    assert policy["semantic_overlap_requires_cross_runtime_parity_or_explicit_non_equivalence"] is True
+    assert (
+        policy[
+            "semantic_overlap_requires_cross_runtime_parity_or_explicit_non_equivalence"
+        ]
+        is True
+    )
     assert policy["new_runtime_requires_declared_proof_tier"] is True
-    assert policy["toolchain_or_external_unavailability_must_remain_blocked_not_passed"] is True
+    assert (
+        policy["toolchain_or_external_unavailability_must_remain_blocked_not_passed"]
+        is True
+    )
     assert CONTRACT["proof_tiers"] == ["A", "B", "C"]
     required = set(CONTRACT["boundary_required_fields"])
     assert {
@@ -80,5 +93,11 @@ def test_contract_is_consistent_with_canonical_tower_and_quality_authorities():
     assert "Validation and failure behavior" in QUALITY
     assert "A meaningful invariant or policy boundary" in QUALITY
     assert "A runnable demonstration, proof, benchmark, or test vector" in QUALITY
-    assert "Missing toolchains, services, dependencies, or hardware produce exact blockers" in QUALITY
-    assert "Structural presence is not compiler proof, and compiler proof is not production proof" in QUALITY
+    assert (
+        "Missing toolchains, services, dependencies, or hardware produce exact blockers"
+        in QUALITY
+    )
+    assert (
+        "Structural presence is not compiler proof, and compiler proof is not production proof"
+        in QUALITY
+    )

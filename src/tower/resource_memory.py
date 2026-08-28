@@ -6,6 +6,7 @@ duplicate evidence by content hash, binds continuity to a valid release receipt
 when one is available, and emits a deterministic preflight receipt before
 architecture placement or technology promotion.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -65,7 +66,9 @@ def _sha256(path: Path) -> str:
 
 
 def _stable_sha256(value: Any) -> str:
-    encoded = json.dumps(value, separators=(",", ":"), sort_keys=True, ensure_ascii=False).encode("utf-8")
+    encoded = json.dumps(
+        value, separators=(",", ":"), sort_keys=True, ensure_ascii=False
+    ).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
 
 
@@ -181,12 +184,27 @@ def _read_memory_snapshot(
     elif isinstance(payload, list):
         raw_findings = payload
     else:
-        return "INVALID", [], ["external memory snapshot must be an object or list"], snapshot_sha256
+        return (
+            "INVALID",
+            [],
+            ["external memory snapshot must be an object or list"],
+            snapshot_sha256,
+        )
 
     if not isinstance(raw_findings, list):
-        return "INVALID", [], ["external memory findings must be a list"], snapshot_sha256
+        return (
+            "INVALID",
+            [],
+            ["external memory findings must be a list"],
+            snapshot_sha256,
+        )
     if not raw_findings:
-        return "NO_PRIOR_STATE_FOUND", [], ["external memory snapshot contains no findings"], snapshot_sha256
+        return (
+            "NO_PRIOR_STATE_FOUND",
+            [],
+            ["external memory snapshot contains no findings"],
+            snapshot_sha256,
+        )
 
     findings: list[dict[str, Any]] = []
     for index, raw in enumerate(raw_findings):
@@ -222,7 +240,9 @@ def _read_memory_snapshot(
         elif requested_status in allowed:
             status = requested_status
         else:
-            status = "VERIFIED_WITH_SOURCE" if source_pointer else "RECALLED_NEEDS_SOURCE"
+            status = (
+                "VERIFIED_WITH_SOURCE" if source_pointer else "RECALLED_NEEDS_SOURCE"
+            )
 
         findings.append(
             {
@@ -234,7 +254,12 @@ def _read_memory_snapshot(
         )
 
     if not findings:
-        return "INVALID", [], ["external memory snapshot contains no analyzable findings"], snapshot_sha256
+        return (
+            "INVALID",
+            [],
+            ["external memory snapshot contains no analyzable findings"],
+            snapshot_sha256,
+        )
 
     gaps = [
         f"memory finding lacks source pointer: {row['finding']}"
@@ -244,7 +269,9 @@ def _read_memory_snapshot(
     return "ANALYZED", findings, gaps, snapshot_sha256
 
 
-def _load_verified_checkpoint(root: Path, receipt_path: Path) -> tuple[dict[str, Any] | None, list[str]]:
+def _load_verified_checkpoint(
+    root: Path, receipt_path: Path
+) -> tuple[dict[str, Any] | None, list[str]]:
     """Load a proof-bound release receipt without inventing verification state."""
     if not receipt_path.is_file():
         return None, [f"verified release receipt not found: {receipt_path}"]
@@ -275,13 +302,18 @@ def _load_verified_checkpoint(root: Path, receipt_path: Path) -> tuple[dict[str,
         if key not in {"receipt_id", "body_sha256", "receipt_sha256"}
     }
     body_sha = _stable_sha256(body)
-    if payload.get("body_sha256") != body_sha or payload.get("receipt_sha256") != body_sha:
+    if (
+        payload.get("body_sha256") != body_sha
+        or payload.get("receipt_sha256") != body_sha
+    ):
         errors.append("verified release receipt body hash is invalid")
 
     if isinstance(commit_sha, str) and len(commit_sha) == 40:
         resolved_tree = _git(root, "rev-parse", f"{commit_sha}^{{tree}}")
         if resolved_tree is None:
-            errors.append("verified release receipt commit is not available in this checkout")
+            errors.append(
+                "verified release receipt commit is not available in this checkout"
+            )
         elif isinstance(tree_sha, str) and resolved_tree != tree_sha:
             errors.append("verified release receipt tree does not match commit")
 
@@ -302,7 +334,11 @@ def _git_state(root: Path, checkpoint: dict[str, Any] | None) -> dict[str, Any]:
     head = _git(root, "rev-parse", "HEAD")
     tree = _git(root, "rev-parse", "HEAD^{tree}")
     porcelain = _git(root, "status", "--porcelain=v1")
-    working_changes = sorted(line[3:] for line in porcelain.splitlines() if len(line) >= 4) if porcelain else []
+    working_changes = (
+        sorted(line[3:] for line in porcelain.splitlines() if len(line) >= 4)
+        if porcelain
+        else []
+    )
 
     committed_changes: list[str] = []
     committed_status = "UNKNOWN_NO_VERIFIED_CHECKPOINT"
@@ -348,7 +384,9 @@ def build_preflight(
     )
 
     resources, duplicates = inventory_resources(root, exclude_paths=exclude_paths)
-    memory_status, memory_findings, memory_gaps, memory_sha256 = _read_memory_snapshot(memory_path)
+    memory_status, memory_findings, memory_gaps, memory_sha256 = _read_memory_snapshot(
+        memory_path
+    )
     checkpoint, checkpoint_gaps = _load_verified_checkpoint(root, receipt_path)
     git_state = _git_state(root, checkpoint)
 
@@ -395,7 +433,9 @@ def build_preflight(
         },
         "memory_analysis": {
             "status": memory_status,
-            "source_locator": _memory_locator(memory_path, root) if memory_path else None,
+            "source_locator": _memory_locator(memory_path, root)
+            if memory_path
+            else None,
             "source_sha256": memory_sha256,
             "findings": memory_findings,
             "gaps": memory_gaps,
@@ -425,7 +465,9 @@ def write_preflight(
     output = output.resolve()
     resolved_memory = memory_path.resolve() if memory_path is not None else None
     if resolved_memory is not None and resolved_memory == output:
-        raise ValueError("preflight output must not overwrite the external memory snapshot")
+        raise ValueError(
+            "preflight output must not overwrite the external memory snapshot"
+        )
 
     payload = build_preflight(
         mission,
@@ -435,5 +477,7 @@ def write_preflight(
         exclude_paths=(output,),
     )
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    output.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     return payload

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Create or update the repository main-protection ruleset from policy-as-code."""
+
 from __future__ import annotations
 
 import argparse
@@ -16,7 +17,9 @@ DEFAULT_REPOSITORY = "GlacierEQ/the-tower-of-babel"
 API_VERSION = "2022-11-28"
 
 
-def request_json(url: str, token: str, *, method: str = "GET", payload: dict[str, Any] | None = None) -> Any:
+def request_json(
+    url: str, token: str, *, method: str = "GET", payload: dict[str, Any] | None = None
+) -> Any:
     headers = {
         "Accept": "application/vnd.github+json",
         "Authorization": f"Bearer {token}",
@@ -43,7 +46,9 @@ def install(repository: str, contract_path: Path, token: str) -> dict[str, Any]:
                 target_id = ruleset.get("id")
                 break
     if isinstance(target_id, int):
-        result = request_json(f"{base_url}/{target_id}", token, method="PUT", payload=payload)
+        result = request_json(
+            f"{base_url}/{target_id}", token, method="PUT", payload=payload
+        )
         operation = "updated"
     else:
         result = request_json(base_url, token, method="POST", payload=payload)
@@ -60,13 +65,17 @@ def install(repository: str, contract_path: Path, token: str) -> dict[str, Any]:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--repository", default=os.environ.get("GITHUB_REPOSITORY", DEFAULT_REPOSITORY))
+    parser.add_argument(
+        "--repository", default=os.environ.get("GITHUB_REPOSITORY", DEFAULT_REPOSITORY)
+    )
     parser.add_argument("--contract", type=Path, default=DEFAULT_CONTRACT)
     parser.add_argument("--token", default=os.environ.get("RULESET_ADMIN_TOKEN"))
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     if not args.token:
-        raise SystemExit("RULESET_ADMIN_TOKEN is required and must have repository Administration: write.")
+        raise SystemExit(
+            "RULESET_ADMIN_TOKEN is required and must have repository Administration: write."
+        )
     try:
         result = install(args.repository, args.contract.resolve(), args.token)
     except (OSError, ValueError, urllib.error.URLError, urllib.error.HTTPError) as exc:
