@@ -22,11 +22,15 @@ def test_context_integrity_proof_binds_registry_integrity_and_receipt():
     assert "does not compile every technology" in receipt["truth_boundary"]
 
 
-def test_context_integrity_proof_cli_reports_load_failure_with_nonzero_status(monkeypatch, capsys):
+def test_context_integrity_proof_cli_reports_load_failure_with_nonzero_status(
+    monkeypatch, capsys
+):
     def fail_load_registry():
         raise ValueError("fixture registry is unavailable")
 
-    monkeypatch.setattr(run_context_integrity_proof, "load_registry", fail_load_registry)
+    monkeypatch.setattr(
+        run_context_integrity_proof, "load_registry", fail_load_registry
+    )
 
     assert run_context_integrity_proof.main([]) == 1
 
@@ -40,7 +44,9 @@ def test_context_integrity_proof_reports_manifest_write_failure(monkeypatch):
     def fail_write_manifest(_path):
         raise OSError("fixture manifest write failed")
 
-    monkeypatch.setattr(run_context_integrity_proof, "write_manifest", fail_write_manifest)
+    monkeypatch.setattr(
+        run_context_integrity_proof, "write_manifest", fail_write_manifest
+    )
 
     receipt = run_context_integrity_proof.run()
 
@@ -49,7 +55,9 @@ def test_context_integrity_proof_reports_manifest_write_failure(monkeypatch):
     assert "fixture manifest write failed" in receipt["error"]
 
 
-def test_context_integrity_proof_cli_preserves_receipt_when_output_write_fails(monkeypatch, capsys, tmp_path):
+def test_context_integrity_proof_cli_preserves_receipt_when_output_write_fails(
+    monkeypatch, capsys, tmp_path
+):
     monkeypatch.setattr(
         run_context_integrity_proof,
         "run",
@@ -58,7 +66,12 @@ def test_context_integrity_proof_cli_preserves_receipt_when_output_write_fails(m
     blocked_parent = tmp_path / "blocked-output"
     blocked_parent.write_text("not a directory", encoding="utf-8")
 
-    assert run_context_integrity_proof.main(["--output", str(blocked_parent / "proof.json")]) == 1
+    assert (
+        run_context_integrity_proof.main(
+            ["--output", str(blocked_parent / "proof.json")]
+        )
+        == 1
+    )
 
     rendered = json.loads(capsys.readouterr().out)
     assert rendered["status"] == "verified"

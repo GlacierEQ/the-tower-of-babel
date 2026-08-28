@@ -1,4 +1,3 @@
-from pathlib import Path
 import json
 import subprocess
 import sys
@@ -14,7 +13,12 @@ def test_python_planner_traverses_tower_adapter(tmp_path):
     mission.write_text(json.dumps(payload), encoding="utf-8")
     plan = tmp_path / "plan.json"
     completed = subprocess.run(
-        [sys.executable, str(REPO_ROOT / "flagship/python/planner.py"), str(mission), str(plan)],
+        [
+            sys.executable,
+            str(REPO_ROOT / "flagship/python/planner.py"),
+            str(mission),
+            str(plan),
+        ],
         cwd=REPO_ROOT,
         text=True,
         capture_output=True,

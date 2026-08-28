@@ -38,7 +38,9 @@ def test_release_receipt_is_deterministic_for_same_head_and_report() -> None:
     assert first == second
 
 
-def test_protobuf_receipt_contract_preserves_wire_number_with_new_identity_name() -> None:
+def test_protobuf_receipt_contract_preserves_wire_number_with_new_identity_name() -> (
+    None
+):
     proto = (REPO_ROOT / "proto" / "tower.proto").read_text(encoding="utf-8")
     assert "string integrity_identity_sha256 = 3;" in proto
     assert "string integrity_manifest_sha256 = 3;" not in proto

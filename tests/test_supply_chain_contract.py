@@ -55,13 +55,16 @@ def test_ruleset_contexts_are_emitted_by_workflows() -> None:
     contract = json.loads(
         (ROOT / "governance/main-ruleset.required.json").read_text(encoding="utf-8")
     )
-    status_rule = next(rule for rule in contract["rules"] if rule["type"] == "required_status_checks")
+    status_rule = next(
+        rule for rule in contract["rules"] if rule["type"] == "required_status_checks"
+    )
     contexts = {
-        row["context"]
-        for row in status_rule["parameters"]["required_status_checks"]
+        row["context"] for row in status_rule["parameters"]["required_status_checks"]
     }
     assert contexts == REQUIRED_CONTEXTS
-    workflow_text = "\n".join(path.read_text(encoding="utf-8") for path in PERMANENT_WORKFLOWS)
+    workflow_text = "\n".join(
+        path.read_text(encoding="utf-8") for path in PERMANENT_WORKFLOWS
+    )
     for context in contexts:
         assert f"name: {context}" in workflow_text
 

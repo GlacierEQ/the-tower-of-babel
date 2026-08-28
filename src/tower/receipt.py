@@ -1,4 +1,5 @@
 """Deterministic Tower release receipt."""
+
 from __future__ import annotations
 
 import hashlib
@@ -11,10 +12,14 @@ from .registry import load_registry, validate_registry
 
 
 def _stable_json(value: Any) -> bytes:
-    return json.dumps(value, separators=(",", ":"), sort_keys=True, ensure_ascii=False).encode("utf-8")
+    return json.dumps(
+        value, separators=(",", ":"), sort_keys=True, ensure_ascii=False
+    ).encode("utf-8")
 
 
-def _validate_build_report(build_report: dict[str, Any], governed_ids: set[str]) -> list[str]:
+def _validate_build_report(
+    build_report: dict[str, Any], governed_ids: set[str]
+) -> list[str]:
     errors: list[str] = []
     rows = build_report.get("results")
     counts = build_report.get("counts")
@@ -59,7 +64,9 @@ def build_receipt(build_report: dict[str, Any]) -> dict[str, Any]:
     if not integrity.get("ok"):
         integrity_errors.append("release receipt requires verified live Git integrity")
     if len(integrity_identity_sha) != 64:
-        integrity_errors.append("live Git integrity receipt_sha256 is missing or invalid")
+        integrity_errors.append(
+            "live Git integrity receipt_sha256 is missing or invalid"
+        )
     if not integrity.get("commit_sha") or not integrity.get("tree_sha"):
         integrity_errors.append("live Git integrity commit/tree identity is incomplete")
 
@@ -94,5 +101,7 @@ def build_receipt(build_report: dict[str, Any]) -> dict[str, Any]:
 def write_receipt(path: Path, build_report: dict[str, Any]) -> dict[str, Any]:
     payload = build_receipt(build_report)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     return payload

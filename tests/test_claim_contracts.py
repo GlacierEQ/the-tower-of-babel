@@ -22,7 +22,9 @@ def test_claim_contract_source_assertions_match_advanced_exhibits() -> None:
         text = (REPO_ROOT / tech["advanced_example"]).read_text(encoding="utf-8")
         for pattern in contract["required_source_patterns"]:
             assert re.search(pattern, text, re.IGNORECASE | re.MULTILINE), (
-                tech["id"], pattern, Path(tech["advanced_example"]).name
+                tech["id"],
+                pattern,
+                Path(tech["advanced_example"]).name,
             )
 
 
@@ -46,10 +48,13 @@ def test_frontier_exhibits_cannot_promote_without_runtime_proof() -> None:
         contract = registry.claim_contract_for(tech_id)
         assert contract is not None
         assert contract["promotion_requirements"]["minimum_evidence_state"] in {
-            "tested", "benchmark"
+            "tested",
+            "benchmark",
         }
         text = (REPO_ROOT / tech["advanced_example"]).read_text(encoding="utf-8")
-        assert not re.search(r"[\"']status[\"']\s*:\s*[\"']VERIFIED", text, re.IGNORECASE)
+        assert not re.search(
+            r"[\"']status[\"']\s*:\s*[\"']VERIFIED", text, re.IGNORECASE
+        )
 
 
 def test_selection_engine_excludes_concept_only_frontier_claims() -> None:

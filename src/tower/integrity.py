@@ -1,4 +1,5 @@
 """Evolvable repository integrity and explicit evidence snapshots."""
+
 from __future__ import annotations
 
 import hashlib
@@ -58,7 +59,9 @@ def _eligible(path: Path, manifest_path: Path | None = None) -> bool:
     excluded_manifest = None
     if manifest_path is not None:
         try:
-            excluded_manifest = manifest_path.resolve().relative_to(REPO_ROOT).as_posix()
+            excluded_manifest = (
+                manifest_path.resolve().relative_to(REPO_ROOT).as_posix()
+            )
         except (OSError, ValueError):
             pass
     return (
@@ -100,7 +103,9 @@ def write_manifest(path: Path = DEFAULT_SNAPSHOT) -> dict[str, Any]:
         "hashes": hashes,
     }
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     return payload
 
 
@@ -157,7 +162,11 @@ def _load_delta(
         resolved[file_path] = digest
 
     for file_path in removals:
-        if not isinstance(file_path, str) or not file_path or file_path in _EXCLUDED_FILES:
+        if (
+            not isinstance(file_path, str)
+            or not file_path
+            or file_path in _EXCLUDED_FILES
+        ):
             raise ValueError(f"invalid integrity delta removal: {file_path!r}")
         if file_path not in resolved:
             raise ValueError(f"integrity delta removes unknown path: {file_path}")
@@ -165,7 +174,9 @@ def _load_delta(
 
     resulting_file_count = delta.get("resulting_file_count")
     if resulting_file_count != len(resolved):
-        raise ValueError("integrity delta resulting_file_count does not match resolved hashes")
+        raise ValueError(
+            "integrity delta resulting_file_count does not match resolved hashes"
+        )
 
     return resolved, {
         "applied": True,
@@ -199,7 +210,9 @@ def _verify_snapshot(path: Path, *, delta_path: Path | None = None) -> dict[str,
     if expected.get("schema_version") not in {"1.0.0", "2.0.0"}:
         return _invalid_snapshot("unsupported snapshot schema_version", snapshot_sha256)
     if expected.get("repo_name") != "the-tower-of-babel":
-        return _invalid_snapshot("repo_name must be the-tower-of-babel", snapshot_sha256)
+        return _invalid_snapshot(
+            "repo_name must be the-tower-of-babel", snapshot_sha256
+        )
     if expected.get("hash_algorithm") != "sha256":
         return _invalid_snapshot("hash_algorithm must be sha256", snapshot_sha256)
     expected_hashes = expected.get("hashes")
@@ -214,7 +227,9 @@ def _verify_snapshot(path: Path, *, delta_path: Path | None = None) -> dict[str,
             or not isinstance(digest, str)
             or not _SHA256_RE.fullmatch(digest)
         ):
-            return _invalid_snapshot(f"invalid hash entry: {file_path!r}", snapshot_sha256)
+            return _invalid_snapshot(
+                f"invalid hash entry: {file_path!r}", snapshot_sha256
+            )
 
     resolved_hashes = dict(expected_hashes)
     delta = {"applied": False, "sha256": ""}
@@ -267,7 +282,9 @@ def _git_index_integrity() -> dict[str, Any]:
         commit_sha = _git("rev-parse", "HEAD").strip()
         tree_sha = _git("rev-parse", "HEAD^{tree}").strip()
         tracked_raw = _git("ls-files", "-z")
-        changed_raw = _git("diff", "--name-only", "--diff-filter=ACDMRTUXB", "HEAD", "--")
+        changed_raw = _git(
+            "diff", "--name-only", "--diff-filter=ACDMRTUXB", "HEAD", "--"
+        )
         untracked_raw = _git("ls-files", "--others", "--exclude-standard", "-z")
         tree_listing = _git("ls-tree", "-r", "--full-tree", "HEAD")
     except (OSError, subprocess.CalledProcessError) as exc:
@@ -289,7 +306,9 @@ def _git_index_integrity() -> dict[str, Any]:
         if rel.strip() and _eligible_relative(Path(rel.strip()))
     )
     unexpected = sorted(
-        rel for rel in untracked_raw.split("\0") if rel and _eligible_relative(Path(rel))
+        rel
+        for rel in untracked_raw.split("\0")
+        if rel and _eligible_relative(Path(rel))
     )
     ok = not changed and not unexpected
     receipt_body = {

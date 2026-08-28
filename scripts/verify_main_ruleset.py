@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Verify GitHub's live main-branch ruleset against the checked-in contract."""
+
 from __future__ import annotations
 
 import argparse
 import json
 import os
-import sys
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -40,7 +40,11 @@ def _rule_map(ruleset: dict[str, Any]) -> dict[str, dict[str, Any]]:
 
 def _status_contexts(rule: dict[str, Any]) -> set[str]:
     parameters = rule.get("parameters", {})
-    rows = parameters.get("required_status_checks", []) if isinstance(parameters, dict) else []
+    rows = (
+        parameters.get("required_status_checks", [])
+        if isinstance(parameters, dict)
+        else []
+    )
     return {
         row["context"]
         for row in rows
@@ -58,11 +62,15 @@ def _applies_to_main(ruleset: dict[str, Any]) -> bool:
 def compare(required: dict[str, Any], live: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     if live.get("target") != required.get("target"):
-        errors.append(f"target mismatch: expected {required.get('target')!r}, got {live.get('target')!r}")
+        errors.append(
+            f"target mismatch: expected {required.get('target')!r}, got {live.get('target')!r}"
+        )
     if live.get("enforcement") != "active":
         errors.append(f"ruleset enforcement is not active: {live.get('enforcement')!r}")
     if not _applies_to_main(live):
-        errors.append("ruleset does not explicitly apply to refs/heads/main or ~DEFAULT_BRANCH")
+        errors.append(
+            "ruleset does not explicitly apply to refs/heads/main or ~DEFAULT_BRANCH"
+        )
 
     required_rules = _rule_map(required)
     live_rules = _rule_map(live)
@@ -73,12 +81,17 @@ def compare(required: dict[str, Any], live: dict[str, Any]) -> list[str]:
     required_status = required_rules.get("required_status_checks")
     live_status = live_rules.get("required_status_checks")
     if required_status and live_status:
-        missing = sorted(_status_contexts(required_status) - _status_contexts(live_status))
+        missing = sorted(
+            _status_contexts(required_status) - _status_contexts(live_status)
+        )
         if missing:
             errors.append("missing required status contexts: " + ", ".join(missing))
         required_parameters = required_status.get("parameters", {})
         live_parameters = live_status.get("parameters", {})
-        if required_parameters.get("strict_required_status_checks_policy") is True and live_parameters.get("strict_required_status_checks_policy") is not True:
+        if (
+            required_parameters.get("strict_required_status_checks_policy") is True
+            and live_parameters.get("strict_required_status_checks_policy") is not True
+        ):
             errors.append("strict required-status-check policy is disabled")
 
     required_pr = required_rules.get("pull_request")
@@ -86,8 +99,14 @@ def compare(required: dict[str, Any], live: dict[str, Any]) -> list[str]:
     if required_pr and live_pr:
         required_parameters = required_pr.get("parameters", {})
         live_parameters = live_pr.get("parameters", {})
-        for key in ("dismiss_stale_reviews_on_push", "required_review_thread_resolution"):
-            if required_parameters.get(key) is True and live_parameters.get(key) is not True:
+        for key in (
+            "dismiss_stale_reviews_on_push",
+            "required_review_thread_resolution",
+        ):
+            if (
+                required_parameters.get(key) is True
+                and live_parameters.get(key) is not True
+            ):
                 errors.append(f"pull-request protection {key} is disabled")
 
     return errors
@@ -133,10 +152,16 @@ def verify(repository: str, contract_path: Path, token: str | None) -> dict[str,
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--repository", default=os.environ.get("GITHUB_REPOSITORY", DEFAULT_REPOSITORY))
+    parser.add_argument(
+        "--repository", default=os.environ.get("GITHUB_REPOSITORY", DEFAULT_REPOSITORY)
+    )
     parser.add_argument("--contract", type=Path, default=DEFAULT_CONTRACT)
     parser.add_argument("--token", default=os.environ.get("GITHUB_TOKEN"))
-    parser.add_argument("--advisory", action="store_true", help="Report drift without failing the process.")
+    parser.add_argument(
+        "--advisory",
+        action="store_true",
+        help="Report drift without failing the process.",
+    )
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
 

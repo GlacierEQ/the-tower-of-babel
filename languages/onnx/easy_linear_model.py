@@ -1,4 +1,5 @@
 """Create and validate a tiny ONNX Add graph."""
+
 import onnx
 from onnx import TensorProto, checker, helper
 
