@@ -111,7 +111,6 @@ language.
 Generated surfaces must not be hand-edited. They are overwritten by
 `python3 -m tower.generate`.
 
-
 ## Continuous-orientation invariant
 
 The orientation engine emits routing telemetry, not authorization. Its machine result must preserve:
@@ -138,3 +137,9 @@ Classify consequential action by reversibility:
 Legacy `--external-effects` without `--effect-risk` remains `unclassified`, so existing callers do not silently become less protected.
 
 Operator scope never bypasses toolchain, interface, execution, evidence, or proof requirements. Those requirements control what the system can truthfully do or claim; they do not acquire project-direction authority.
+
+## Working-directory supplement
+
+For agents operating in this project, see `@/root/.agents/skills/tower-of-babel/SKILL.md`
+for the operator-routing skill (project layout, CLI cheat sheet, evidence/proof
+quick reference, sharp edges). That skill defers to this file on doctrine.
