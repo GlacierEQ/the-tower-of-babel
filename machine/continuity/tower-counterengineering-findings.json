@@ -5,12 +5,12 @@
     {
       "finding": "The Tower is an active polyglot engineering capability donor for placement, interoperability, and proof; its role metadata does not confer project authority.",
       "status": "VERIFIED_WITH_SOURCE",
-      "source_pointer": "GlacierEQ/AKOS@db14995b2e1d0e854902a4f62499c1baa47c3363:governance/glaciereq.nervous-system.v2.json"
+      "source_pointer": ".glaciereq/apex-mesh.source.json"
     },
     {
       "finding": "Project direction, repository hierarchy, and asset disposition remain with the Operator; machine selection and routing do not create project primacy.",
       "status": "VERIFIED_WITH_SOURCE",
-      "source_pointer": "GlacierEQ/AKOS@db14995b2e1d0e854902a4f62499c1baa47c3363:governance/glaciereq.nervous-system.v2.json"
+      "source_pointer": ".glaciereq/apex-mesh.source.json"
     },
     {
       "finding": "Tower technology choice is subordinate to explicit engineering boundaries and should preserve proven incumbents unless comparison establishes a stronger replacement.",
