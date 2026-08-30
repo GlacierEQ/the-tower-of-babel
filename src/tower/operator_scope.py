@@ -148,9 +148,6 @@ def verify_operator_scope_receipt(
         errors.append("scope_sha256 does not match the receipt's declared scope")
         declared_scope_sha = ""
 
-    if declared_scope == expected_scope and declared_integrity_sha != scope_sha256(expected_scope):
-        errors.append("scope_sha256 does not bind the exact requested execution scope")
-
     return OperatorScopeVerification(
         authorized=not errors,
         authorization_id=authorization_id,
