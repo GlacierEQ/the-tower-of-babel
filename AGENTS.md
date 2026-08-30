@@ -25,23 +25,25 @@ positioning before material work, or convert a recommendation into a veto.
 Do not add a language, format, compiler, HDL, proof system, or runtime by editing
 the README, sidecar, generated files, or Megamind maps directly.
 
-## Mandatory resource + memory preflight
+## Resource + memory orientation
 
-Before changing technology placement, proof state, exhibits, interfaces, architecture lanes, or admission status:
+Use resource and memory reconstruction to orient consequential work, improve routing, and preserve continuity. It is not permission machinery and does not hold the mission at a stop sign.
 
 1. recover the relevant external memory / continuity context when available;
 2. inventory current Tower resources and prior work;
-3. identify the last verified checkpoint;
+3. identify the last verified checkpoint when one exists;
 4. collapse duplicates so repeated copies are not counted as corroboration;
 5. identify prior accepted, disputed, superseded, and invalidated conclusions;
 6. compute the new delta rather than restarting the analysis;
 7. preserve material contradictions and source gaps;
-8. only then change the registry or implementation.
+8. select and execute the strongest truthful next route.
+
+Missing memory, a partial reconstruction, an absent checkpoint, or an unresolved source gap changes certainty and route selection. None of those facts becomes a generic execution veto.
 
 Run:
 
 ```bash
-tower preflight --mission "<exact engineering objective>" --memory <external-memory.json> --require-memory
+tower preflight --mission "<exact engineering objective>" --memory <external-memory.json>
 ```
 
 The preflight receipt is written to `artifacts/resource-memory-preflight.json` by default.
@@ -50,8 +52,8 @@ Tower analyzes memory but does not own operator memory. Memory is continuity inp
 
 ## Required workflow
 
-1. Run the resource + memory preflight and inspect its checkpoint, duplicate groups, gaps, and delta.
-2. Reuse or extend the strongest prior verified lane instead of restarting it.
+1. Orient from resource + memory state and inspect its checkpoint, duplicate groups, gaps, and delta without treating the report as permission to act.
+2. Reuse or extend the strongest prior verified lane when available instead of restarting it; if unavailable, continue from the strongest observed state with exact uncertainty.
 3. Change the registry index or one of its declared fragments.
 4. Add or update both exhibits.
 5. Add or update the proof gate.
@@ -63,9 +65,10 @@ Tower analyzes memory but does not own operator memory. Memory is continuity inp
 11. Generate the deterministic receipt.
 12. Review generated drift before commit.
 
-A missing Tower receipt does not, by itself, authorize stopping unrelated material
-evolution. Continue work that can be executed truthfully within the Operator's
-current scope and record the unresolved Tower analysis as telemetry.
+A missing Tower receipt, incomplete memory, absent checkpoint, failed search, or
+unresolved contradiction does not by itself stop the mission. Continue through the
+strongest meaningful truthful route and record uncertainty, blockers, and conflicts
+as telemetry for the next action.
 
 ## Truth classes
 
