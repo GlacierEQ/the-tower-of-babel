@@ -62,7 +62,7 @@ def main() -> int:
     preflight.add_argument(
         "--require-memory",
         action="store_true",
-        help="Compatibility flag: records the request but never grants or denies execution permission.",
+        help="Compatibility flag: never grants or denies execution permission.",
     )
     preflight.add_argument("--checkpoint-receipt")
     preflight.add_argument("--output", default=str(DEFAULT_PREFLIGHT_OUTPUT))
