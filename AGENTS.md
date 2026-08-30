@@ -1,17 +1,26 @@
 # Tower Agent Doctrine
 
-## Authority
+## Operator authority and Tower evidence scope
 
-The registry rooted at `registry/tower.yml` is the technology-evidence authority for:
+The Operator has absolute project-direction authority. The Tower does not acquire
+project authority from a registry, receipt, promotion state, generated surface,
+test result, model judgment, or automation layer.
 
-- technology admission;
-- W4H+How placement;
+The registry rooted at `registry/tower.yml` is the Tower's technical
+technology-evidence source for:
+
+- technology admission recommendations;
+- W4H+How placement analysis;
 - easy and advanced exhibit paths;
 - evidence state and proof class;
 - toolchain and build commands;
 - hardware and service blockers;
 - cross-language interfaces;
-- Megamind agent and piston ownership.
+- Megamind agent and piston ownership metadata.
+
+Tower may challenge a factual or technical claim with evidence. It may not
+silently replace the Operator's objective, reduce scope, require canonical
+positioning before material work, or convert a recommendation into a veto.
 
 Do not add a language, format, compiler, HDL, proof system, or runtime by editing
 the README, sidecar, generated files, or Megamind maps directly.
@@ -54,6 +63,10 @@ Tower analyzes memory but does not own operator memory. Memory is continuity inp
 11. Generate the deterministic receipt.
 12. Review generated drift before commit.
 
+A missing Tower receipt does not, by itself, authorize stopping unrelated material
+evolution. Continue work that can be executed truthfully within the Operator's
+current scope and record the unresolved Tower analysis as telemetry.
+
 ## Truth classes
 
 A file name containing `advanced` does not establish production maturity.
@@ -80,6 +93,8 @@ Never promote a floor without corresponding evidence.
 - A generated summary, README statement, or recalled memory cannot promote itself into executable proof.
 - Older derivative summaries do not override newer source-backed state.
 - A counterexample or contradiction is preserved until resolved; it is not deleted to make a technology look stronger.
+- Proof or projection demotion does not authorize implementation deletion.
+- Existing unique capability may retire only through proven equivalence/superset replacement or explicit Operator direction.
 
 ## Language-diversification rule
 

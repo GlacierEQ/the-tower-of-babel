@@ -27,6 +27,9 @@ def _seed_minimal_tower(root: Path, *, include_registry: bool = True) -> None:
 
 
 def _source_bound_memory(root: Path) -> Path:
+    source = root / "artifacts" / "benchmarks" / "p99.json"
+    source.parent.mkdir(parents=True, exist_ok=True)
+    source.write_text('{"p99_ms": 12.5}\n', encoding="utf-8")
     memory = root / "memory.json"
     memory.write_text(
         json.dumps(
@@ -145,6 +148,64 @@ def test_caller_cannot_forge_verified_status_without_source(tmp_path: Path) -> N
     assert finding["status"] == "RECALLED_NEEDS_SOURCE"
     assert payload["memory_analysis"]["gaps"]
     assert payload["status"] == "PARTIAL"
+
+
+def test_caller_cannot_forge_verified_status_with_nonresolving_source(tmp_path: Path) -> None:
+    _seed_minimal_tower(tmp_path)
+    memory = tmp_path / "memory.json"
+    memory.write_text(
+        json.dumps(
+            {
+                "findings": [
+                    {
+                        "finding": "This points at a file that does not exist.",
+                        "status": "VERIFIED_WITH_SOURCE",
+                        "source_pointer": "artifacts/missing-proof.json",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    payload = build_preflight("reject fabricated source binding", root=tmp_path, memory_path=memory)
+
+    finding = payload["memory_analysis"]["findings"][0]
+    assert finding["status"] == "RECALLED_NEEDS_SOURCE"
+    assert finding["source_pointer_valid"] is False
+    assert finding["source_validation"] == "local source pointer does not resolve to a file"
+    assert payload["memory_analysis"]["gaps"]
+    assert payload["status"] == "PARTIAL"
+
+
+def test_commit_source_pointer_must_resolve_in_git_history(tmp_path: Path) -> None:
+    _seed_minimal_tower(tmp_path)
+    _init_git_with_release_receipt(tmp_path)
+    commit_sha = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], cwd=tmp_path, text=True
+    ).strip()
+    memory = tmp_path / "memory.json"
+    memory.write_text(
+        json.dumps(
+            {
+                "findings": [
+                    {
+                        "finding": "Architecture law exists at the verified checkpoint.",
+                        "status": "VERIFIED_WITH_SOURCE",
+                        "source_pointer": f"commit:{commit_sha}:ARCHITECTURE_LAW.md",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    payload = build_preflight("verify historical source pointer", root=tmp_path, memory_path=memory)
+
+    finding = payload["memory_analysis"]["findings"][0]
+    assert finding["status"] == "VERIFIED_WITH_SOURCE"
+    assert finding["source_pointer_valid"] is True
+    assert finding["source_validation"] == "GIT_OBJECT_RESOLVED"
 
 
 def test_malformed_only_memory_is_invalid(tmp_path: Path) -> None:

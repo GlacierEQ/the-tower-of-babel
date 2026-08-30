@@ -1,1 +1,19 @@
-{"unique_value": "hyper-optimization"}
+{
+  "schema": "glaciereq.tower.target-contract.v2",
+  "target": "maximum-boundary-fitness-polyglot-engine",
+  "objective": "Select, compose, execute, and prove the strongest justified technology per explicit engineering boundary while preserving unique incumbent capability.",
+  "project_direction_authority": "operator",
+  "invariants": [
+    "evidence-controls-factual-claims",
+    "projection-does-not-delete-capability",
+    "placement-does-not-block-material-evolution",
+    "unique-capability-retires-only-after-equivalence-or-operator-direction",
+    "operator-scope-authorizes-external-effects"
+  ],
+  "non_goals": [
+    "canonical-positioning-as-a-prerequisite",
+    "language-count-maximization",
+    "governance-as-project-authority",
+    "truth-by-capability-amputation"
+  ]
+}

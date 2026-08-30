@@ -5,13 +5,26 @@
     "registry": "registry/tower.yml",
     "technology_catalog": "generated/smithery.registry.json",
     "quality_contract": "QUALITY_CONTRACT.md",
-    "role": "technology_placement_and_language_diversity_authority"
+    "role": "technology_placement_and_language_diversity_evidence_engine",
+    "project_direction_authority": false
+  },
+  "operator": {
+    "project_direction_authority": "absolute",
+    "tower_role": "technical_analysis_execution_and_evidence",
+    "tower_may_veto_operator_direction": false,
+    "tower_may_invent_scope_reduction": false,
+    "evidence_may_contradict_factual_claims": true
   },
   "integration": {
     "consumer": "GlacierEQ/job-application",
     "placement_receipt_path": "machine/tower-placement.json",
-    "placement_required_before_material_evolution": true,
+    "placement_required_before_material_evolution": false,
+    "placement_can_delay_material_evolution": false,
+    "placement_receipt_semantics": "advisory_technical_evidence_not_permission",
     "retroactively_invalidates_existing_excellence_state": false
+  },
+  "compatibility": {
+    "tower_authority_field": "legacy field name retained for v1 consumers; value means Tower recommendation provenance, never project-direction authority"
   },
   "decisions": ["KEEP", "ADD", "SPLIT", "EXPERIMENT"],
   "proof_tiers": ["A", "B", "C"],
@@ -47,13 +60,15 @@
     "experiment_precedes_adoption_when_placement_is_uncertain": true,
     "semantic_overlap_requires_cross_runtime_parity_or_explicit_non_equivalence": true,
     "new_runtime_requires_declared_proof_tier": true,
-    "toolchain_or_external_unavailability_must_remain_blocked_not_passed": true
+    "toolchain_or_external_unavailability_must_remain_blocked_not_passed": true,
+    "tower_recommendation_cannot_veto_operator_direction": true,
+    "material_evolution_continues_without_tower_receipt": true
   },
   "decision_semantics": {
-    "KEEP": "The incumbent technology remains correct for the named responsibility; the receipt must state why adding another runtime would not improve the boundary.",
-    "ADD": "A new technology owns a new architectural responsibility while the incumbent implementation remains intact unless separately superseded by proof.",
-    "SPLIT": "A responsibility moves behind an explicit interface into another technology; functional and proof parity are required for overlapping semantics.",
-    "EXPERIMENT": "Competing technology placement is benchmarked or exercised in a bounded path before adoption; the incumbent remains authoritative until the experiment passes its declared proof tier."
+    "KEEP": "Tower recommends retaining the incumbent for the named responsibility and records why another runtime would not improve the boundary.",
+    "ADD": "Tower recommends a new technology for a new architectural responsibility while preserving the incumbent implementation unless the Operator separately directs replacement or evidence proves an accepted supersession path.",
+    "SPLIT": "Tower recommends moving a responsibility behind an explicit interface into another technology; functional and proof parity are required for overlapping semantics before the incumbent may be retired.",
+    "EXPERIMENT": "Tower recommends benchmarking or exercising a competing technology in a reversible path; the incumbent remains the technical baseline until evidence and Operator direction establish the next state."
   },
   "diversity_objective": "Maximize useful language and runtime diversity by assigning each technology a defensible responsibility, activation condition, interface, and proof burden; never add languages merely to increase the count."
 }
