@@ -99,3 +99,61 @@ def test_receipt_does_not_claim_cryptographic_identity_proof(tmp_path: Path):
     payload = verified.to_dict()
     assert verified.authorized is True
     assert "does not independently prove human identity" in payload["identity_nonclaim"]
+
+
+def test_cli_passes_only_verified_operator_scope_to_runtime(tmp_path: Path, monkeypatch, capsys):
+    from tower import activation_cli
+
+    receipt = write_receipt(tmp_path / "scope.json")
+
+    class Registry:
+        def by_id(self, technology_id: str):
+            return {"id": technology_id}
+
+    observed = {}
+
+    def fake_activate(technology, *, external_effects=False, operator_scope_authorized=False):
+        observed["technology"] = technology
+        observed["external_effects"] = external_effects
+        observed["operator_scope_authorized"] = operator_scope_authorized
+        return {"status": "VERIFIED", "technology_id": technology["id"]}
+
+    monkeypatch.setattr(activation_cli, "load_registry", lambda: Registry())
+    monkeypatch.setattr(activation_cli, "activate_execution", fake_activate)
+
+    rc = activation_cli.main(
+        [
+            "python",
+            "--external-effects",
+            "--operator-scope-receipt",
+            str(receipt),
+        ]
+    )
+    payload = json.loads(capsys.readouterr().out)
+    assert rc == 0
+    assert observed["external_effects"] is True
+    assert observed["operator_scope_authorized"] is True
+    assert payload["operator_scope"]["authorized"] is True
+
+
+def test_cli_missing_operator_scope_never_promotes_flag_to_authority(monkeypatch, capsys):
+    from tower import activation_cli
+
+    class Registry:
+        def by_id(self, technology_id: str):
+            return {"id": technology_id}
+
+    observed = {}
+
+    def fake_activate(technology, *, external_effects=False, operator_scope_authorized=False):
+        observed["operator_scope_authorized"] = operator_scope_authorized
+        return {"status": "ACTIVATION_BLOCKED", "technology_id": technology["id"]}
+
+    monkeypatch.setattr(activation_cli, "load_registry", lambda: Registry())
+    monkeypatch.setattr(activation_cli, "activate_execution", fake_activate)
+
+    rc = activation_cli.main(["python", "--external-effects"])
+    payload = json.loads(capsys.readouterr().out)
+    assert rc == 2
+    assert observed["operator_scope_authorized"] is False
+    assert payload["operator_scope"]["authorized"] is False
