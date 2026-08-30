@@ -1,0 +1,36 @@
+{
+  "schema": "glaciereq.tower.counterengineering-continuity.v1",
+  "scope": "public engineering continuity only; no private Operator memory is embedded",
+  "findings": [
+    {
+      "finding": "The Tower is an active polyglot engineering capability donor for placement, interoperability, and proof; its role metadata does not confer project authority.",
+      "status": "VERIFIED_WITH_SOURCE",
+      "source_pointer": "GlacierEQ/AKOS@db14995b2e1d0e854902a4f62499c1baa47c3363:governance/glaciereq.nervous-system.v2.json"
+    },
+    {
+      "finding": "Project direction, repository hierarchy, and asset disposition remain with the Operator; machine selection and routing do not create project primacy.",
+      "status": "VERIFIED_WITH_SOURCE",
+      "source_pointer": "GlacierEQ/AKOS@db14995b2e1d0e854902a4f62499c1baa47c3363:governance/glaciereq.nervous-system.v2.json"
+    },
+    {
+      "finding": "Tower technology choice is subordinate to explicit engineering boundaries and should preserve proven incumbents unless comparison establishes a stronger replacement.",
+      "status": "VERIFIED_WITH_SOURCE",
+      "source_pointer": "ARCHITECTURE_LAW.md"
+    },
+    {
+      "finding": "The historical Tower evolution-placement contract made placement required before material evolution; counter-engineering must remove that prerequisite while retaining placement analysis, parity, and proof semantics.",
+      "status": "VERIFIED_WITH_SOURCE",
+      "source_pointer": "commit:fab6abe811ea20d60d4a7fa9c2063093aac24475:governance/evolution-placement-contract.v1.json"
+    },
+    {
+      "finding": "The pre-counterengineering main state at 07ee7d6bfecf58f1c27b925c8028b3e410f6f96f has a successful Tower release receipt with valid registry, integrity, and build-report flags.",
+      "status": "VERIFIED_WITH_SOURCE",
+      "source_pointer": "machine/checkpoints/tower_receipt_07ee7d6.json"
+    },
+    {
+      "finding": "Counter-engineering must preserve existing language floors, architecture selection, build/proof systems, frontier metabolism, and unique implementation capability while removing authority inversion and false proof projection.",
+      "status": "VERIFIED_WITH_SOURCE",
+      "source_pointer": "AGENTS.md"
+    }
+  ]
+}
