@@ -2,6 +2,8 @@
   "schema": "glaciereq.repo-excellence-state.v1",
   "repository": "GlacierEQ/the-tower-of-babel",
   "principal_state": "PROMOTED",
+  "state_semantics": "historical_product_projection_separate_from_current_proof",
+  "project_direction_authority": "operator",
   "gates": {
     "IDENTITY_RESOLVED": {
       "status": "PASS",
@@ -15,8 +17,8 @@
     },
     "TARGET_CONTRACT_FROZEN": {
       "status": "PASS",
-      "at": "2026-08-10T06:25Z",
-      "evidence": "machine/target-contract.json"
+      "at": "2026-08-29T14:50-10:00",
+      "evidence": "machine/target-contract.json defines maximum-boundary-fitness polyglot target"
     },
     "DONOR_PLAN_RESOLVED": {
       "status": "PASS",
@@ -36,7 +38,7 @@
     "DETERMINISTIC_PROOF_GREEN": {
       "status": "PASS",
       "at": "2026-08-10T06:25Z",
-      "evidence": "dual-run green tests"
+      "evidence": "historical dual-run green tests; current exact-head proof remains independently observable"
     },
     "ADVERSARIAL_SURVIVAL": {
       "status": "PASS",
@@ -46,30 +48,31 @@
     "OPERABLE_AND_OBSERVABLE": {
       "status": "PASS",
       "at": "2026-08-10T06:25Z",
-      "evidence": "scripts/operate.py dual-run PASS; primary ok"
+      "evidence": "historical scripts/operate.py dual-run PASS; current runtime state is not inferred from this record"
     },
     "PROOF_RECEIPT_BOUND": {
-      "status": "PASS",
-      "at": "2026-08-10T06:25Z",
-      "evidence": "machine/proof_receipt.json bound"
+      "status": "PENDING",
+      "at": "2026-08-29T14:50-10:00",
+      "evidence": "machine/proof_receipt.json is not present; no current SHA-bound proof is claimed here"
     },
     "AUTHORITY_BOUND": {
       "status": "PASS",
-      "at": "2026-08-10T06:25Z",
-      "evidence": "promotion_authority.json local HMAC grant"
+      "at": "2026-08-29T14:50-10:00",
+      "evidence": "project direction is bound to Operator; machine/promotion_authority.json is explicitly non-authoritative"
     },
     "PROJECTION_TRUTH_CLOSED": {
-      "status": "PASS",
-      "at": "2026-08-10T06:25Z",
-      "evidence": "proof=missing; authority=94d9e8849902aeb5; operability=missing; claim_ceiling=leaf-native; nonclaims=non_affiliation_preserved; projection_role=monolith_projection_only; readback=operate_content_checked+validator_PASS"
+      "status": "PENDING",
+      "at": "2026-08-29T14:50-10:00",
+      "evidence": "historical product projection preserved; current proof remains separate until an exact-head receipt exists"
     },
     "CANONICAL_POSITION_RESOLVED": {
-      "status": "PENDING"
+      "status": "PENDING",
+      "evidence": "legacy non-blocking field; canonical positioning is not required for material evolution"
     },
     "EVOLUTION_CURSOR_DEFINED": {
       "status": "PASS",
-      "at": "2026-08-10T06:25Z",
-      "evidence": "next:canonical_position_only_if_estate_role_resolved"
+      "at": "2026-08-29T14:50-10:00",
+      "evidence": "next:maximize_boundary_fitness_and_capability_recovery"
     },
     "problem_verified": true,
     "unique_value_known": true,
@@ -79,9 +82,9 @@
     "adversarial_tests_pass": true,
     "runtime_behavior_observed": true,
     "security_authority_bounded": true,
-    "proof_receipt_bound_to_sha": true,
+    "proof_receipt_bound_to_sha": false,
     "reusable_capabilities_extracted": true,
-    "projections_truth_consistent": true,
+    "projections_truth_consistent": false,
     "evolution_cursor_defined": true
   },
   "history": [
@@ -163,7 +166,7 @@
       "to": "PROOF_REPRODUCED",
       "gate": "PROOF_RECEIPT_BOUND",
       "result": "PASS",
-      "note": "machine/proof_receipt.json bound"
+      "note": "historical promotion record; current proof receipt is not inferred"
     },
     {
       "at": "2026-08-10T06:25Z",
@@ -171,12 +174,20 @@
       "to": "PROMOTED",
       "gate": "AUTHORITY_BOUND",
       "result": "PASS",
-      "note": "promotion_authority + PROJECTION_TRUTH_CLOSED"
+      "note": "historical product projection retained"
+    },
+    {
+      "at": "2026-08-29T14:50-10:00",
+      "from": "PROMOTED",
+      "to": "PROMOTED",
+      "gate": "PROJECTION_PROOF_SEPARATION",
+      "result": "PASS",
+      "note": "preserve product lineage while removing fake proof placeholders, canonical-position gating, and machine-granted project authority"
     }
   ],
   "contract_ref": "machine/target-contract.json",
-  "scores_ref": "machine/excellence-scores.json",
-  "evolution_cursor": "next:canonical_position_only_if_estate_role_resolved",
+  "scores_ref": null,
+  "evolution_cursor": "next:maximize_boundary_fitness_and_capability_recovery",
   "wave": {
     "id": "ELITE-ESTATE-SCHEMA-MIGRATE-2026-08-10",
     "proof_ok": true,
@@ -186,11 +197,14 @@
     "history_repaired_at": "2026-08-10T06:12Z",
     "history_source": "monolith-legal-hops",
     "projection_truth_closed_at": "2026-08-10T06:25Z",
-    "policy": "glaciereq.repo-excellence.promotion-policy.v1"
+    "policy": "glaciereq.repo-excellence.promotion-policy.v1",
+    "counterengineered_at": "2026-08-29T14:50-10:00"
   },
   "state": "PROMOTED",
   "proof_receipt": {
-    "source_sha": "HYPER_VALIDATED_SHA256",
-    "identity": "HYPER_VALIDATED_IDENTITY"
+    "status": "MISSING_CURRENT_BOUND_RECEIPT",
+    "source_sha": null,
+    "identity": null,
+    "nonclaim": "historical PROMOTED state does not prove current exact-head runtime health"
   }
 }
