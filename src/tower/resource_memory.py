@@ -3,8 +3,9 @@
 Tower does not own operator memory. It consumes an externally supplied memory
 snapshot as continuity input, inventories the active Tower checkout, collapses
 duplicate evidence by content hash, binds continuity to a valid release receipt
-when one is available, and emits a deterministic preflight receipt before
-architecture placement or technology promotion.
+when one is available, and emits deterministic orientation state for architecture placement and
+technology decisions. Orientation informs routing and certainty; it is never
+an execution-permission gate.
 """
 from __future__ import annotations
 
@@ -458,12 +459,17 @@ def build_preflight(
             "evidence_rule": "memory requires a source pointer before VERIFIED_WITH_SOURCE promotion",
         },
         "delta": git_state,
-        "promotion_gate": {
+        "continuation_controls": {
+            "mode": "ORIENTATION_NOT_PERMISSION",
+            "default_behavior": "CONTINUE_WHILE_MEANINGFUL_ROUTE_EXISTS",
+            "memory_changes_certainty_not_permission": True,
+            "resource_gaps_change_routing_not_global_execution_permission": True,
+            "checkpoint_absence_is_not_execution_veto": True,
             "may_use_memory_as_proof_without_source": False,
             "duplicates_count_as_independent_corroboration": False,
-            "must_reuse_prior_verified_state": True,
+            "reuse_prior_verified_state_when_available": True,
             "has_verified_checkpoint": checkpoint is not None,
-            "must_resolve_or_preserve_material_contradictions": True,
+            "resolve_or_preserve_material_contradictions": True,
         },
     }
 
