@@ -59,7 +59,11 @@ def main() -> int:
     preflight = sub.add_parser("preflight")
     preflight.add_argument("--mission", required=True)
     preflight.add_argument("--memory")
-    preflight.add_argument("--require-memory", action="store_true")
+    preflight.add_argument(
+        "--require-memory",
+        action="store_true",
+        help="Compatibility flag: never grants or denies execution permission.",
+    )
     preflight.add_argument("--checkpoint-receipt")
     preflight.add_argument("--output", default=str(DEFAULT_PREFLIGHT_OUTPUT))
 
@@ -123,11 +127,11 @@ def main() -> int:
                 checkpoint_receipt=checkpoint_receipt,
             )
             _print(payload)
-            if args.require_memory:
-                memory = payload["memory_analysis"]
-                if memory["status"] != "ANALYZED" or memory["gaps"]:
-                    return 2
-            return 0 if payload["resource_analysis"]["resource_gaps"] == [] else 1
+            # Orientation is telemetry and routing input, not an execution gate.
+            # Missing memory, resource gaps, or an absent checkpoint reduce certainty
+            # and shape the next route; a successfully emitted orientation receipt
+            # does not deny permission to continue the wider mission.
+            return 0
 
         registry = load_registry()
         if args.command == "validate":

@@ -116,13 +116,18 @@ def test_memory_without_source_remains_unverified(tmp_path: Path) -> None:
     payload = build_preflight("compare lane owner", root=tmp_path, memory_path=memory)
 
     assert payload["state"] == "RESOURCE_RECONSTRUCTED"
+    assert payload["schema"] == "glaciereq.tower.resource-memory-preflight.v3"
     assert payload["status"] == "PARTIAL"
     assert payload["memory_analysis"]["status"] == "ANALYZED"
     finding = payload["memory_analysis"]["findings"][0]
     assert finding["status"] == "RECALLED_NEEDS_SOURCE"
     assert finding["source_pointer"] is None
     assert payload["memory_analysis"]["gaps"]
-    assert payload["promotion_gate"]["may_use_memory_as_proof_without_source"] is False
+    assert "promotion_gate" not in payload
+    controls = payload["continuation_controls"]
+    assert controls["mode"] == "ORIENTATION_NOT_PERMISSION"
+    assert controls["memory_changes_certainty_not_permission"] is True
+    assert controls["default_behavior"] == "CONTINUE_WHILE_MEANINGFUL_ROUTE_EXISTS"
 
 
 def test_caller_cannot_forge_verified_status_without_source(tmp_path: Path) -> None:
@@ -250,7 +255,8 @@ def test_source_bound_memory_requires_release_receipt_for_complete_state(tmp_pat
     without_receipt = build_preflight("evaluate replacement", root=tmp_path, memory_path=memory)
     assert without_receipt["status"] == "PARTIAL"
     assert without_receipt["last_verified_checkpoint"] is None
-    assert without_receipt["promotion_gate"]["has_verified_checkpoint"] is False
+    assert without_receipt["continuation_controls"]["has_verified_checkpoint"] is False
+    assert without_receipt["continuation_controls"]["checkpoint_absence_is_not_execution_veto"] is True
 
     _init_git_with_release_receipt(tmp_path)
     with_receipt = build_preflight("evaluate replacement", root=tmp_path, memory_path=memory)
@@ -299,6 +305,18 @@ def test_preflight_refuses_to_overwrite_memory_input(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="must not overwrite"):
         write_preflight(memory, "protect operator memory", root=tmp_path, memory_path=memory)
+
+
+def test_orientation_partial_state_is_not_an_execution_veto(tmp_path: Path) -> None:
+    _seed_minimal_tower(tmp_path, include_registry=False)
+
+    payload = build_preflight("continue through partial state", root=tmp_path)
+
+    assert payload["status"] == "PARTIAL"
+    assert payload["continuation_controls"]["mode"] == "ORIENTATION_NOT_PERMISSION"
+    assert payload["continuation_controls"]["resource_gaps_change_routing_not_global_execution_permission"] is True
+    assert payload["continuation_controls"]["checkpoint_absence_is_not_execution_veto"] is True
+    assert "promotion_gate" not in payload
 
 
 def test_repo_root_resolves_from_active_checkout(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
