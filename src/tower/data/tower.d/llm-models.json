@@ -1,0 +1,96 @@
+{
+  "technologies": [
+    {
+      "id": "hy3-free",
+      "name": "HY3 (Tencent Hunyuan) free-tier runtime model",
+      "artifact_type": "llm_model",
+      "category": "ai_runtime",
+      "extension": ".openrouter.json",
+      "what": "A compact instruction-tuned large language model in the Tencent Hunyuan family, used as the local Kilo/OpenCode agent runtime under the opencode/hy3-free alias and routed through OpenRouter free-tier selection.",
+      "where": "Agentic coding assistants, local Kilo/OpenCode runtimes, and APEX swarm generalist reasoning where a small, fast, free model is sufficient; used in OpenCode Zen sessions as the primary free generalist.",
+      "when": "Use for general coding, orchestration, and synthesis tasks when the objective does not require the largest frontier reasoning model and a zero or low-cost path is preferred.",
+      "why": "It provides a dependable free-tier generalist that keeps the assistant runtime operational without payment-gated dependencies, preserving continuity of the estate's primary agent loop.",
+      "how": "Invoked through the OpenCode runtime in Zen mode; the local runtime id is opencode/hy3-free and the canonical OpenRouter slug is tencent/hy3. It is an OpenCode-native free model served by OpenCode's free gateway (operator reports $0 billed), also reachable through the Chat Completions and tool-use interface with streaming responses.",
+      "operator_reported_billing": "0 USD — OpenCode-native free gateway (Zen mode); not billed via OpenRouter",
+      "easy_example": "languages/llm/hy3_free.easy.json",
+      "advanced_example": "languages/llm/hy3_free.advanced.json",
+      "evidence_state": "service_gated",
+      "proof_class": "integration",
+      "toolchain": {
+        "tool": "openrouter",
+        "reference_pin": "tencent/hy3",
+        "build": [
+          ["curl", "-fsS", "https://openrouter.ai/api/v1/models/tencent/hy3", "-o", "/dev/null"]
+        ],
+        "test": [
+          ["curl", "-fsS", "https://openrouter.ai/api/v1/models/tencent/hy3"]
+        ]
+      },
+      "execution": {
+        "ci_tier": "service",
+        "hardware_gate": ""
+      },
+      "interfaces": [
+        "opencode",
+        "zen",
+        "openrouter",
+        "chat_completion",
+        "tool_use"
+      ],
+      "megamind": {
+        "agents": ["ai-agent", "model-runtime-agent"],
+        "pistons": ["core-think", "stealth-sherlock-alpha"]
+      },
+      "primary_evidence": [
+        "https://openrouter.ai/models/tencent/hy3",
+        "https://openrouter.ai/docs"
+      ]
+    },
+    {
+      "id": "mimo-v2.5-pro-free",
+      "name": "MiMo v2.5 Pro (Xiaomi) free-tier reasoning model",
+      "artifact_type": "llm_model",
+      "category": "ai_runtime",
+      "extension": ".openrouter.json",
+      "what": "A reasoning-oriented large language model in the Xiaomi MiMo family (xiaomi/mimo-v2.5-pro), used as a free/low-cost agent runtime model and referenced in the estate as mimo-v2.5-pro:free.",
+      "where": "Agentic reasoning, tool-use, and multi-step coding tasks within Kilo/OpenCode and APEX swarm flows where a stronger reasoning model is preferred at no cost; used in OpenCode Zen sessions as the free reasoning-class option.",
+      "when": "Use for planning, chain-of-thought reasoning, and tool-driven agentic tasks when the objective benefits from explicit reasoning but must stay on a free or low-cost tier.",
+      "why": "It offers a capable reasoning-class model on a low-cost OpenRouter slug, giving the estate a second verified free-tier option alongside hy3-free for load distribution and resilience.",
+      "how": "Invoked through the OpenCode runtime in Zen mode; the local runtime id is opencode/mimo-v2.5-pro:free and the canonical OpenRouter slug is xiaomi/mimo-v2.5-pro. It is served as a free model through OpenCode's Zen runtime (operator reports $0 billed), also reachable through the Chat Completions and tool-use interface with streaming responses.",
+      "operator_reported_billing": "0 USD — OpenCode Zen runtime free model; not billed via OpenRouter",
+      "easy_example": "languages/llm/mimo_v2_5_pro.easy.json",
+      "advanced_example": "languages/llm/mimo_v2_5_pro.advanced.json",
+      "evidence_state": "service_gated",
+      "proof_class": "integration",
+      "toolchain": {
+        "tool": "openrouter",
+        "reference_pin": "xiaomi/mimo-v2.5-pro",
+        "build": [
+          ["curl", "-fsS", "https://openrouter.ai/api/v1/models/xiaomi/mimo-v2.5-pro", "-o", "/dev/null"]
+        ],
+        "test": [
+          ["curl", "-fsS", "https://openrouter.ai/api/v1/models/xiaomi/mimo-v2.5-pro"]
+        ]
+      },
+      "execution": {
+        "ci_tier": "service",
+        "hardware_gate": ""
+      },
+      "interfaces": [
+        "opencode",
+        "zen",
+        "openrouter",
+        "chat_completion",
+        "tool_use"
+      ],
+      "megamind": {
+        "agents": ["ai-agent", "model-runtime-agent"],
+        "pistons": ["core-think", "stealth-sherlock-alpha"]
+      },
+      "primary_evidence": [
+        "https://openrouter.ai/models/xiaomi/mimo-v2.5-pro",
+        "https://openrouter.ai/docs"
+      ]
+    }
+  ]
+}

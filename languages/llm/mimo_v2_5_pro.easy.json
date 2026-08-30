@@ -1,0 +1,10 @@
+{
+  "model": "mimo-v2.5-pro-free",
+  "runtime_alias": "opencode/mimo-v2.5-pro:free",
+  "openrouter_slug": "xiaomi/mimo-v2.5-pro",
+  "kind": "easy_example",
+  "description": "Minimal descriptor for the MiMo v2.5 Pro free-tier reasoning model, used as a no-cost reasoning-class agent runtime model via OpenCode Zen.",
+  "interfaces": ["opencode", "chat_completion", "tool_use"],
+  "routing": "opencode (Zen)",
+  "operator_reported_billing": "0 USD — OpenCode Zen runtime free model; not billed via OpenRouter"
+}

@@ -8,7 +8,7 @@
 
 The Tower of Babel **decides where a technology belongs, explains why it belongs there, shows how it works, verifies the claim at the strongest available proof level, and exports the result for humans, software, and AI agents**.
 
-It is not a language collection built for display. It is a governed engineering map: **40 technology floors**, **80 linked exhibits**, versioned interface contracts, explicit blockers, executable build gates, and deterministic receipts. A floor earns its role through runtime behavior, safety, performance, hardware fit, or interoperability—not decorative polyglot signaling.
+It is not a language collection built for display. It is a governed engineering map: **42 technology floors**, **84 linked exhibits**, versioned interface contracts, explicit blockers, executable build gates, and deterministic receipts. A floor earns its role through runtime behavior, safety, performance, hardware fit, or interoperability—not decorative polyglot signaling.
 
 ## The system in one minute
 
@@ -23,11 +23,11 @@ It is not a language collection built for display. It is a governed engineering 
 
 | Governed surface | Count |
 |---|---:|
-| Technology floors | **40** |
-| Easy + advanced exhibits | **80** |
+| Technology floors | **42** |
+| Easy + advanced exhibits | **84** |
 | Behavioral proof floors | **17** |
 | Formal proof floors | **3** |
-| Explicitly gated floors | **9** |
+| Explicitly gated floors | **11** |
 
 ## From mission to receipt
 
@@ -181,7 +181,7 @@ See [`flagship/README.md`](flagship/README.md) and run `python flagship/run_pipe
 
 ## Advanced Exhibit Atlas
 
-The easy exhibit teaches the technology. The advanced exhibit must own a real engineering boundary, expose failure behavior, and terminate in proof or an exact blocker. [`ADVANCED_EXHIBITS.md`](ADVANCED_EXHIBITS.md) publishes the signature engineering move and claim boundary for all 40 floors; [`quality/advanced_exhibit_atlas.json`](quality/advanced_exhibit_atlas.json) provides the same map to agents and automation.
+The easy exhibit teaches the technology. The advanced exhibit must own a real engineering boundary, expose failure behavior, and terminate in proof or an exact blocker. [`ADVANCED_EXHIBITS.md`](ADVANCED_EXHIBITS.md) publishes the signature engineering move and claim boundary for all 42 floors; [`quality/advanced_exhibit_atlas.json`](quality/advanced_exhibit_atlas.json) provides the same map to agents and automation.
 
 ## The thirty-floor map
 
@@ -232,11 +232,14 @@ The matrix is generated from the current reviewed registry. Change the registry 
 | 38 | **JAX + XLA (gated autodiff runtime)** `.py` | tensor_autodiff | Python autodiff and XLA compilation framework; this record is a pure-Python shape simulation until JAX executes. | Verified JAX runtimes with a declared CPU/GPU/TPU backend and reproducible device tests. | Select only after JAX imports, jax.jit or pjit executes, and the requested sharding/backend receipt is captured. | Use when JAX/XLA provides a measured advantage for autodiff, compilation, or device parallelism. | `illustrative` / `illustrative` | [easy_grad_jit.py](languages/jax/easy_grad_jit.py) | [advanced_grok_distributed_mesh.py](languages/jax/advanced_grok_distributed_mesh.py) |
 | 39 | **Soufflé Datalog** `.dl` | logic_rules | Declarative logic programming language for high-speed static code analysis and security verification. | Vulnerability scanning, compiler program analysis, access control evaluation, and static call graph analysis. | Use when declarative rule-based query evaluation across large code graphs is required. | It resolves complex graph reachability, pointer analysis, and security policy rules in parallel C++ code. | `compiles` / `compile` | [easy_reachability.dl](languages/datalog/easy_reachability.dl) | [advanced_vulnerability_scanner.dl](languages/datalog/advanced_vulnerability_scanner.dl) |
 | 40 | **RHL-Quant reference quantizer (unbenchmarked)** `.py` | tensor_compression | Reference ternary/residual quantization experiment; no accelerator, model-scale, memory, or quality result is established here. | Benchmark harnesses for model compression after a backend, dataset, quality metric, and rollback path are defined. | Select only after a real backend implementation, baseline comparison, memory measurement, throughput measurement, and quality delta are verified. | A candidate compression path, not an operational choice, until numerical baselines and hardware measurements are reproduced. | `illustrative` / `illustrative` | [easy_ternary_scale.py](languages/rhl_quant/easy_ternary_scale.py) | [advanced_rhl_quant_engine.py](languages/rhl_quant/advanced_rhl_quant_engine.py) |
+| 41 | **HY3 (Tencent Hunyuan) free-tier runtime model** `.openrouter.json` | llm_model | A compact instruction-tuned large language model in the Tencent Hunyuan family, used as the local Kilo/OpenCode agent runtime under the opencode/hy3-free alias and routed through OpenRouter free-tier selection. | Agentic coding assistants, local Kilo/OpenCode runtimes, and APEX swarm generalist reasoning where a small, fast, free model is sufficient; used in OpenCode Zen sessions as the primary free generalist. | Use for general coding, orchestration, and synthesis tasks when the objective does not require the largest frontier reasoning model and a zero or low-cost path is preferred. | It provides a dependable free-tier generalist that keeps the assistant runtime operational without payment-gated dependencies, preserving continuity of the estate's primary agent loop. | `service_gated` / `integration` | [hy3_free.easy.json](languages/llm/hy3_free.easy.json) | [hy3_free.advanced.json](languages/llm/hy3_free.advanced.json) |
+| 42 | **MiMo v2.5 Pro (Xiaomi) free-tier reasoning model** `.openrouter.json` | llm_model | A reasoning-oriented large language model in the Xiaomi MiMo family (xiaomi/mimo-v2.5-pro), used as a free/low-cost agent runtime model and referenced in the estate as mimo-v2.5-pro:free. | Agentic reasoning, tool-use, and multi-step coding tasks within Kilo/OpenCode and APEX swarm flows where a stronger reasoning model is preferred at no cost; used in OpenCode Zen sessions as the free reasoning-class option. | Use for planning, chain-of-thought reasoning, and tool-driven agentic tasks when the objective benefits from explicit reasoning but must stay on a free or low-cost tier. | It offers a capable reasoning-class model on a low-cost OpenRouter slug, giving the estate a second verified free-tier option alongside hy3-free for load distribution and resilience. | `service_gated` / `integration` | [mimo_v2_5_pro.easy.json](languages/llm/mimo_v2_5_pro.easy.json) | [mimo_v2_5_pro.advanced.json](languages/llm/mimo_v2_5_pro.advanced.json) |
 
 </details>
 
 ### Domain coverage
 
+- **Ai Runtime** — HY3 (Tencent Hunyuan) free-tier runtime model, MiMo v2.5 Pro (Xiaomi) free-tier reasoning model
 - **Ai Systems** — Mojo
 - **Apple Native** — Swift
 - **Bare Metal Systems** — C
