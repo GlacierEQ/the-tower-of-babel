@@ -123,8 +123,10 @@ def main() -> int:
                 checkpoint_receipt=checkpoint_receipt,
             )
             _print(payload)
-            if args.require_memory and payload["memory_analysis"]["status"] != "ANALYZED":
-                return 2
+            if args.require_memory:
+                memory = payload["memory_analysis"]
+                if memory["status"] != "ANALYZED" or memory["gaps"]:
+                    return 2
             return 0 if payload["resource_analysis"]["resource_gaps"] == [] else 1
 
         registry = load_registry()
