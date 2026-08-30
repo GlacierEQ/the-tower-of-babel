@@ -1,1 +1,10 @@
-{"hmac_grant": "auto_granted"}
+{
+  "schema": "glaciereq.tower.promotion-control.v2",
+  "status": "EVIDENCE_BOUND_NON_AUTHORITATIVE",
+  "project_direction_authority": "operator",
+  "machine_may_grant_project_authority": false,
+  "promotion_requires_evidence": true,
+  "operator_scope_required_for_external_effects": true,
+  "legacy_hmac_grant": "retired",
+  "note": "Promotion metadata may describe evidence state; it cannot authorize, veto, narrow, or replace Operator project direction."
+}

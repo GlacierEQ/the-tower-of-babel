@@ -8,16 +8,31 @@
   "selection_mode": "CURRENT_BEST_REVISABLE",
   "challengeable": true,
   "capability_donor_preservation": true,
-  "operating_sequence": ["context", "discover", "compare", "cure", "innovate", "execute", "verify", "persist", "evolve"],
+  "operating_sequence": [
+    "context",
+    "discover",
+    "compare",
+    "cure",
+    "innovate",
+    "execute",
+    "verify",
+    "persist",
+    "evolve"
+  ],
   "placement_law": "Language and runtime placement are evidence-backed engineering decisions. Better interoperable implementations may challenge current placements when verified stronger.",
-  "resource_memory_preflight": {
-    "required_before_mutation": true,
-    "command": "tower preflight --mission <objective> --memory <external-memory.json> --require-memory",
+  "resource_memory_orientation": {
+    "mode": "ORIENTATION_NOT_PERMISSION",
+    "required_before_mutation": false,
+    "recommended_before_consequential_change": true,
+    "command": "tower preflight --mission <objective> --memory <external-memory.json>",
     "receipt": "artifacts/resource-memory-preflight.json",
     "memory_ownership": "EXTERNAL",
     "memory_requires_source_pointer_for_proof": true,
     "duplicate_content_is_independent_corroboration": false,
     "continuity_rule": "LAST_VERIFIED_STATE + NEW_VERIFIED_DELTA",
-    "preserve_material_contradictions": true
+    "preserve_material_contradictions": true,
+    "partial_state_changes_certainty_not_execution_permission": true,
+    "missing_checkpoint_is_not_execution_veto": true,
+    "default_continuation": "CONTINUE_WHILE_MEANINGFUL_ROUTE_EXISTS"
   }
 }
