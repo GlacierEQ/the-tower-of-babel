@@ -16,7 +16,7 @@ CATALOG = json.loads(
 QUALITY = (ROOT / "QUALITY_CONTRACT.md").read_text(encoding="utf-8")
 
 
-def test_tower_owns_evolution_placement_without_rewriting_excellence_history():
+def test_tower_advises_evolution_without_acquiring_project_authority():
     assert CONTRACT["schema"] == "glaciereq.tower-evolution-placement-contract.v1"
     assert CONTRACT["authority"]["repository"] == "GlacierEQ/the-tower-of-babel"
     assert CONTRACT["authority"]["registry"] == "registry/tower.yml"
@@ -24,8 +24,16 @@ def test_tower_owns_evolution_placement_without_rewriting_excellence_history():
         CONTRACT["authority"]["technology_catalog"]
         == "generated/smithery.registry.json"
     )
+    assert CONTRACT["authority"]["project_direction_authority"] is False
+    assert CONTRACT["operator"]["project_direction_authority"] == "absolute"
+    assert CONTRACT["operator"]["tower_may_veto_operator_direction"] is False
     assert CONTRACT["integration"]["consumer"] == "GlacierEQ/job-application"
-    assert CONTRACT["integration"]["placement_required_before_material_evolution"] is True
+    assert CONTRACT["integration"]["placement_required_before_material_evolution"] is False
+    assert CONTRACT["integration"]["placement_can_delay_material_evolution"] is False
+    assert (
+        CONTRACT["integration"]["placement_receipt_semantics"]
+        == "advisory_technical_evidence_not_permission"
+    )
     assert CONTRACT["integration"]["retroactively_invalidates_existing_excellence_state"] is False
 
 
@@ -38,6 +46,8 @@ def test_decisions_force_architectural_reasoning_not_language_counting():
     assert policy["add_requires_unique_architectural_responsibility"] is True
     assert policy["split_requires_explicit_interface_contract"] is True
     assert policy["experiment_precedes_adoption_when_placement_is_uncertain"] is True
+    assert policy["tower_recommendation_cannot_veto_operator_direction"] is True
+    assert policy["material_evolution_continues_without_tower_receipt"] is True
 
 
 def test_cross_runtime_overlap_requires_parity_and_proof():
@@ -59,7 +69,12 @@ def test_cross_runtime_overlap_requires_parity_and_proof():
     }.issubset(required)
 
 
-def test_contract_is_consistent_with_canonical_tower_and_quality_authorities():
+def test_legacy_authority_field_is_non_authoritative_compatibility_only():
+    assert "tower_authority" in CONTRACT["required_receipt_fields"]
+    assert "never project-direction authority" in CONTRACT["compatibility"]["tower_authority_field"]
+
+
+def test_contract_is_consistent_with_tower_and_quality_evidence_sources():
     assert REGISTRY["tower_id"] == "glaciereq.tower-of-babel.v1"
     assert REGISTRY["governance"]["canonical_source"] == "registry/tower.yml"
     assert CATALOG["source"] == "registry/tower.yml"
@@ -72,10 +87,6 @@ def test_contract_is_consistent_with_canonical_tower_and_quality_authorities():
         "benchmark",
         "integration",
     }
-    # The placement contract owns A/B/C tier labels. The canonical quality
-    # contract owns the evidence semantics those tiers must satisfy; do not
-    # force a second tier vocabulary into QUALITY_CONTRACT.md just to appease
-    # this test.
     assert "Typed or explicit inputs and outputs" in QUALITY
     assert "Validation and failure behavior" in QUALITY
     assert "A meaningful invariant or policy boundary" in QUALITY
