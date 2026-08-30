@@ -154,6 +154,10 @@ Default output:
 
 Schema identity:
 
-`glaciereq.tower.resource-memory-preflight.v2`
+`glaciereq.tower.resource-memory-preflight.v3`
+
+Version 3 intentionally changes the top-level control shape from the former
+`promotion_gate` object to `continuation_controls`, so consumers can distinguish
+nonblocking orientation semantics without mistaking the payload for the older v2 contract.
 
 The receipt is orientation input to Tower decision-making. It does not replace the technology registry, build proof, benchmark result, integrity result, or final deterministic release receipt, and it never becomes a permission gate over execution.
