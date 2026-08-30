@@ -3,6 +3,12 @@ name: Advanced Exhibit Gate
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '**.txt'
+      - '.agents/**'
+      - 'LICENSE*'
   pull_request:
   workflow_dispatch:
 

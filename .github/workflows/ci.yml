@@ -3,6 +3,12 @@ name: Tower of Babel Quality Gate
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '**.txt'
+      - '.agents/**'
+      - 'LICENSE*'
   pull_request:
   workflow_dispatch:
 
