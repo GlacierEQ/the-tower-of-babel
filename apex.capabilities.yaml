@@ -1,0 +1,12 @@
+schema: apex.capabilities/v1
+repository: glaciereq/the-tower-of-babel
+status: active
+paradigm: INNOVATION_HOLOGRAPHIC_MESH
+domains:
+  - systems_engineering_rosetta_stone
+description: The Tower of Babel — Definitive multi-language systems engineering rosetta stone across 20+ languages.
+epistemic_standard: L0_TO_L5
+evidence_policy: ZERO_FAKE_EXECUTION
+owner_intent:
+  role: specialist_capability_donor
+  precedence: INNOVATION_WINS
