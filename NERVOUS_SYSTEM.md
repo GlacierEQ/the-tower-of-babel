@@ -145,7 +145,7 @@ outputs:
   - technology_placement
   - interface_contracts
   - experiment_plan
-  - proof_state
+  - proof_gate
   - exact_blocker
   - deterministic_receipt
 routes_from:
@@ -158,7 +158,7 @@ prohibitions:
   - decorative_polyglot_signaling
   - ambiguous_language_ownership
   - estate_wide_language_monoculture_by_default
-  - proof_claim_without_support
+  - proof_claim_without_gate
   - governance_as_stagnation
   - frontier_claim_without_fresh_observation
   - memory_promoted_without_source
