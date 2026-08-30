@@ -1,6 +1,6 @@
-# Tower Resource + Memory Preflight
+# Tower Resource + Memory Orientation
 
-Tower-governed work begins by reconstructing what already exists before changing technology placement, proof state, interfaces, or architecture lanes.
+Tower uses resource and memory reconstruction to orient technology placement, proof state, interfaces, and architecture work. Reconstruction improves continuity, certainty, and route selection; it is not permission machinery.
 
 ## Boundary
 
@@ -21,7 +21,7 @@ MISSION
               -> COMMITTED + WORKING DELTA
                 -> BOUNDARY ANALYSIS
                   -> TECHNOLOGY COMPARISON
-                    -> EXPERIMENT / PROOF GATE
+                    -> EXPERIMENT / PROOF CHECK
                       -> PROMOTE / RETAIN / HYBRIDIZE / RETIRE
 ```
 
@@ -33,14 +33,13 @@ This is continuation, not restart.
 tower preflight \
   --mission "evaluate the strongest technology for this boundary" \
   --memory /path/to/external-memory.json \
-  --require-memory \
   --checkpoint-receipt artifacts/tower_receipt.json \
   --output artifacts/resource-memory-preflight.json
 ```
 
 `--checkpoint-receipt` is optional because Tower automatically checks `artifacts/tower_receipt.json`. A checkpoint is accepted only when the v2 Tower release receipt has valid registry, integrity, and build states, a valid deterministic body hash, and a commit/tree pair available in the checkout.
 
-Without `--require-memory`, Tower can still inventory local resources and explicitly records memory as unavailable or not supplied. With `--require-memory`, missing, invalid, empty, or malformed-only continuity memory returns exit code `2`.
+`--require-memory` remains accepted only for compatibility. It does not grant or deny execution permission and does not convert missing, invalid, empty, or malformed continuity memory into a global stop condition. Those states remain explicit telemetry that lowers certainty and changes routing.
 
 Preflight intentionally executes before registry loading. A damaged or missing `registry/tower.yml` therefore becomes a resource gap inside the receipt instead of preventing recovery analysis.
 
@@ -117,7 +116,7 @@ The selected preflight output path is excluded from inventory so repeated prefli
 
 Tower does **not** label the current Git HEAD as the last verified checkpoint merely because it exists.
 
-`last_verified_checkpoint` is populated only from a valid Tower v2 release receipt. If no valid receipt is available, the field is `null`, `checkpoint_gaps` explains why, and the promotion gate reports `has_verified_checkpoint: false`.
+`last_verified_checkpoint` is populated only from a valid Tower v2 release receipt. If no valid receipt is available, the field is `null`, `checkpoint_gaps` explains why, and continuation controls report `has_verified_checkpoint: false` without converting that absence into an execution veto.
 
 The current commit/tree is recorded separately as:
 
@@ -133,15 +132,17 @@ CURRENT_DECISION = LAST_VERIFIED_STATE + NEW_VERIFIED_DELTA
 
 Prior working capability is reused. A new language, runtime, proof system, or architecture pattern must beat or complement the incumbent at the actual boundary rather than winning because the prior state was forgotten.
 
-## Promotion gates
+## Continuation controls
 
-The preflight receipt permanently states:
+The orientation receipt permanently states:
 
+- orientation is not execution permission;
+- the default is to continue while a meaningful truthful route exists;
 - memory cannot become proof without a source;
 - duplicates do not become independent corroboration;
-- prior verified state must be reused rather than silently restarted;
-- a verified checkpoint must come from proof, not an assumed HEAD;
-- material contradictions must be resolved or explicitly preserved;
+- prior verified state is reused when available rather than silently restarting;
+- absence of a verified checkpoint is explicit uncertainty, not a mission veto;
+- material contradictions are resolved or explicitly preserved;
 - absence from a current search is not evidence that a prior implementation never existed;
 - operator memory is read-only input to this process.
 
@@ -155,4 +156,4 @@ Schema identity:
 
 `glaciereq.tower.resource-memory-preflight.v2`
 
-The receipt is an input to Tower decision-making. It does not replace the technology registry, build proof, benchmark result, integrity result, or final deterministic release receipt.
+The receipt is orientation input to Tower decision-making. It does not replace the technology registry, build proof, benchmark result, integrity result, or final deterministic release receipt, and it never becomes a permission gate over execution.
