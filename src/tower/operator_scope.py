@@ -131,11 +131,25 @@ def verify_operator_scope_receipt(
         if payload.get(key) != expected:
             errors.append(f"{key} does not match requested execution scope")
 
+    declared_scope = {
+        key: payload.get(key)
+        for key in (
+            "authorization_id",
+            "instruction_sha256",
+            "repository",
+            "technology_id",
+            "mode",
+            "external_effects",
+        )
+    }
     declared_scope_sha = payload.get("scope_sha256")
-    expected_scope_sha = scope_sha256(expected_scope)
-    if not isinstance(declared_scope_sha, str) or declared_scope_sha != expected_scope_sha:
-        errors.append("scope_sha256 does not bind the exact requested execution scope")
+    declared_integrity_sha = scope_sha256(declared_scope)
+    if not isinstance(declared_scope_sha, str) or declared_scope_sha != declared_integrity_sha:
+        errors.append("scope_sha256 does not match the receipt's declared scope")
         declared_scope_sha = ""
+
+    if declared_scope == expected_scope and declared_integrity_sha != scope_sha256(expected_scope):
+        errors.append("scope_sha256 does not bind the exact requested execution scope")
 
     return OperatorScopeVerification(
         authorized=not errors,
