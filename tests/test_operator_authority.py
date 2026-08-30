@@ -67,3 +67,13 @@ def test_local_execution_stays_available_without_redundant_authorization():
     decision = resolve_activation(executable_technology(), ActivationMode.EXECUTE)
     assert decision.allowed is True
     assert decision.reason == "declared-execution-boundary-present"
+
+
+def test_inspection_remains_available_even_with_external_effect_flag():
+    decision = resolve_activation(
+        executable_technology(),
+        ActivationMode.INSPECT,
+        external_effects=True,
+    )
+    assert decision.allowed is True
+    assert decision.reason == "inspection-is-always-available"
