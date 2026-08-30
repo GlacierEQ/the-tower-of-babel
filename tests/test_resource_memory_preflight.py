@@ -116,6 +116,7 @@ def test_memory_without_source_remains_unverified(tmp_path: Path) -> None:
     payload = build_preflight("compare lane owner", root=tmp_path, memory_path=memory)
 
     assert payload["state"] == "RESOURCE_RECONSTRUCTED"
+    assert payload["schema"] == "glaciereq.tower.resource-memory-preflight.v3"
     assert payload["status"] == "PARTIAL"
     assert payload["memory_analysis"]["status"] == "ANALYZED"
     finding = payload["memory_analysis"]["findings"][0]
