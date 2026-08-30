@@ -432,7 +432,7 @@ def build_preflight(
         else "PARTIAL"
     )
     return {
-        "schema": "glaciereq.tower.resource-memory-preflight.v2",
+        "schema": "glaciereq.tower.resource-memory-preflight.v3",
         "mission": mission,
         "state": "RESOURCE_RECONSTRUCTED",
         "status": status,
