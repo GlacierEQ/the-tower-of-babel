@@ -21,7 +21,7 @@ Aspen Grove memory
 
 The Tower owns:
 
-- reconstruction of its current technology, proof, interface, and resource state before mutation;
+- reconstruction of current technology, proof, interface, and resource state as orientation for consequential change, without turning reconstruction into permission machinery;
 - analysis of externally supplied continuity memory without claiming ownership of that memory;
 - decomposition of a system into explicit architecture lanes;
 - technology placement by measurable boundary advantage;
@@ -75,10 +75,15 @@ recover external memory / continuity context
 Executable preflight:
 
 ```bash
-tower preflight --mission "<exact engineering objective>" --memory <external-memory.json> --require-memory
+tower preflight --mission "<exact engineering objective>" --memory <external-memory.json>
 ```
 
 Default receipt: `artifacts/resource-memory-preflight.json`.
+
+This receipt is orientation telemetry, not an execution gate. Missing memory,
+partial reconstruction, an absent verified checkpoint, or unresolved gaps reduce
+certainty and alter route selection; they do not create a generic stop condition.
+The operating default is to continue while a meaningful truthful route exists.
 
 ## Resource + memory truth law
 
@@ -135,7 +140,7 @@ inputs:
   - existing_component_map
   - frontier_signals
 outputs:
-  - resource_memory_preflight
+  - resource_memory_orientation
   - language_lanes
   - technology_placement
   - interface_contracts
