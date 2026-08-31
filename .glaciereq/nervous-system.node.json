@@ -41,9 +41,14 @@
       "continuation_state",
       "recommended_next_route",
       "route_hints",
-      "unresolved_count"
+      "unresolved_count",
+      "memory_evidence_counts"
     ],
     "orientation_can_stop_execution": false,
-    "execution_permission_source": "OUTSIDE_ORIENTATION"
+    "execution_permission_source": "OUTSIDE_ORIENTATION",
+    "degraded_failure_telemetry": true,
+    "degraded_failure_route": "RECOVER_ORIENTATION_FAILURE",
+    "contested_memory_cannot_create_high_certainty": true,
+    "hard_link_memory_overwrite_protection": true
   }
 }
