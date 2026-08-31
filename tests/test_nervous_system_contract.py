@@ -39,3 +39,10 @@ def test_local_tower_contract_cannot_reintroduce_execution_gate() -> None:
     assert orientation["partial_state_changes_certainty_not_execution_permission"] is True
     assert orientation["missing_checkpoint_is_not_execution_veto"] is True
     assert orientation["default_continuation"] == "CONTINUE_WHILE_MEANINGFUL_ROUTE_EXISTS"
+    assert orientation["command"].startswith("tower orient ")
+    assert orientation["legacy_command"].startswith("tower preflight ")
+    assert orientation["receipt"] == "artifacts/resource-memory-orientation.json"
+    assert orientation["orientation_can_stop_execution"] is False
+    assert orientation["execution_permission_source"] == "OUTSIDE_ORIENTATION"
+    assert "certainty" in orientation["continuation_telemetry"]
+    assert "recommended_next_route" in orientation["continuation_telemetry"]
