@@ -119,7 +119,7 @@ The orientation engine emits routing telemetry, not authorization. Its machine r
 - `execution_permission: NOT_EVALUATED_BY_ORIENTATION`;
 - `stop_condition_created: false`;
 - a certainty level that can fall without reducing execution effort by itself;
-- explicit route hints for resource recovery, continuity sourcing, checkpoint establishment, and working-tree reconciliation;
+- explicit route hints for resource recovery, continuity sourcing, contested-memory reconciliation, current-state acquisition, checkpoint establishment, and working-tree reconciliation;
 - `CONTINUE` or `CONTINUE_WITH_GAPS` as the continuation state.
 
-A gap is work to route, not a reason to manufacture a global stop.
+A gap is work to route, not a reason to manufacture a global stop. Disputed, invalidated, or superseded memory never becomes current positive continuity merely because parsing succeeded. Local orientation I/O failure is surfaced as degraded JSON telemetry, and output protection must reject same-path, symlink-resolved, or hard-linked attempts to overwrite operator memory.
