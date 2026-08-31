@@ -1,5 +1,5 @@
 {
-  "schema": "glaciereq.tower.target-contract.v2",
+  "schema": "glaciereq.tower.target-contract.v3",
   "target": "maximum-boundary-fitness-polyglot-engine",
   "objective": "Select, compose, execute, and prove the strongest justified technology per explicit engineering boundary while preserving unique incumbent capability.",
   "project_direction_authority": "operator",
@@ -8,7 +8,8 @@
     "projection-does-not-delete-capability",
     "placement-does-not-block-material-evolution",
     "unique-capability-retires-only-after-equivalence-or-operator-direction",
-    "operator-scope-authorizes-external-effects"
+    "operator-scope-binds-materially-irreversible-or-unclassified-external-effects",
+    "reversible-external-effects-do-not-require-redundant-approval"
   ],
   "non_goals": [
     "canonical-positioning-as-a-prerequisite",

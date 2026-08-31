@@ -1,7 +1,9 @@
-"""Exact-scope Operator authorization receipts for Tower execution.
+"""Exact-scope Operator authorization receipts for high-consequence Tower execution.
 
 This module verifies receipt structure, exact execution scope, and deterministic
-content integrity. It does not pretend to prove human identity cryptographically;
+content integrity for materially irreversible or conservatively unclassified
+external effects. Reversible external work does not manufacture a redundant
+second approval requirement. It does not pretend to prove human identity cryptographically;
 the trust boundary is the Operator-controlled invocation environment. A receipt
 cannot widen itself beyond the exact repository, technology, mode, and external-
 effects tuple it names.

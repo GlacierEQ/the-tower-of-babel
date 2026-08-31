@@ -1,4 +1,4 @@
-from tower.activation import ActivationMode, resolve_activation
+from tower.activation import ActivationMode, EffectRisk, resolve_activation
 
 
 def executable_technology() -> dict:
@@ -12,27 +12,63 @@ def executable_technology() -> dict:
     }
 
 
-def test_external_effects_require_operator_scope_not_secondary_approval():
+def test_legacy_unclassified_external_effect_preserves_scope_boundary():
     decision = resolve_activation(
         executable_technology(),
         ActivationMode.EXECUTE,
         external_effects=True,
     )
     assert decision.allowed is False
-    assert decision.reason == "external-effects-require-operator-scope-authorization"
+    assert decision.reason == "unclassified-external-effects-require-operator-scope-authorization"
+    assert decision.effect_risk is EffectRisk.UNCLASSIFIED
+    assert decision.operator_scope_required is True
     assert decision.blocked_capabilities == ("external-effects",)
 
 
-def test_operator_scope_authorizes_external_execution_boundary():
+def test_reversible_external_effect_does_not_require_redundant_scope_receipt():
     decision = resolve_activation(
         executable_technology(),
         ActivationMode.EXECUTE,
         external_effects=True,
+        effect_risk=EffectRisk.REVERSIBLE,
+    )
+    assert decision.allowed is True
+    assert decision.effective_mode is ActivationMode.EXECUTE
+    assert decision.reason == "reversible-external-execution-boundary-present"
+    assert decision.effect_risk is EffectRisk.REVERSIBLE
+    assert decision.operator_scope_required is False
+
+
+def test_materially_irreversible_external_effect_requires_scope_receipt():
+    decision = resolve_activation(
+        executable_technology(),
+        ActivationMode.EXECUTE,
+        external_effects=True,
+        effect_risk=EffectRisk.MATERIAL_IRREVERSIBLE,
+    )
+    assert decision.allowed is False
+    assert (
+        decision.reason
+        == "materially-irreversible-external-effects-require-operator-scope-authorization"
+    )
+    assert decision.operator_scope_required is True
+
+
+def test_operator_scope_authorizes_materially_irreversible_execution_boundary():
+    decision = resolve_activation(
+        executable_technology(),
+        ActivationMode.EXECUTE,
+        external_effects=True,
+        effect_risk=EffectRisk.MATERIAL_IRREVERSIBLE,
         operator_scope_authorized=True,
     )
     assert decision.allowed is True
     assert decision.effective_mode is ActivationMode.EXECUTE
-    assert decision.reason == "operator-scoped-external-execution-boundary-present"
+    assert (
+        decision.reason
+        == "operator-scoped-materially-irreversible-execution-boundary-present"
+    )
+    assert decision.operator_scope_required is True
 
 
 def test_operator_scope_does_not_bypass_technical_prerequisites():
@@ -42,6 +78,7 @@ def test_operator_scope_does_not_bypass_technical_prerequisites():
         technology,
         ActivationMode.EXECUTE,
         external_effects=True,
+        effect_risk=EffectRisk.MATERIAL_IRREVERSIBLE,
         operator_scope_authorized=True,
     )
     assert decision.allowed is False
@@ -57,6 +94,7 @@ def test_operator_scope_does_not_bypass_promotion_evidence():
         technology,
         ActivationMode.PROMOTE,
         external_effects=True,
+        effect_risk=EffectRisk.MATERIAL_IRREVERSIBLE,
         operator_scope_authorized=True,
     )
     assert decision.allowed is False

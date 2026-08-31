@@ -4,9 +4,11 @@ Governance shapes power; it must not collapse usable capability into a
 planning-only denial. Tower may inspect, compose, execute, and promote within
 its technical evidence contract.
 
-Project direction belongs to the Operator. External effects therefore require
-Operator-scoped authorization, not a second model/governance approval. Evidence
-requirements still control factual claimability and promotion state.
+Project direction belongs to the Operator. Reversible external work may execute
+within the current Operator-directed mission without manufacturing a second
+approval layer. Materially irreversible or unclassified external effects retain
+an exact Operator-scope authorization boundary. Evidence requirements still
+control factual claimability and promotion state.
 """
 from __future__ import annotations
 
@@ -22,6 +24,13 @@ class ActivationMode(str, Enum):
     PROMOTE = "promote"
 
 
+class EffectRisk(str, Enum):
+    NONE = "none"
+    REVERSIBLE = "reversible"
+    MATERIAL_IRREVERSIBLE = "materially-irreversible"
+    UNCLASSIFIED = "unclassified"
+
+
 @dataclass(frozen=True)
 class ActivationDecision:
     technology_id: str
@@ -29,6 +38,8 @@ class ActivationDecision:
     allowed: bool
     effective_mode: ActivationMode
     reason: str
+    effect_risk: EffectRisk = EffectRisk.NONE
+    operator_scope_required: bool = False
     required_proof: tuple[str, ...] = ()
     blocked_capabilities: tuple[str, ...] = ()
 
@@ -38,18 +49,42 @@ def _text(row: Mapping[str, Any], key: str) -> str:
     return value.strip() if isinstance(value, str) else ""
 
 
+def _resolve_effect_risk(
+    *,
+    external_effects: bool,
+    effect_risk: EffectRisk | str | None,
+) -> EffectRisk:
+    if not external_effects:
+        if effect_risk is None:
+            return EffectRisk.NONE
+        parsed = effect_risk if isinstance(effect_risk, EffectRisk) else EffectRisk(effect_risk)
+        if parsed is EffectRisk.NONE:
+            return parsed
+        raise ValueError("effect_risk requires external_effects=true")
+
+    if effect_risk is None:
+        return EffectRisk.UNCLASSIFIED
+
+    parsed = effect_risk if isinstance(effect_risk, EffectRisk) else EffectRisk(effect_risk)
+    if parsed is EffectRisk.NONE:
+        raise ValueError("external effects cannot use effect_risk=none")
+    return parsed
+
+
 def resolve_activation(
     technology: Mapping[str, Any],
     requested: ActivationMode | str,
     *,
     external_effects: bool = False,
+    effect_risk: EffectRisk | str | None = None,
     operator_scope_authorized: bool = False,
 ) -> ActivationDecision:
     """Resolve capability without inventing a second authority layer.
 
     operator_scope_authorized answers only whether the current Operator
-    instruction covers the requested external effect. It does not bypass
-    technical prerequisites or evidence requirements.
+    instruction covers an external effect that actually requires a separate
+    authorization boundary. It does not bypass technical prerequisites or
+    evidence requirements.
     """
     technology_id = _text(technology, "id") or "UNIDENTIFIED_TECHNOLOGY"
     try:
@@ -59,16 +94,39 @@ def resolve_activation(
 
     if mode is ActivationMode.INSPECT:
         return ActivationDecision(
-            technology_id, mode, True, mode, "inspection-is-always-available"
+            technology_id,
+            mode,
+            True,
+            mode,
+            "inspection-is-always-available",
         )
 
-    if external_effects and not operator_scope_authorized:
+    try:
+        risk = _resolve_effect_risk(
+            external_effects=external_effects,
+            effect_risk=effect_risk,
+        )
+    except ValueError as exc:
+        raise ValueError(f"invalid effect risk: {effect_risk}") from exc
+
+    operator_scope_required = external_effects and risk in {
+        EffectRisk.MATERIAL_IRREVERSIBLE,
+        EffectRisk.UNCLASSIFIED,
+    }
+    if operator_scope_required and not operator_scope_authorized:
+        reason = (
+            "materially-irreversible-external-effects-require-operator-scope-authorization"
+            if risk is EffectRisk.MATERIAL_IRREVERSIBLE
+            else "unclassified-external-effects-require-operator-scope-authorization"
+        )
         return ActivationDecision(
             technology_id,
             mode,
             False,
             ActivationMode.INSPECT,
-            "external-effects-require-operator-scope-authorization",
+            reason,
+            effect_risk=risk,
+            operator_scope_required=True,
             blocked_capabilities=("external-effects",),
         )
 
@@ -76,7 +134,13 @@ def resolve_activation(
         interfaces = technology.get("interfaces")
         if isinstance(interfaces, list) and interfaces:
             return ActivationDecision(
-                technology_id, mode, True, mode, "declared-interface-boundary-present"
+                technology_id,
+                mode,
+                True,
+                mode,
+                "declared-interface-boundary-present",
+                effect_risk=risk,
+                operator_scope_required=operator_scope_required,
             )
         return ActivationDecision(
             technology_id,
@@ -84,6 +148,8 @@ def resolve_activation(
             False,
             ActivationMode.INSPECT,
             "composition-requires-declared-interfaces",
+            effect_risk=risk,
+            operator_scope_required=operator_scope_required,
             required_proof=("interfaces",),
         )
 
@@ -94,12 +160,23 @@ def resolve_activation(
 
     if mode is ActivationMode.EXECUTE:
         if declared_tool and declared_execution:
-            reason = (
-                "operator-scoped-external-execution-boundary-present"
-                if external_effects
-                else "declared-execution-boundary-present"
+            if not external_effects:
+                reason = "declared-execution-boundary-present"
+            elif risk is EffectRisk.REVERSIBLE:
+                reason = "reversible-external-execution-boundary-present"
+            elif risk is EffectRisk.MATERIAL_IRREVERSIBLE:
+                reason = "operator-scoped-materially-irreversible-execution-boundary-present"
+            else:
+                reason = "operator-scoped-unclassified-external-execution-boundary-present"
+            return ActivationDecision(
+                technology_id,
+                mode,
+                True,
+                mode,
+                reason,
+                effect_risk=risk,
+                operator_scope_required=operator_scope_required,
             )
-            return ActivationDecision(technology_id, mode, True, mode, reason)
         missing = tuple(
             name
             for name, present in (
@@ -114,6 +191,8 @@ def resolve_activation(
             False,
             ActivationMode.INSPECT,
             "execution-boundary-incomplete",
+            effect_risk=risk,
+            operator_scope_required=operator_scope_required,
             required_proof=missing,
         )
 
@@ -125,7 +204,13 @@ def resolve_activation(
         and proof_class
     ):
         return ActivationDecision(
-            technology_id, mode, True, mode, "promotion-proof-class-present"
+            technology_id,
+            mode,
+            True,
+            mode,
+            "promotion-proof-class-present",
+            effect_risk=risk,
+            operator_scope_required=operator_scope_required,
         )
 
     return ActivationDecision(
@@ -134,6 +219,8 @@ def resolve_activation(
         False,
         ActivationMode.EXECUTE if declared_tool and declared_execution else ActivationMode.INSPECT,
         "promotion-requires-earned-evidence",
+        effect_risk=risk,
+        operator_scope_required=operator_scope_required,
         required_proof=("evidence_state", "proof_class"),
     )
 
@@ -142,12 +229,14 @@ def activate_execution(
     technology: Mapping[str, Any],
     *,
     external_effects: bool = False,
+    effect_risk: EffectRisk | str | None = None,
     operator_scope_authorized: bool = False,
 ) -> dict[str, Any]:
     decision = resolve_activation(
         technology,
         ActivationMode.EXECUTE,
         external_effects=external_effects,
+        effect_risk=effect_risk,
         operator_scope_authorized=operator_scope_authorized,
     )
     if not decision.allowed:
@@ -165,6 +254,8 @@ def activate_execution(
         "activation": {
             "mode": ActivationMode.EXECUTE.value,
             "reason": decision.reason,
+            "effect_risk": decision.effect_risk.value,
+            "operator_scope_required": decision.operator_scope_required,
             "governance": "technical-evidence-and-audit",
             "project_direction_authority": "operator",
         },
@@ -182,6 +273,8 @@ def activation_surface(technology: Mapping[str, Any]) -> dict[str, Any]:
                 "allowed": decision.allowed,
                 "effective_mode": decision.effective_mode.value,
                 "reason": decision.reason,
+                "effect_risk": decision.effect_risk.value,
+                "operator_scope_required": decision.operator_scope_required,
                 "required_proof": list(decision.required_proof),
                 "blocked_capabilities": list(decision.blocked_capabilities),
             }
