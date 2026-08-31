@@ -359,8 +359,17 @@ def _load_verified_checkpoint(root: Path, receipt_path: Path) -> tuple[dict[str,
 def _git_state(root: Path, checkpoint: dict[str, Any] | None) -> dict[str, Any]:
     head = _git(root, "rev-parse", "HEAD")
     tree = _git(root, "rev-parse", "HEAD^{tree}")
-    porcelain = _git(root, "status", "--porcelain=v1")
-    working_changes = sorted(line[3:] for line in porcelain.splitlines() if len(line) >= 4) if porcelain else []
+    tracked_working = _git(root, "diff", "--name-only", "HEAD", "--")
+    untracked_working = _git(root, "ls-files", "--others", "--exclude-standard")
+    working_changes = sorted(
+        {
+            line
+            for output in (tracked_working, untracked_working)
+            if output
+            for line in output.splitlines()
+            if line
+        }
+    )
 
     committed_changes: list[str] = []
     committed_status = "UNKNOWN_NO_VERIFIED_CHECKPOINT"
