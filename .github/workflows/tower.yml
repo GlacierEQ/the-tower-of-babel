@@ -75,14 +75,13 @@ jobs:
           python -m pip install --no-deps --no-build-isolation -e .
       - name: Install declared portable benchmark tools
         run: sudo apt-get update && sudo apt-get install -y protobuf-compiler wabt
-      - name: Reconstruct resources and source-backed continuity before proof mutation
+      - name: Orient from resources, source-backed continuity, and current delta
         run: >-
-          tower preflight
+          tower orient
           --mission "Verify and counter-engineer Tower as a maximum-boundary-fitness polyglot engine under absolute Operator project direction"
           --memory machine/continuity/tower-counterengineering-findings.json
-          --require-memory
           --checkpoint-receipt machine/checkpoints/tower_receipt_07ee7d6.json
-          --output artifacts/resource-memory-preflight.json
+          --output artifacts/resource-memory-orientation.json
       - name: Validate current registry
         run: tower validate
       - name: Reject generated-surface drift
@@ -123,7 +122,7 @@ jobs:
             artifacts/tower_receipt.json
             artifacts/benchmarks.json
             artifacts/proof-report.json
-            artifacts/resource-memory-preflight.json
+            artifacts/resource-memory-orientation.json
           if-no-files-found: error
           retention-days: 14
       - name: Upload Sigstore attestation bundle

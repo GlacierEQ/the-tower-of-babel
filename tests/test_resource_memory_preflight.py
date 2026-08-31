@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -86,6 +88,14 @@ def _init_git_with_release_receipt(root: Path) -> None:
     path = root / "artifacts" / "tower_receipt.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def _externalize_release_receipt(root: Path) -> Path:
+    internal = root / "artifacts" / "tower_receipt.json"
+    external = root.parent / f"{root.name}-tower-receipt.json"
+    external.write_bytes(internal.read_bytes())
+    internal.unlink()
+    return external
 
 
 def test_inventory_collapses_identical_bytes(tmp_path: Path) -> None:
@@ -246,6 +256,36 @@ def test_superseded_memory_state_is_not_resurrected(tmp_path: Path) -> None:
     payload = build_preflight("preserve state", root=tmp_path, memory_path=memory)
 
     assert payload["memory_analysis"]["findings"][0]["status"] == "SUPERSEDED"
+    assert payload["status"] == "PARTIAL"
+    assert payload["orientation"]["certainty"] == "MEDIUM"
+    assert payload["orientation"]["recommended_next_route"] == "ACQUIRE_CURRENT_CONTINUITY"
+
+
+def test_disputed_memory_cannot_create_high_certainty(tmp_path: Path) -> None:
+    _seed_minimal_tower(tmp_path)
+    _init_git_with_release_receipt(tmp_path)
+    memory = tmp_path / "memory.json"
+    memory.write_text(
+        json.dumps(
+            {
+                "findings": [
+                    {
+                        "finding": "A prior placement remains disputed.",
+                        "status": "DISPUTED",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    payload = build_preflight("reconcile contested lane", root=tmp_path, memory_path=memory)
+
+    assert payload["status"] == "PARTIAL"
+    assert payload["orientation"]["certainty"] == "MEDIUM"
+    assert payload["orientation"]["recommended_next_route"] == "RECONCILE_CONTESTED_CONTINUITY"
+    assert payload["orientation"]["memory_evidence_counts"]["DISPUTED"] == 1
+    assert payload["orientation"]["memory_evidence_counts"]["VERIFIED_WITH_SOURCE"] == 0
 
 
 def test_source_bound_memory_requires_release_receipt_for_complete_state(tmp_path: Path) -> None:
@@ -259,7 +299,13 @@ def test_source_bound_memory_requires_release_receipt_for_complete_state(tmp_pat
     assert without_receipt["continuation_controls"]["checkpoint_absence_is_not_execution_veto"] is True
 
     _init_git_with_release_receipt(tmp_path)
-    with_receipt = build_preflight("evaluate replacement", root=tmp_path, memory_path=memory)
+    receipt = _externalize_release_receipt(tmp_path)
+    with_receipt = build_preflight(
+        "evaluate replacement",
+        root=tmp_path,
+        memory_path=memory,
+        checkpoint_receipt=receipt,
+    )
     assert with_receipt["status"] == "COMPLETE"
     assert with_receipt["last_verified_checkpoint"]["verification_basis"] == "TOWER_RELEASE_RECEIPT_V2"
     assert with_receipt["delta"]["committed_delta_status"] == "COMPUTED_FROM_VERIFIED_CHECKPOINT"
@@ -307,6 +353,19 @@ def test_preflight_refuses_to_overwrite_memory_input(tmp_path: Path) -> None:
         write_preflight(memory, "protect operator memory", root=tmp_path, memory_path=memory)
 
 
+def test_preflight_refuses_hard_link_overwrite_of_memory_input(tmp_path: Path) -> None:
+    _seed_minimal_tower(tmp_path)
+    memory = _source_bound_memory(tmp_path)
+    output = tmp_path / "hard-linked-output.json"
+    os.link(memory, output)
+    before = memory.read_bytes()
+
+    with pytest.raises(ValueError, match="hard-linked"):
+        write_preflight(output, "protect operator memory inode", root=tmp_path, memory_path=memory)
+
+    assert memory.read_bytes() == before
+
+
 def test_orientation_partial_state_is_not_an_execution_veto(tmp_path: Path) -> None:
     _seed_minimal_tower(tmp_path, include_registry=False)
 
@@ -316,7 +375,158 @@ def test_orientation_partial_state_is_not_an_execution_veto(tmp_path: Path) -> N
     assert payload["continuation_controls"]["mode"] == "ORIENTATION_NOT_PERMISSION"
     assert payload["continuation_controls"]["resource_gaps_change_routing_not_global_execution_permission"] is True
     assert payload["continuation_controls"]["checkpoint_absence_is_not_execution_veto"] is True
+    orientation = payload["orientation"]
+    assert orientation["continuation_state"] == "CONTINUE_WITH_GAPS"
+    assert orientation["execution_permission"] == "NOT_EVALUATED_BY_ORIENTATION"
+    assert orientation["stop_condition_created"] is False
+    assert orientation["recommended_next_route"] == "RECOVER_RESOURCE_GAPS"
+    assert orientation["certainty"] == "LOW"
     assert "promotion_gate" not in payload
+
+
+def test_complete_orientation_points_to_next_frontier(tmp_path: Path) -> None:
+    _seed_minimal_tower(tmp_path)
+    memory = _source_bound_memory(tmp_path)
+    _init_git_with_release_receipt(tmp_path)
+    receipt = _externalize_release_receipt(tmp_path)
+
+    payload = build_preflight(
+        "continue strongest lane",
+        root=tmp_path,
+        memory_path=memory,
+        checkpoint_receipt=receipt,
+    )
+
+    orientation = payload["orientation"]
+    assert payload["status"] == "COMPLETE"
+    assert orientation["continuation_state"] == "CONTINUE"
+    assert orientation["certainty"] == "HIGH"
+    assert orientation["recommended_next_route"] == "EXECUTE_NEXT_FRONTIER"
+    assert orientation["unresolved_count"] == 0
+
+
+def test_committed_delta_is_routed_through_verification(tmp_path: Path) -> None:
+    _seed_minimal_tower(tmp_path)
+    memory = _source_bound_memory(tmp_path)
+    _init_git_with_release_receipt(tmp_path)
+    receipt = _externalize_release_receipt(tmp_path)
+
+    architecture = tmp_path / "ARCHITECTURE_LAW.md"
+    architecture.write_text("seed:ARCHITECTURE_LAW.md\nnew committed delta\n", encoding="utf-8")
+    subprocess.run(["git", "add", "ARCHITECTURE_LAW.md"], cwd=tmp_path, check=True)
+    subprocess.run(["git", "commit", "-qm", "new committed delta"], cwd=tmp_path, check=True)
+
+    payload = build_preflight(
+        "verify new committed delta",
+        root=tmp_path,
+        memory_path=memory,
+        checkpoint_receipt=receipt,
+    )
+
+    assert payload["status"] == "PARTIAL"
+    orientation = payload["orientation"]
+    assert orientation["continuation_state"] == "CONTINUE_WITH_GAPS"
+    assert orientation["certainty"] == "MEDIUM"
+    assert orientation["recommended_next_route"] == "VERIFY_COMMITTED_DELTA"
+    assert orientation["unresolved_count"] >= 1
+    assert "ARCHITECTURE_LAW.md" in payload["delta"]["committed_changed_paths"]
+
+
+def test_working_tree_delta_lowers_certainty_and_routes_reconciliation(tmp_path: Path) -> None:
+    _seed_minimal_tower(tmp_path)
+    memory = _source_bound_memory(tmp_path)
+    _init_git_with_release_receipt(tmp_path)
+    receipt = _externalize_release_receipt(tmp_path)
+
+    architecture = tmp_path / "ARCHITECTURE_LAW.md"
+    architecture.write_text("seed:ARCHITECTURE_LAW.md\nworking delta\n", encoding="utf-8")
+
+    payload = build_preflight(
+        "reconcile working delta",
+        root=tmp_path,
+        memory_path=memory,
+        checkpoint_receipt=receipt,
+    )
+
+    assert payload["status"] == "PARTIAL"
+    orientation = payload["orientation"]
+    assert orientation["continuation_state"] == "CONTINUE_WITH_GAPS"
+    assert orientation["certainty"] == "MEDIUM"
+    assert orientation["recommended_next_route"] == "RECONCILE_WORKING_TREE"
+    assert "ARCHITECTURE_LAW.md" in payload["delta"]["working_tree_changed_paths"]
+
+
+def test_cli_orient_and_legacy_preflight_are_nonblocking(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    from tower.cli import main as tower_main
+
+    _seed_minimal_tower(tmp_path, include_registry=False)
+    monkeypatch.chdir(tmp_path)
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "tower",
+            "orient",
+            "--mission",
+            "continue despite partial reconstruction",
+            "--output",
+            "artifacts/orientation.json",
+        ],
+    )
+    assert tower_main() == 0
+    orient_payload = json.loads(capsys.readouterr().out)
+    assert orient_payload["status"] == "PARTIAL"
+    assert orient_payload["orientation"]["stop_condition_created"] is False
+    assert orient_payload["orientation"]["execution_permission"] == "NOT_EVALUATED_BY_ORIENTATION"
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "tower",
+            "preflight",
+            "--mission",
+            "legacy caller must also continue",
+            "--require-memory",
+            "--output",
+            "artifacts/legacy-preflight.json",
+        ],
+    )
+    assert tower_main() == 0
+    legacy_payload = json.loads(capsys.readouterr().out)
+    assert legacy_payload["status"] == "PARTIAL"
+    assert legacy_payload["orientation"]["continuation_state"] == "CONTINUE_WITH_GAPS"
+
+
+def test_cli_orientation_io_failure_emits_degraded_nonblocking_telemetry(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    from tower import cli as tower_cli
+
+    def fail_write(*args, **kwargs):
+        raise OSError("simulated read-only filesystem")
+
+    monkeypatch.setattr(tower_cli, "write_orientation", fail_write)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["tower", "orient", "--mission", "continue through local I/O failure"],
+    )
+
+    assert tower_cli.main() == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["status"] == "DEGRADED"
+    assert payload["failure"]["class"] == "ORIENTATION_IO_ERROR"
+    assert payload["orientation"]["continuation_state"] == "CONTINUE_WITH_GAPS"
+    assert payload["orientation"]["stop_condition_created"] is False
+    assert payload["orientation"]["execution_permission"] == "NOT_EVALUATED_BY_ORIENTATION"
+    assert payload["orientation"]["recommended_next_route"] == "RECOVER_ORIENTATION_FAILURE"
 
 
 def test_repo_root_resolves_from_active_checkout(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
