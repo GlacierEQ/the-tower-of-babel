@@ -130,6 +130,8 @@ CRITICAL_QUALITY = ("purpose_focus", "correctness", "testing", "security", "sema
 class FileRole:
     path: str
     language: str | None
+    kind: str
+    evidence_weight: float
     roles: tuple[str, ...]
     confidence: float
 
@@ -141,6 +143,7 @@ class LanguageFit:
     score: float
     registry_evidence: str | None
     current_presence: bool
+    execution_ready: bool
     reason: str
 
 
@@ -257,6 +260,24 @@ def _read(path: Path) -> str:
         return ""
 
 
+def _file_kind(path: Path, language: str | None) -> tuple[str, float]:
+    """Classify evidence strength so prose cannot overpower executable reality."""
+    lower_parts = {part.casefold() for part in path.parts}
+    name = path.name.casefold()
+    suffix = path.suffix.casefold()
+    if "tests" in lower_parts or "test" in lower_parts or "spec" in lower_parts or name.startswith(("test_", "spec_")):
+        return "test", .78
+    if suffix in {".proto", ".sql", ".lean", ".v", ".agda"}:
+        return "contract", .95
+    if language is not None:
+        return "implementation", 1.0
+    if suffix in {".json", ".yaml", ".yml", ".toml", ".ini", ".cfg"}:
+        return "configuration", .62
+    if suffix in {".md", ".rst", ".txt", ".adoc"}:
+        return "documentation", .25
+    return "support", .18
+
+
 def _role_scores(path: Path, text: str) -> dict[str, float]:
     haystack = (path.as_posix() + "\n" + text[:80_000]).casefold()
     raw: dict[str, float] = {}
@@ -277,13 +298,18 @@ def classify_files(root: Path | str) -> tuple[FileRole, ...]:
     rows: list[FileRole] = []
     for path in _safe_files(repo):
         text = _read(path)
-        scores = _role_scores(path.relative_to(repo), text)
+        relative = path.relative_to(repo)
+        language = _language(path)
+        kind, evidence_weight = _file_kind(relative, language)
+        scores = _role_scores(relative, text)
         ordered = sorted(scores.items(), key=lambda item: (-item[1], item[0]))
         selected = tuple(role for role, score in ordered if score >= .25)[:3]
         confidence = ordered[0][1] if ordered else 0.0
         rows.append(FileRole(
-            path=path.relative_to(repo).as_posix(),
-            language=_language(path),
+            path=relative.as_posix(),
+            language=language,
+            kind=kind,
+            evidence_weight=evidence_weight,
             roles=selected,
             confidence=round(confidence, 3),
         ))
@@ -311,9 +337,17 @@ def _evidence_bonus(row: Mapping[str, Any] | None) -> float:
     return {
         "production_reference": .10, "integrated": .09, "benchmark": .08,
         "tested": .07, "formally_verified": .09, "compiles": .04,
-        "toolchain_gated": -.02, "service_gated": -.02, "hardware_gated": -.02,
+        "toolchain_gated": -.06, "service_gated": -.06, "hardware_gated": -.06,
         "illustrative": -.04,
     }.get(state, 0.0)
+
+
+def _execution_ready(row: Mapping[str, Any] | None) -> bool:
+    if not row:
+        return False
+    return str(row.get("evidence_state", "")).casefold() not in {
+        "toolchain_gated", "service_gated", "hardware_gated", "illustrative",
+    }
 
 
 def _candidate_languages(registry: TowerRegistry, files: Sequence[FileRole]) -> tuple[str, ...]:
@@ -328,17 +362,26 @@ def _candidate_languages(registry: TowerRegistry, files: Sequence[FileRole]) -> 
 
 
 def _role_demand(files: Sequence[FileRole], role: str) -> float:
-    evidence = [row.confidence for row in files if role in row.roles]
-    if not evidence:
+    supporting = [row for row in files if role in row.roles]
+    if not supporting:
         return 0.0
-    return round(min(1.0, sum(evidence) / max(2.0, len(files) * .08)), 3)
+    total_weight = sum(row.evidence_weight for row in files) or 1.0
+    support_weight = sum(row.evidence_weight for row in supporting)
+    density = support_weight / total_weight
+    strength = (
+        sum(row.confidence * row.evidence_weight for row in supporting)
+        / max(.001, support_weight)
+    )
+    # Density shows how much of the actual repo performs this role; strength
+    # prevents a small but unmistakable critical boundary from disappearing.
+    return round(min(1.0, .65 * min(1.0, density * 3.0) + .35 * strength), 3)
 
 
 def _current_languages(files: Sequence[FileRole], role: str) -> tuple[str, ...]:
-    counts: dict[str, int] = {}
+    counts: dict[str, float] = {}
     for row in files:
         if role in row.roles and row.language:
-            counts[row.language] = counts.get(row.language, 0) + 1
+            counts[row.language] = counts.get(row.language, 0.0) + row.evidence_weight * max(.25, row.confidence)
     return tuple(language for language, _ in sorted(counts.items(), key=lambda item: (-item[1], item[0])))
 
 
@@ -353,9 +396,12 @@ def _fit(
 ) -> LanguageFit:
     row = registry.by_id(language)
     prior = LANGUAGE_ROLE_PRIORS.get(language, {}).get(role, .0)
+    ready = _execution_ready(row)
     score = prior + _registry_role_bonus(row, role) + _evidence_bonus(row)
     if current:
         score += .05  # existing proven integration has value
+    elif not ready:
+        score -= .10  # do not recommend a new gated dependency as if it were deployable
     score -= .12 * interface_cost + .10 * migration_cost
     score = round(max(0.0, min(1.0, score)), 6)
     reason = (
@@ -369,6 +415,7 @@ def _fit(
         score=score,
         registry_evidence=str(row.get("evidence_state")) if row and row.get("evidence_state") else None,
         current_presence=current,
+        execution_ready=ready,
         reason=reason,
     )
 
@@ -397,7 +444,10 @@ def resolve_roles(
         selected = ranked[0]
         current_best = next((row for row in ranked if row.language in current), None)
         if current_best is None:
-            recommendation = f"INTRODUCE {selected.language} for {role} only behind an explicit interface and measured experiment"
+            if selected.execution_ready:
+                recommendation = f"INTRODUCE {selected.language} for {role} only behind an explicit interface and measured experiment"
+            else:
+                recommendation = f"PROVE {selected.language} toolchain/runtime availability, then EXPERIMENT on the {role} boundary"
         elif selected.language == current_best.language:
             recommendation = f"FOCUS {selected.language} ownership of the {role} boundary"
         elif selected.score - current_best.score >= .12:
