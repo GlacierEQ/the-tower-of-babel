@@ -49,6 +49,12 @@
     "degraded_failure_telemetry": true,
     "degraded_failure_route": "RECOVER_ORIENTATION_FAILURE",
     "contested_memory_cannot_create_high_certainty": true,
-    "hard_link_memory_overwrite_protection": true
+    "hard_link_memory_overwrite_protection": true,
+    "committed_delta_requires_explicit_verification_route": true,
+    "working_tree_delta_lowers_certainty": true,
+    "delta_routes": [
+      "VERIFY_COMMITTED_DELTA",
+      "RECONCILE_WORKING_TREE"
+    ]
   }
 }
