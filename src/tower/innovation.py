@@ -499,11 +499,24 @@ def _quality(root: Path, files: Sequence[FileRole], roles: Sequence[RoleResoluti
     source = [row for row in files if row.language]
     has_ci = any(path.startswith(".github/workflows/") for path in paths)
     has_readme = "readme.md" in names
-    has_security = "security.md" in names
-    has_lock = any(name in names for name in {
-        "cargo.lock", "go.sum", "package-lock.json", "pnpm-lock.yaml", "uv.lock",
-        "poetry.lock", "requirements.lock",
-    })
+    has_security_doc = any(
+        row.kind == "documentation"
+        and any(token in row.path.casefold() for token in ("security", "supply_chain", "supply-chain", "protection", "threat"))
+        for row in files
+    )
+    has_security_tests = any(
+        row.kind == "test"
+        and any(token in row.path.casefold() for token in ("security", "supply_chain", "supply-chain", "sandbox", "permission", "auth"))
+        for row in files
+    )
+    has_lock = any(
+        Path(row.path).name.casefold().endswith(".lock")
+        or Path(row.path).name.casefold() in {
+            "cargo.lock", "go.sum", "package-lock.json", "pnpm-lock.yaml",
+            "yarn.lock", "uv.lock", "poetry.lock",
+        }
+        for row in files
+    )
     has_arch = any("architecture" in name for name in names)
     has_observability = any(
         token in row.path.casefold()
@@ -537,9 +550,15 @@ def _quality(root: Path, files: Sequence[FileRole], roles: Sequence[RoleResoluti
         axis("testing", 4.2 + min(3.6, test_ratio * 35) + (1.4 if has_ci else 0),
              [f"{len(tests)} test files", "CI present" if has_ci else "CI absent"],
              ([] if tests else ["add executable tests"]) + ([] if has_ci else ["add CI verification"])),
-        axis("security", 5.0 + (1.3 if has_security else 0) + (1.1 if has_lock else 0) + (1.0 if has_ci else 0),
-             ["SECURITY.md present" if has_security else "SECURITY.md absent", "dependency lock present" if has_lock else "lock absent"],
-             ([] if has_security else ["document security boundary"]) + ([] if has_lock else ["lock dependencies"])),
+        axis("security", 5.0 + (1.1 if has_security_doc else 0) + (1.1 if has_lock else 0)
+             + (1.0 if has_ci else 0) + (.8 if has_security_tests else 0),
+             [
+                 "security/protection documentation present" if has_security_doc else "security documentation not observed",
+                 "security/sandbox tests present" if has_security_tests else "security tests not observed",
+                 "dependency lock present" if has_lock else "lock absent",
+             ],
+             ([] if has_security_doc or has_security_tests else ["document or test the security boundary"])
+             + ([] if has_lock else ["lock dependencies"])),
         axis("semantic_placement", 4.8 + 4.3 * resolved_strength - 1.6 * interface_penalty - overloaded * .4,
              [f"mean role fit={resolved_strength:.3f}", f"mean interface cost={interface_penalty:.3f}"],
              ["reduce language overload and place each boundary with measured fit"] if resolved_strength < .86 else []),
