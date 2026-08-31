@@ -171,3 +171,10 @@ prohibitions:
   - duplicate_copy_counted_as_corroboration
   - restart_without_resource_reconstruction
 ```
+
+
+## External-effect execution boundary
+
+Tower distinguishes external location from destructive consequence. A reversible external action may proceed under current Operator direction when its technical boundary is satisfied. A materially irreversible external action requires exact Operator-scoped authorization. An external action whose risk is not classified retains that authorization requirement until classified.
+
+This preserves both sides of the execution law: reversible work is not frozen by redundant approval machinery, and high-consequence work does not inherit permission merely because another external action was previously authorized.
