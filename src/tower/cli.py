@@ -127,12 +127,45 @@ def main() -> int:
         if args.command in {"orient", "preflight"}:
             memory_path = Path(args.memory) if args.memory else None
             checkpoint_receipt = Path(args.checkpoint_receipt) if args.checkpoint_receipt else None
-            payload = write_orientation(
-                Path(args.output),
-                args.mission,
-                memory_path=memory_path,
-                checkpoint_receipt=checkpoint_receipt,
-            )
+            try:
+                payload = write_orientation(
+                    Path(args.output),
+                    args.mission,
+                    memory_path=memory_path,
+                    checkpoint_receipt=checkpoint_receipt,
+                )
+            except (OSError, ValueError) as exc:
+                failure_class = (
+                    "ORIENTATION_IO_ERROR" if isinstance(exc, OSError)
+                    else "ORIENTATION_INPUT_OR_PROTECTION_ERROR"
+                )
+                payload = {
+                    "schema": "glaciereq.tower.resource-memory-preflight.v3",
+                    "mission": args.mission,
+                    "state": "ORIENTATION_DEGRADED",
+                    "status": "DEGRADED",
+                    "failure": {
+                        "class": failure_class,
+                        "message": str(exc),
+                    },
+                    "orientation": {
+                        "mode": "CONTINUOUS_ORIENTATION",
+                        "continuation_state": "CONTINUE_WITH_GAPS",
+                        "certainty": "LOW",
+                        "execution_permission": "NOT_EVALUATED_BY_ORIENTATION",
+                        "stop_condition_created": False,
+                        "unresolved_count": 1,
+                        "recommended_next_route": "RECOVER_ORIENTATION_FAILURE",
+                        "route_hints": [
+                            {
+                                "priority": 1,
+                                "route": "RECOVER_ORIENTATION_FAILURE",
+                                "reason": failure_class,
+                                "count": 1,
+                            }
+                        ],
+                    },
+                }
             _print(payload)
             return 0
 
