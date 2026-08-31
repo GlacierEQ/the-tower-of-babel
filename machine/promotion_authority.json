@@ -1,10 +1,16 @@
 {
-  "schema": "glaciereq.tower.promotion-control.v2",
+  "schema": "glaciereq.tower.promotion-control.v3",
   "status": "EVIDENCE_BOUND_NON_AUTHORITATIVE",
   "project_direction_authority": "operator",
   "machine_may_grant_project_authority": false,
   "promotion_requires_evidence": true,
-  "operator_scope_required_for_external_effects": true,
   "legacy_hmac_grant": "retired",
-  "note": "Promotion metadata may describe evidence state; it cannot authorize, veto, narrow, or replace Operator project direction."
+  "note": "Promotion metadata may describe evidence state; it cannot authorize, veto, narrow, or replace Operator project direction. Reversible execution must not acquire a redundant approval layer.",
+  "external_effect_authorization": {
+    "reversible_external_effects_require_separate_scope_receipt": false,
+    "materially_irreversible_external_effects_require_scope_receipt": true,
+    "unclassified_external_effects_require_scope_receipt": true,
+    "legacy_external_effects_without_risk_classification": "UNCLASSIFIED",
+    "rule": "Risk classification determines the authorization boundary; technical evidence requirements remain independent."
+  }
 }
