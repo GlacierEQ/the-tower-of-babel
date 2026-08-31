@@ -43,16 +43,16 @@ Missing memory, a partial reconstruction, an absent checkpoint, or an unresolved
 Run:
 
 ```bash
-tower preflight --mission "<exact engineering objective>" --memory <external-memory.json>
+tower orient --mission "<exact engineering objective>" --memory <external-memory.json>
 ```
 
-The preflight receipt is written to `artifacts/resource-memory-preflight.json` by default.
+The primary orientation receipt is written to `artifacts/resource-memory-orientation.json` by default. `tower preflight` remains a compatibility alias for older callers and retains nonblocking semantics.
 
 Tower analyzes memory but does not own operator memory. Memory is continuity input, not proof. A remembered fact must retain or recover a source pointer before promotion to evidence.
 
 ## Required workflow
 
-1. Orient from resource + memory state and inspect its checkpoint, duplicate groups, gaps, and delta without treating the report as permission to act.
+1. Orient from resource + memory state and inspect its certainty, checkpoint, duplicate groups, gaps, delta, and recommended next route without treating the report as permission to act.
 2. Reuse or extend the strongest prior verified lane when available instead of restarting it; if unavailable, continue from the strongest observed state with exact uncertainty.
 3. Change the registry index or one of its declared fragments.
 4. Add or update both exhibits.
@@ -110,3 +110,16 @@ language.
 
 Generated surfaces must not be hand-edited. They are overwritten by
 `python3 -m tower.generate`.
+
+
+## Continuous-orientation invariant
+
+The orientation engine emits routing telemetry, not authorization. Its machine result must preserve:
+
+- `execution_permission: NOT_EVALUATED_BY_ORIENTATION`;
+- `stop_condition_created: false`;
+- a certainty level that can fall without reducing execution effort by itself;
+- explicit route hints for resource recovery, continuity sourcing, checkpoint establishment, and working-tree reconciliation;
+- `CONTINUE` or `CONTINUE_WITH_GAPS` as the continuation state.
+
+A gap is work to route, not a reason to manufacture a global stop.
