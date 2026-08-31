@@ -42,6 +42,14 @@ def _registry(tmp_path: Path):
             "why": "Strong contracts with broad runtime reach.",
             "how": "Types async await streams.",
         },
+        {
+            "id": "lean4", "name": "Lean 4", "evidence_state": "formally_verified", "proof_class": "formal",
+            "what": "Dependent types and machine checked proof.",
+            "where": "Formal proof safety invariants verified decision logic.",
+            "when": "Use when proof obligations justify machine checked verification.",
+            "why": "Proof kernel verifies invariants.",
+            "how": "Theorems dependent types proof terms.",
+        },
     ]
     _write(reg, "tower.d/tech.json", json.dumps({"technologies": rows}))
     _write(reg, "claims.json", json.dumps({
@@ -219,4 +227,63 @@ def test_nested_lock_and_security_tests_count_as_security_evidence(tmp_path: Pat
     assert "dependency lock present" in security.evidence
     assert "security/sandbox tests present" in security.evidence
     assert "lock dependencies" not in security.gaps
+
+def test_stable_owner_and_gated_frontier_are_separate(tmp_path: Path):
+    registry = _registry(tmp_path)
+    odin = registry.by_id("odin")
+    assert odin is not None
+    odin["evidence_state"] = "toolchain_gated"
+
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    _write(repo, "memory.py", "state = bytearray(128)  # memory arena allocator layout buffer")
+    _write(repo, "tests/test_memory.py", "def test_memory(): assert True")
+
+    evaluation = evaluate_repository(repo, registry)
+    memory = next(row for row in evaluation.roles if row.role == "memory")
+
+    assert memory.selected.language == memory.stable_owner.language
+    assert memory.stable_owner.language == "python"
+    assert memory.frontier_candidate.language == "odin"
+    assert memory.frontier_candidate.execution_ready is False
+    assert "STABLE python" in memory.recommendation
+    assert "PROVE odin" in memory.recommendation
+
+    plan = plan_interventions(evaluation)
+    memory_work = next(row for row in plan if row.role == "memory")
+    assert memory_work.language == "odin"
+    assert memory_work.impact.near_term < memory_work.impact.far_term
+    assert memory_work.impact.reversibility >= 0.9
+
+
+def test_ready_specialists_can_be_stable_owners(tmp_path: Path):
+    registry = _registry(tmp_path)
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    _write(repo, "memory/state.odin", "package memory // allocator arena layout buffer memory")
+    _write(repo, "logic/policy.rs", "fn evaluate_policy() {} // invariant policy logic security")
+    _write(repo, "action/gateway.ts", "async function execute() {} // action mcp api request response")
+
+    evaluation = evaluate_repository(repo, registry)
+    roles = {row.role: row for row in evaluation.roles}
+
+    assert roles["memory"].stable_owner.language == "odin"
+    assert roles["logic"].stable_owner.language == "rust"
+    assert roles["action"].stable_owner.language == "typescript"
+
+
+def test_lean_file_resolves_lean4_registry_evidence_without_duplicate_candidate(tmp_path: Path):
+    registry = _registry(tmp_path)
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    _write(repo, "proof/invariant.lean", "theorem safe : True := by trivial -- formal proof invariant verify")
+
+    evaluation = evaluate_repository(repo, registry)
+    proof = next(row for row in evaluation.roles if row.role == "proof")
+    lean_candidates = [row for row in proof.alternatives if row.language == "lean"]
+
+    assert len(lean_candidates) == 1
+    assert lean_candidates[0].registry_evidence == "formally_verified"
+    assert lean_candidates[0].execution_ready is True
+    assert all(row.language != "lean4" for row in proof.alternatives)
 
