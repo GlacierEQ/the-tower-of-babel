@@ -103,6 +103,21 @@ def main() -> int:
     spiral_verify = spiral_sub.add_parser("verify")
     spiral_verify.add_argument("receipt")
 
+    innovate = sub.add_parser("innovate")
+    innovate_sub = innovate.add_subparsers(dest="innovate_action", required=True)
+    innovate_eval = innovate_sub.add_parser("evaluate")
+    innovate_eval.add_argument("repository", nargs="?", default=".")
+    innovate_eval.add_argument("--target", type=float, default=9.0)
+    innovate_plan = innovate_sub.add_parser("plan")
+    innovate_plan.add_argument("repository", nargs="?", default=".")
+    innovate_plan.add_argument("--target", type=float, default=9.0)
+    innovate_plan.add_argument("--limit", type=int, default=10)
+    innovate_run = innovate_sub.add_parser("run")
+    innovate_run.add_argument("repository", nargs="?", default=".")
+    innovate_run.add_argument("--target", type=float, default=9.0)
+    innovate_run.add_argument("--max-revolutions", type=int, default=12)
+    innovate_run.add_argument("--output", default="artifacts/babel-innovation-report.json")
+
     sub.add_parser("report")
     sub.add_parser("megamind-map")
 
@@ -214,6 +229,37 @@ def main() -> int:
                 result = verify_admission_receipt(payload)
                 _print(result)
                 return 0 if result["ok"] else 1
+        if args.command == "innovate":
+            from dataclasses import asdict
+            from .innovation import (
+                BabelSpiralEngine,
+                evaluate_repository,
+                plan_interventions,
+                write_report as write_innovation_report,
+            )
+            repo_path = Path(args.repository)
+            if args.innovate_action == "evaluate":
+                payload = evaluate_repository(repo_path, registry, target=args.target)
+                _print(asdict(payload))
+                return 0
+            if args.innovate_action == "plan":
+                evaluation = evaluate_repository(repo_path, registry, target=args.target)
+                payload = {
+                    "repository": evaluation.repository,
+                    "score": evaluation.overall_score,
+                    "critical_floor": evaluation.critical_floor,
+                    "complete": evaluation.complete,
+                    "roles": [asdict(row) for row in evaluation.roles],
+                    "interventions": [asdict(row) for row in plan_interventions(evaluation, limit=args.limit)],
+                }
+                _print(payload)
+                return 0
+            if args.innovate_action == "run":
+                engine = BabelSpiralEngine(registry, target=args.target, max_revolutions=args.max_revolutions)
+                payload = engine.run(repo_path)
+                write_innovation_report(Path(args.output), payload)
+                _print(payload)
+                return 0
         if args.command == "report":
             _print(_read_json_object(Path("generated/maturity.json"), "maturity report"))
             return 0
