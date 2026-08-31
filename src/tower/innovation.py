@@ -472,10 +472,16 @@ def resolve_roles(
         elif selected.language == current_best.language:
             recommendation = f"FOCUS {selected.language} ownership of the {role} boundary"
         elif selected.score - current_best.score >= .12:
-            recommendation = (
-                f"EXPERIMENT {selected.language} for {role}; current {current_best.language} remains until "
-                "capability/stability gain exceeds migration and interface cost"
-            )
+            if selected.execution_ready:
+                recommendation = (
+                    f"EXPERIMENT {selected.language} for {role}; current {current_best.language} remains until "
+                    "capability/stability gain exceeds migration and interface cost"
+                )
+            else:
+                recommendation = (
+                    f"PROVE {selected.language} toolchain/runtime availability before any {role} experiment; "
+                    f"PRESERVE {current_best.language} until the alternative is executable and earns the migration"
+                )
         else:
             selected = current_best
             recommendation = f"PRESERVE {current_best.language} for {role}; alternative advantage is not large enough"
