@@ -36,6 +36,11 @@ def test_machine_promotion_control_cannot_grant_project_authority():
     assert control["project_direction_authority"] == "operator"
     assert control["machine_may_grant_project_authority"] is False
     assert control["legacy_hmac_grant"] == "retired"
+    boundary = control["external_effect_authorization"]
+    assert boundary["reversible_external_effects_require_separate_scope_receipt"] is False
+    assert boundary["materially_irreversible_external_effects_require_scope_receipt"] is True
+    assert boundary["unclassified_external_effects_require_scope_receipt"] is True
+    assert boundary["legacy_external_effects_without_risk_classification"] == "UNCLASSIFIED"
     assert "auto_granted" not in json.dumps(control)
 
 
@@ -44,6 +49,11 @@ def test_machine_target_is_real_and_preserves_capability():
     assert target["project_direction_authority"] == "operator"
     assert target["target"] == "maximum-boundary-fitness-polyglot-engine"
     assert "projection-does-not-delete-capability" in target["invariants"]
+    assert "reversible-external-effects-do-not-require-redundant-approval" in target["invariants"]
+    assert (
+        "operator-scope-binds-materially-irreversible-or-unclassified-external-effects"
+        in target["invariants"]
+    )
     assert "truth-by-capability-amputation" in target["non_goals"]
 
 
@@ -56,5 +66,6 @@ def test_capability_inventory_names_real_tower_mechanisms():
         "capability-activation",
         "flagship-polyglot-integration",
         "git-index-integrity-verification",
+        "risk-classified-external-effect-execution",
     }.issubset(names)
     assert capabilities["project_direction_authority"] == "operator"
