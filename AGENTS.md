@@ -123,3 +123,18 @@ The orientation engine emits routing telemetry, not authorization. Its machine r
 - `CONTINUE` or `CONTINUE_WITH_GAPS` as the continuation state.
 
 A gap is work to route, not a reason to manufacture a global stop. Disputed, invalidated, or superseded memory never becomes current positive continuity merely because parsing succeeded. Local orientation I/O failure is surfaced as degraded JSON telemetry, and output protection must reject same-path, symlink-resolved, or hard-linked attempts to overwrite operator memory.
+
+
+## External-effect risk law
+
+External effect is a location/boundary fact, not automatically a reason to stop.
+
+Classify consequential action by reversibility:
+
+- `reversible`: execute within the current Operator-directed mission when the technical execution boundary is satisfied; no redundant exact-scope receipt is required;
+- `materially-irreversible`: require exact Operator-scoped authorization before crossing the effect boundary;
+- `unclassified`: preserve the conservative legacy authorization requirement until the effect is classified.
+
+Legacy `--external-effects` without `--effect-risk` remains `unclassified`, so existing callers do not silently become less protected.
+
+Operator scope never bypasses toolchain, interface, execution, evidence, or proof requirements. Those requirements control what the system can truthfully do or claim; they do not acquire project-direction authority.
