@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -316,7 +317,75 @@ def test_orientation_partial_state_is_not_an_execution_veto(tmp_path: Path) -> N
     assert payload["continuation_controls"]["mode"] == "ORIENTATION_NOT_PERMISSION"
     assert payload["continuation_controls"]["resource_gaps_change_routing_not_global_execution_permission"] is True
     assert payload["continuation_controls"]["checkpoint_absence_is_not_execution_veto"] is True
+    orientation = payload["orientation"]
+    assert orientation["continuation_state"] == "CONTINUE_WITH_GAPS"
+    assert orientation["execution_permission"] == "NOT_EVALUATED_BY_ORIENTATION"
+    assert orientation["stop_condition_created"] is False
+    assert orientation["recommended_next_route"] == "RECOVER_RESOURCE_GAPS"
+    assert orientation["certainty"] == "LOW"
     assert "promotion_gate" not in payload
+
+
+def test_complete_orientation_points_to_next_frontier(tmp_path: Path) -> None:
+    _seed_minimal_tower(tmp_path)
+    memory = _source_bound_memory(tmp_path)
+    _init_git_with_release_receipt(tmp_path)
+
+    payload = build_preflight("continue strongest lane", root=tmp_path, memory_path=memory)
+
+    orientation = payload["orientation"]
+    assert payload["status"] == "COMPLETE"
+    assert orientation["continuation_state"] == "CONTINUE"
+    assert orientation["certainty"] == "HIGH"
+    assert orientation["recommended_next_route"] == "EXECUTE_NEXT_FRONTIER"
+    assert orientation["unresolved_count"] == 0
+
+
+def test_cli_orient_and_legacy_preflight_are_nonblocking(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    from tower.cli import main as tower_main
+
+    _seed_minimal_tower(tmp_path, include_registry=False)
+    monkeypatch.chdir(tmp_path)
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "tower",
+            "orient",
+            "--mission",
+            "continue despite partial reconstruction",
+            "--output",
+            "artifacts/orientation.json",
+        ],
+    )
+    assert tower_main() == 0
+    orient_payload = json.loads(capsys.readouterr().out)
+    assert orient_payload["status"] == "PARTIAL"
+    assert orient_payload["orientation"]["stop_condition_created"] is False
+    assert orient_payload["orientation"]["execution_permission"] == "NOT_EVALUATED_BY_ORIENTATION"
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "tower",
+            "preflight",
+            "--mission",
+            "legacy caller must also continue",
+            "--require-memory",
+            "--output",
+            "artifacts/legacy-preflight.json",
+        ],
+    )
+    assert tower_main() == 0
+    legacy_payload = json.loads(capsys.readouterr().out)
+    assert legacy_payload["status"] == "PARTIAL"
+    assert legacy_payload["orientation"]["continuation_state"] == "CONTINUE_WITH_GAPS"
 
 
 def test_repo_root_resolves_from_active_checkout(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
