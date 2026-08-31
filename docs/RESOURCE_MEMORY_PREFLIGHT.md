@@ -80,7 +80,7 @@ A caller cannot manufacture proof by writing `VERIFIED_WITH_SOURCE`: without a n
 
 Tower rejects a supplied snapshot that contains entries but no analyzable findings. An explicitly empty findings list is reported as `NO_PRIOR_STATE_FOUND`, not as successful memory recovery.
 
-The preflight output may never overwrite its memory input.
+The orientation/preflight output may never overwrite its memory input, including through a different path that resolves to the same hard-linked filesystem object.
 
 ## Resource analysis
 
@@ -178,6 +178,10 @@ It reports:
 - `recommended_next_route`;
 - ordered `route_hints`.
 
-Current route vocabulary includes `RECOVER_RESOURCE_GAPS`, `ACQUIRE_OR_RECONSTRUCT_CONTINUITY`, `SOURCE_MEMORY_GAPS`, `ESTABLISH_VERIFIED_CHECKPOINT_WHEN_USEFUL`, `RECONCILE_WORKING_TREE`, and `EXECUTE_NEXT_FRONTIER`.
+Current route vocabulary includes `RECOVER_RESOURCE_GAPS`, `ACQUIRE_OR_RECONSTRUCT_CONTINUITY`, `SOURCE_MEMORY_GAPS`, `RECONCILE_CONTESTED_CONTINUITY`, `ACQUIRE_CURRENT_CONTINUITY`, `ESTABLISH_VERIFIED_CHECKPOINT_WHEN_USEFUL`, `RECONCILE_WORKING_TREE`, and `EXECUTE_NEXT_FRONTIER`.
+
+An `ANALYZED` snapshot does not imply high certainty. Disputed findings remain contested, and a snapshot containing only invalidated or superseded history cannot stand in for current source-verified continuity. The receipt reports per-status memory evidence counts so that certainty is inspectable.
+
+If local filesystem or output-protection failures prevent normal receipt persistence, the CLI emits a JSON `DEGRADED` orientation to stdout with `RECOVER_ORIENTATION_FAILURE`, `CONTINUE_WITH_GAPS`, and `stop_condition_created: false`. This exposes the failure without converting orientation into execution permission.
 
 These are routing recommendations. They do not silently acquire project-direction authority.
