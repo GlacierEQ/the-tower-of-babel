@@ -330,6 +330,8 @@ def test_complete_orientation_points_to_next_frontier(tmp_path: Path) -> None:
     _seed_minimal_tower(tmp_path)
     memory = _source_bound_memory(tmp_path)
     _init_git_with_release_receipt(tmp_path)
+    subprocess.run(["git", "add", "artifacts/tower_receipt.json"], cwd=tmp_path, check=True)
+    subprocess.run(["git", "commit", "-qm", "record verified checkpoint"], cwd=tmp_path, check=True)
 
     payload = build_preflight("continue strongest lane", root=tmp_path, memory_path=memory)
 
