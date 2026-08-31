@@ -203,3 +203,20 @@ def test_role_scores_do_not_collapse_to_ceiling(tmp_path: Path):
         assert len(set(scores)) > 1
         assert sum(score == 1.0 for score in scores) <= 1
 
+def test_nested_lock_and_security_tests_count_as_security_evidence(tmp_path: Path):
+    registry = _registry(tmp_path)
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    _write(repo, "README.md", "# Secure service\nSecurity policy logic and API actions.\n")
+    _write(repo, "src/policy.rs", "fn enforce() {} // security policy invariant")
+    _write(repo, "requirements/ci.lock", "pytest==8.0.0 --hash=sha256:deadbeef\n")
+    _write(repo, "tests/test_security_boundaries.py", "def test_security(): assert True")
+    _write(repo, ".github/workflows/ci.yml", "name: ci\non: [push]\njobs: {}")
+
+    evaluation = evaluate_repository(repo, registry)
+    security = next(axis for axis in evaluation.quality if axis.name == "security")
+
+    assert "dependency lock present" in security.evidence
+    assert "security/sandbox tests present" in security.evidence
+    assert "lock dependencies" not in security.gaps
+
