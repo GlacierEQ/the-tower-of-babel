@@ -112,9 +112,16 @@ def test_cli_passes_only_verified_operator_scope_to_runtime(tmp_path: Path, monk
 
     observed = {}
 
-    def fake_activate(technology, *, external_effects=False, operator_scope_authorized=False):
+    def fake_activate(
+        technology,
+        *,
+        external_effects=False,
+        effect_risk=None,
+        operator_scope_authorized=False,
+    ):
         observed["technology"] = technology
         observed["external_effects"] = external_effects
+        observed["effect_risk"] = effect_risk
         observed["operator_scope_authorized"] = operator_scope_authorized
         return {"status": "VERIFIED", "technology_id": technology["id"]}
 
@@ -132,7 +139,10 @@ def test_cli_passes_only_verified_operator_scope_to_runtime(tmp_path: Path, monk
     payload = json.loads(capsys.readouterr().out)
     assert rc == 0
     assert observed["external_effects"] is True
+    assert observed["effect_risk"] is None
     assert observed["operator_scope_authorized"] is True
+    assert payload["operator_scope"]["required"] is True
+    assert payload["operator_scope"]["effect_risk"] == "unclassified"
     assert payload["operator_scope"]["authorized"] is True
 
 
@@ -145,7 +155,15 @@ def test_cli_missing_operator_scope_never_promotes_flag_to_authority(monkeypatch
 
     observed = {}
 
-    def fake_activate(technology, *, external_effects=False, operator_scope_authorized=False):
+    def fake_activate(
+        technology,
+        *,
+        external_effects=False,
+        effect_risk=None,
+        operator_scope_authorized=False,
+    ):
+        observed["external_effects"] = external_effects
+        observed["effect_risk"] = effect_risk
         observed["operator_scope_authorized"] = operator_scope_authorized
         return {"status": "ACTIVATION_BLOCKED", "technology_id": technology["id"]}
 
@@ -155,5 +173,99 @@ def test_cli_missing_operator_scope_never_promotes_flag_to_authority(monkeypatch
     rc = activation_cli.main(["python", "--external-effects"])
     payload = json.loads(capsys.readouterr().out)
     assert rc == 2
+    assert observed["external_effects"] is True
+    assert observed["effect_risk"] is None
     assert observed["operator_scope_authorized"] is False
+    assert payload["operator_scope"]["required"] is True
+    assert payload["operator_scope"]["effect_risk"] == "unclassified"
     assert payload["operator_scope"]["authorized"] is False
+
+
+def test_cli_reversible_external_effect_needs_no_separate_scope_receipt(
+    monkeypatch,
+    capsys,
+):
+    from tower import activation_cli
+
+    class Registry:
+        def by_id(self, technology_id: str):
+            return {"id": technology_id}
+
+    observed = {}
+
+    def fake_activate(
+        technology,
+        *,
+        external_effects=False,
+        effect_risk=None,
+        operator_scope_authorized=False,
+    ):
+        observed["external_effects"] = external_effects
+        observed["effect_risk"] = effect_risk
+        observed["operator_scope_authorized"] = operator_scope_authorized
+        return {"status": "VERIFIED", "technology_id": technology["id"]}
+
+    monkeypatch.setattr(activation_cli, "load_registry", lambda: Registry())
+    monkeypatch.setattr(activation_cli, "activate_execution", fake_activate)
+
+    rc = activation_cli.main(
+        [
+            "python",
+            "--effect-risk",
+            "reversible",
+        ]
+    )
+    payload = json.loads(capsys.readouterr().out)
+
+    assert rc == 0
+    assert observed["external_effects"] is True
+    assert observed["effect_risk"] == "reversible"
+    assert observed["operator_scope_authorized"] is False
+    assert payload["operator_scope"]["required"] is False
+    assert payload["operator_scope"]["authorized"] is None
+    assert payload["operator_scope"]["effect_risk"] == "reversible"
+
+
+def test_cli_materially_irreversible_external_effect_requires_scope_receipt(
+    monkeypatch,
+    capsys,
+):
+    from tower import activation_cli
+
+    class Registry:
+        def by_id(self, technology_id: str):
+            return {"id": technology_id}
+
+    observed = {}
+
+    def fake_activate(
+        technology,
+        *,
+        external_effects=False,
+        effect_risk=None,
+        operator_scope_authorized=False,
+    ):
+        observed["external_effects"] = external_effects
+        observed["effect_risk"] = effect_risk
+        observed["operator_scope_authorized"] = operator_scope_authorized
+        return {"status": "ACTIVATION_BLOCKED", "technology_id": technology["id"]}
+
+    monkeypatch.setattr(activation_cli, "load_registry", lambda: Registry())
+    monkeypatch.setattr(activation_cli, "activate_execution", fake_activate)
+
+    rc = activation_cli.main(
+        [
+            "python",
+            "--effect-risk",
+            "materially-irreversible",
+        ]
+    )
+    payload = json.loads(capsys.readouterr().out)
+
+    assert rc == 2
+    assert observed["external_effects"] is True
+    assert observed["effect_risk"] == "materially-irreversible"
+    assert observed["operator_scope_authorized"] is False
+    assert payload["operator_scope"]["required"] is True
+    assert payload["operator_scope"]["authorized"] is False
+    assert payload["operator_scope"]["effect_risk"] == "materially-irreversible"
