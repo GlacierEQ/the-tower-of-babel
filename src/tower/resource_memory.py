@@ -388,12 +388,25 @@ def _derive_orientation(
     *,
     resource_gaps: list[str],
     memory_status: str,
+    memory_findings: list[dict[str, Any]],
     memory_gaps: list[str],
     checkpoint: dict[str, Any] | None,
     git_state: dict[str, Any],
 ) -> dict[str, Any]:
     """Translate reconstruction state into nonblocking continuation telemetry."""
     route_hints: list[dict[str, Any]] = []
+    memory_counts = {
+        status: sum(1 for row in memory_findings if row.get("status") == status)
+        for status in (
+            "VERIFIED_WITH_SOURCE",
+            "RECALLED_NEEDS_SOURCE",
+            "DISPUTED",
+            "INVALIDATED",
+            "SUPERSEDED",
+        )
+    }
+    verified_memory_count = memory_counts["VERIFIED_WITH_SOURCE"]
+    disputed_memory_count = memory_counts["DISPUTED"]
 
     if resource_gaps:
         route_hints.append(
@@ -421,6 +434,31 @@ def _derive_orientation(
                 "route": "SOURCE_MEMORY_GAPS",
                 "reason": "continuity findings exist but some are not source-verified",
                 "count": len(memory_gaps),
+            }
+        )
+
+    if memory_status == "ANALYZED" and disputed_memory_count:
+        route_hints.append(
+            {
+                "priority": 2,
+                "route": "RECONCILE_CONTESTED_CONTINUITY",
+                "reason": "disputed continuity findings require reconciliation before they can support high certainty",
+                "count": disputed_memory_count,
+            }
+        )
+
+    if (
+        memory_status == "ANALYZED"
+        and memory_findings
+        and verified_memory_count == 0
+        and not memory_gaps
+    ):
+        route_hints.append(
+            {
+                "priority": 2,
+                "route": "ACQUIRE_CURRENT_CONTINUITY",
+                "reason": "analyzed memory contains no current source-verified finding",
+                "count": 1,
             }
         )
 
@@ -457,7 +495,13 @@ def _derive_orientation(
 
     if resource_gaps or memory_status == "INVALID":
         certainty = "LOW"
-    elif checkpoint is None or memory_gaps or memory_status != "ANALYZED":
+    elif (
+        checkpoint is None
+        or memory_gaps
+        or memory_status != "ANALYZED"
+        or disputed_memory_count
+        or (memory_findings and verified_memory_count == 0)
+    ):
         certainty = "MEDIUM"
     else:
         certainty = "HIGH"
@@ -465,6 +509,8 @@ def _derive_orientation(
     unresolved_count = (
         len(resource_gaps)
         + len(memory_gaps)
+        + disputed_memory_count
+        + (1 if memory_status == "ANALYZED" and memory_findings and verified_memory_count == 0 and not memory_gaps else 0)
         + (0 if checkpoint is not None else 1)
         + len(working_changes)
     )
@@ -475,6 +521,7 @@ def _derive_orientation(
         "execution_permission": "NOT_EVALUATED_BY_ORIENTATION",
         "stop_condition_created": False,
         "unresolved_count": unresolved_count,
+        "memory_evidence_counts": memory_counts,
         "recommended_next_route": route_hints[0]["route"],
         "route_hints": route_hints,
     }
@@ -520,17 +567,26 @@ def build_preflight(
         if required not in locators:
             resource_gaps.append(f"required Tower resource missing: {required}")
 
+    active_verified_memory = sum(
+        1 for row in memory_findings if row.get("status") == "VERIFIED_WITH_SOURCE"
+    )
+    disputed_memory = sum(
+        1 for row in memory_findings if row.get("status") == "DISPUTED"
+    )
     status = (
         "COMPLETE"
         if not resource_gaps
         and memory_status == "ANALYZED"
         and not memory_gaps
+        and active_verified_memory > 0
+        and disputed_memory == 0
         and checkpoint is not None
         else "PARTIAL"
     )
     orientation = _derive_orientation(
         resource_gaps=resource_gaps,
         memory_status=memory_status,
+        memory_findings=memory_findings,
         memory_gaps=memory_gaps,
         checkpoint=checkpoint,
         git_state=git_state,
@@ -593,8 +649,20 @@ def write_preflight(
     output = output if output.is_absolute() else root / output
     output = output.resolve()
     resolved_memory = memory_path.resolve() if memory_path is not None else None
-    if resolved_memory is not None and resolved_memory == output:
-        raise ValueError("orientation output must not overwrite the external memory snapshot")
+    if resolved_memory is not None:
+        if resolved_memory == output:
+            raise ValueError("orientation output must not overwrite the external memory snapshot")
+        if output.exists() and resolved_memory.exists():
+            try:
+                same_file = output.samefile(resolved_memory)
+            except OSError as exc:
+                raise ValueError(
+                    "cannot verify orientation output is distinct from external memory snapshot"
+                ) from exc
+            if same_file:
+                raise ValueError(
+                    "orientation output must not overwrite a hard-linked external memory snapshot"
+                )
 
     payload = build_preflight(
         mission,
