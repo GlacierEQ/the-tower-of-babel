@@ -75,7 +75,7 @@ recover external memory / continuity context
 Executable preflight:
 
 ```bash
-tower orient --mission "<exact engineering objective>" --memory <external-memory.json>
+tower orient --mission "<exact engineering objective>" --memory external-memory.json
 ```
 
 Default receipt: `artifacts/resource-memory-orientation.json`.
@@ -84,7 +84,9 @@ Legacy interface: `tower preflight` remains accepted for compatibility and prese
 
 This receipt is orientation telemetry, not an execution gate. It emits certainty,
 continuation state, unresolved-count telemetry, a recommended next route, and
-ordered route hints. Missing memory, partial reconstruction, an absent verified
+ordered route hints. Committed changes after the last verified checkpoint route
+through explicit delta verification; working-tree changes lower certainty and
+route through reconciliation. Missing memory, partial reconstruction, an absent verified
 checkpoint, or unresolved gaps reduce certainty and alter route selection; they
 do not create a generic stop condition. The operating default is to continue
 while a meaningful truthful route exists.
