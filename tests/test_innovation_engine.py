@@ -138,3 +138,46 @@ def test_spiral_reinspects_after_execution(tmp_path: Path):
     first = result["revolutions"][0]
     assert calls["count"] >= 1
     assert first["after"] >= first["before"]
+
+def test_executable_evidence_outweighs_documentation(tmp_path: Path):
+    registry = _registry(tmp_path)
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    _write(repo, "memory/core.odin", "package memory // allocator arena layout buffer memory")
+    for index in range(12):
+        _write(
+            repo,
+            f"docs/action_{index}.md",
+            "# Action API gateway\nThis document discusses action handlers, APIs, requests, and workflows.\n",
+        )
+
+    evaluation = evaluate_repository(repo, registry)
+    memory_file = next(row for row in evaluation.files if row.path == "memory/core.odin")
+    docs = [row for row in evaluation.files if row.kind == "documentation"]
+
+    assert memory_file.kind == "implementation"
+    assert memory_file.evidence_weight == 1.0
+    assert docs and all(row.evidence_weight < memory_file.evidence_weight for row in docs)
+    memory = next(row for row in evaluation.roles if row.role == "memory")
+    assert memory.selected.language == "odin"
+
+
+def test_gated_new_language_is_not_treated_as_ready(tmp_path: Path):
+    registry = _registry(tmp_path)
+    odin = registry.by_id("odin")
+    assert odin is not None
+    odin["evidence_state"] = "toolchain_gated"
+
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    _write(repo, "README.md", "# Memory service\nArena allocator layout buffer memory.\n")
+    _write(repo, "memory.py", "state = bytearray(64)  # memory buffer allocator layout")
+
+    evaluation = evaluate_repository(repo, registry)
+    memory = next(row for row in evaluation.roles if row.role == "memory")
+    odin_fit = next(row for row in memory.alternatives if row.language == "odin")
+
+    assert odin_fit.execution_ready is False
+    if memory.selected.language == "odin":
+        assert memory.recommendation.startswith("PROVE odin")
+
