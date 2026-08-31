@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -247,6 +248,36 @@ def test_superseded_memory_state_is_not_resurrected(tmp_path: Path) -> None:
     payload = build_preflight("preserve state", root=tmp_path, memory_path=memory)
 
     assert payload["memory_analysis"]["findings"][0]["status"] == "SUPERSEDED"
+    assert payload["status"] == "PARTIAL"
+    assert payload["orientation"]["certainty"] == "MEDIUM"
+    assert payload["orientation"]["recommended_next_route"] == "ACQUIRE_CURRENT_CONTINUITY"
+
+
+def test_disputed_memory_cannot_create_high_certainty(tmp_path: Path) -> None:
+    _seed_minimal_tower(tmp_path)
+    _init_git_with_release_receipt(tmp_path)
+    memory = tmp_path / "memory.json"
+    memory.write_text(
+        json.dumps(
+            {
+                "findings": [
+                    {
+                        "finding": "A prior placement remains disputed.",
+                        "status": "DISPUTED",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    payload = build_preflight("reconcile contested lane", root=tmp_path, memory_path=memory)
+
+    assert payload["status"] == "PARTIAL"
+    assert payload["orientation"]["certainty"] == "MEDIUM"
+    assert payload["orientation"]["recommended_next_route"] == "RECONCILE_CONTESTED_CONTINUITY"
+    assert payload["orientation"]["memory_evidence_counts"]["DISPUTED"] == 1
+    assert payload["orientation"]["memory_evidence_counts"]["VERIFIED_WITH_SOURCE"] == 0
 
 
 def test_source_bound_memory_requires_release_receipt_for_complete_state(tmp_path: Path) -> None:
@@ -306,6 +337,19 @@ def test_preflight_refuses_to_overwrite_memory_input(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="must not overwrite"):
         write_preflight(memory, "protect operator memory", root=tmp_path, memory_path=memory)
+
+
+def test_preflight_refuses_hard_link_overwrite_of_memory_input(tmp_path: Path) -> None:
+    _seed_minimal_tower(tmp_path)
+    memory = _source_bound_memory(tmp_path)
+    output = tmp_path / "hard-linked-output.json"
+    os.link(memory, output)
+    before = memory.read_bytes()
+
+    with pytest.raises(ValueError, match="hard-linked"):
+        write_preflight(output, "protect operator memory inode", root=tmp_path, memory_path=memory)
+
+    assert memory.read_bytes() == before
 
 
 def test_orientation_partial_state_is_not_an_execution_veto(tmp_path: Path) -> None:
@@ -388,6 +432,32 @@ def test_cli_orient_and_legacy_preflight_are_nonblocking(
     legacy_payload = json.loads(capsys.readouterr().out)
     assert legacy_payload["status"] == "PARTIAL"
     assert legacy_payload["orientation"]["continuation_state"] == "CONTINUE_WITH_GAPS"
+
+
+def test_cli_orientation_io_failure_emits_degraded_nonblocking_telemetry(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    from tower import cli as tower_cli
+
+    def fail_write(*args, **kwargs):
+        raise OSError("simulated read-only filesystem")
+
+    monkeypatch.setattr(tower_cli, "write_orientation", fail_write)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["tower", "orient", "--mission", "continue through local I/O failure"],
+    )
+
+    assert tower_cli.main() == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["status"] == "DEGRADED"
+    assert payload["failure"]["class"] == "ORIENTATION_IO_ERROR"
+    assert payload["orientation"]["continuation_state"] == "CONTINUE_WITH_GAPS"
+    assert payload["orientation"]["stop_condition_created"] is False
+    assert payload["orientation"]["execution_permission"] == "NOT_EVALUATED_BY_ORIENTATION"
+    assert payload["orientation"]["recommended_next_route"] == "RECOVER_ORIENTATION_FAILURE"
 
 
 def test_repo_root_resolves_from_active_checkout(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
