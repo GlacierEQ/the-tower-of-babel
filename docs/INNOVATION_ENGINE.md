@@ -130,3 +130,16 @@ report = engine.run("/path/to/repository", executor=executor)
 
 Planning is not mutation. Mutation is not completion. A revolution counts only
 after the changed repository is re-evaluated.
+
+
+## Runtime evidence weighting
+
+Semantic demand is evidence-weighted. Implementation files carry full weight,
+schemas/formal contracts nearly full weight, tests support the runtime picture,
+configuration contributes moderately, and documentation is advisory. This
+prevents a large README/docs surface from outvoting the code that actually runs.
+
+A language that is not already present and whose Tower evidence state is
+toolchain-, service-, or hardware-gated is not treated as deployment-ready.
+The engine can still identify its architectural advantage, but the next move is
+to prove availability and run a reversible experiment before migration.
