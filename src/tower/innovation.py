@@ -36,6 +36,13 @@ IGNORED_DIRS = frozenset({
     ".mypy_cache", ".ruff_cache", ".next", "coverage",
 })
 
+REGISTRY_ID_TO_LANGUAGE: Mapping[str, str] = {
+    "lean4": "lean",
+}
+LANGUAGE_TO_REGISTRY_ID: Mapping[str, str] = {
+    language: registry_id for registry_id, language in REGISTRY_ID_TO_LANGUAGE.items()
+}
+
 LANGUAGE_EXTENSIONS: Mapping[str, tuple[str, ...]] = {
     "python": (".py",), "rust": (".rs",), "go": (".go",),
     "typescript": (".ts", ".tsx"), "javascript": (".js", ".jsx", ".mjs", ".cjs"),
@@ -141,6 +148,7 @@ class LanguageFit:
     language: str
     role: str
     score: float
+    intrinsic_fit: float
     registry_evidence: str | None
     current_presence: bool
     execution_ready: bool
@@ -153,6 +161,8 @@ class RoleResolution:
     demand: float
     current_languages: tuple[str, ...]
     selected: LanguageFit
+    stable_owner: LanguageFit
+    frontier_candidate: LanguageFit
     alternatives: tuple[LanguageFit, ...]
     recommendation: str
     interface_cost: float
@@ -322,6 +332,10 @@ def _registry_text(row: Mapping[str, Any]) -> str:
     ).casefold()
 
 
+def _registry_row(registry: TowerRegistry, language: str) -> Mapping[str, Any] | None:
+    return registry.by_id(LANGUAGE_TO_REGISTRY_ID.get(language, language))
+
+
 def _registry_role_signal(row: Mapping[str, Any] | None, role: str) -> float:
     """Return 0..1 semantic fit derived from the governed W4H+How description."""
     if not row:
@@ -361,12 +375,12 @@ def _execution_ready(row: Mapping[str, Any] | None) -> bool:
 def _candidate_languages(registry: TowerRegistry, files: Sequence[FileRole]) -> tuple[str, ...]:
     present = {row.language for row in files if row.language}
     governed = {
-        str(row.get("id", "")).casefold()
+        REGISTRY_ID_TO_LANGUAGE.get(str(row.get("id", "")).casefold(), str(row.get("id", "")).casefold())
         for row in registry.technologies
         if isinstance(row, dict) and row.get("id")
     }
-    # Every governed Tower floor may compete. Explicit priors accelerate known
-    # placements; unknown floors derive their fit from the registry description.
+    # Every governed Tower floor may compete. Registry/runtime aliases collapse
+    # names such as lean4 ↔ lean so evidence is not lost or double-counted.
     return tuple(sorted(present | governed | set(LANGUAGE_ROLE_PRIORS)))
 
 
@@ -403,12 +417,13 @@ def _fit(
     interface_cost: float,
     migration_cost: float,
 ) -> LanguageFit:
-    row = registry.by_id(language)
+    row = _registry_row(registry, language)
     registry_signal = _registry_role_signal(row, role)
     explicit_prior = LANGUAGE_ROLE_PRIORS.get(language, {}).get(role)
-    prior = explicit_prior if explicit_prior is not None else (.25 + .50 * registry_signal)
+    prior = explicit_prior if explicit_prior is not None else (.30 + .65 * registry_signal)
     evidence = _evidence_score(row)
     ready = _execution_ready(row)
+    intrinsic_fit = round(max(0.0, min(1.0, .90 * prior + .10 * registry_signal)), 6)
 
     # Convex-ish weighted scoring avoids ceiling saturation. Capability fit,
     # source-backed Tower semantics, proof strength, and existing integration
@@ -434,6 +449,7 @@ def _fit(
         language=language,
         role=role,
         score=score,
+        intrinsic_fit=intrinsic_fit,
         registry_evidence=str(row.get("evidence_state")) if row and row.get("evidence_state") else None,
         current_presence=current,
         execution_ready=ready,
@@ -461,35 +477,66 @@ def resolve_roles(
                 registry, language, role, current=is_current,
                 interface_cost=interface_cost, migration_cost=migration_cost,
             ))
-        ranked.sort(key=lambda item: (-item.score, item.language))
-        selected = ranked[0]
-        current_best = next((row for row in ranked if row.language in current), None)
-        if current_best is None:
-            if selected.execution_ready:
-                recommendation = f"INTRODUCE {selected.language} for {role} only behind an explicit interface and measured experiment"
-            else:
-                recommendation = f"PROVE {selected.language} toolchain/runtime availability, then EXPERIMENT on the {role} boundary"
-        elif selected.language == current_best.language:
-            recommendation = f"FOCUS {selected.language} ownership of the {role} boundary"
-        elif selected.score - current_best.score >= .12:
-            if selected.execution_ready:
+        ranked.sort(key=lambda item: (-item.score, -item.intrinsic_fit, item.language))
+        operational_candidate = ranked[0]
+        frontier = max(ranked, key=lambda item: (item.intrinsic_fit, item.score, item.language))
+        current_ranked = [row for row in ranked if row.language in current]
+        stable = current_ranked[0] if current_ranked else next(
+            (row for row in ranked if row.execution_ready), operational_candidate
+        )
+
+        selected = stable
+        if current_ranked:
+            frontier_gain = frontier.intrinsic_fit - stable.intrinsic_fit
+            operational_gain = operational_candidate.score - stable.score
+            if frontier.language != stable.language and frontier_gain >= .05:
+                if frontier.execution_ready:
+                    recommendation = (
+                        f"STABLE {stable.language} for {role}; EXPERIMENT {frontier.language} as the "
+                        "frontier specialist behind an explicit interface and promote only after measured gain"
+                    )
+                else:
+                    recommendation = (
+                        f"STABLE {stable.language} for {role}; PROVE {frontier.language} toolchain/runtime "
+                        "availability as the frontier specialist before any migration"
+                    )
+            elif (
+                operational_candidate.language != stable.language
+                and operational_candidate.execution_ready
+                and operational_gain >= .12
+            ):
                 recommendation = (
-                    f"EXPERIMENT {selected.language} for {role}; current {current_best.language} remains until "
-                    "capability/stability gain exceeds migration and interface cost"
+                    f"STABLE {stable.language} for {role}; EXPERIMENT {operational_candidate.language} "
+                    "only if capability/stability gain exceeds interface and migration cost"
                 )
+                frontier = operational_candidate
+            elif len(current) > 1:
+                recommendation = f"FOCUS {stable.language} ownership of the {role} boundary"
             else:
-                recommendation = (
-                    f"PROVE {selected.language} toolchain/runtime availability before any {role} experiment; "
-                    f"PRESERVE {current_best.language} until the alternative is executable and earns the migration"
-                )
+                recommendation = f"PRESERVE {stable.language} for {role}"
         else:
-            selected = current_best
-            recommendation = f"PRESERVE {current_best.language} for {role}; alternative advantage is not large enough"
+            if operational_candidate.execution_ready:
+                stable = operational_candidate
+                selected = operational_candidate
+                recommendation = (
+                    f"INTRODUCE {operational_candidate.language} for {role} behind an explicit interface "
+                    "and measured experiment"
+                )
+            else:
+                stable = operational_candidate
+                selected = operational_candidate
+                recommendation = (
+                    f"PROVE {operational_candidate.language} toolchain/runtime availability, then "
+                    f"EXPERIMENT on the {role} boundary"
+                )
+
         resolutions.append(RoleResolution(
             role=role,
             demand=_role_demand(files, role),
             current_languages=current,
             selected=selected,
+            stable_owner=stable,
+            frontier_candidate=frontier,
             alternatives=tuple(ranked[:5]),
             recommendation=recommendation,
             interface_cost=round(.04 if selected.current_presence else min(.85, .15 + .08 * len(present_all)), 3),
@@ -634,22 +681,36 @@ def evaluate_repository(
 
 
 def _impact_for(role: RoleResolution, current_score: float) -> Impact:
-    selected = role.selected
-    current_fit = max(
-        (row.score for row in role.alternatives if row.language in role.current_languages),
-        default=0.0,
+    stable = role.stable_owner
+    frontier = role.frontier_candidate
+    frontier_work = frontier.language != stable.language and (
+        "PROVE" in role.recommendation or "EXPERIMENT" in role.recommendation
     )
-    fit_gain = max(0.0, selected.score - current_fit)
-    introduce = selected.language not in role.current_languages
+    candidate = frontier if frontier_work else stable
+    fit_gain = max(0.0, candidate.intrinsic_fit - stable.intrinsic_fit)
+    introduce = candidate.language not in role.current_languages
+
+    if frontier_work and not candidate.execution_ready:
+        return Impact(
+            near_term=.28,
+            far_term=round(.48 + .42 * candidate.intrinsic_fit, 3),
+            capability_gain=round(.34 + .46 * candidate.intrinsic_fit, 3),
+            stability_gain=.52,
+            reversibility=.96,
+            risk=.12,
+            effort=.24,
+            complexity_delta=.05,
+        )
+
     return Impact(
         near_term=round(.48 + .30 * fit_gain, 3),
         far_term=round(.58 + .38 * fit_gain, 3),
-        capability_gain=round(.45 + .50 * selected.score, 3),
-        stability_gain=round(.42 + .50 * selected.score, 3),
-        reversibility=.88 if "EXPERIMENT" in role.recommendation else .76,
-        risk=.24 + (.20 if introduce else .05),
-        effort=.28 + (.28 if introduce else .08),
-        complexity_delta=.12 + (.28 if introduce else 0.0) + role.interface_cost * .25,
+        capability_gain=round(.45 + .50 * candidate.intrinsic_fit, 3),
+        stability_gain=round(.42 + .50 * stable.score, 3),
+        reversibility=.90 if frontier_work else .78,
+        risk=.22 + (.18 if introduce else .04),
+        effort=.26 + (.24 if introduce else .08),
+        complexity_delta=.10 + (.24 if introduce else 0.0) + role.interface_cost * .22,
     )
 
 
@@ -659,25 +720,28 @@ def plan_interventions(evaluation: RepoEvaluation, *, limit: int = 10) -> tuple[
 
     for role in evaluation.roles:
         impact = _impact_for(role, evaluation.overall_score)
-        current_best = max(
-            (row.score for row in role.alternatives if row.language in role.current_languages),
-            default=0.0,
+        stable = role.stable_owner
+        frontier = role.frontier_candidate
+        frontier_work = frontier.language != stable.language and (
+            "PROVE" in role.recommendation or "EXPERIMENT" in role.recommendation
         )
-        gain = max(0.0, role.selected.score - current_best)
-        if "PRESERVE" in role.recommendation and gain < .05:
+        candidate = frontier if frontier_work else stable
+        gain = max(0.0, frontier.intrinsic_fit - stable.intrinsic_fit)
+        if role.recommendation.startswith("PRESERVE") and gain < .05:
             continue
         priority = (
             1.4 * role.demand + 1.2 * gain + impact.net
             + max(0.0, 9.0 - quality_map["semantic_placement"].score) * .08
         )
         rows.append(Intervention(
-            intervention_id=f"role:{role.role}:{role.selected.language}",
+            intervention_id=f"role:{role.role}:{candidate.language}",
             title=role.recommendation,
             role=role.role,
-            language=role.selected.language,
+            language=candidate.language,
             reason=(
-                f"{role.role} demand={role.demand:.2f}; selected fit={role.selected.score:.2f}; "
-                f"current-best={current_best:.2f}; evaluate capability + stability together"
+                f"{role.role} demand={role.demand:.2f}; stable={stable.language}:{stable.score:.2f}; "
+                f"frontier={frontier.language}:{frontier.intrinsic_fit:.2f}; "
+                "evaluate capability + stability together"
             ),
             impact=impact,
             priority=round(priority, 6),
