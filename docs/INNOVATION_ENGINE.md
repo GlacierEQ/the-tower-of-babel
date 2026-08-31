@@ -143,3 +143,40 @@ A language that is not already present and whose Tower evidence state is
 toolchain-, service-, or hardware-gated is not treated as deployment-ready.
 The engine can still identify its architectural advantage, but the next move is
 to prove availability and run a reversible experiment before migration.
+
+
+## Stable owner and frontier specialist
+
+Capability and stability are optimized together by keeping two separate
+language decisions for each semantic boundary:
+
+- **Stable owner** — the strongest currently integrated, executable language for
+  the boundary. It remains responsible for production behavior unless a change
+  earns promotion.
+- **Frontier specialist** — the language with the strongest intrinsic semantic
+  fit for the boundary. It may be stronger in principle but still require
+  toolchain proof, an explicit interface, benchmarks, or a reversible experiment.
+
+For example, a mature repository may keep a tested C++ or Rust memory owner
+while identifying Odin as the memory-layout frontier. The Spiral first proves
+Odin's toolchain and measures the boundary in isolation. It does not destabilize
+the current owner merely because Odin has stronger intrinsic memory semantics.
+
+Promotion therefore follows:
+
+```text
+stable owner
+    + frontier specialist
+    + explicit interface
+    + executable proof
+    + measured capability gain
+    + measured stability gain
+    - migration cost
+    - interface cost
+    - long-term complexity
+            ↓
+      promote / preserve
+```
+
+This allows the Tower to expand capability without converting architectural
+experimentation into production instability.
