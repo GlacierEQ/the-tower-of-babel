@@ -181,3 +181,25 @@ def test_gated_new_language_is_not_treated_as_ready(tmp_path: Path):
     if memory.selected.language == "odin":
         assert memory.recommendation.startswith("PROVE odin")
 
+def test_role_scores_do_not_collapse_to_ceiling(tmp_path: Path):
+    registry = _registry(tmp_path)
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    _write(repo, "memory/state.odin", "package memory // allocator arena buffer layout memory")
+    _write(repo, "logic/policy.rs", "fn evaluate_policy() {} // invariant security logic")
+    _write(repo, "action/gateway.ts", "async function execute() {} // mcp api action request response")
+
+    evaluation = evaluate_repository(repo, registry)
+    memory = next(row for row in evaluation.roles if row.role == "memory")
+    logic = next(row for row in evaluation.roles if row.role == "logic")
+    action = next(row for row in evaluation.roles if row.role == "action")
+
+    assert memory.selected.language == "odin"
+    assert logic.selected.language == "rust"
+    assert action.selected.language == "typescript"
+
+    for role in (memory, logic, action):
+        scores = [candidate.score for candidate in role.alternatives]
+        assert len(set(scores)) > 1
+        assert sum(score == 1.0 for score in scores) <= 1
+
