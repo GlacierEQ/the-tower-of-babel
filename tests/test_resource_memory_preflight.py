@@ -90,6 +90,14 @@ def _init_git_with_release_receipt(root: Path) -> None:
     path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
+def _externalize_release_receipt(root: Path) -> Path:
+    internal = root / "artifacts" / "tower_receipt.json"
+    external = root.parent / f"{root.name}-tower-receipt.json"
+    external.write_bytes(internal.read_bytes())
+    internal.unlink()
+    return external
+
+
 def test_inventory_collapses_identical_bytes(tmp_path: Path) -> None:
     _seed_minimal_tower(tmp_path)
     first = tmp_path / "docs" / "one.txt"
@@ -291,7 +299,13 @@ def test_source_bound_memory_requires_release_receipt_for_complete_state(tmp_pat
     assert without_receipt["continuation_controls"]["checkpoint_absence_is_not_execution_veto"] is True
 
     _init_git_with_release_receipt(tmp_path)
-    with_receipt = build_preflight("evaluate replacement", root=tmp_path, memory_path=memory)
+    receipt = _externalize_release_receipt(tmp_path)
+    with_receipt = build_preflight(
+        "evaluate replacement",
+        root=tmp_path,
+        memory_path=memory,
+        checkpoint_receipt=receipt,
+    )
     assert with_receipt["status"] == "COMPLETE"
     assert with_receipt["last_verified_checkpoint"]["verification_basis"] == "TOWER_RELEASE_RECEIPT_V2"
     assert with_receipt["delta"]["committed_delta_status"] == "COMPUTED_FROM_VERIFIED_CHECKPOINT"
@@ -374,10 +388,14 @@ def test_complete_orientation_points_to_next_frontier(tmp_path: Path) -> None:
     _seed_minimal_tower(tmp_path)
     memory = _source_bound_memory(tmp_path)
     _init_git_with_release_receipt(tmp_path)
-    subprocess.run(["git", "add", "artifacts/tower_receipt.json"], cwd=tmp_path, check=True)
-    subprocess.run(["git", "commit", "-qm", "record verified checkpoint"], cwd=tmp_path, check=True)
+    receipt = _externalize_release_receipt(tmp_path)
 
-    payload = build_preflight("continue strongest lane", root=tmp_path, memory_path=memory)
+    payload = build_preflight(
+        "continue strongest lane",
+        root=tmp_path,
+        memory_path=memory,
+        checkpoint_receipt=receipt,
+    )
 
     orientation = payload["orientation"]
     assert payload["status"] == "COMPLETE"
@@ -385,6 +403,57 @@ def test_complete_orientation_points_to_next_frontier(tmp_path: Path) -> None:
     assert orientation["certainty"] == "HIGH"
     assert orientation["recommended_next_route"] == "EXECUTE_NEXT_FRONTIER"
     assert orientation["unresolved_count"] == 0
+
+
+def test_committed_delta_is_routed_through_verification(tmp_path: Path) -> None:
+    _seed_minimal_tower(tmp_path)
+    memory = _source_bound_memory(tmp_path)
+    _init_git_with_release_receipt(tmp_path)
+    receipt = _externalize_release_receipt(tmp_path)
+
+    architecture = tmp_path / "ARCHITECTURE_LAW.md"
+    architecture.write_text("seed:ARCHITECTURE_LAW.md\nnew committed delta\n", encoding="utf-8")
+    subprocess.run(["git", "add", "ARCHITECTURE_LAW.md"], cwd=tmp_path, check=True)
+    subprocess.run(["git", "commit", "-qm", "new committed delta"], cwd=tmp_path, check=True)
+
+    payload = build_preflight(
+        "verify new committed delta",
+        root=tmp_path,
+        memory_path=memory,
+        checkpoint_receipt=receipt,
+    )
+
+    assert payload["status"] == "PARTIAL"
+    orientation = payload["orientation"]
+    assert orientation["continuation_state"] == "CONTINUE_WITH_GAPS"
+    assert orientation["certainty"] == "MEDIUM"
+    assert orientation["recommended_next_route"] == "VERIFY_COMMITTED_DELTA"
+    assert orientation["unresolved_count"] >= 1
+    assert "ARCHITECTURE_LAW.md" in payload["delta"]["committed_changed_paths"]
+
+
+def test_working_tree_delta_lowers_certainty_and_routes_reconciliation(tmp_path: Path) -> None:
+    _seed_minimal_tower(tmp_path)
+    memory = _source_bound_memory(tmp_path)
+    _init_git_with_release_receipt(tmp_path)
+    receipt = _externalize_release_receipt(tmp_path)
+
+    architecture = tmp_path / "ARCHITECTURE_LAW.md"
+    architecture.write_text("seed:ARCHITECTURE_LAW.md\nworking delta\n", encoding="utf-8")
+
+    payload = build_preflight(
+        "reconcile working delta",
+        root=tmp_path,
+        memory_path=memory,
+        checkpoint_receipt=receipt,
+    )
+
+    assert payload["status"] == "PARTIAL"
+    orientation = payload["orientation"]
+    assert orientation["continuation_state"] == "CONTINUE_WITH_GAPS"
+    assert orientation["certainty"] == "MEDIUM"
+    assert orientation["recommended_next_route"] == "RECONCILE_WORKING_TREE"
+    assert "ARCHITECTURE_LAW.md" in payload["delta"]["working_tree_changed_paths"]
 
 
 def test_cli_orient_and_legacy_preflight_are_nonblocking(
