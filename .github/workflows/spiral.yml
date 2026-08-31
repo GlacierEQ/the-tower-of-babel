@@ -28,8 +28,13 @@ jobs:
         run: |
           python -m pip install --require-hashes -r requirements/ci.lock
           python -m pip install --no-deps --no-build-isolation -e .
-      - name: Run Spiral tests
-        run: pytest -q tests/test_spiral_engine.py
+      - name: Run Spiral and Babel innovation tests
+        run: pytest -q tests/test_spiral_engine.py tests/test_innovation_engine.py
+      - name: Exercise Babel semantic role evaluation on the Tower
+        run: |
+          mkdir -p artifacts
+          tower innovate evaluate . --target 9.0 > artifacts/babel-self-evaluation.json
+          tower innovate plan . --target 9.0 --limit 8 > artifacts/babel-self-plan.json
       - name: Exercise civilization question
         run: tower spiral question --seed civilization --output artifacts/civilization-question.json
       - name: Exercise admission and verification
@@ -50,6 +55,8 @@ jobs:
           path: |
             artifacts/civilization-question.json
             artifacts/spiral-admission-receipt.json
+            artifacts/babel-self-evaluation.json
+            artifacts/babel-self-plan.json
             artifacts/file_hashes.json
           if-no-files-found: error
           retention-days: 14
