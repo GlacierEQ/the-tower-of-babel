@@ -462,6 +462,7 @@ def _derive_orientation(
             }
         )
 
+    committed_changes = git_state.get("committed_changed_paths", [])
     if checkpoint is None:
         route_hints.append(
             {
@@ -469,6 +470,15 @@ def _derive_orientation(
                 "route": "ESTABLISH_VERIFIED_CHECKPOINT_WHEN_USEFUL",
                 "reason": "no proof-bound release checkpoint is available",
                 "count": 1,
+            }
+        )
+    elif committed_changes:
+        route_hints.append(
+            {
+                "priority": 3,
+                "route": "VERIFY_COMMITTED_DELTA",
+                "reason": "committed changes exist after the last proof-bound checkpoint",
+                "count": len(committed_changes),
             }
         )
 
@@ -501,6 +511,8 @@ def _derive_orientation(
         or memory_status != "ANALYZED"
         or disputed_memory_count
         or (memory_findings and verified_memory_count == 0)
+        or committed_changes
+        or working_changes
     ):
         certainty = "MEDIUM"
     else:
@@ -512,6 +524,7 @@ def _derive_orientation(
         + disputed_memory_count
         + (1 if memory_status == "ANALYZED" and memory_findings and verified_memory_count == 0 and not memory_gaps else 0)
         + (0 if checkpoint is not None else 1)
+        + len(committed_changes)
         + len(working_changes)
     )
     return {
@@ -573,6 +586,8 @@ def build_preflight(
     disputed_memory = sum(
         1 for row in memory_findings if row.get("status") == "DISPUTED"
     )
+    committed_delta = git_state.get("committed_changed_paths", [])
+    working_delta = git_state.get("working_tree_changed_paths", [])
     status = (
         "COMPLETE"
         if not resource_gaps
@@ -581,6 +596,8 @@ def build_preflight(
         and active_verified_memory > 0
         and disputed_memory == 0
         and checkpoint is not None
+        and not committed_delta
+        and not working_delta
         else "PARTIAL"
     )
     orientation = _derive_orientation(
