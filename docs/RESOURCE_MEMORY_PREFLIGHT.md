@@ -30,16 +30,16 @@ This is continuation, not restart.
 ## Executable command
 
 ```bash
-tower preflight \
+tower orient \
   --mission "evaluate the strongest technology for this boundary" \
   --memory /path/to/external-memory.json \
   --checkpoint-receipt artifacts/tower_receipt.json \
-  --output artifacts/resource-memory-preflight.json
+  --output artifacts/resource-memory-orientation.json
 ```
 
 `--checkpoint-receipt` is optional because Tower automatically checks `artifacts/tower_receipt.json`. A checkpoint is accepted only when the v2 Tower release receipt has valid registry, integrity, and build states, a valid deterministic body hash, and a commit/tree pair available in the checkout.
 
-`--require-memory` remains accepted only for compatibility. It does not grant or deny execution permission and does not convert missing, invalid, empty, or malformed continuity memory into a global stop condition. Those states remain explicit telemetry that lowers certainty and changes routing.
+`tower orient` is the primary interface. `tower preflight` and its `--require-memory` flag remain accepted only for compatibility. Neither grants nor denies execution permission, and neither converts missing, invalid, empty, or malformed continuity memory into a global stop condition. Those states remain explicit telemetry that lowers certainty and changes routing.
 
 Preflight intentionally executes before registry loading. A damaged or missing `registry/tower.yml` therefore becomes a resource gap inside the receipt instead of preventing recovery analysis.
 
@@ -148,9 +148,11 @@ The orientation receipt permanently states:
 
 ## Receipt
 
-Default output:
+Primary output:
 
-`artifacts/resource-memory-preflight.json`
+`artifacts/resource-memory-orientation.json`
+
+Legacy `tower preflight` default output remains `artifacts/resource-memory-preflight.json` for compatibility.
 
 Schema identity:
 
@@ -161,3 +163,21 @@ Version 3 intentionally changes the top-level control shape from the former
 nonblocking orientation semantics without mistaking the payload for the older v2 contract.
 
 The receipt is orientation input to Tower decision-making. It does not replace the technology registry, build proof, benchmark result, integrity result, or final deterministic release receipt, and it never becomes a permission gate over execution.
+
+## Continuation telemetry
+
+The v3 orientation receipt includes an `orientation` object so downstream agents do not need to infer operational meaning from `PARTIAL` or `COMPLETE` alone.
+
+It reports:
+
+- `continuation_state`: `CONTINUE` or `CONTINUE_WITH_GAPS`;
+- `certainty`: `HIGH`, `MEDIUM`, or `LOW`;
+- `execution_permission`: always `NOT_EVALUATED_BY_ORIENTATION`;
+- `stop_condition_created`: always `false`;
+- `unresolved_count`;
+- `recommended_next_route`;
+- ordered `route_hints`.
+
+Current route vocabulary includes `RECOVER_RESOURCE_GAPS`, `ACQUIRE_OR_RECONSTRUCT_CONTINUITY`, `SOURCE_MEMORY_GAPS`, `ESTABLISH_VERIFIED_CHECKPOINT_WHEN_USEFUL`, `RECONCILE_WORKING_TREE`, and `EXECUTE_NEXT_FRONTIER`.
+
+These are routing recommendations. They do not silently acquire project-direction authority.
