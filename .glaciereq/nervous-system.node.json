@@ -24,8 +24,8 @@
     "mode": "ORIENTATION_NOT_PERMISSION",
     "required_before_mutation": false,
     "recommended_before_consequential_change": true,
-    "command": "tower preflight --mission <objective> --memory <external-memory.json>",
-    "receipt": "artifacts/resource-memory-preflight.json",
+    "command": "tower orient --mission <objective> --memory <external-memory.json>",
+    "receipt": "artifacts/resource-memory-orientation.json",
     "memory_ownership": "EXTERNAL",
     "memory_requires_source_pointer_for_proof": true,
     "duplicate_content_is_independent_corroboration": false,
@@ -33,6 +33,28 @@
     "preserve_material_contradictions": true,
     "partial_state_changes_certainty_not_execution_permission": true,
     "missing_checkpoint_is_not_execution_veto": true,
-    "default_continuation": "CONTINUE_WHILE_MEANINGFUL_ROUTE_EXISTS"
+    "default_continuation": "CONTINUE_WHILE_MEANINGFUL_ROUTE_EXISTS",
+    "legacy_command": "tower preflight --mission <objective> --memory <external-memory.json>",
+    "orientation_schema": "glaciereq.tower.resource-memory-preflight.v3",
+    "continuation_telemetry": [
+      "certainty",
+      "continuation_state",
+      "recommended_next_route",
+      "route_hints",
+      "unresolved_count",
+      "memory_evidence_counts"
+    ],
+    "orientation_can_stop_execution": false,
+    "execution_permission_source": "OUTSIDE_ORIENTATION",
+    "degraded_failure_telemetry": true,
+    "degraded_failure_route": "RECOVER_ORIENTATION_FAILURE",
+    "contested_memory_cannot_create_high_certainty": true,
+    "hard_link_memory_overwrite_protection": true,
+    "committed_delta_requires_explicit_verification_route": true,
+    "working_tree_delta_lowers_certainty": true,
+    "delta_routes": [
+      "VERIFY_COMMITTED_DELTA",
+      "RECONCILE_WORKING_TREE"
+    ]
   }
 }
