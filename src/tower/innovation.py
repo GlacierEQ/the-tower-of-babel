@@ -139,7 +139,9 @@ class FileRole:
     language: str | None
     kind: str
     evidence_weight: float
+    primary_role: str | None
     roles: tuple[str, ...]
+    role_scores: Mapping[str, float]
     confidence: float
 
 
@@ -315,12 +317,19 @@ def classify_files(root: Path | str) -> tuple[FileRole, ...]:
         ordered = sorted(scores.items(), key=lambda item: (-item[1], item[0]))
         selected = tuple(role for role, score in ordered if score >= .25)[:3]
         confidence = ordered[0][1] if ordered else 0.0
+        primary_role = ordered[0][0] if ordered and ordered[0][1] >= .25 else None
         rows.append(FileRole(
             path=relative.as_posix(),
             language=language,
             kind=kind,
             evidence_weight=evidence_weight,
+            primary_role=primary_role,
             roles=selected,
+            role_scores={
+                role: round(score, 6)
+                for role, score in scores.items()
+                if score > 0.0
+            },
             confidence=round(confidence, 3),
         ))
     return tuple(rows)
@@ -385,27 +394,61 @@ def _candidate_languages(registry: TowerRegistry, files: Sequence[FileRole]) -> 
 
 
 def _role_demand(files: Sequence[FileRole], role: str) -> float:
-    supporting = [row for row in files if role in row.roles]
+    supporting = [
+        row for row in files
+        if row.role_scores.get(role, 0.0) >= .25
+    ]
     if not supporting:
         return 0.0
+
     total_weight = sum(row.evidence_weight for row in files) or 1.0
-    support_weight = sum(row.evidence_weight for row in supporting)
-    density = support_weight / total_weight
-    strength = (
-        sum(row.confidence * row.evidence_weight for row in supporting)
-        / max(.001, support_weight)
+    weighted_support = sum(
+        row.evidence_weight * row.role_scores.get(role, 0.0)
+        for row in supporting
     )
-    # Density shows how much of the actual repo performs this role; strength
-    # prevents a small but unmistakable critical boundary from disappearing.
-    return round(min(1.0, .65 * min(1.0, density * 3.0) + .35 * strength), 3)
+    density = weighted_support / total_weight
+
+    primary = [
+        row for row in supporting
+        if row.primary_role == role
+    ]
+    primary_weight = sum(
+        row.evidence_weight * row.role_scores.get(role, 0.0)
+        for row in primary
+    )
+    primary_ratio = primary_weight / max(.001, weighted_support)
+
+    strength = (
+        sum(
+            row.role_scores.get(role, 0.0) * row.evidence_weight
+            for row in supporting
+        )
+        / max(.001, sum(row.evidence_weight for row in supporting))
+    )
+
+    # Demand is strongest when the role owns real executable territory. Secondary
+    # mentions still contribute, but cannot make every role look repository-wide.
+    return round(min(
+        1.0,
+        .45 * min(1.0, density * 4.0)
+        + .35 * strength
+        + .20 * primary_ratio,
+    ), 3)
 
 
 def _current_languages(files: Sequence[FileRole], role: str) -> tuple[str, ...]:
     counts: dict[str, float] = {}
     for row in files:
-        if role in row.roles and row.language:
-            counts[row.language] = counts.get(row.language, 0.0) + row.evidence_weight * max(.25, row.confidence)
-    return tuple(language for language, _ in sorted(counts.items(), key=lambda item: (-item[1], item[0])))
+        role_score = row.role_scores.get(role, 0.0)
+        if role_score >= .25 and row.language:
+            primary_boost = 1.25 if row.primary_role == role else .65
+            counts[row.language] = counts.get(row.language, 0.0) + (
+                row.evidence_weight * role_score * primary_boost
+            )
+    return tuple(
+        language
+        for language, _ in sorted(counts.items(), key=lambda item: (-item[1], item[0]))
+    )
 
 
 def _fit(
