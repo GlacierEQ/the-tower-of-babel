@@ -322,24 +322,32 @@ def _registry_text(row: Mapping[str, Any]) -> str:
     ).casefold()
 
 
-def _registry_role_bonus(row: Mapping[str, Any] | None, role: str) -> float:
+def _registry_role_signal(row: Mapping[str, Any] | None, role: str) -> float:
+    """Return 0..1 semantic fit derived from the governed W4H+How description."""
     if not row:
         return 0.0
     text = _registry_text(row)
-    hits = sum(text.count(hint.casefold()) for hint in ROLE_HINTS[role])
-    return min(.20, hits * .025)
+    unique_hits = sum(1 for hint in ROLE_HINTS[role] if hint.casefold() in text)
+    return round(min(1.0, unique_hits / 4.0), 6)
 
 
-def _evidence_bonus(row: Mapping[str, Any] | None) -> float:
+def _evidence_score(row: Mapping[str, Any] | None) -> float:
+    """Convert Tower proof state into a comparable 0..1 confidence signal."""
     if not row:
-        return 0.0
+        return .35
     state = str(row.get("evidence_state", "")).casefold()
     return {
-        "production_reference": .10, "integrated": .09, "benchmark": .08,
-        "tested": .07, "formally_verified": .09, "compiles": .04,
-        "toolchain_gated": -.06, "service_gated": -.06, "hardware_gated": -.06,
-        "illustrative": -.04,
-    }.get(state, 0.0)
+        "production_reference": 1.00,
+        "integrated": .96,
+        "benchmark": .92,
+        "formally_verified": .95,
+        "tested": .86,
+        "compiles": .70,
+        "toolchain_gated": .46,
+        "service_gated": .44,
+        "hardware_gated": .44,
+        "illustrative": .25,
+    }.get(state, .35)
 
 
 def _execution_ready(row: Mapping[str, Any] | None) -> bool:
@@ -357,8 +365,9 @@ def _candidate_languages(registry: TowerRegistry, files: Sequence[FileRole]) -> 
         for row in registry.technologies
         if isinstance(row, dict) and row.get("id")
     }
-    candidates = present | governed | set(LANGUAGE_ROLE_PRIORS)
-    return tuple(sorted(language for language in candidates if language in LANGUAGE_ROLE_PRIORS))
+    # Every governed Tower floor may compete. Explicit priors accelerate known
+    # placements; unknown floors derive their fit from the registry description.
+    return tuple(sorted(present | governed | set(LANGUAGE_ROLE_PRIORS)))
 
 
 def _role_demand(files: Sequence[FileRole], role: str) -> float:
@@ -395,18 +404,30 @@ def _fit(
     migration_cost: float,
 ) -> LanguageFit:
     row = registry.by_id(language)
-    prior = LANGUAGE_ROLE_PRIORS.get(language, {}).get(role, .0)
+    registry_signal = _registry_role_signal(row, role)
+    explicit_prior = LANGUAGE_ROLE_PRIORS.get(language, {}).get(role)
+    prior = explicit_prior if explicit_prior is not None else (.25 + .50 * registry_signal)
+    evidence = _evidence_score(row)
     ready = _execution_ready(row)
-    score = prior + _registry_role_bonus(row, role) + _evidence_bonus(row)
-    if current:
-        score += .05  # existing proven integration has value
-    elif not ready:
-        score -= .10  # do not recommend a new gated dependency as if it were deployable
-    score -= .12 * interface_cost + .10 * migration_cost
+
+    # Convex-ish weighted scoring avoids ceiling saturation. Capability fit,
+    # source-backed Tower semantics, proof strength, and existing integration
+    # contribute independently; interoperability and migration subtract value.
+    score = (
+        .56 * prior
+        + .18 * registry_signal
+        + .14 * evidence
+        + (.12 if current else 0.0)
+        - .10 * interface_cost
+        - .08 * migration_cost
+    )
+    if not current and not ready:
+        score -= .10
     score = round(max(0.0, min(1.0, score)), 6)
     reason = (
-        f"role affinity={prior:.2f}; registry evidence="
-        f"{row.get('evidence_state') if row else 'none'}; "
+        f"role_affinity={prior:.2f}; registry_signal={registry_signal:.2f}; "
+        f"evidence_score={evidence:.2f}; evidence_state="
+        f"{row.get('evidence_state') if row else 'none'}; current={current}; "
         f"interface_cost={interface_cost:.2f}; migration_cost={migration_cost:.2f}"
     )
     return LanguageFit(
