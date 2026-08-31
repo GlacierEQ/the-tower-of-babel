@@ -117,6 +117,10 @@ def main() -> int:
     innovate_run.add_argument("--target", type=float, default=9.0)
     innovate_run.add_argument("--max-revolutions", type=int, default=12)
     innovate_run.add_argument("--output", default="artifacts/babel-innovation-report.json")
+    innovate_bridge = innovate_sub.add_parser("bridge")
+    innovate_bridge.add_argument("repository", nargs="?", default=".")
+    innovate_bridge.add_argument("--target", type=float, default=9.0)
+    innovate_bridge.add_argument("--output", default="artifacts/babel-spiral-bridge.json")
 
     sub.add_parser("report")
     sub.add_parser("megamind-map")
@@ -258,6 +262,21 @@ def main() -> int:
                 engine = BabelSpiralEngine(registry, target=args.target, max_revolutions=args.max_revolutions)
                 payload = engine.run(repo_path)
                 write_innovation_report(Path(args.output), payload)
+                _print(payload)
+                return 0
+            if args.innovate_action == "bridge":
+                from .spiral_bridge import build_bridge_contract
+                evaluation = evaluate_repository(repo_path, registry, target=args.target)
+                plan = plan_interventions(evaluation, limit=1)
+                payload = build_bridge_contract(
+                    evaluation,
+                    plan[0] if plan else None,
+                )
+                Path(args.output).parent.mkdir(parents=True, exist_ok=True)
+                Path(args.output).write_text(
+                    json.dumps(payload, indent=2, sort_keys=True) + "\n",
+                    encoding="utf-8",
+                )
                 _print(payload)
                 return 0
         if args.command == "report":
