@@ -12,13 +12,15 @@
       "when": "Use when kernel-level observability, network packet filtering, or syscall enforcement is required at line rate.",
       "how": "C/Rust eBPF programs, BPF maps, helpers, kprobes, tracepoints, and clang target bpf compilation.",
       "primary_evidence": [
-        "https://ebpf.io/docs/"
+        "https://ebpf.io/docs/",
+        "https://github.com/GlacierEQ/apex-ebpf-sentinel",
+        "https://github.com/GlacierEQ/apex-ebpf-sentinel"
       ],
-      "proof_class": "compile",
-      "evidence_state": "compiles",
+      "proof_class": "behavioral",
+      "evidence_state": "tested",
       "execution": {
         "ci_tier": "portable",
-        "hardware_gate": ""
+        "hardware_gate": "Linux kernel >=5.15 required for full eBPF CO-RE; Go userspace tests run portable"
       },
       "toolchain": {
         "tool": "clang",
@@ -47,7 +49,16 @@
             "build/ebpf_advanced.o"
           ]
         ],
-        "test": []
+        "test": [
+          [
+            "go",
+            "test",
+            "./tests/integration/",
+            "-v",
+            "-timeout",
+            "30s"
+          ]
+        ]
       },
       "interfaces": [
         "c_abi",
@@ -63,7 +74,13 @@
         ]
       },
       "easy_example": "languages/ebpf/easy_packet_filter.bpf.c",
-      "advanced_example": "languages/ebpf/advanced_syscall_sentinel.bpf.c"
+      "advanced_example": "languages/ebpf/advanced_syscall_sentinel.bpf.c",
+      "apex_estate_integration": {
+        "repo": "apex-ebpf-sentinel",
+        "path": "/Users/kcbflux/APEX_SYSTEM/DOMAINS/SWARM_INTELLIGENCE/SWARM_TECH/apex-ebpf-sentinel",
+        "test_evidence": "4/4 integration tests pass (policy eval, start/stop, platform probes, metrics)",
+        "advancement": "compiles -> tested (Go userspace); hardware_gated for full kernel CO-RE"
+      }
     },
     {
       "id": "openqasm",
@@ -180,7 +197,7 @@
       "why": "Use when JAX/XLA provides a measured advantage for autodiff, compilation, or device parallelism.",
       "where": "Verified JAX runtimes with a declared CPU/GPU/TPU backend and reproducible device tests.",
       "when": "Select only after JAX imports, jax.jit or pjit executes, and the requested sharding/backend receipt is captured.",
-      "how": "Admission requires JAX runtime markers, executable XLA lowering, real device count, and sharding evidence—not Python lists.",
+      "how": "Admission requires JAX runtime markers, executable XLA lowering, real device count, and sharding evidence\u2014not Python lists.",
       "primary_evidence": [
         "https://jax.readthedocs.io/",
         "https://x.ai/blog/grok-1"
@@ -244,7 +261,7 @@
     },
     {
       "id": "datalog",
-      "name": "Soufflé Datalog",
+      "name": "Souffl\u00e9 Datalog",
       "category": "declarative_static_analysis",
       "artifact_type": "logic_rules",
       "extension": ".dl",
