@@ -1,0 +1,29 @@
+{
+  "schema": "glaciereq.peer-mesh-pointer.v1",
+  "self": {
+    "repo": "GlacierEQ/the-tower-of-babel",
+    "role": "technology_language_and_proof_brain",
+    "entrypoints": [
+      "registry/tower.yml",
+      "generated/megamind.technology-map.json",
+      "generated/interfaces.json"
+    ]
+  },
+  "mesh_contract": {
+    "repo": "GlacierEQ/apex-control-plane",
+    "path": "integration/cognitive_mesh.json",
+    "branch": "main"
+  },
+  "peers": [
+    "GlacierEQ/mega-skills",
+    "GlacierEQ/aspen-grove-core",
+    "GlacierEQ/apex-control-plane"
+  ],
+  "law": [
+    "standalone first",
+    "route instead of copy",
+    "preserve specialist authority",
+    "exchange artifacts, provenance, blockers, and receipts",
+    "live source state outranks stale projections"
+  ]
+}
