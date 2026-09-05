@@ -28,6 +28,7 @@ REQUIRED_STAGES = {
     "typescript_compile",
     "typescript_ingress",
     "python_planner",
+    "genius_mastery",
     "rust_authority",
     "go_compile",
     "go_telemetry",
@@ -180,6 +181,7 @@ def main() -> int:
 
     mission = WORK / "mission.json"
     plan = WORK / "plan.json"
+    genius_report = WORK / "genius_report.json"
     decision = WORK / "decision.json"
     event = WORK / "event.json"
     db = WORK / "tower.db"
@@ -227,7 +229,24 @@ def main() -> int:
         planner = dependency_block("python_planner", "mission.json")
         results.append(planner)
 
-    if plan.is_file() and planner["status"] == "VERIFIED" and shutil.which("cargo"):
+    # Genius Mastery coherence gate: adjudicate the plan with the Genius Logic
+    # adversarial engine before the Rust authority binds it. Leverages the APEX
+    # mega-skills CLI as an optional verification sub-stage (disabled by default).
+    if plan.is_file() and planner["status"] == "VERIFIED":
+        genius = run([
+            sys.executable, "flagship/python/genius_mastery.py",
+            str(plan), str(genius_report), "--mission", str(source),
+        ])
+        genius["stage"] = "genius_mastery"
+        results.append(genius)
+        if genius["status"] != "VERIFIED":
+            results.append(dependency_block("rust_authority", "genius_mastery coherence gate"))
+    else:
+        genius = dependency_block("genius_mastery", "verified plan.json")
+        results.append(genius)
+
+    plan_verified = plan.is_file() and planner["status"] == "VERIFIED" and genius["status"] == "VERIFIED"
+    if plan_verified and shutil.which("cargo"):
         authority = run([
             "cargo", "run", "--quiet", "--manifest-path", "flagship/rust/Cargo.toml",
             "--", str(plan), str(decision), expected_registry_sha256,
@@ -235,10 +254,11 @@ def main() -> int:
         ])
         authority["stage"] = "rust_authority"
         results.append(authority)
-    elif plan.is_file() and planner["status"] == "VERIFIED":
+    elif plan_verified:
         results.append(blocker("cargo", "rust_authority"))
     else:
-        results.append(dependency_block("rust_authority", "verified plan.json"))
+        dep = "genius_mastery coherence gate" if planner["status"] == "VERIFIED" else "verified plan.json"
+        results.append(dependency_block("rust_authority", dep))
 
     go_binary = WORK / "tower-telemetry"
     if shutil.which("go"):
@@ -312,6 +332,7 @@ def main() -> int:
         "expected_registry_sha256": expected_registry_sha256,
         "expected_input_sha256": expected_input_sha256,
         "expected_maximum_action": expected_maximum_action,
+        "genius_report": str(genius_report.relative_to(ROOT)) if genius_report.is_file() else None,
         "strict": not args.allow_blocked,
         "results": results,
     }
