@@ -1,5 +1,4 @@
 """Tower command-line interface."""
-
 from __future__ import annotations
 
 import argparse
@@ -14,8 +13,8 @@ from .integrity import verify_integrity, write_manifest
 from .proofs import build_proof_report, write_proof_report
 from .receipt import write_receipt
 from .registry import load_registry, validate_registry
-from .resource_memory import DEFAULT_OUTPUT as DEFAULT_PREFLIGHT_OUTPUT
-from .resource_memory import write_preflight
+from .resource_memory import DEFAULT_ORIENTATION_OUTPUT, DEFAULT_OUTPUT as DEFAULT_PREFLIGHT_OUTPUT
+from .resource_memory import write_orientation
 from .spiral import (
     build_admission_receipt,
     generate_civilization_question,
@@ -35,9 +34,7 @@ def _read_json_object(path: Path, label: str) -> dict[str, Any]:
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        raise ValueError(
-            f"{label} is unreadable or invalid JSON: {path}: {exc}"
-        ) from exc
+        raise ValueError(f"{label} is unreadable or invalid JSON: {path}: {exc}") from exc
     if not isinstance(payload, dict):
         raise ValueError(f"{label} root must be an object: {path}")
     return payload
@@ -45,8 +42,7 @@ def _read_json_object(path: Path, label: str) -> dict[str, Any]:
 
 def _status_count(counts: dict[str, Any], predicate) -> int:
     return sum(
-        count
-        for status, count in counts.items()
+        count for status, count in counts.items()
         if isinstance(status, str) and isinstance(count, int) and predicate(status)
     )
 
@@ -60,10 +56,20 @@ def main() -> int:
     spec = sub.add_parser("spec")
     spec.add_argument("technology")
 
+    orient = sub.add_parser("orient")
+    orient.add_argument("--mission", required=True)
+    orient.add_argument("--memory")
+    orient.add_argument("--checkpoint-receipt")
+    orient.add_argument("--output", default=str(DEFAULT_ORIENTATION_OUTPUT))
+
     preflight = sub.add_parser("preflight")
     preflight.add_argument("--mission", required=True)
     preflight.add_argument("--memory")
-    preflight.add_argument("--require-memory", action="store_true")
+    preflight.add_argument(
+        "--require-memory",
+        action="store_true",
+        help="Compatibility flag: never grants or denies execution permission.",
+    )
     preflight.add_argument("--checkpoint-receipt")
     preflight.add_argument("--output", default=str(DEFAULT_PREFLIGHT_OUTPUT))
 
@@ -115,37 +121,58 @@ def main() -> int:
     args = parser.parse_args()
 
     try:
-        # Preflight intentionally runs before registry loading. Its job includes
+        # Orientation intentionally runs before registry loading. Its job includes
         # diagnosing a missing or malformed registry and must survive that damage.
-        if args.command == "preflight":
+        # "preflight" remains a compatibility alias and has identical nonblocking semantics.
+        if args.command in {"orient", "preflight"}:
             memory_path = Path(args.memory) if args.memory else None
-            checkpoint_receipt = (
-                Path(args.checkpoint_receipt) if args.checkpoint_receipt else None
-            )
-            payload = write_preflight(
-                Path(args.output),
-                args.mission,
-                memory_path=memory_path,
-                checkpoint_receipt=checkpoint_receipt,
-            )
+            checkpoint_receipt = Path(args.checkpoint_receipt) if args.checkpoint_receipt else None
+            try:
+                payload = write_orientation(
+                    Path(args.output),
+                    args.mission,
+                    memory_path=memory_path,
+                    checkpoint_receipt=checkpoint_receipt,
+                )
+            except (OSError, ValueError) as exc:
+                failure_class = (
+                    "ORIENTATION_IO_ERROR" if isinstance(exc, OSError)
+                    else "ORIENTATION_INPUT_OR_PROTECTION_ERROR"
+                )
+                payload = {
+                    "schema": "glaciereq.tower.resource-memory-preflight.v3",
+                    "mission": args.mission,
+                    "state": "ORIENTATION_DEGRADED",
+                    "status": "DEGRADED",
+                    "failure": {
+                        "class": failure_class,
+                        "message": str(exc),
+                    },
+                    "orientation": {
+                        "mode": "CONTINUOUS_ORIENTATION",
+                        "continuation_state": "CONTINUE_WITH_GAPS",
+                        "certainty": "LOW",
+                        "execution_permission": "NOT_EVALUATED_BY_ORIENTATION",
+                        "stop_condition_created": False,
+                        "unresolved_count": 1,
+                        "recommended_next_route": "RECOVER_ORIENTATION_FAILURE",
+                        "route_hints": [
+                            {
+                                "priority": 1,
+                                "route": "RECOVER_ORIENTATION_FAILURE",
+                                "reason": failure_class,
+                                "count": 1,
+                            }
+                        ],
+                    },
+                }
             _print(payload)
-            if (
-                args.require_memory
-                and payload["memory_analysis"]["status"] != "ANALYZED"
-            ):
-                return 2
-            return 0 if payload["resource_analysis"]["resource_gaps"] == [] else 1
+            return 0
 
         registry = load_registry()
         if args.command == "validate":
             errors = validate_registry(registry)
-            _print(
-                {
-                    "valid": not errors,
-                    "technology_count": len(registry.technologies),
-                    "errors": errors,
-                }
-            )
+            _print({"valid": not errors, "technology_count": len(registry.technologies), "errors": errors})
             return 0 if not errors else 1
         if args.command == "generate":
             errors = generate(check=args.check)
@@ -153,9 +180,7 @@ def main() -> int:
             return 0 if not errors else 1
         if args.command == "spec":
             row = registry.by_id(args.technology)
-            _print(
-                row or {"error": "UNKNOWN_TECHNOLOGY", "technology": args.technology}
-            )
+            _print(row or {"error": "UNKNOWN_TECHNOLOGY", "technology": args.technology})
             return 0 if row else 1
         if args.command == "build":
             selected = None if args.all else args.technologies
@@ -165,52 +190,27 @@ def main() -> int:
             write_report(report, Path(args.output))
             _print(report)
             counts = report.get("counts", {})
-            failed = _status_count(
-                counts,
-                lambda status: (
-                    status in {"FAILED", "FAILED_TIMEOUT", "INVALID_MANIFEST"}
-                ),
-            )
-            blocked = _status_count(
-                counts, lambda status: status.startswith("BLOCKED_")
-            )
+            failed = _status_count(counts, lambda status: status in {"FAILED", "FAILED_TIMEOUT", "INVALID_MANIFEST"})
+            blocked = _status_count(counts, lambda status: status.startswith("BLOCKED_"))
             if failed:
                 return 1
             if blocked and not args.allow_blocked:
                 return 2
             return 0
         if args.command == "benchmark":
-            report = benchmark_many(
-                registry, args.technologies, iterations=args.iterations
-            )
+            report = benchmark_many(registry, args.technologies, iterations=args.iterations)
             write_benchmark(report, Path(args.output))
             _print(report)
-            statuses = {
-                str(row.get("status", ""))
-                for row in report.get("results", [])
-                if isinstance(row, dict)
-            }
-            if statuses & {
-                "FAILED",
-                "FAILED_TIMEOUT",
-                "INVALID_BENCHMARK",
-                "INVALID_MANIFEST",
-            }:
+            statuses = {str(row.get("status", "")) for row in report.get("results", []) if isinstance(row, dict)}
+            if statuses & {"FAILED", "FAILED_TIMEOUT", "INVALID_BENCHMARK", "INVALID_MANIFEST"}:
                 return 1
-            if (
-                any(status.startswith("BLOCKED_") for status in statuses)
-                and not args.allow_blocked
-            ):
+            if any(status.startswith("BLOCKED_") for status in statuses) and not args.allow_blocked:
                 return 2
             return 0
         if args.command == "proof-report":
             build_report = _read_json_object(Path(args.build_report), "build report")
             benchmark_path = Path(args.benchmark_report)
-            benchmark_report = (
-                _read_json_object(benchmark_path, "benchmark report")
-                if benchmark_path.is_file()
-                else None
-            )
+            benchmark_report = _read_json_object(benchmark_path, "benchmark report") if benchmark_path.is_file() else None
             report = build_proof_report(registry, build_report, benchmark_report)
             write_proof_report(report, Path(args.output))
             _print(report)
@@ -230,17 +230,11 @@ def main() -> int:
             build_report = _read_json_object(Path(args.build_report), "build report")
             payload = write_receipt(Path(args.output), build_report)
             _print(payload)
-            valid = (
-                payload["registry_valid"]
-                and payload["integrity_valid"]
-                and payload["build_report_valid"]
-            )
+            valid = payload["registry_valid"] and payload["integrity_valid"] and payload["build_report_valid"]
             return 0 if valid else 1
         if args.command == "spiral":
             if args.spiral_action == "question":
-                payload = generate_civilization_question(
-                    args.seed, prompt_hint=args.prompt_hint
-                )
+                payload = generate_civilization_question(args.seed, prompt_hint=args.prompt_hint)
                 if args.output:
                     write_json(Path(args.output), payload)
                 _print(payload)
@@ -257,26 +251,18 @@ def main() -> int:
                 _print(result)
                 return 0 if result["ok"] else 1
         if args.command == "report":
-            _print(
-                _read_json_object(Path("generated/maturity.json"), "maturity report")
-            )
+            _print(_read_json_object(Path("generated/maturity.json"), "maturity report"))
             return 0
         if args.command == "megamind-map":
-            _print(
-                _read_json_object(
-                    Path("generated/megamind.technology-map.json"), "Megamind map"
-                )
-            )
+            _print(_read_json_object(Path("generated/megamind.technology-map.json"), "Megamind map"))
             return 0
         if args.command == "search":
             from .visualize import search_registry
-
             results = search_registry(registry, args.query)
             _print({"query": args.query, "count": len(results), "matches": results})
             return 0
         if args.command == "visualize":
             from .visualize import build_topology_graph, render_dot_graph
-
             if args.format == "dot":
                 print(render_dot_graph(registry))
             else:

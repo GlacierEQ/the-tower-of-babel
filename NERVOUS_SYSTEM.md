@@ -21,7 +21,7 @@ Aspen Grove memory
 
 The Tower owns:
 
-- reconstruction of its current technology, proof, interface, and resource state before mutation;
+- reconstruction of current technology, proof, interface, and resource state as orientation for consequential change, without turning reconstruction into permission machinery;
 - analysis of externally supplied continuity memory without claiming ownership of that memory;
 - decomposition of a system into explicit architecture lanes;
 - technology placement by measurable boundary advantage;
@@ -75,10 +75,21 @@ recover external memory / continuity context
 Executable preflight:
 
 ```bash
-tower preflight --mission "<exact engineering objective>" --memory <external-memory.json> --require-memory
+tower orient --mission "<exact engineering objective>" --memory external-memory.json
 ```
 
-Default receipt: `artifacts/resource-memory-preflight.json`.
+Default receipt: `artifacts/resource-memory-orientation.json`.
+
+Legacy interface: `tower preflight` remains accepted for compatibility and preserves the same nonblocking semantics.
+
+This receipt is orientation telemetry, not an execution gate. It emits certainty,
+continuation state, unresolved-count telemetry, a recommended next route, and
+ordered route hints. Committed changes after the last verified checkpoint route
+through explicit delta verification; working-tree changes lower certainty and
+route through reconciliation. Missing memory, partial reconstruction, an absent verified
+checkpoint, or unresolved gaps reduce certainty and alter route selection; they
+do not create a generic stop condition. The operating default is to continue
+while a meaningful truthful route exists.
 
 ## Resource + memory truth law
 
@@ -135,7 +146,7 @@ inputs:
   - existing_component_map
   - frontier_signals
 outputs:
-  - resource_memory_preflight
+  - resource_memory_orientation
   - language_lanes
   - technology_placement
   - interface_contracts
@@ -160,3 +171,10 @@ prohibitions:
   - duplicate_copy_counted_as_corroboration
   - restart_without_resource_reconstruction
 ```
+
+
+## External-effect execution boundary
+
+Tower distinguishes external location from destructive consequence. A reversible external action may proceed under current Operator direction when its technical boundary is satisfied. A materially irreversible external action requires exact Operator-scoped authorization. An external action whose risk is not classified retains that authorization requirement until classified.
+
+This preserves both sides of the execution law: reversible work is not frozen by redundant approval machinery, and high-consequence work does not inherit permission merely because another external action was previously authorized.
