@@ -12,8 +12,8 @@
       "why": "It provides a dependable free-tier generalist that keeps the assistant runtime operational without payment-gated dependencies, preserving continuity of the estate's primary agent loop.",
       "how": "Invoked through the OpenCode runtime in Zen mode; the local runtime id is opencode/hy3-free and the canonical OpenRouter slug is tencent/hy3. It is an OpenCode-native free model served by OpenCode's free gateway (operator reports $0 billed), also reachable through the Chat Completions and tool-use interface with streaming responses.",
       "operator_reported_billing": "0 USD — OpenCode-native free gateway (Zen mode); not billed via OpenRouter",
-      "easy_example": "languages/llm/hy3_free.easy.json",
-      "advanced_example": "languages/llm/hy3_free.advanced.json",
+      "easy_example": "languages/llm/easy_hy3_free.json",
+      "advanced_example": "languages/llm/advanced_hy3_free.json",
       "evidence_state": "service_gated",
       "proof_class": "integration",
       "toolchain": {
@@ -58,8 +58,8 @@
       "why": "It offers a capable reasoning-class model on a low-cost OpenRouter slug, giving the estate a second verified free-tier option alongside hy3-free for load distribution and resilience.",
       "how": "Invoked through the OpenCode runtime in Zen mode; the local runtime id is opencode/mimo-v2.5-pro:free and the canonical OpenRouter slug is xiaomi/mimo-v2.5-pro. It is served as a free model through OpenCode's Zen runtime (operator reports $0 billed), also reachable through the Chat Completions and tool-use interface with streaming responses.",
       "operator_reported_billing": "0 USD — OpenCode Zen runtime free model; not billed via OpenRouter",
-      "easy_example": "languages/llm/mimo_v2_5_pro.easy.json",
-      "advanced_example": "languages/llm/mimo_v2_5_pro.advanced.json",
+      "easy_example": "languages/llm/easy_mimo_v2_5_pro.json",
+      "advanced_example": "languages/llm/advanced_mimo_v2_5_pro.json",
       "evidence_state": "service_gated",
       "proof_class": "integration",
       "toolchain": {
