@@ -316,6 +316,15 @@ digraph TowerOfBabel {
     "rhl_quant" [label="RHL-Quant reference quantizer (unbenchmarked)\n[illustrative]", fillcolor="#e3f2fd"];
   }
 
+  subgraph cluster_ai_runtime {
+    label = "Ai Runtime";
+    style = "filled";
+    color = "lightgrey";
+    fillcolor = "#f8f9fa";
+    "hy3-free" [label="HY3 (Tencent Hunyuan) free-tier runtime model\n[integration]", fillcolor="#e3f2fd"];
+    "mimo-v2.5-pro-free" [label="MiMo v2.5 Pro (Xiaomi) free-tier reasoning model\n[integration]", fillcolor="#e3f2fd"];
+  }
+
   "cpp" -> "protobuf" [label="protobuf"];
   "rust" -> "protobuf" [label="protobuf"];
   "python" -> "protobuf" [label="protobuf"];

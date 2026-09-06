@@ -20,7 +20,7 @@ from tower.registry import REPO_ROOT, TowerRegistry, load_registry, validate_reg
 
 def test_canonical_registry_governs_all_advertised_floors():
     registry = load_registry()
-    assert len(registry.technologies) == 40
+    assert len(registry.technologies) == 42
 
 
 def test_receipt_is_deterministic():

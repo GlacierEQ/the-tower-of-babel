@@ -10,7 +10,7 @@ def test_context_integrity_proof_binds_registry_integrity_and_receipt():
 
     assert receipt["status"] == "verified"
     assert receipt["failure_reasons"] == []
-    assert receipt["technology_count"] == 40
+    assert receipt["technology_count"] == 42
     assert receipt["registry_errors"] == []
     assert receipt["integrity_file_count"] > 30
     assert receipt["integrity_verified"] is True

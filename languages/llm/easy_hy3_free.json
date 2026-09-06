@@ -1,0 +1,10 @@
+{
+  "model": "hy3-free",
+  "runtime_alias": "opencode/hy3-free",
+  "openrouter_slug": "tencent/hy3",
+  "kind": "easy_example",
+  "description": "Minimal descriptor for the HY3 free-tier runtime model. Used by the local Kilo/OpenCode agent loop as a generalist assistant.",
+  "interfaces": ["openrouter", "chat_completion", "tool_use"],
+  "routing": "opencode (Zen)",
+  "operator_reported_billing": "0 USD — OpenCode-native free gateway (Zen mode); not billed via OpenRouter"
+}

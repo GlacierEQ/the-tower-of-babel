@@ -1,5 +1,5 @@
 {
-  "advanced_exhibit_count": 40,
+  "advanced_exhibit_count": 42,
   "all_claim_contracts_present": true,
   "all_profiles_present": true,
   "authority": [
@@ -1566,6 +1566,88 @@
         "dequantize_and_matmul"
       ],
       "technology": "RHL-Quant reference quantizer (unbenchmarked)"
+    },
+    {
+      "activation_condition": "Use for general coding, orchestration, and synthesis tasks when the objective does not require the largest frontier reasoning model and a zero or low-cost path is preferred.",
+      "advanced_exhibit": "languages/llm/advanced_hy3_free.json",
+      "architectural_role": "Agentic coding assistants, local Kilo/OpenCode runtimes, and APEX swarm generalist reasoning where a small, fast, free model is sufficient; used in OpenCode Zen sessions as the primary free generalist.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
+      "evidence_state": "service_gated",
+      "evidence_tier": "gated_reference",
+      "expected_failure_cases": [
+        "missing openrouter api key",
+        "slug not reachable",
+        "payment-gated fallback"
+      ],
+      "forbidden_claim_patterns": [
+        "production correctness",
+        "formally verified",
+        "frontier reasoning"
+      ],
+      "id": "hy3-free",
+      "interfaces": [
+        "opencode",
+        "zen",
+        "openrouter",
+        "chat_completion",
+        "tool_use"
+      ],
+      "maturity_tier": "gated_reference",
+      "promotion_gate": {},
+      "proof_class": "integration",
+      "proof_surface": "OpenRouter slug reachability and runtime wiring receipt",
+      "required_receipt_fields": [
+        "status",
+        "slug",
+        "reachable"
+      ],
+      "signature_innovation": "Free-tier generalist agent runtime model",
+      "source_assertions": [
+        "tencent/hy3",
+        "opencode/hy3-free"
+      ],
+      "technology": "HY3 (Tencent Hunyuan) free-tier runtime model"
+    },
+    {
+      "activation_condition": "Use for planning, chain-of-thought reasoning, and tool-driven agentic tasks when the objective benefits from explicit reasoning but must stay on a free or low-cost tier.",
+      "advanced_exhibit": "languages/llm/advanced_mimo_v2_5_pro.json",
+      "architectural_role": "Agentic reasoning, tool-use, and multi-step coding tasks within Kilo/OpenCode and APEX swarm flows where a stronger reasoning model is preferred at no cost; used in OpenCode Zen sessions as the free reasoning-class option.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
+      "evidence_state": "service_gated",
+      "evidence_tier": "gated_reference",
+      "expected_failure_cases": [
+        "missing openrouter api key",
+        "slug not reachable",
+        "payment-gated fallback"
+      ],
+      "forbidden_claim_patterns": [
+        "production correctness",
+        "formally verified",
+        "largest frontier model"
+      ],
+      "id": "mimo-v2.5-pro-free",
+      "interfaces": [
+        "opencode",
+        "zen",
+        "openrouter",
+        "chat_completion",
+        "tool_use"
+      ],
+      "maturity_tier": "gated_reference",
+      "promotion_gate": {},
+      "proof_class": "integration",
+      "proof_surface": "OpenRouter slug reachability and runtime wiring receipt",
+      "required_receipt_fields": [
+        "status",
+        "slug",
+        "reachable"
+      ],
+      "signature_innovation": "Free-tier reasoning-class agent runtime model",
+      "source_assertions": [
+        "xiaomi/mimo-v2.5-pro",
+        "mimo-v2.5-pro:free"
+      ],
+      "technology": "MiMo v2.5 Pro (Xiaomi) free-tier reasoning model"
     }
   ],
   "generated_by": "tools/audit_advanced_exhibits.py",
