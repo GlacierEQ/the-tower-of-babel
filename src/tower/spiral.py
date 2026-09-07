@@ -8,6 +8,7 @@ The Spiral Engine has two deterministic responsibilities:
 It deliberately performs no network calls and has no model dependency. A model may
 answer the generated question, but the admission boundary remains inspectable code.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -106,13 +107,13 @@ def generate_civilization_question(
     lens = rng.choice(_QUESTION_LENSES)
     horizon = rng.choice(_TIME_HORIZONS)
     domain_phrase = ", ".join(domains[:-1]) + f", and {domains[-1]}"
-    
+
     base_question = (
         f"Across {domain_phrase}, which intervention is most likely to {lens} "
         f"over {horizon}, what evidence would falsify it, and how would you prevent "
         "its benefits from shifting hidden costs to another domain, population, or generation?"
     )
-    
+
     if prompt_hint and prompt_hint.strip():
         question = f"[Focus: {prompt_hint.strip()}] {base_question}"
     else:
@@ -205,7 +206,8 @@ def evaluate_capability(candidate: Mapping[str, Any]) -> dict[str, Any]:
         "approval_mode": approval_mode in {"human", "human-and-machine"},
         "human_override": human_override,
         "audit_log": audit_log,
-        "rollback_plan": isinstance(rollback_plan, str) and len(rollback_plan.strip()) >= 12,
+        "rollback_plan": isinstance(rollback_plan, str)
+        and len(rollback_plan.strip()) >= 12,
         "metrics": isinstance(metrics, list)
         and len(metrics) >= 2
         and all(isinstance(metric, str) and metric.strip() for metric in metrics),
@@ -222,7 +224,9 @@ def evaluate_capability(candidate: Mapping[str, Any]) -> dict[str, Any]:
     domain_score = len(domains) / len(DOMAIN_TAXONOMY)
     evidence_score = min(valid_evidence / 3, 1.0)
     controls_score = sum(control_checks.values()) / len(control_checks)
-    score = round((0.40 * domain_score) + (0.30 * evidence_score) + (0.30 * controls_score), 6)
+    score = round(
+        (0.40 * domain_score) + (0.30 * evidence_score) + (0.30 * controls_score), 6
+    )
     decision = "ADMIT" if not blockers and score >= ADMISSION_THRESHOLD else "REJECT"
 
     return {

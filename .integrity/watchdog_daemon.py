@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Integrity watchdog backed by the real Tower hash engine."""
+
 from __future__ import annotations
 
 import json

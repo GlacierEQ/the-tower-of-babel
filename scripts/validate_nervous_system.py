@@ -6,6 +6,7 @@ reachable; otherwise CI validates against a recent immutable source checkpoint
 (commit + blob identity + verified non-secret summary) rather than pretending an
 unauthenticated 404 is a current-source observation.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -26,7 +27,17 @@ CHECKPOINT_PATH = ROOT / ".glaciereq" / "apex-mesh.source.json"
 README_PATH = ROOT / "README.md"
 APEX_URL = "https://raw.githubusercontent.com/GlacierEQ/AKOS/main/governance/glaciereq.nervous-system.v2.json"
 USER_AGENT = "GlacierEQ-Tower-APEX-Nervous-System-Validator/2.1"
-EXPECTED_SEQUENCE = ["context", "discover", "compare", "cure", "innovate", "execute", "verify", "persist", "evolve"]
+EXPECTED_SEQUENCE = [
+    "context",
+    "discover",
+    "compare",
+    "cure",
+    "innovate",
+    "execute",
+    "verify",
+    "persist",
+    "evolve",
+]
 
 
 def _read_json(path: Path, label: str) -> dict[str, Any]:
@@ -55,7 +66,9 @@ def _fetch(url: str, attempts: int = 3, timeout: int = 20) -> bytes:
     raise RuntimeError(f"unable to fetch {url}: {last_error}")
 
 
-def _validate(contract: dict[str, Any], manifest: dict[str, Any], repository: str) -> list[str]:
+def _validate(
+    contract: dict[str, Any], manifest: dict[str, Any], repository: str
+) -> list[str]:
     errors: list[str] = []
     node = manifest.get("nodes", {}).get(repository)
     apex = manifest.get("apex_logic", {})
@@ -98,7 +111,9 @@ def _validate(contract: dict[str, Any], manifest: dict[str, Any], repository: st
     return errors
 
 
-def _checkpoint_manifest(checkpoint: dict[str, Any], repository: str) -> tuple[dict[str, Any], list[str], dict[str, Any]]:
+def _checkpoint_manifest(
+    checkpoint: dict[str, Any], repository: str
+) -> tuple[dict[str, Any], list[str], dict[str, Any]]:
     errors: list[str] = []
     if checkpoint.get("schema") != "glaciereq.private-source-checkpoint.v1":
         errors.append("private-source checkpoint schema drift")
@@ -126,7 +141,9 @@ def _checkpoint_manifest(checkpoint: dict[str, Any], repository: str) -> tuple[d
             observed_at = datetime.fromisoformat(observed_at_raw.replace("Z", "+00:00"))
             if observed_at.tzinfo is None:
                 raise ValueError("timezone required")
-            age_hours = (datetime.now(timezone.utc) - observed_at.astimezone(timezone.utc)).total_seconds() / 3600
+            age_hours = (
+                datetime.now(timezone.utc) - observed_at.astimezone(timezone.utc)
+            ).total_seconds() / 3600
             if age_hours < -1:
                 errors.append("private-source checkpoint timestamp is in the future")
             elif age_hours > max_age_hours:
@@ -147,8 +164,12 @@ def _checkpoint_manifest(checkpoint: dict[str, Any], repository: str) -> tuple[d
         "apex_logic": {
             "selection_mode": summary.get("selection_mode"),
             "challengeable": summary.get("challengeable"),
-            "capability_donor_preservation": summary.get("capability_donor_preservation"),
-            "operator_objective_precedence": summary.get("operator_objective_precedence"),
+            "capability_donor_preservation": summary.get(
+                "capability_donor_preservation"
+            ),
+            "operator_objective_precedence": summary.get(
+                "operator_objective_precedence"
+            ),
         },
         "nodes": {
             repository: {
@@ -159,10 +180,14 @@ def _checkpoint_manifest(checkpoint: dict[str, Any], repository: str) -> tuple[d
             }
         },
     }
-    summary_bytes = json.dumps(summary, separators=(",", ":"), sort_keys=True).encode("utf-8")
+    summary_bytes = json.dumps(summary, separators=(",", ":"), sort_keys=True).encode(
+        "utf-8"
+    )
     metadata = {
         "source": "private_source_checkpoint",
-        "freshness_status": "checkpoint_within_horizon" if not errors else "checkpoint_invalid",
+        "freshness_status": "checkpoint_within_horizon"
+        if not errors
+        else "checkpoint_invalid",
         "observed_commit": commit,
         "observed_blob_sha": blob,
         "observed_at": observed_at_raw,
@@ -173,27 +198,43 @@ def _checkpoint_manifest(checkpoint: dict[str, Any], repository: str) -> tuple[d
     return manifest, errors, metadata
 
 
-def _load_manifest(repository: str) -> tuple[dict[str, Any], bytes | None, list[str], list[str], dict[str, Any]]:
+def _load_manifest(
+    repository: str,
+) -> tuple[dict[str, Any], bytes | None, list[str], list[str], dict[str, Any]]:
     warnings: list[str] = []
     try:
         manifest_bytes = _fetch(APEX_URL)
         manifest = json.loads(manifest_bytes.decode("utf-8"))
         if not isinstance(manifest, dict):
             raise ValueError("current APEX mesh root must be an object")
-        return manifest, manifest_bytes, [], warnings, {
-            "source": "current_apex_mesh",
-            "freshness_status": "current_fetch",
-        }
+        return (
+            manifest,
+            manifest_bytes,
+            [],
+            warnings,
+            {
+                "source": "current_apex_mesh",
+                "freshness_status": "current_fetch",
+            },
+        )
     except (RuntimeError, UnicodeDecodeError, json.JSONDecodeError, ValueError) as exc:
-        warnings.append(f"live APEX mesh unavailable; using immutable private-source checkpoint: {exc}")
+        warnings.append(
+            f"live APEX mesh unavailable; using immutable private-source checkpoint: {exc}"
+        )
 
     try:
         checkpoint = _read_json(CHECKPOINT_PATH, "private APEX source checkpoint")
     except ValueError as exc:
-        return {}, None, [str(exc)], warnings, {
-            "source": "unavailable",
-            "freshness_status": "unavailable",
-        }
+        return (
+            {},
+            None,
+            [str(exc)],
+            warnings,
+            {
+                "source": "unavailable",
+                "freshness_status": "unavailable",
+            },
+        )
     manifest, errors, metadata = _checkpoint_manifest(checkpoint, repository)
     return manifest, None, errors, warnings, metadata
 
@@ -214,7 +255,9 @@ def main() -> int:
         errors.append("repository identity is missing")
         repository = ""
 
-    manifest, manifest_bytes, load_errors, warnings, source_metadata = _load_manifest(repository)
+    manifest, manifest_bytes, load_errors, warnings, source_metadata = _load_manifest(
+        repository
+    )
     errors.extend(load_errors)
     if repository and manifest:
         errors.extend(_validate(contract, manifest, repository))

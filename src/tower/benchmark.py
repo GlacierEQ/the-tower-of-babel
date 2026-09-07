@@ -1,4 +1,5 @@
 """Measured, non-promotional cross-language benchmark runner."""
+
 from __future__ import annotations
 
 import json
@@ -36,7 +37,9 @@ def _measure(argv: list[str], iterations: int) -> dict[str, Any]:
                 "status": "FAILED_TIMEOUT",
                 "argv": argv,
                 "returncode": None,
-                "stderr": (exc.stderr or "")[-2000:] if isinstance(exc.stderr, str) else "",
+                "stderr": (exc.stderr or "")[-2000:]
+                if isinstance(exc.stderr, str)
+                else "",
             }
         except OSError as exc:
             return {
@@ -72,7 +75,9 @@ def benchmark_many(
     iterations: int = 3,
 ) -> dict[str, Any]:
     requested_list = list(technology_ids)
-    if not requested_list or (len(requested_list) == 1 and requested_list[0].casefold() == "all"):
+    if not requested_list or (
+        len(requested_list) == 1 and requested_list[0].casefold() == "all"
+    ):
         requested_list = [tech["id"] for tech in registry.technologies]
     requested = {value.casefold() for value in requested_list}
     known = {
@@ -84,13 +89,17 @@ def benchmark_many(
     for normalized_id in sorted(requested):
         tech = known.get(normalized_id)
         if tech is None:
-            original = next(value for value in requested_list if value.casefold() == normalized_id)
-            results.append({
-                "technology_id": original,
-                "status": "INVALID_MANIFEST",
-                "build_status": "INVALID_MANIFEST",
-                "blocker": f"Unknown technology requested: {original}",
-            })
+            original = next(
+                value for value in requested_list if value.casefold() == normalized_id
+            )
+            results.append(
+                {
+                    "technology_id": original,
+                    "status": "INVALID_MANIFEST",
+                    "build_status": "INVALID_MANIFEST",
+                    "blocker": f"Unknown technology requested: {original}",
+                }
+            )
             continue
         build = build_floor(tech)
         row: dict[str, Any] = {
@@ -124,4 +133,6 @@ def benchmark_many(
 
 def write_benchmark(report: dict[str, Any], path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    path.write_text(
+        json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )

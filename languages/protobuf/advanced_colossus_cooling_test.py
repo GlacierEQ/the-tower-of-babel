@@ -63,9 +63,7 @@ def derive_command(contract, telemetry, authority_receipt_sha256: str):
     if not _SHA256.fullmatch(authority_receipt_sha256):
         raise ValueError("authority receipt must be a lowercase SHA-256 digest")
 
-    maximum_temperature = max(
-        reading.temperature_c for reading in telemetry.readings
-    )
+    maximum_temperature = max(reading.temperature_c for reading in telemetry.readings)
     command = contract.ControlCommand(
         command_id=f"rack-{telemetry.rack_id}-thermal-control",
         rack_id=telemetry.rack_id,

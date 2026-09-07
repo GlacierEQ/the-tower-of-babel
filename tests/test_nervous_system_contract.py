@@ -5,7 +5,9 @@ import subprocess
 import sys
 
 
-def test_apex_nervous_system_contract_is_current_or_source_bound_and_revisable() -> None:
+def test_apex_nervous_system_contract_is_current_or_source_bound_and_revisable() -> (
+    None
+):
     completed = subprocess.run(
         [sys.executable, "scripts/validate_nervous_system.py", "--freshness"],
         check=True,

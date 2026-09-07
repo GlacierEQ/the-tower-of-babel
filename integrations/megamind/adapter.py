@@ -1,4 +1,5 @@
 """Tower-to-Megamind technology selection adapter."""
+
 from __future__ import annotations
 
 import hashlib
@@ -27,9 +28,33 @@ _PROOF_ORDER = {
 }
 _GATED_STATES = {"hardware_gated", "toolchain_gated", "service_gated"}
 _CAPABILITY_ALIASES = {
-    "coding": {"code", "coding", "compiler", "program", "software", "application", "development"},
-    "evidence": {"evidence", "proof", "receipt", "audit", "verification", "integrity", "provenance"},
-    "tool": {"tool", "tooling", "toolchain", "automation", "orchestration", "cli", "gateway"},
+    "coding": {
+        "code",
+        "coding",
+        "compiler",
+        "program",
+        "software",
+        "application",
+        "development",
+    },
+    "evidence": {
+        "evidence",
+        "proof",
+        "receipt",
+        "audit",
+        "verification",
+        "integrity",
+        "provenance",
+    },
+    "tool": {
+        "tool",
+        "tooling",
+        "toolchain",
+        "automation",
+        "orchestration",
+        "cli",
+        "gateway",
+    },
 }
 
 
@@ -39,10 +64,17 @@ def _words(value: str) -> set[str]:
 
 def _tokens(row: dict) -> set[str]:
     values: list[str] = [
-        str(row.get("id", "")), str(row.get("name", "")), str(row.get("category", "")),
-        str(row.get("artifact_type", "")), str(row.get("what", "")), str(row.get("where", "")),
-        str(row.get("when", "")), str(row.get("why", "")), str(row.get("how", "")),
-        str(row.get("evidence_state", "")), str(row.get("proof_class", "")),
+        str(row.get("id", "")),
+        str(row.get("name", "")),
+        str(row.get("category", "")),
+        str(row.get("artifact_type", "")),
+        str(row.get("what", "")),
+        str(row.get("where", "")),
+        str(row.get("when", "")),
+        str(row.get("why", "")),
+        str(row.get("how", "")),
+        str(row.get("evidence_state", "")),
+        str(row.get("proof_class", "")),
         *[str(item) for item in row.get("interfaces", []) if isinstance(item, str)],
     ]
     return {token for value in values for token in _words(value)}
@@ -53,7 +85,14 @@ def _capability_matches(capability: str, tokens: set[str]) -> bool:
     candidates = _CAPABILITY_ALIASES.get(normalized, {normalized})
     return any(
         candidate in tokens
-        or (len(candidate) >= 4 and any(token.startswith(candidate) or candidate.startswith(token) for token in tokens if len(token) >= 4))
+        or (
+            len(candidate) >= 4
+            and any(
+                token.startswith(candidate) or candidate.startswith(token)
+                for token in tokens
+                if len(token) >= 4
+            )
+        )
         for candidate in candidates
     )
 
@@ -71,8 +110,12 @@ def select_technologies(
     if minimum_name not in _PROOF_ORDER:
         raise ValueError(f"unknown minimum proof class: {minimum_name}")
     minimum = _PROOF_ORDER[minimum_name]
-    required = {value.casefold().strip() for value in request.capabilities if value.strip()}
-    preferred_interfaces = {value.casefold().strip() for value in request.interfaces if value.strip()}
+    required = {
+        value.casefold().strip() for value in request.capabilities if value.strip()
+    }
+    preferred_interfaces = {
+        value.casefold().strip() for value in request.interfaces if value.strip()
+    }
 
     ranked: list[tuple[int, dict, list[str], set[str]]] = []
     gated_candidates: dict[str, str] = {}
@@ -81,13 +124,21 @@ def select_technologies(
             continue
         proof_name = row.get("proof_class")
         if proof_name not in _PROOF_ORDER:
-            raise ValueError(f"technology {row['id']} has unknown proof class: {proof_name}")
+            raise ValueError(
+                f"technology {row['id']} has unknown proof class: {proof_name}"
+            )
         proof = _PROOF_ORDER[proof_name]
         if proof < minimum:
             continue
         tokens = _tokens(row)
-        capability_hits = {value for value in required if _capability_matches(value, tokens)}
-        interfaces = {item.casefold() for item in row.get("interfaces", []) if isinstance(item, str)}
+        capability_hits = {
+            value for value in required if _capability_matches(value, tokens)
+        }
+        interfaces = {
+            item.casefold()
+            for item in row.get("interfaces", [])
+            if isinstance(item, str)
+        }
         interface_hits = preferred_interfaces & interfaces
         if not capability_hits and not interface_hits:
             continue
@@ -126,24 +177,32 @@ def select_technologies(
                 selected.append(candidate)
 
     registry_sha = hashlib.sha256(registry.canonical_bytes()).hexdigest()
-    agents = sorted({
-        agent
-        for _, row, _, _ in selected
-        for agent in row.get("megamind", {}).get("agents", [])
-        if isinstance(agent, str)
-    })
-    pistons = sorted({
-        piston
-        for _, row, _, _ in selected
-        for piston in row.get("megamind", {}).get("pistons", [])
-        if isinstance(piston, str)
-    })
+    agents = sorted(
+        {
+            agent
+            for _, row, _, _ in selected
+            for agent in row.get("megamind", {}).get("agents", [])
+            if isinstance(agent, str)
+        }
+    )
+    pistons = sorted(
+        {
+            piston
+            for _, row, _, _ in selected
+            for piston in row.get("megamind", {}).get("pistons", [])
+            if isinstance(piston, str)
+        }
+    )
     return {
         "mission_id": mission_id,
-        "technology_ids": [row["id"] for _, row, _, _ in selected] if not uncovered else [],
+        "technology_ids": [row["id"] for _, row, _, _ in selected]
+        if not uncovered
+        else [],
         "agent_ids": agents if not uncovered else [],
         "piston_ids": pistons if not uncovered else [],
-        "reasons": {row["id"]: reasons for _, row, reasons, _ in selected} if not uncovered else {},
+        "reasons": {row["id"]: reasons for _, row, reasons, _ in selected}
+        if not uncovered
+        else {},
         "required_capabilities": sorted(required),
         "unmatched_capabilities": sorted(uncovered),
         "gated_candidates": dict(sorted(gated_candidates.items())),

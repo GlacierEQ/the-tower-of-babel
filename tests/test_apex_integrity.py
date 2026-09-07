@@ -2,7 +2,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from tower.integrity import DEFAULT_SNAPSHOT, LEGACY_MANIFEST, verify_integrity, write_manifest
+from tower.integrity import (
+    DEFAULT_SNAPSHOT,
+    LEGACY_MANIFEST,
+    verify_integrity,
+    write_manifest,
+)
 
 
 def test_live_integrity_uses_current_git_head_not_static_baseline() -> None:

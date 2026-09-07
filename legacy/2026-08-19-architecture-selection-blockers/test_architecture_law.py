@@ -93,7 +93,13 @@ def test_boundary_optimizer_selects_highest_fitness_not_default_language():
 def test_lane_validation_rejects_materially_inferior_language():
     declared = lane("kernel", "kernel_runtime", "Python")
     candidates = [
-        tech("Python", "kernel_runtime", performance=0.3, memory_safety=0.5, ecosystem=0.95),
+        tech(
+            "Python",
+            "kernel_runtime",
+            performance=0.3,
+            memory_safety=0.5,
+            ecosystem=0.95,
+        ),
         tech(
             "Rust",
             "kernel_runtime",
@@ -168,7 +174,9 @@ def test_architecture_optimizer_diversifies_when_different_languages_win():
 
 def test_policy_rejects_interface_cost_as_dominant_objective():
     try:
-        BoundaryObjective(interoperability_penalty=0.3, migration_penalty=0.25).validate()
+        BoundaryObjective(
+            interoperability_penalty=0.3, migration_penalty=0.25
+        ).validate()
     except ValueError as exc:
         assert "must not dominate" in str(exc)
     else:

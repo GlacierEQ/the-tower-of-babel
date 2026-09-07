@@ -1,4 +1,5 @@
 """Build-bound proof and evidence report."""
+
 from __future__ import annotations
 
 import json
@@ -46,7 +47,9 @@ def _benchmark_statuses(benchmark_report: dict[str, Any] | None) -> dict[str, st
         if not isinstance(status, str) or not status:
             raise ValueError(f"benchmark report result {technology_id} requires status")
         if technology_id in statuses:
-            raise ValueError(f"duplicate benchmark result for technology: {technology_id}")
+            raise ValueError(
+                f"duplicate benchmark result for technology: {technology_id}"
+            )
         statuses[technology_id] = status
     return statuses
 
@@ -72,7 +75,9 @@ def build_proof_report(
     governed_ids = {technology["id"] for technology in registry.technologies}
     unknown_ids = sorted((set(statuses) | set(benchmarks)) - governed_ids)
     if unknown_ids:
-        raise ValueError(f"evidence report contains unknown technologies: {', '.join(unknown_ids)}")
+        raise ValueError(
+            f"evidence report contains unknown technologies: {', '.join(unknown_ids)}"
+        )
 
     floors = []
     for tech in registry.technologies:
@@ -90,17 +95,19 @@ def build_proof_report(
             proof_status = _benchmark_proof_status(benchmark_status)
         else:
             proof_status = "SATISFIED_FOR_DECLARED_GATE"
-        floors.append({
-            "technology_id": tech_id,
-            "easy_example": tech["easy_example"],
-            "advanced_example": tech["advanced_example"],
-            "evidence_state": tech["evidence_state"],
-            "proof_class": proof_class,
-            "build_status": build_status,
-            "benchmark_status": benchmark_status,
-            "proof_status": proof_status,
-            "primary_evidence": tech["primary_evidence"],
-        })
+        floors.append(
+            {
+                "technology_id": tech_id,
+                "easy_example": tech["easy_example"],
+                "advanced_example": tech["advanced_example"],
+                "evidence_state": tech["evidence_state"],
+                "proof_class": proof_class,
+                "build_status": build_status,
+                "benchmark_status": benchmark_status,
+                "proof_status": proof_status,
+                "primary_evidence": tech["primary_evidence"],
+            }
+        )
     return {
         "proof_report_id": "tower-proof-report-v1",
         "tower_id": registry.payload["tower_id"],
@@ -115,4 +122,6 @@ def build_proof_report(
 def write_proof_report(report: dict[str, Any], path: Path) -> None:
     """Persist a deterministic, human-readable proof report."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    path.write_text(
+        json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )

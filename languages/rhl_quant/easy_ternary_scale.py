@@ -3,7 +3,9 @@
 Easy Exhibit: Basic 1.58-bit Ternary Scale Quantization (RHL-Quant Base)
 Demonstrates ternary {-1, 0, +1} rounding and scale factor computation.
 """
+
 import json
+
 
 def quantize_ternary_simple(weights):
     scale = sum(abs(w) for w in weights) / max(len(weights), 1)
@@ -18,6 +20,7 @@ def quantize_ternary_simple(weights):
             quantized.append(0)
     return quantized, round(scale, 4)
 
+
 def main():
     weights = [1.2, -0.9, 0.1, -0.1, 2.5, -2.1]
     q, scale = quantize_ternary_simple(weights)
@@ -26,9 +29,10 @@ def main():
         "exhibit": "easy_ternary_scale",
         "weights_count": len(weights),
         "scale": scale,
-        "quantized_ternary": q
+        "quantized_ternary": q,
     }
     print(json.dumps(report, indent=2))
+
 
 if __name__ == "__main__":
     main()
