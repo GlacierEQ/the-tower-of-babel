@@ -1,0 +1,8 @@
+# Bundled Tower fragment. Canonical file is Genius-Mastery/GENIUS.yaml.
+schema_version: 2
+repository: Genius-Mastery
+purpose: Mastery
+family: Genius
+doctrine: mastery-not-skills
+kernel: true
+package_version: 1.1.0
