@@ -57,6 +57,7 @@ digraph TowerOfBabel {
     color = "lightgrey";
     fillcolor = "#f8f9fa";
     "python" [label="Python\n[behavioral]", fillcolor="#e3f2fd"];
+    "genius-mastery" [label="Genius-Mastery family kernel\n[behavioral]", fillcolor="#e3f2fd"];
   }
 
   subgraph cluster_concurrent_services {

@@ -202,3 +202,6 @@
 - https://github.com/GlacierEQ/residual-lattice-quantization
 - https://arxiv.org/abs/2402.17764
 
+## Genius-Mastery family kernel
+- https://github.com/GlacierEQ/Genius-Mastery
+
