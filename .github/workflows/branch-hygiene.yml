@@ -59,7 +59,11 @@ jobs:
             exit 1
           fi
 
-          matches=$(printf '%s' "${refs_json}" | jq --arg ref "refs/heads/${BRANCH}" '[.[] | select(.ref == $ref)]')
+          if ! matches=$(printf '%s' "${refs_json}" | jq -ce --arg ref "refs/heads/${BRANCH}" 'if type == "array" then [.[] | select(.ref == $ref)] else error("expected array") end'); then
+            detail="Provider returned an invalid branch-readback response; lineage state remains unresolved."
+            write_receipt
+            exit 1
+          fi
           match_count=$(printf '%s' "${matches}" | jq 'length')
 
           if [[ "${match_count}" == "0" ]]; then
