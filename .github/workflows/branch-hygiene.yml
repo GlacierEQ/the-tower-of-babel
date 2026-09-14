@@ -1,18 +1,18 @@
-name: Branch Hygiene
+name: Branch Lineage Audit
 
 on:
   pull_request:
     types: [closed]
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: branch-hygiene-${{ github.event.pull_request.number }}
+  group: branch-lineage-${{ github.event.pull_request.number }}
   cancel-in-progress: false
 
 jobs:
-  delete-merged-pr-head:
+  preserve-merged-pr-head-lineage:
     if: >-
       github.event.pull_request.merged == true &&
       github.event.pull_request.head.repo.full_name == github.repository
@@ -25,54 +25,42 @@ jobs:
       BRANCH: ${{ github.event.pull_request.head.ref }}
       EXPECTED_SHA: ${{ github.event.pull_request.head.sha }}
     steps:
-      - name: Verify and delete only the exact merged PR head
+      - name: Read back merged PR head without mutation
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p artifacts
-
-          case "${BRANCH}" in
-            feature/*|fix/*|chore/*|docs/*|hardening/*|release/*|dependabot/*|renovate/*|synthesize/*|integration/*)
-              ;;
-            *)
-              echo "Refusing unapproved branch prefix: ${BRANCH}" >&2
-              exit 1
-              ;;
-          esac
-
-          if [[ "${BRANCH}" == "main" || "${BRANCH}" == "HEAD" ]]; then
-            echo "Refusing protected branch: ${BRANCH}" >&2
-            exit 1
-          fi
-
-          status="deleted"
           remote_sha=""
+          state="ACTIVE_IN_MESH"
           if remote_sha=$(gh api "repos/${REPOSITORY}/git/ref/heads/${BRANCH}" --jq '.object.sha' 2>/dev/null); then
             if [[ "${remote_sha}" != "${EXPECTED_SHA}" ]]; then
-              echo "Remote branch moved after merge; refusing deletion." >&2
-              echo "expected=${EXPECTED_SHA} observed=${remote_sha}" >&2
-              exit 1
+              state="ACTIVE_IN_MESH_MOVED_AFTER_MERGE"
             fi
-            gh api --method DELETE "repos/${REPOSITORY}/git/refs/heads/${BRANCH}"
           else
-            status="already_absent"
+            state="LINEAGE_REF_ALREADY_ABSENT"
           fi
-
           jq -n \
-            --arg schema "glaciereq.branch-hygiene.receipt.v1" \
+            --arg schema "glaciereq.branch-lineage.receipt.v2" \
             --arg repository "${REPOSITORY}" \
             --arg pr_number "${PR_NUMBER}" \
             --arg branch "${BRANCH}" \
             --arg expected_sha "${EXPECTED_SHA}" \
             --arg observed_sha "${remote_sha}" \
-            --arg status "${status}" \
-            '{schema:$schema,repository:$repository,pr_number:($pr_number|tonumber),branch:$branch,expected_sha:$expected_sha,observed_sha:$observed_sha,status:$status}' \
-            > artifacts/branch-hygiene-receipt.json
+            --arg state "${state}" \
+            --arg relationship "MERGED_WITH" \
+            --arg rule "Merged PR state proves overlap only; it never proves UNIQUE_CONTRIBUTION=0 or authorizes ref deletion." \
+            '{schema:$schema,repository:$repository,pr_number:($pr_number|tonumber),branch:$branch,expected_sha:$expected_sha,observed_sha:$observed_sha,state:$state,relationship:$relationship,rule:$rule}' \
+            > artifacts/branch-lineage-receipt.json
 
-      - name: Upload branch-deletion receipt
+      - name: Upload lineage receipt
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: branch-hygiene-pr-${{ github.event.pull_request.number }}
-          path: artifacts/branch-hygiene-receipt.json
+          name: branch-lineage-pr-${{ github.event.pull_request.number }}
+          path: artifacts/branch-lineage-receipt.json
           if-no-files-found: error
           retention-days: 30
+
+# HOLOGRAPHIC MESH ANTI-REPLACEMENT HARD LOCK
+# A merged PR establishes overlap, not donor exhaustion. Remote refs are preserved.
+# Fully drained donors transition to PRESERVE_DRAINED_LINEAGE only after independent
+# provider-read-back UNIQUE_CONTRIBUTION=0 and explicit Operator authorization.
