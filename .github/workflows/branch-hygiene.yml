@@ -32,7 +32,8 @@ jobs:
           mkdir -p artifacts
           remote_sha=""
           state="READBACK_UNRESOLVED"
-          if ! remote_sha=$(gh api "repos/${REPOSITORY}/git/matching-refs/heads/${BRANCH}" --jq 'if length == 1 and .[0].ref == ("refs/heads/" + env.BRANCH) then .[0].object.sha elif length == 0 then "__ABSENT__" else error("ambiguous ref readback") end'); then
+          encoded_branch=$(jq -rn --arg value "${BRANCH}" '$value|@uri')
+          if ! remote_sha=$(gh api "repos/${REPOSITORY}/git/matching-refs/heads/${encoded_branch}" --jq 'if length == 1 and .[0].ref == ("refs/heads/" + env.BRANCH) then .[0].object.sha elif length == 0 then "__ABSENT__" else error("ambiguous ref readback") end'); then
             echo "Provider readback failed; refusing to infer lineage state." >&2
             exit 1
           fi
