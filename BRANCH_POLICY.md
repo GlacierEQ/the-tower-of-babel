@@ -6,7 +6,7 @@
 
 1. **Completed implementation belongs on `main`.** A function is not integrated while it exists only on a side branch.
 2. **Branches are source-bearing mesh nodes, not disposable workspaces.** Start new implementation from current `main` when appropriate, but a merge establishes overlap only; it does not prove donor exhaustion.
-3. **Preserve unique contribution before retirement.** A donor remains `ACTIVE_IN_MESH` while it contains any unique source, event, edge, contradiction, provenance, mechanism, unresolved dependency, receipt, or authority-domain fact.
+3. **Preserve non-superseded unique contribution before retirement.** A donor remains `ACTIVE_IN_MESH` while it contains any non-superseded unique source, event, edge, contradiction, mechanism, unresolved dependency, or authority-domain fact. Provenance and lineage receipts are preserved as durable pointers; once they merely describe already-transcribed state they are not themselves unique contribution that blocks retirement.
 4. **Partial overlap is explicit.** Record relationships such as `MERGED_WITH`, `SUPERSEDES_ONLY`, `CONTRADICTS`, `DUPLICATE_OF`, or `DERIVED_FROM` rather than flattening one branch into another.
 5. **Retirement requires proof.** Only provider-read-back `UNIQUE_CONTRIBUTION=0` plus explicit Operator authorization can classify a derivative donor as fully drained.
 6. **Retirement preserves lineage.** A fully drained donor transitions to `PRESERVE_DRAINED_LINEAGE` or an equivalent durable pointer state; remote-ref deletion is not the normal terminal action.
@@ -22,7 +22,7 @@ current main routing cursor
     → merge/transcribe/compound into main
     → provider readback
     → MERGED_WITH / DERIVED_FROM / other explicit relationship
-    → ACTIVE_IN_MESH while unique contribution remains
+    → ACTIVE_IN_MESH while non-superseded unique contribution remains
     → provider-read-back UNIQUE_CONTRIBUTION=0 + explicit Operator authorization
     → PRESERVE_DRAINED_LINEAGE
 ```
