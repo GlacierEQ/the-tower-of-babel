@@ -31,13 +31,18 @@ jobs:
           set -euo pipefail
           mkdir -p artifacts
           remote_sha=""
-          state="ACTIVE_IN_MESH"
-          if remote_sha=$(gh api "repos/${REPOSITORY}/git/ref/heads/${BRANCH}" --jq '.object.sha' 2>/dev/null); then
-            if [[ "${remote_sha}" != "${EXPECTED_SHA}" ]]; then
-              state="ACTIVE_IN_MESH_MOVED_AFTER_MERGE"
-            fi
+          state="READBACK_UNRESOLVED"
+          if ! remote_sha=$(gh api "repos/${REPOSITORY}/git/matching-refs/heads/${BRANCH}" --jq 'if length == 1 and .[0].ref == ("refs/heads/" + env.BRANCH) then .[0].object.sha elif length == 0 then "__ABSENT__" else error("ambiguous ref readback") end'); then
+            echo "Provider readback failed; refusing to infer lineage state." >&2
+            exit 1
+          fi
+          if [[ "${remote_sha}" == "__ABSENT__" ]]; then
+            remote_sha=""
+            state="LINEAGE_REF_CONFIRMED_ABSENT"
+          elif [[ "${remote_sha}" == "${EXPECTED_SHA}" ]]; then
+            state="ACTIVE_IN_MESH"
           else
-            state="LINEAGE_REF_ALREADY_ABSENT"
+            state="ACTIVE_IN_MESH_MOVED_AFTER_MERGE"
           fi
           jq -n \
             --arg schema "glaciereq.branch-lineage.receipt.v2" \
