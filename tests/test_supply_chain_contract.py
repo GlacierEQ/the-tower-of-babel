@@ -47,14 +47,16 @@ def test_branch_lineage_audit_is_read_only_and_fail_closed() -> None:
     assert "contents: read" in text
     assert "contents: write" not in text
     assert "EXPECTED_SHA" in text and "remote_sha" in text
-    assert "encoded_branch=$(jq -rn" in text
-    assert "'$value|@uri'" in text
-    assert "git/matching-refs/heads/${encoded_branch}" in text
-    assert "git/matching-refs/heads/${BRANCH}" not in text
+    assert 'git/matching-refs/heads/' in text
+    assert 'select(.ref == $ref)' in text
     assert "READBACK_UNRESOLVED" in text
     assert "LINEAGE_REF_CONFIRMED_ABSENT" in text
+    assert "ACTIVE_IN_MESH" in text
+    assert "ACTIVE_IN_MESH_MOVED_AFTER_MERGE" in text
     assert "MERGED_WITH" in text
     assert "UNIQUE_CONTRIBUTION=0" in text
+    assert "write_receipt" in text
+    assert "if: always()" in text
     assert "--method DELETE" not in text
     assert "git branch -r --merged" not in text
     assert "tower integrity generate" not in text
