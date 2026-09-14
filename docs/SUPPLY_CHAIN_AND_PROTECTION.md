@@ -1,56 +1,8 @@
-# Supply-Chain Provenance and Main Protection
+# Supply Chain and Protection
 
-The Tower separates repository-internal consistency from independently verifiable authorship and platform enforcement.
+The Tower's permanent automation uses immutable action pins, hash-locked dependencies, exact-head evidence, and provider-native readback. Repository protection must preserve both executable integrity and source-bearing lineage.
 
-## Hash-locked Python CI
-
-All Python-bearing workflows install `requirements/ci.lock` with `--require-hashes`, then install the Tower editable package with dependency resolution and build isolation disabled:
-
-```bash
-python -m pip install --require-hashes -r requirements/ci.lock
-python -m pip install --no-deps --no-build-isolation -e .
-```
-
-The public package metadata retains compatibility ranges. CI uses exact reviewed versions and wheel digests.
-
-## Immutable GitHub Actions
-
-Permanent workflows reference full action commit SHAs. Dependabot proposes controlled GitHub Actions and Python updates through reviewable pull requests.
-
-## Signed Tower evidence
-
-On a push to `main`, Tower Verification attests these subjects:
-
-- `artifacts/build-report.json`
-- `artifacts/benchmarks.json`
-- `artifacts/proof-report.json`
-- `artifacts/tower_receipt.json`
-
-`actions/attest-build-provenance` obtains a short-lived certificate through GitHub OIDC, emits SLSA build provenance in an in-toto statement, signs it through Sigstore, and associates the attestation with this repository.
-
-Verify a downloaded subject with GitHub CLI:
-
-```bash
-gh attestation verify artifacts/tower_receipt.json --repo GlacierEQ/the-tower-of-babel
-```
-
-The deterministic Tower receipt remains useful for internal consistency. The external attestation proves which repository workflow produced the attested bytes.
-
-## Main protection policy
-
-`governance/main-ruleset.required.json` is the required platform policy. It protects `refs/heads/main` against deletion and non-fast-forward updates, requires pull requests and resolved review threads, requires branches to be current, and requires five stable exact-head contexts:
-
-- `required-advanced-exhibit-gate`
-- `required-nervous-system-contract`
-- `required-quality-gate`
-- `required-spiral-verification`
-- `required-tower-verification`
-
-Check live GitHub state:
-
-```bash
-python scripts/verify_main_ruleset.py
-```
+## Main ruleset authority
 
 Install or update the ruleset using an administration-scoped token:
 
@@ -61,15 +13,13 @@ python scripts/verify_main_ruleset.py
 
 The `Main Ruleset Contract` workflow can perform the same operation after a repository secret named `RULESET_ADMIN_TOKEN` is configured with **Administration: write** permission. A scheduled strict verification reports future platform drift.
 
-## Branch deletion authority
+## Branch lineage authority
 
-Branch Hygiene no longer scans merged branches or writes to `main`. It runs only after a same-repository PR merges. It deletes only that PR's head branch when:
+`Branch Lineage Audit` runs after a same-repository PR merges. It is intentionally read-only and performs provider readback of the merged PR head so the repository can preserve an explicit lineage receipt.
 
-1. the branch uses an approved temporary prefix;
-2. it is not `main` or `HEAD`;
-3. the remote branch still points to the exact SHA recorded in the merged PR event.
+A merge establishes `MERGED_WITH` overlap. It does **not** establish whole-donor `UNIQUE_CONTRIBUTION=0`, and it never independently authorizes remote-ref deletion. The receipt distinguishes an extant donor at the merged SHA, a donor that moved after merge, and a provider-confirmed absent ref. Provider readback errors fail closed rather than being converted into a false absence claim.
 
-Every action produces a retained JSON deletion receipt. A moved branch fails closed and is not deleted.
+A donor remains `ACTIVE_IN_MESH` while any unique source, event, edge, contradiction, provenance, mechanism, unresolved dependency, receipt, or authority-domain fact remains. Fully drained derivative donors require independent provider-read-back `UNIQUE_CONTRIBUTION=0` plus explicit Operator authorization and transition to `PRESERVE_DRAINED_LINEAGE` or an equivalent durable pointer state.
 
 ## Semantic claim authority
 
