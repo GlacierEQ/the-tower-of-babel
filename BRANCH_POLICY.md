@@ -1,26 +1,30 @@
-# Branch Policy — `main` Is the Worker
+# Branch Policy — `main` Is the Worker, the Mesh Preserves Lineage
 
-`main` is the living integration branch, the only long-lived branch, and the source of truth for the Tower.
+`main` is the living integration branch and the routing cursor for where new Tower work normally compounds. It is not global replacement authority over older source-bearing branches.
 
 ## Operating rules
 
-1. **Completed work belongs on `main`.** A function is not complete while it exists only on a side branch.
-2. **Branches are disposable workspaces.** Start from current `main`, keep the scope narrow, merge after exact-head verification, then delete the branch immediately.
-3. **Normal branch count: zero or one active feature branch.** Two active branches is the hard operational ceiling and requires genuinely independent work.
-4. **No stacked pull requests by default.** A temporary stack requires an explicit dependency record and must collapse into `main` as soon as its lower layer is ready.
-5. **No stale preservation branches.** Git history, tags, releases, receipts, and artifacts preserve completed states; branches do not serve as archives.
-6. **Exact-head evidence is mandatory.** Registry validation, generated-surface checks, tests, integrity verification, and relevant build gates must pass on the precise commit being merged.
-7. **`main` must remain usable.** Broken or incomplete integration is repaired immediately or reverted; it is never hidden indefinitely behind another branch.
+1. **Completed implementation belongs on `main`.** A function is not integrated while it exists only on a side branch.
+2. **Branches are source-bearing mesh nodes, not disposable workspaces.** Start new implementation from current `main` when appropriate, but a merge establishes overlap only; it does not prove donor exhaustion.
+3. **Preserve unique contribution before retirement.** A donor remains `ACTIVE_IN_MESH` while it contains any unique source, event, edge, contradiction, provenance, mechanism, unresolved dependency, receipt, or authority-domain fact.
+4. **Partial overlap is explicit.** Record relationships such as `MERGED_WITH`, `SUPERSEDES_ONLY`, `CONTRADICTS`, `DUPLICATE_OF`, or `DERIVED_FROM` rather than flattening one branch into another.
+5. **Retirement requires proof.** Only provider-read-back `UNIQUE_CONTRIBUTION=0` plus explicit Operator authorization can classify a derivative donor as fully drained.
+6. **Retirement preserves lineage.** A fully drained donor transitions to `PRESERVE_DRAINED_LINEAGE` or an equivalent durable pointer state; remote-ref deletion is not the normal terminal action.
+7. **Exact-head evidence remains mandatory for mutation claims.** Registry validation, generated-surface checks, tests, integrity verification, and relevant build gates must apply to the precise commit being acted on.
+8. **`main` must remain usable.** Broken or incomplete integration is repaired immediately or reverted; it is never hidden indefinitely behind another branch.
 
 ## Lifecycle
 
 ```text
-current main
-    → short-lived function branch
+current main routing cursor
+    → source-bearing work branch
     → exact-head verification
-    → merge into main
-    → verify main tree
-    → delete function branch
+    → merge/transcribe/compound into main
+    → provider readback
+    → MERGED_WITH / DERIVED_FROM / other explicit relationship
+    → ACTIVE_IN_MESH while unique contribution remains
+    → provider-read-back UNIQUE_CONTRIBUTION=0 + explicit Operator authorization
+    → PRESERVE_DRAINED_LINEAGE
 ```
 
-Exceptions must state the owner, dependency, exit condition, and deletion deadline in the pull request.
+`latest`, merged/closed PR state, patch equivalence, age, stale-dependency status, CI success, current-main containment, successful replay, or successful synthesis are evidence about overlap or execution state only. They do not independently or jointly authorize remote-ref deletion.
