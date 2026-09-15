@@ -52,15 +52,30 @@ jobs:
               > artifacts/branch-lineage-receipt.json
           }
 
-          if ! refs_json=$(gh api "repos/${REPOSITORY}/git/matching-refs/heads/" 2>artifacts/provider-readback-error.txt); then
+          # matching-refs is paginated. --slurp preserves each provider page so we can
+          # validate every page/entry before exact-ref classification; incomplete or
+          # malformed observations remain READBACK_UNRESOLVED rather than becoming
+          # false evidence of branch absence.
+          if ! refs_pages=$(gh api --paginate --slurp "repos/${REPOSITORY}/git/matching-refs/heads/" 2>artifacts/provider-readback-error.txt); then
             detail="Provider branch readback failed; lineage state remains unresolved."
             write_receipt
             cat artifacts/provider-readback-error.txt >&2
             exit 1
           fi
 
-          if ! matches=$(printf '%s' "${refs_json}" | jq -ce --arg ref "refs/heads/${BRANCH}" 'if type == "array" then [.[] | select(.ref == $ref)] else error("expected array") end'); then
-            detail="Provider returned an invalid branch-readback response; lineage state remains unresolved."
+          if ! matches=$(printf '%s' "${refs_pages}" | jq -ce --arg ref "refs/heads/${BRANCH}" '
+            if type == "array"
+               and all(.[]; type == "array")
+               and all(.[][];
+                 type == "object"
+                 and (.ref | type == "string")
+                 and (.object | type == "object")
+                 and (.object.sha | type == "string" and test("^[0-9a-fA-F]{40}$")))
+            then [.[][] | select(.ref == $ref)]
+            else error("expected paginated arrays of valid branch refs")
+            end
+          '); then
+            detail="Provider returned incomplete or invalid branch-readback data; lineage state remains unresolved."
             write_receipt
             exit 1
           fi
@@ -68,7 +83,7 @@ jobs:
 
           if [[ "${match_count}" == "0" ]]; then
             state="LINEAGE_REF_CONFIRMED_ABSENT"
-            detail="Provider readback completed and returned no exact matching branch ref."
+            detail="Complete paginated provider readback returned no exact matching branch ref."
           elif [[ "${match_count}" == "1" ]]; then
             remote_sha=$(printf '%s' "${matches}" | jq -er '.[0].object.sha | select(type == "string" and test("^[0-9a-fA-F]{40}$"))') || {
               detail="Provider returned the exact ref without a valid 40-character object SHA."
