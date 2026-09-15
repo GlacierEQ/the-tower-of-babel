@@ -117,4 +117,5 @@ jobs:
 # HOLOGRAPHIC MESH ANTI-REPLACEMENT HARD LOCK
 # A merged PR establishes overlap, not donor exhaustion. Remote refs are preserved.
 # Fully drained donors transition to PRESERVE_DRAINED_LINEAGE only after independent
-# provider-read-back UNIQUE_CONTRIBUTION=0 and explicit Operator authorization.
+# provider-read-back UNIQUE_CONTRIBUTION=0. Existing controlling Operator instructions
+# govern routine forward repair; this workflow does not invent a per-retirement gate.
