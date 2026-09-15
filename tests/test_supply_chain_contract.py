@@ -41,14 +41,26 @@ def test_ci_lock_is_exact_and_hash_verified() -> None:
     assert "--only-binary=:all:" in text
 
 
-def test_branch_hygiene_has_one_exact_head_deletion_boundary() -> None:
+def test_branch_lineage_audit_is_read_only_and_fail_closed() -> None:
     text = (ROOT / ".github/workflows/branch-hygiene.yml").read_text(encoding="utf-8")
     assert "pull_request:" in text and "types: [closed]" in text
+    assert "contents: read" in text
+    assert "contents: write" not in text
     assert "EXPECTED_SHA" in text and "remote_sha" in text
+    assert 'git/matching-refs/heads/' in text
+    assert 'select(.ref == $ref)' in text
+    assert "READBACK_UNRESOLVED" in text
+    assert "LINEAGE_REF_CONFIRMED_ABSENT" in text
+    assert "ACTIVE_IN_MESH" in text
+    assert "ACTIVE_IN_MESH_MOVED_AFTER_MERGE" in text
+    assert "MERGED_WITH" in text
+    assert "UNIQUE_CONTRIBUTION=0" in text
+    assert "write_receipt" in text
+    assert "if: always()" in text
+    assert "--method DELETE" not in text
     assert "git branch -r --merged" not in text
     assert "tower integrity generate" not in text
     assert "git push origin HEAD:main" not in text
-    assert "git/refs/heads/${BRANCH}" in text
 
 
 def test_ruleset_contexts_are_emitted_by_workflows() -> None:

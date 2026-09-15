@@ -1,16 +1,18 @@
 # Post-Audit Hardening Receipt
 
-This tranche closes the remaining repository-controlled findings from the 95/100 audit and isolates the one external platform dependency that cannot be truthfully completed without repository-administration credentials.
+This tranche records repository-controlled hardening and preserves the external platform dependency that cannot be truthfully completed without repository-administration credentials. Historical deletion-era branch semantics are superseded only for their destructive disposition; their provenance remains part of repository history.
 
 ## Implemented
 
-- immutable commit pins for every action in permanent Tower, Quality, Spiral, Advanced, Nervous System, Branch Hygiene, and ruleset workflows;
+- immutable commit pins for every action in permanent Tower, Quality, Spiral, Advanced, Nervous System, Branch Lineage, and ruleset workflows;
 - hash-locked Python 3.12 CI environment with exact wheel SHA-256 digests;
 - registry-owned semantic claim contracts for all 30 advanced exhibits;
 - source-pattern, failure-case, receipt-field, and forbidden-overclaim auditing;
 - OIDC-bound Sigstore/SLSA attestations for Tower build, benchmark, proof, and release receipts on `main`;
 - stable required status contexts suitable for a GitHub main-branch ruleset;
-- exact-head, same-repository PR branch deletion with SHA verification and a retained receipt;
+- exact-head, same-repository PR **read-only branch-lineage readback** with a retained `MERGED_WITH` receipt; merged status does not establish `UNIQUE_CONTRIBUTION=0` or deletion authority;
+- provider-readback uncertainty fails closed rather than being recorded as branch absence;
+- fully drained derivative donors preserve lineage as `PRESERVE_DRAINED_LINEAGE` after provider-read-back zero-unique-contribution proof; when controlling Operator instructions already govern the work, the proof requirement does not create an additional per-retirement approval requirement;
 - policy-as-code, installer, verifier, tests, and scheduled drift detection for the required `main` ruleset;
 - Dependabot review lanes for GitHub Actions and Python dependency updates.
 

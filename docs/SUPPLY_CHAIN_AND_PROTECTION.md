@@ -1,6 +1,6 @@
 # Supply-Chain Provenance and Main Protection
 
-The Tower separates repository-internal consistency from independently verifiable authorship and platform enforcement.
+The Tower separates repository-internal consistency from independently verifiable authorship and platform enforcement. Permanent automation uses immutable action pins, hash-locked dependencies, exact-head evidence, provider-native readback, and source-bearing lineage preservation.
 
 ## Hash-locked Python CI
 
@@ -61,15 +61,13 @@ python scripts/verify_main_ruleset.py
 
 The `Main Ruleset Contract` workflow can perform the same operation after a repository secret named `RULESET_ADMIN_TOKEN` is configured with **Administration: write** permission. A scheduled strict verification reports future platform drift.
 
-## Branch deletion authority
+## Branch lineage authority
 
-Branch Hygiene no longer scans merged branches or writes to `main`. It runs only after a same-repository PR merges. It deletes only that PR's head branch when:
+`Branch Lineage Audit` runs after a same-repository PR merges. It is intentionally read-only and performs provider readback of the merged PR head so the repository can preserve an explicit lineage receipt.
 
-1. the branch uses an approved temporary prefix;
-2. it is not `main` or `HEAD`;
-3. the remote branch still points to the exact SHA recorded in the merged PR event.
+A merge establishes `MERGED_WITH` overlap. It does **not** establish whole-donor `UNIQUE_CONTRIBUTION=0`, and it never independently authorizes remote-ref deletion. The receipt distinguishes an extant donor at the merged SHA, a donor that moved after merge, a provider-confirmed absent ref, and `READBACK_UNRESOLVED` when provider state cannot be established. Provider readback errors fail closed rather than being converted into a false absence claim; the unresolved receipt is still uploaded for provenance.
 
-Every action produces a retained JSON deletion receipt. A moved branch fails closed and is not deleted.
+A donor remains `ACTIVE_IN_MESH` while any non-superseded unique source, event, edge, contradiction, mechanism, unresolved dependency, or authority-domain fact remains. Provenance and lineage receipts are preserved as durable pointers; once they merely describe already-transcribed state they do not by themselves keep the donor active. A fully drained derivative donor requires independent provider-read-back `UNIQUE_CONTRIBUTION=0` and transitions to `PRESERVE_DRAINED_LINEAGE` or an equivalent durable pointer state. The proof requirement does not create a new per-retirement approval requirement when an existing controlling Operator instruction already governs the work.
 
 ## Semantic claim authority
 
