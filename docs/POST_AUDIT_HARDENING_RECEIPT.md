@@ -12,7 +12,7 @@ This tranche records repository-controlled hardening and preserves the external 
 - stable required status contexts suitable for a GitHub main-branch ruleset;
 - exact-head, same-repository PR **read-only branch-lineage readback** with a retained `MERGED_WITH` receipt; merged status does not establish `UNIQUE_CONTRIBUTION=0` or deletion authority;
 - provider-readback uncertainty fails closed rather than being recorded as branch absence;
-- fully drained derivative donors preserve lineage as `PRESERVE_DRAINED_LINEAGE` after provider-read-back zero-unique-contribution proof; no additional approval ritual is inferred where controlling Operator instructions already govern the work;
+- fully drained derivative donors preserve lineage as `PRESERVE_DRAINED_LINEAGE` after provider-read-back zero-unique-contribution proof; when controlling Operator instructions already govern the work, the proof requirement does not create an additional per-retirement approval step;
 - policy-as-code, installer, verifier, tests, and scheduled drift detection for the required `main` ruleset;
 - Dependabot review lanes for GitHub Actions and Python dependency updates.
 
