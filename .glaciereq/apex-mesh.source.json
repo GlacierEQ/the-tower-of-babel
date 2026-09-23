@@ -5,7 +5,7 @@
   "source_ref": "main",
   "observed_commit": "437c73975bdf43bf5bbf99001fdde2f971f65bdc",
   "observed_blob_sha": "b137384e7abaffb9f746b3ed783576ec9315cb51",
-  "observed_at": "2026-09-15T05:25:15Z",
+  "observed_at": "2026-09-23T09:15:44Z",
   "max_age_hours": 168,
   "access_mode": "PRIVATE_SOURCE_OBSERVED_THROUGH_AUTHORIZED_REPOSITORY_ACCESS",
   "public_projection_policy": "NO_PRIVATE_SOURCE_BODY_COPIED_TO_PUBLIC_REPOSITORY",
