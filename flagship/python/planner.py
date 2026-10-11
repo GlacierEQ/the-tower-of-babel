@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Plan a mission through the canonical Tower-to-Megamind adapter."""
+"""Plan a mission through the canonical Tower function-to-technology authority."""
 from __future__ import annotations
 
 import json
@@ -8,9 +8,8 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "src"))
-sys.path.insert(0, str(REPO_ROOT))
 
-from integrations.megamind.adapter import TechnologyRequest, select_technologies
+from tower.selector import TechnologyRequest, select_technologies
 
 
 def require_string(payload: dict, field: str) -> str:

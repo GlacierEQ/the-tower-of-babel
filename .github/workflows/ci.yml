@@ -51,6 +51,9 @@ jobs:
       - name: Reject test-induced tracked source mutation
         run: git diff --exit-code -- . ':(exclude).integrity/approved_delta.json'
 
+      - name: Require fail-closed operational trust report
+        run: python scripts/operate.py
+
   native-toolchains:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
