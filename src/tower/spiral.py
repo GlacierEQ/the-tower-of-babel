@@ -63,12 +63,12 @@ _TIME_HORIZONS = (
 _SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
 
-def _canonical_bytes(value: Any) -> bytes:
+def _stable_bytes(value: Any) -> bytes:
     return json.dumps(value, separators=(",", ":"), sort_keys=True).encode("utf-8")
 
 
 def _sha256(value: Any) -> str:
-    return hashlib.sha256(_canonical_bytes(value)).hexdigest()
+    return hashlib.sha256(_stable_bytes(value)).hexdigest()
 
 
 def _normalized_domains(raw: Any) -> tuple[list[str], list[str]]:
@@ -106,13 +106,13 @@ def generate_civilization_question(
     lens = rng.choice(_QUESTION_LENSES)
     horizon = rng.choice(_TIME_HORIZONS)
     domain_phrase = ", ".join(domains[:-1]) + f", and {domains[-1]}"
-    
+
     base_question = (
         f"Across {domain_phrase}, which intervention is most likely to {lens} "
         f"over {horizon}, what evidence would falsify it, and how would you prevent "
         "its benefits from shifting hidden costs to another domain, population, or generation?"
     )
-    
+
     if prompt_hint and prompt_hint.strip():
         question = f"[Focus: {prompt_hint.strip()}] {base_question}"
     else:

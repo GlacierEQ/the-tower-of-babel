@@ -1,8 +1,10 @@
-"""Canonical Tower registry loader.
+"""APEX Tower source-registry loader.
 
-``registry/tower.yml`` is the root authority. It references contained technology
-fragments and one contained advanced-claim contract fragment. Together they form
-one canonical registry, one deterministic identity, and one receipt boundary.
+``registry/tower.yml`` is the authored technology source state. It references
+contained technology fragments and one contained advanced-claim contract
+fragment. Together they form one deterministic APEX registry identity and one
+receipt boundary. The registry records implementation truth; it does not acquire
+authority over project intent.
 """
 from __future__ import annotations
 
@@ -55,8 +57,8 @@ class TowerRegistry:
     def fragment_files(self) -> tuple[Path, ...]:
         return tuple(path for path in self.source_files if path != self.source)
 
-    def canonical_bytes(self) -> bytes:
-        """Serialize the complete merged registry for identity and receipts."""
+    def apex_bytes(self) -> bytes:
+        """Serialize the complete merged APEX registry for identity and receipts."""
         return json.dumps(
             self.payload,
             separators=(",", ":"),
@@ -210,8 +212,10 @@ def validate_registry(registry: TowerRegistry, *, check_paths: bool = True) -> l
     if not isinstance(governance, dict):
         errors.append("governance must be an object")
         governance = {}
-    if governance.get("canonical_source") != "registry/tower.yml":
-        errors.append("governance.canonical_source must be registry/tower.yml")
+    if governance.get("apex_source") != "registry/tower.yml":
+        errors.append("governance.apex_source must be registry/tower.yml")
+    if governance.get("apex_model") != "indexed_frontier_registry":
+        errors.append("governance.apex_model must be indexed_frontier_registry")
     fragments = payload.get("fragments", [])
     if not isinstance(fragments, list):
         errors.append("fragments must be a list")

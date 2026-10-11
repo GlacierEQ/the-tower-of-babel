@@ -21,29 +21,29 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: "3.12"
       - name: Install hash-locked Tower environment
         run: |
           python -m pip install --require-hashes -r requirements/ci.lock
           python -m pip install --no-deps --no-build-isolation -e .
-      - name: Generate branch-head evidence snapshot
+      - name: Generate branch-head integrity candidate
         run: |
           mkdir -p artifacts
           python - <<'PY'
           from pathlib import Path
           from tower.integrity import write_manifest
-          write_manifest(Path("artifacts/integrity-snapshot.json"))
+          write_manifest(Path("artifacts/file_hashes.json"))
           PY
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: tower-integrity-candidate
-          path: artifacts/integrity-snapshot.json
+          path: artifacts/file_hashes.json
           if-no-files-found: error
           retention-days: 3
 
-  governance:
+  apex-proof:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
@@ -55,14 +55,13 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-          fetch-depth: 0
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: "3.12"
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "22"
-      - uses: leanprover/lean-action@f061402b660e0c34644504b324e830f2991d4865 # v1
+      - uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1
         with:
           auto-config: false
           build: false
@@ -75,21 +74,16 @@ jobs:
           python -m pip install --no-deps --no-build-isolation -e .
       - name: Install declared portable benchmark tools
         run: sudo apt-get update && sudo apt-get install -y protobuf-compiler wabt
-      - name: Orient from resources, source-backed continuity, and current delta
-        run: >-
-          tower orient
-          --mission "Verify and counter-engineer Tower as a maximum-boundary-fitness polyglot engine under absolute Operator project direction"
-          --memory machine/continuity/tower-counterengineering-findings.json
-          --checkpoint-receipt machine/checkpoints/tower_receipt_07ee7d6.json
-          --output artifacts/resource-memory-orientation.json
-      - name: Validate current registry
+      - name: Validate APEX registry
         run: tower validate
       - name: Reject generated-surface drift
         run: tower generate --check
-      - name: Run Python governance tests
-        run: pytest -q
-      - name: Verify current Git integrity
+      - name: Verify exact checkout integrity before execution
         run: tower integrity verify
+      - name: Run Python APEX proof tests
+        run: pytest -q
+      - name: Reject test-induced tracked source mutation
+        run: git diff --exit-code -- . ':(exclude).integrity/approved_delta.json'
       - name: Build governed floors with explicit blockers
         run: tower build --all --allow-blocked --output artifacts/build-report.json
       - name: Benchmark portable floors
@@ -101,7 +95,7 @@ jobs:
           --benchmark-report artifacts/benchmarks.json
           --allow-blocked
           --output artifacts/proof-report.json
-      - name: Emit deterministic release receipt
+      - name: Emit deterministic APEX release receipt
         run: tower receipt --build-report artifacts/build-report.json --output artifacts/tower_receipt.json
       - name: Attest Tower evidence with OIDC-bound Sigstore provenance
         id: attest
@@ -113,23 +107,22 @@ jobs:
             artifacts/tower_receipt.json
             artifacts/benchmarks.json
             artifacts/proof-report.json
-      - name: Upload Tower governance receipts
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - name: Upload Tower APEX receipts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: tower-governance-receipts
+          name: tower-apex-receipts
           path: |
             artifacts/build-report.json
             artifacts/tower_receipt.json
             artifacts/benchmarks.json
             artifacts/proof-report.json
-            artifacts/resource-memory-orientation.json
           if-no-files-found: error
           retention-days: 14
       - name: Upload Sigstore attestation bundle
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: tower-governance-attestation
+          name: tower-apex-attestation
           path: ${{ steps.attest.outputs.bundle-path }}
           if-no-files-found: error
           retention-days: 30
@@ -144,7 +137,7 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: "3.12"
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -156,7 +149,7 @@ jobs:
       - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
           go-version: "1.23.4"
-      - uses: leanprover/lean-action@f061402b660e0c34644504b324e830f2991d4865 # v1
+      - uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1
         with:
           auto-config: false
           build: false
@@ -171,7 +164,7 @@ jobs:
           python -m pip install --no-deps --no-build-isolation -e .
       - name: Execute strict polyglot mission pipeline
         run: python flagship/run_pipeline.py
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: tower-polyglot-flagship
           path: build/flagship
@@ -190,7 +183,7 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: "3.12"
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -209,7 +202,7 @@ jobs:
           python -m pip install --require-hashes -r requirements/ci.lock
           python -m pip install --no-deps --no-build-isolation -e .
       - run: tower build "${{ matrix.floor }}" --output "artifacts/${{ matrix.floor }}.json"
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: floor-${{ matrix.floor }}
           path: artifacts/${{ matrix.floor }}.json
@@ -219,12 +212,12 @@ jobs:
   required-tower-verification:
     name: required-tower-verification
     if: always()
-    needs: [integrity-candidate, governance, flagship-portable, portable-floor-compile]
+    needs: [integrity-candidate, apex-proof, flagship-portable, portable-floor-compile]
     runs-on: ubuntu-24.04
     steps:
-      - name: Require every Tower verification job
+      - name: Require every Tower APEX verification job
         run: |
           test "${{ needs.integrity-candidate.result }}" = "success"
-          test "${{ needs.governance.result }}" = "success"
+          test "${{ needs.apex-proof.result }}" = "success"
           test "${{ needs.flagship-portable.result }}" = "success"
           test "${{ needs.portable-floor-compile.result }}" = "success"

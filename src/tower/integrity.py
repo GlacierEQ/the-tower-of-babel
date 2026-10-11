@@ -1,18 +1,17 @@
-"""Evolvable repository integrity and explicit evidence snapshots."""
+"""Deterministic integrity manifest and reviewed APEX evolution verification."""
 from __future__ import annotations
 
 import hashlib
+import hmac
 import json
 import re
-import subprocess
 from pathlib import Path
 from typing import Any
 
 from .registry import REPO_ROOT
 
-LEGACY_MANIFEST = REPO_ROOT / ".integrity" / "file_hashes.json"
-LEGACY_DELTA_MANIFEST = REPO_ROOT / ".integrity" / "approved_delta.json"
-DEFAULT_SNAPSHOT = REPO_ROOT / "artifacts" / "integrity-snapshot.json"
+MANIFEST = REPO_ROOT / ".integrity" / "file_hashes.json"
+DELTA_MANIFEST = REPO_ROOT / ".integrity" / "approved_delta.json"
 _EXCLUDED_PARTS = {
     ".git",
     ".lake",
@@ -27,7 +26,6 @@ _EXCLUDED_PARTS = {
     "dist",
     "node_modules",
     ".venv",
-    "receipts",
 }
 _EXCLUDED_FILES = {
     ".integrity/file_hashes.json",
@@ -40,35 +38,32 @@ _EXCLUDED_FILES = {
 _SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
 
-def _eligible_relative(relative: Path) -> bool:
-    rel = relative.as_posix()
-    return (
-        not any(part in _EXCLUDED_PARTS for part in relative.parts)
-        and not any(part.endswith(".egg-info") for part in relative.parts)
-        and rel not in _EXCLUDED_FILES
-        and not rel.endswith((".pyc", ".pyo", ".coverage"))
-    )
-
-
 def _eligible(path: Path, manifest_path: Path | None = None) -> bool:
+    """Return whether a repository-contained path belongs to the governed domain."""
     try:
         relative = path.relative_to(REPO_ROOT)
     except ValueError:
         return False
+    rel = relative.as_posix()
+    parts = relative.parts
     excluded_manifest = None
     if manifest_path is not None:
         try:
             excluded_manifest = manifest_path.resolve().relative_to(REPO_ROOT).as_posix()
-        except (OSError, ValueError):
+        except ValueError:
             pass
     return (
         path.is_file()
-        and _eligible_relative(relative)
-        and (excluded_manifest is None or relative.as_posix() != excluded_manifest)
+        and not any(part in _EXCLUDED_PARTS for part in parts)
+        and not any(part.endswith(".egg-info") for part in parts)
+        and rel not in _EXCLUDED_FILES
+        and (excluded_manifest is None or rel != excluded_manifest)
+        and not rel.endswith((".pyc", ".pyo", ".coverage"))
     )
 
 
 def hash_file(path: Path) -> str:
+    """Hash one artifact without loading the entire file into memory."""
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
@@ -77,7 +72,7 @@ def hash_file(path: Path) -> str:
 
 
 def collect_hashes(manifest_path: Path | None = None) -> dict[str, str]:
-    """Collect deterministic hashes for an explicit evidence snapshot."""
+    """Collect deterministic hashes for all governed repository artifacts."""
     return {
         path.relative_to(REPO_ROOT).as_posix(): hash_file(path)
         for path in sorted(REPO_ROOT.rglob("*"))
@@ -85,15 +80,16 @@ def collect_hashes(manifest_path: Path | None = None) -> dict[str, str]:
     }
 
 
-def write_manifest(path: Path = DEFAULT_SNAPSHOT) -> dict[str, Any]:
-    """Write an explicit point-in-time evidence snapshot.
+def _digest_equal(expected: str, actual: str) -> bool:
+    """Compare validated hexadecimal digests as raw ASCII bytes."""
+    return hmac.compare_digest(expected.encode("ascii"), actual.encode("ascii"))
 
-    Snapshots are reproducibility artifacts. They are not the live mutation gate.
-    """
+
+def write_manifest(path: Path = MANIFEST) -> dict[str, Any]:
+    """Write a new squashed full integrity snapshot."""
     hashes = collect_hashes(manifest_path=path)
     payload = {
-        "schema_version": "2.0.0",
-        "mode": "EXPLICIT_EVIDENCE_SNAPSHOT",
+        "schema_version": "1.0.0",
         "repo_name": "the-tower-of-babel",
         "hash_algorithm": "sha256",
         "file_count": len(hashes),
@@ -104,14 +100,15 @@ def write_manifest(path: Path = DEFAULT_SNAPSHOT) -> dict[str, Any]:
     return payload
 
 
-def _invalid_snapshot(error: str, snapshot_sha256: str = "") -> dict[str, Any]:
+def _invalid_manifest(error: str, manifest_sha256: str = "") -> dict[str, Any]:
     return {
         "ok": False,
-        "status": "INVALID_SNAPSHOT",
+        "status": "INVALID_MANIFEST",
         "error": error,
-        "snapshot_sha256": snapshot_sha256,
+        "manifest_sha256": manifest_sha256,
         "missing": [],
         "changed": [],
+        "changed_details": {},
         "unexpected": [],
     }
 
@@ -122,7 +119,7 @@ def _load_delta(
     base_manifest_sha256: str,
     expected_hashes: dict[str, str],
 ) -> tuple[dict[str, str], dict[str, Any]]:
-    """Compatibility support for intentionally supplied historical snapshots."""
+    """Apply one reviewed APEX evolution delta to a full immutable base snapshot."""
     if not delta_path.is_file():
         return dict(expected_hashes), {"applied": False, "sha256": ""}
 
@@ -137,7 +134,7 @@ def _load_delta(
     if delta.get("schema") != "glaciereq.integrity-delta.v1":
         raise ValueError("integrity delta schema must be glaciereq.integrity-delta.v1")
     if delta.get("base_manifest_sha256") != base_manifest_sha256:
-        raise ValueError("integrity delta is not bound to the supplied base snapshot")
+        raise ValueError("integrity delta is not bound to the current base manifest")
 
     changes = delta.get("changes")
     removals = delta.get("removals", [])
@@ -175,38 +172,57 @@ def _load_delta(
     }
 
 
-def _verify_snapshot(path: Path, *, delta_path: Path | None = None) -> dict[str, Any]:
+def _default_delta_for(path: Path) -> Path:
+    """Use reviewed APEX evolution approval only for the primary repository manifest."""
+    try:
+        primary_manifest = path.resolve() == MANIFEST.resolve()
+    except OSError:
+        primary_manifest = path == MANIFEST
+    if primary_manifest:
+        return DELTA_MANIFEST
+    return path.parent / ".no-approved-delta"
+
+
+def verify_integrity(
+    path: Path = MANIFEST,
+    *,
+    delta_path: Path | None = None,
+) -> dict[str, Any]:
+    """Verify a manifest, applying reviewed evolution only to the primary one."""
     if not path.is_file():
         return {
             "ok": False,
-            "status": "MISSING_SNAPSHOT",
-            "snapshot_sha256": "",
+            "status": "MISSING_MANIFEST",
+            "manifest_sha256": "",
             "missing": [],
             "changed": [],
+            "changed_details": {},
             "unexpected": [],
         }
+    if delta_path is None:
+        delta_path = _default_delta_for(path)
     try:
-        snapshot_bytes = path.read_bytes()
+        manifest_bytes = path.read_bytes()
     except OSError as exc:
-        return _invalid_snapshot(str(exc))
-    snapshot_sha256 = hashlib.sha256(snapshot_bytes).hexdigest()
+        return _invalid_manifest(str(exc))
+    manifest_sha256 = hashlib.sha256(manifest_bytes).hexdigest()
     try:
-        expected = json.loads(snapshot_bytes.decode("utf-8"))
+        expected = json.loads(manifest_bytes.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-        return _invalid_snapshot(str(exc), snapshot_sha256)
+        return _invalid_manifest(str(exc), manifest_sha256)
     if not isinstance(expected, dict):
-        return _invalid_snapshot("snapshot root must be an object", snapshot_sha256)
-    if expected.get("schema_version") not in {"1.0.0", "2.0.0"}:
-        return _invalid_snapshot("unsupported snapshot schema_version", snapshot_sha256)
+        return _invalid_manifest("manifest root must be an object", manifest_sha256)
+    if expected.get("schema_version") != "1.0.0":
+        return _invalid_manifest("schema_version must be 1.0.0", manifest_sha256)
     if expected.get("repo_name") != "the-tower-of-babel":
-        return _invalid_snapshot("repo_name must be the-tower-of-babel", snapshot_sha256)
+        return _invalid_manifest("repo_name must be the-tower-of-babel", manifest_sha256)
     if expected.get("hash_algorithm") != "sha256":
-        return _invalid_snapshot("hash_algorithm must be sha256", snapshot_sha256)
+        return _invalid_manifest("hash_algorithm must be sha256", manifest_sha256)
     expected_hashes = expected.get("hashes")
     if not isinstance(expected_hashes, dict):
-        return _invalid_snapshot("hashes must be an object", snapshot_sha256)
+        return _invalid_manifest("hashes must be an object", manifest_sha256)
     if expected.get("file_count") != len(expected_hashes):
-        return _invalid_snapshot("file_count does not match hashes", snapshot_sha256)
+        return _invalid_manifest("file_count does not match hashes", manifest_sha256)
     for file_path, digest in expected_hashes.items():
         if (
             not isinstance(file_path, str)
@@ -214,112 +230,53 @@ def _verify_snapshot(path: Path, *, delta_path: Path | None = None) -> dict[str,
             or not isinstance(digest, str)
             or not _SHA256_RE.fullmatch(digest)
         ):
-            return _invalid_snapshot(f"invalid hash entry: {file_path!r}", snapshot_sha256)
+            return _invalid_manifest(f"invalid hash entry: {file_path!r}", manifest_sha256)
 
-    resolved_hashes = dict(expected_hashes)
-    delta = {"applied": False, "sha256": ""}
-    if delta_path is not None:
-        try:
-            resolved_hashes, delta = _load_delta(
-                delta_path,
-                base_manifest_sha256=snapshot_sha256,
-                expected_hashes=expected_hashes,
-            )
-        except (OSError, ValueError) as exc:
-            return _invalid_snapshot(str(exc), snapshot_sha256)
+    try:
+        resolved_hashes, delta = _load_delta(
+            delta_path,
+            base_manifest_sha256=manifest_sha256,
+            expected_hashes=expected_hashes,
+        )
+    except (OSError, ValueError) as exc:
+        return _invalid_manifest(str(exc), manifest_sha256)
 
-    current = collect_hashes(manifest_path=path)
+    current = collect_hashes()
     missing = sorted(set(resolved_hashes) - set(current))
     unexpected = sorted(set(current) - set(resolved_hashes))
-    changed = sorted(
-        file_path
-        for file_path in set(resolved_hashes) & set(current)
-        if resolved_hashes[file_path] != current[file_path]
-    )
+    digest_details = {
+        file_path: {
+            "expected_sha256": resolved_hashes[file_path],
+            "actual_sha256": current[file_path],
+        }
+        for file_path in sorted(set(resolved_hashes) & set(current))
+    }
+    changed_details = {
+        file_path: detail
+        for file_path, detail in digest_details.items()
+        if not _digest_equal(detail["expected_sha256"], detail["actual_sha256"])
+    }
+    changed = sorted(changed_details)
     ok = not missing and not unexpected and not changed
+    module_path = Path(__file__).resolve()
+    agents_expected = resolved_hashes.get("AGENTS.md", "")
+    agents_actual = current.get("AGENTS.md", "")
     return {
         "ok": ok,
         "status": "VERIFIED" if ok else "DRIFT",
-        "mode": "EXPLICIT_EVIDENCE_SNAPSHOT",
-        "snapshot_sha256": snapshot_sha256,
+        "manifest_sha256": manifest_sha256,
+        "base_file_count": len(expected_hashes),
         "file_count": len(current),
         "integrity_delta": delta,
         "missing": missing,
         "changed": changed,
+        "changed_details": changed_details,
         "unexpected": unexpected,
+        "verifier_runtime": {
+            "module_path": str(module_path),
+            "module_sha256": hash_file(module_path),
+            "agents_expected_sha256": agents_expected or None,
+            "agents_actual_sha256": agents_actual or None,
+            "agents_compare_digest": bool(agents_expected and agents_actual and _digest_equal(agents_expected, agents_actual)),
+        },
     }
-
-
-def _git(*args: str) -> str:
-    completed = subprocess.run(
-        ["git", *args],
-        cwd=REPO_ROOT,
-        check=True,
-        capture_output=True,
-        text=True,
-    )
-    return completed.stdout
-
-
-def _git_index_integrity() -> dict[str, Any]:
-    """Verify the working repository against its reviewed Git HEAD/index."""
-    try:
-        commit_sha = _git("rev-parse", "HEAD").strip()
-        tree_sha = _git("rev-parse", "HEAD^{tree}").strip()
-        tracked_raw = _git("ls-files", "-z")
-        changed_raw = _git("diff", "--name-only", "--diff-filter=ACDMRTUXB", "HEAD", "--")
-        untracked_raw = _git("ls-files", "--others", "--exclude-standard", "-z")
-        tree_listing = _git("ls-tree", "-r", "--full-tree", "HEAD")
-    except (OSError, subprocess.CalledProcessError) as exc:
-        return {
-            "ok": False,
-            "status": "NOT_GIT_CHECKOUT",
-            "mode": "GIT_INDEX_LIVE",
-            "error": str(exc),
-            "changed": [],
-            "unexpected": [],
-        }
-
-    tracked = sorted(
-        rel for rel in tracked_raw.split("\0") if rel and _eligible_relative(Path(rel))
-    )
-    changed = sorted(
-        rel.strip()
-        for rel in changed_raw.splitlines()
-        if rel.strip() and _eligible_relative(Path(rel.strip()))
-    )
-    unexpected = sorted(
-        rel for rel in untracked_raw.split("\0") if rel and _eligible_relative(Path(rel))
-    )
-    ok = not changed and not unexpected
-    receipt_body = {
-        "commit_sha": commit_sha,
-        "tree_sha": tree_sha,
-        "tracked_file_count": len(tracked),
-        "tree_listing_sha256": hashlib.sha256(tree_listing.encode("utf-8")).hexdigest(),
-    }
-    receipt_sha256 = hashlib.sha256(
-        json.dumps(receipt_body, sort_keys=True, separators=(",", ":")).encode("utf-8")
-    ).hexdigest()
-    return {
-        "ok": ok,
-        "status": "VERIFIED" if ok else "DRIFT",
-        "mode": "GIT_INDEX_LIVE",
-        **receipt_body,
-        "receipt_sha256": receipt_sha256,
-        "changed": changed,
-        "unexpected": unexpected,
-        "selection_mode": "CURRENT_HEAD_REVISABLE",
-        "evolution_note": "Integrity verifies the reviewed current tree; stronger reviewed commits may replace it without rewriting a static baseline.",
-    }
-
-
-def verify_integrity(
-    path: Path | None = None,
-    *,
-    delta_path: Path | None = None,
-) -> dict[str, Any]:
-    """Verify live Git state by default, or an explicit evidence snapshot by request."""
-    if path is None:
-        return _git_index_integrity()
-    return _verify_snapshot(path, delta_path=delta_path)
