@@ -1,30 +1,20 @@
 {
-  "schema": "glaciereq.tower-target-contract.v1",
-  "system_id": "glaciereq.tower-of-babel.v1",
-  "repository": "GlacierEQ/the-tower-of-babel",
-  "canonical_authority": "registry/tower.yml",
-  "selector_authority": "src/tower/selector.py",
-  "primary_function": "Given a real system function or mission requirement, determine which governed languages, runtimes, formats, compiler layers, hardware descriptions, proof systems, and interoperability technologies should participate now; assign each to the function or benefit it owns best; explain What/Where/When/Why/How; reject claims below their proof floor; and keep adding evidence-qualified specialists while each contributes positive distinct system value.",
-  "problem": "Heterogeneous engineering functions benefit from specialization, but arbitrary polyglot growth creates semantic drift, duplicated responsibility, integration cost, evidence inflation, and authority confusion. The system therefore needs one governed authority that intelligently expands technology composition whenever specialization produces real net benefit while preserving interoperability and proof.",
-  "unique_value": "The Tower is an executable polyglot systems architect and function-to-technology unification authority. It maps mission requirements to proven owners, then continues composing specialists for verified performance, memory, safety, data-layout, interoperability, model-portability, zero-copy, hardware, compression, sandboxing, formal-proof, resilience, portability, or development advantages instead of minimizing language count.",
-  "optimization_goal": "maximize_verified_system_advantage_without_redundant_responsibility",
+  "schema": "glaciereq.tower.target-contract.v3",
+  "target": "maximum-boundary-fitness-polyglot-engine",
+  "objective": "Select, compose, execute, and prove the strongest justified technology per explicit engineering boundary while preserving unique incumbent capability.",
+  "project_direction_authority": "operator",
   "invariants": [
-    "function_precedes_technology_choice",
-    "coverage_is_floor_not_stopping_condition",
-    "positive_verified_marginal_benefit_adds_specialists",
-    "minimal_language_count_is_not_an_objective",
-    "plurality_preserved",
-    "local_authority_not_reinterpreted",
-    "proof_before_promotion",
-    "explicit_blockers_not_false_success",
-    "external_references_do_not_promote_local_evidence",
-    "deterministic_receipts"
+    "evidence-controls-factual-claims",
+    "projection-does-not-delete-capability",
+    "placement-does-not-block-material-evolution",
+    "unique-capability-retires-only-after-equivalence-or-operator-direction",
+    "operator-scope-binds-materially-irreversible-or-unclassified-external-effects",
+    "reversible-external-effects-do-not-require-redundant-approval"
   ],
-  "promotion_policy": {
-    "local_projection_ceiling": "OPERABLE",
-    "external_authority_required": true,
-    "revision_bound_proof_required": true,
-    "external_reference_is_not_local_proof": true
-  },
-  "success_condition": "For a mission, the Tower deterministically establishes functional ownership, then continues evaluating and adding evidence-qualified specialists whose distinct marginal benefit is positive after integration and operational cost. It exposes gated or under-proven candidates rather than pretending they are ready, preserves typed interoperability across every selected boundary, and binds the complete composition decision to the canonical registry revision and evidence state."
+  "non_goals": [
+    "canonical-positioning-as-a-prerequisite",
+    "language-count-maximization",
+    "governance-as-project-authority",
+    "truth-by-capability-amputation"
+  ]
 }

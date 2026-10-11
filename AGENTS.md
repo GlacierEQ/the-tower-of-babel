@@ -1,58 +1,79 @@
-# Tower Agent Doctrine — APEX
+# Tower Agent Doctrine
 
-## Authority model
+## Operator authority and Tower evidence scope
 
-Casey Barton's intended GlacierEQ architecture is the sole human authority over project direction. The Tower does not acquire project authority. Its job is narrower and harder: **select and prove the strongest technology for each engineering boundary**.
+The Operator has absolute project-direction authority. The Tower does not acquire
+project authority from a registry, receipt, promotion state, generated surface,
+test result, model judgment, or automation layer.
 
-`registry/tower.yml` is the APEX technology source registry for:
+The registry rooted at `registry/tower.yml` is the Tower's technical
+technology-evidence source for:
 
-- technology observation and admission;
-- W4H+How placement;
+- technology admission recommendations;
+- W4H+How placement analysis;
 - easy and advanced exhibit paths;
 - evidence state and proof class;
 - toolchain and build commands;
 - hardware and service blockers;
 - cross-language interfaces;
-- Megamind agent and piston ownership.
+- Megamind agent and piston ownership metadata.
 
-The registry records Tower state. It does not redefine Casey's intended system into a smaller projection.
+Tower may challenge a factual or technical claim with evidence. It may not
+silently replace the Operator's objective, reduce scope, require canonical
+positioning before material work, or convert a recommendation into a veto.
 
-Do not add a language, format, compiler, HDL, proof system, runtime, database, or accelerator by editing generated surfaces directly.
+Do not add a language, format, compiler, HDL, proof system, or runtime by editing
+the README, sidecar, generated files, or Megamind maps directly.
 
-## APEX objective
+## Resource + memory orientation
 
-The Tower optimizes **boundary fitness and whole-system coherent power**, not language count, minimum scope, or architectural uniformity.
+Use resource and memory reconstruction to orient consequential work, improve routing, and preserve continuity. It is not permission machinery and does not hold the mission at a stop sign.
 
-For every real boundary:
+1. recover the relevant external memory / continuity context when available;
+2. inventory current Tower resources and prior work;
+3. identify the last verified checkpoint when one exists;
+4. collapse duplicates so repeated copies are not counted as corroboration;
+5. identify prior accepted, disputed, superseded, and invalidated conclusions;
+6. compute the new delta rather than restarting the analysis;
+7. preserve material contradictions and source gaps;
+8. select and execute the strongest truthful next route.
 
-1. identify what the boundary must accomplish;
-2. identify the strongest credible current technologies for it;
-3. compose candidates when one technology cannot dominate the whole boundary;
-4. build the strongest justified reversible experiment;
-5. measure function, performance, reliability, interface cost, resource behavior, observability, and failure isolation;
-6. preserve every unique prior gain;
-7. select the non-dominated winner or preserve multiple frontier candidates when the tradeoff is real;
-8. repeat as the frontier changes.
+Missing memory, a partial reconstruction, an absent checkpoint, or an unresolved source gap changes certainty and route selection. None of those facts becomes a generic execution veto.
 
-A six-language repository is correct when six languages each own a boundary they are unusually good at. A one-language repository is correct when one language actually dominates all its boundaries. Uniformity itself has zero score.
+Run:
+
+```bash
+tower orient --mission "<exact engineering objective>" --memory external-memory.json
+```
+
+The primary orientation receipt is written to `artifacts/resource-memory-orientation.json` by default. `tower preflight` remains a compatibility alias for older callers and retains nonblocking semantics.
+
+Tower analyzes memory but does not own operator memory. Memory is continuity input, not proof. A remembered fact must retain or recover a source pointer before promotion to evidence.
 
 ## Required workflow
 
-1. Start from Casey's APEX intent and the actual system bottleneck.
-2. Inspect the APEX technology registry and fresh frontier sources.
-3. Change the registry index or a declared fragment when the technology map changes.
-4. Add or update exhibits that demonstrate the real boundary.
-5. Add or update proof appropriate to the claim.
+1. Orient from resource + memory state and inspect its certainty, checkpoint, duplicate groups, gaps, delta, and recommended next route without treating the report as permission to act.
+2. Reuse or extend the strongest prior verified lane when available instead of restarting it; if unavailable, continue from the strongest observed state with exact uncertainty.
+3. Change the registry index or one of its declared fragments.
+4. Add or update both exhibits.
+5. Add or update the proof gate.
 6. Run `tower validate`.
 7. Run `tower generate`.
-8. Run repository tests and the relevant native/toolchain/hardware path.
-9. Compare against the incumbent boundary, not against an empty baseline.
-10. Generate and verify integrity and deterministic receipts.
-11. Preserve the winner, rollback path, prior unique gains, and next frontier cursor.
+8. Run `pytest`.
+9. Run `tower build --all --allow-blocked`.
+10. Generate and verify integrity.
+11. Generate the deterministic receipt.
+12. Review generated drift before commit.
+
+A missing Tower receipt, incomplete memory, absent checkpoint, failed search, or
+unresolved contradiction does not by itself stop the mission. Continue through the
+strongest meaningful truthful route and record uncertainty, blockers, and conflicts
+as telemetry for the next action.
 
 ## Truth classes
 
-A file name containing `advanced` does not establish production maturity. Use the declared evidence state:
+A file name containing `advanced` does not establish production maturity.
+Use the declared evidence state:
 
 - illustrative
 - compiles
@@ -65,37 +86,55 @@ A file name containing `advanced` does not establish production maturity. Use th
 - integrated
 - production_reference
 
-Evidence limits claims. It does not prohibit an ambitious reversible experiment.
+Never promote a floor without corresponding evidence.
 
-## Language-diversification law
+## Continuity and duplication rules
 
-New technology is admitted when its What, Where, When, Why, How, interoperability boundary, owner, and proof are explicit **and it strengthens the APEX architecture vector for that boundary**.
+- `LAST_VERIFIED_STATE + NEW_VERIFIED_DELTA` is the default evolution model.
+- A failed search does not prove prior work never existed.
+- Repeated repository copies of the same bytes remain one evidentiary lineage.
+- A generated summary, README statement, or recalled memory cannot promote itself into executable proof.
+- Older derivative summaries do not override newer source-backed state.
+- A counterexample or contradiction is preserved until resolved; it is not deleted to make a technology look stronger.
+- Proof or projection demotion does not authorize implementation deletion.
+- Existing unique capability may retire only through proven equivalence/superset replacement or explicit Operator direction.
 
-Do not refactor merely to add another language. Do not refuse a better language merely to reduce language count. Existing working components are preserved until the replacement proves it retains or exceeds their unique value.
+## Language-diversification rule
 
-## Machine trust boundary
-
-The Tower exists to make heterogeneous systems interoperable without collapsing
-their independent authority. That rule applies to the Tower itself.
-
-- `registry/tower.yml` governs **local Tower technology claims**; it does not
-  reinterpret another repository's authority or inherit another project's proof.
-- External production adoption may be cited as context, but it never upgrades a
-  local exhibit's evidence state. Local promotion requires local, revision-bound
-  executable evidence.
-- Repository-local excellence projection has an `OPERABLE` ceiling. A subject
-  repository may prove behavior, but it may not grant itself `PROMOTED` status.
-- `machine/promotion_authority.json` must remain fail-closed locally. Any higher
-  promotion requires independently verified authority outside this repository's
-  trust boundary.
-- Placeholder proof is forbidden everywhere, including unconditional-success
-  tests, synthetic hash labels, print-only operators, and self-attested grants.
-- `scripts/operate.py` is a read-only operational gate. It must report exact
-  registry, generated-surface, integrity, and machine-trust failures and return
-  non-zero instead of repairing or hiding them.
+New technology is admitted only when its What, Where, When, Why, How,
+interoperability boundary, owner, and proof gate are explicit. Existing working
+components are preserved; no refactor is permitted merely to introduce another
+language.
 
 ## Generated files
 
-Generated surfaces must not be hand-edited. They are overwritten by `python3 -m tower.generate`.
+Generated surfaces must not be hand-edited. They are overwritten by
+`python3 -m tower.generate`.
 
-Historical files and receipts may contain the retired term `canonical`. That term is historical metadata only and has no governing force over APEX intent or current engineering direction.
+
+## Continuous-orientation invariant
+
+The orientation engine emits routing telemetry, not authorization. Its machine result must preserve:
+
+- `execution_permission: NOT_EVALUATED_BY_ORIENTATION`;
+- `stop_condition_created: false`;
+- a certainty level that can fall without reducing execution effort by itself;
+- explicit route hints for resource recovery, continuity sourcing, contested-memory reconciliation, current-state acquisition, checkpoint establishment, committed-delta verification, and working-tree reconciliation;
+- `CONTINUE` or `CONTINUE_WITH_GAPS` as the continuation state.
+
+A gap is work to route, not a reason to manufacture a global stop. Disputed, invalidated, or superseded memory never becomes current positive continuity merely because parsing succeeded. Local orientation I/O failure is surfaced as degraded JSON telemetry, and output protection must reject same-path, symlink-resolved, or hard-linked attempts to overwrite operator memory.
+
+
+## External-effect risk law
+
+External effect is a location/boundary fact, not automatically a reason to stop.
+
+Classify consequential action by reversibility:
+
+- `reversible`: execute within the current Operator-directed mission when the technical execution boundary is satisfied; no redundant exact-scope receipt is required;
+- `materially-irreversible`: require exact Operator-scoped authorization before crossing the effect boundary;
+- `unclassified`: preserve the conservative legacy authorization requirement until the effect is classified.
+
+Legacy `--external-effects` without `--effect-risk` remains `unclassified`, so existing callers do not silently become less protected.
+
+Operator scope never bypasses toolchain, interface, execution, evidence, or proof requirements. Those requirements control what the system can truthfully do or claim; they do not acquire project-direction authority.
