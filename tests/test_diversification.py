@@ -7,8 +7,9 @@ from tower.diversification import evaluate_candidate, validate_diversification_p
 def _decision(incumbent: str, candidate: str, proof_gate: str) -> dict[str, str]:
     return {
         "problem_boundary": "A measured system boundary cannot be satisfied by the incumbent without violating its declared contract.",
-        "incumbent_floor": incumbent,
+        "existing_composition": "typescript provides binary_contracts via protobuf",
         "candidate_floor": candidate,
+        "benefit_dimension": "interoperability",
         "measurable_requirement": "The candidate must satisfy the declared boundary under a reproducible comparison rather than a language-preference claim.",
         "comparison_method": "Run the incumbent and candidate against the same fixture and preserve deterministic receipts for the relevant metric.",
         "integration_cost": "Account for toolchain, build, deployment, observability, interoperability, maintenance, and operator cost.",
@@ -57,4 +58,4 @@ def test_language_novelty_without_decision_record_is_rejected() -> None:
 
 def test_existing_floor_remains_default_even_when_candidate_is_admissible() -> None:
     result = evaluate_candidate(_decision("typescript", "protobuf", "tested"))
-    assert result["default"] == "reuse_existing_floor"
+    assert result["default"] == "evaluate_additive_benefit"

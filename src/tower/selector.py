@@ -327,7 +327,7 @@ def select_technologies(
             for benefit in new_benefits:
                 represented.setdefault(benefit, set()).add(role)
 
-    registry_sha = hashlib.sha256(registry.canonical_bytes()).hexdigest()
+    registry_sha = hashlib.sha256(registry.apex_bytes()).hexdigest()
     agents = sorted({
         agent
         for item in selected

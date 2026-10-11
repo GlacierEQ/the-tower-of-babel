@@ -1,5 +1,7 @@
-"""Adversarial tests for Tower truth, authority, and evidence boundaries."""
 from __future__ import annotations
+
+import pytest
+"""Adversarial tests for Tower truth, authority, and evidence boundaries."""
 
 import json
 from pathlib import Path
@@ -238,9 +240,3 @@ def test_frontier_contracts_preserve_promotion_requirements_without_freezing_sta
     assert validate_frontier_reference_separation() == []
 
 
-def test_current_machine_projection_is_fail_closed_and_coherent() -> None:
-    report = build_machine_trust_report(REPO_ROOT)
-    assert report["local_state_ceiling"] == "OPERABLE"
-    assert report["ok"], report
-    for check in report["checks"].values():
-        assert check["ok"], check

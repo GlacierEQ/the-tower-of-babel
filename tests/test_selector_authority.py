@@ -30,7 +30,7 @@ def test_portable_model_graph_selects_onnx_not_general_config_format() -> None:
     assert result["technology_ids"][0] == "onnx", result
     placement = result["placements"]["onnx"]
     assert placement["evidence_state"] == "tested"
-    assert "model" in placement["what"].casefold()
+    assert "computation" in placement["what"].casefold()
 
 
 def test_data_oriented_request_exposes_odin_as_gated_not_selected() -> None:

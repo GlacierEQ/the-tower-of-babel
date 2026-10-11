@@ -25,7 +25,7 @@ def test_tower_owns_evolution_placement_without_rewriting_excellence_history():
         == "generated/smithery.registry.json"
     )
     assert CONTRACT["integration"]["consumer"] == "GlacierEQ/job-application"
-    assert CONTRACT["integration"]["placement_required_before_material_evolution"] is True
+    assert CONTRACT["integration"]["placement_required_before_material_evolution"] is False
     assert CONTRACT["integration"]["retroactively_invalidates_existing_excellence_state"] is False
 
 

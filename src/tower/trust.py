@@ -347,9 +347,9 @@ def validate_excellence_projection(
                 errors.append(f"{principal_state} requires {gate_name}=PASS")
 
     authority_gate = gates.get("AUTHORITY_BOUND", {})
-    if promotion.get("mode") == "not_granted" and isinstance(authority_gate, dict):
+    if promotion.get("status") == "EVIDENCE_BOUND_NON_AUTHORITATIVE" and isinstance(authority_gate, dict):
         if authority_gate.get("status") == "PASS":
-            errors.append("AUTHORITY_BOUND cannot PASS while promotion authority is not_granted")
+            errors.append("AUTHORITY_BOUND cannot PASS while promotion authority is evidence-bound non-authoritative")
 
     proof_gate = gates.get("PROOF_RECEIPT_BOUND", {})
     if isinstance(proof_gate, dict) and proof_gate.get("status") == "PASS":
