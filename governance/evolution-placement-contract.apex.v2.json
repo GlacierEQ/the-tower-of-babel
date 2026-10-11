@@ -1,0 +1,123 @@
+{
+  "schema": "glaciereq.tower-evolution-placement-contract.apex.v2",
+  "version": "2.0.0",
+  "human_project_authority": "Casey Barton",
+  "tower_role": {
+    "repository": "GlacierEQ/the-tower-of-babel",
+    "role": "boundary_technology_fitness_evidence_engine",
+    "project_direction_authority": false,
+    "technology_source": "registry/tower.yml",
+    "technology_catalog": "generated/smithery.registry.json"
+  },
+  "objective": {
+    "mode": "MAXIMUM_COHERENT_ADVANCE",
+    "selection": "PARETO_NON_DOMINATED_FRONTIER",
+    "gains": [
+      "capability",
+      "intelligence",
+      "reliability",
+      "efficiency",
+      "leverage",
+      "composability",
+      "reach",
+      "frontier_fitness"
+    ],
+    "penalties": [
+      "fragility",
+      "coordination_cost",
+      "unverifiability",
+      "duplication"
+    ],
+    "smallness_intrinsic_score": 0,
+    "uniformity_intrinsic_score": 0,
+    "language_count_intrinsic_score": 0,
+    "diversity_rule": "specialize_only_when_boundary_fit_improves_apex",
+    "tradeoff_rule": "preserve_non_dominated_candidates_when_real_tradeoffs_remain"
+  },
+  "decisions": [
+    "IGNORE_WITH_REASON",
+    "WATCH",
+    "EXPERIMENT",
+    "ADMIT",
+    "MIGRATE",
+    "RETIRE"
+  ],
+  "policy": {
+    "operator_intent_controls_target": true,
+    "tower_evidence_may_redefine_operator_target": false,
+    "registry_state_may_redefine_operator_target": false,
+    "merge_state_may_redefine_operator_target": false,
+    "language_count_is_not_a_success_metric": true,
+    "repository_count_is_not_a_success_metric": true,
+    "presentation_need_cannot_force_language_change": true,
+    "existing_unique_capability_must_be_preserved_or_exceeded": true,
+    "new_runtime_requires_unique_boundary_advantage": true,
+    "semantic_overlap_requires_cross_runtime_parity_or_explicit_non_equivalence": true,
+    "new_runtime_requires_declared_proof_tier": true,
+    "toolchain_or_external_unavailability_must_remain_blocked_not_passed": true,
+    "experiment_precedes_migration_when_boundary_fitness_is_uncertain": true,
+    "experiment_may_be_narrow_without_shrinking_final_target": true,
+    "fresh_frontier_technology_is_continuous_input": true
+  },
+  "experiment_semantics": {
+    "predecessor_role": "measured_baseline",
+    "predecessor_is_project_authority": false,
+    "candidate_role": "reversible_boundary_challenger",
+    "promotion_rule": "candidate must strengthen the relevant APEX frontier while preserving required prior gains",
+    "rollback_required": true,
+    "failed_experiment_value": "preserve exact failure evidence and feed it into the next design"
+  },
+  "boundary_required_fields": [
+    "responsibility",
+    "candidate_technology",
+    "incumbent_technology",
+    "activation_condition",
+    "why_existing_boundary_is_insufficient",
+    "expected_apex_advantage",
+    "interface_contract",
+    "proof_tier",
+    "parity_required",
+    "parity_contract",
+    "prior_gains_to_preserve",
+    "rollback",
+    "replacement_trigger"
+  ],
+  "proof_tiers": {
+    "A": "structure_or_compile_evidence",
+    "B": "deterministic_behavior_and_failure_path_evidence",
+    "C": "runtime_or_benchmark_or_formal_or_hardware_evidence_appropriate_to_claim"
+  },
+  "required_receipt_fields": [
+    "operator_intent_ref",
+    "boundary",
+    "incumbent",
+    "candidate",
+    "tower_evidence",
+    "primary_sources",
+    "apex_dimensions_compared",
+    "prior_gains",
+    "proof",
+    "decision",
+    "rollback",
+    "exact_source_sha",
+    "next_frontier_cursor"
+  ],
+  "freshness": {
+    "frontier_observation_required": true,
+    "primary_source_preferred": true,
+    "stale_evidence_cannot_prove_current_frontier": true,
+    "current_runtime_claim_requires_current_readback": true
+  },
+  "integration": {
+    "consumers": [
+      "GlacierEQ/job-app-helix",
+      "GlacierEQ/monolith",
+      "GlacierEQ/computer-user",
+      "repository_native_APEX_workflows"
+    ],
+    "relationship": "PROVIDES_BOUNDARY_TECHNOLOGY_EVIDENCE",
+    "project_direction_relationship": "NONE",
+    "historical_contract": "governance/evolution-placement-contract.v1.json",
+    "historical_contract_status": "PROVENANCE_ONLY"
+  }
+}

@@ -27,14 +27,6 @@ INTENDED SYSTEM + CURRENT SOURCE STATE + VERIFIED PRIOR GAINS
 
 **Smallness and uniformity have zero intrinsic score.** A one-language repository is correct when one technology actually dominates its boundaries. A six-language repository is correct when six technologies each materially outperform alternatives in their lane and their interfaces are explicit.
 
-### Semantic specialization: what the Tower is
-
-The Tower evaluates **the work at each architectural boundary**, not one language for an entire repository. Memory goes where memory is strongest; logic goes where correctness and invariants are strongest; action goes where effects, connectors, and runtime reach are strongest. The same method applies to persistence, orchestration, telemetry, security, interfaces, and formal proof.
-
-A repository can therefore fluently combine boundaries such as **Odin for explicit memory/data-layout ownership, Rust for safety-critical logic, and TypeScript for action/MCP/API surfaces**—but only when measured capability and stability gains exceed migration, interoperability, and long-term complexity costs. Existing languages are preserved when a proposed alternative does not earn the move.
-
-The Babel Innovation Engine feeds those boundary decisions into the Spiral: **inspect → classify → rank → evaluate near/far impact → intervene → re-inspect** until the repository reaches balanced 9+ quality or a real constraint is surfaced. See docs/INNOVATION_ENGINE.md.
-
 ## The system in one minute
 
 | Capability | What the Tower does |
@@ -101,11 +93,6 @@ tower megamind-map
 tower spiral question \
   --seed tower-demo \
   --prompt-hint "maximum coherent multi-agent architecture"
-
-# Evaluate a repository by semantic role and language specialization.
-tower innovate evaluate /path/to/repo
-tower innovate plan /path/to/repo --target 9.0
-tower innovate run /path/to/repo --target 9.0 --output artifacts/babel-innovation-report.json
 
 python flagship/run_pipeline.py
 ```
