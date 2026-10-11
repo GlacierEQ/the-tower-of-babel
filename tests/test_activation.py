@@ -32,7 +32,7 @@ def test_activation_is_real_not_planning_only(monkeypatch):
     result = activate_execution(technology())
     assert result["status"] == "VERIFIED"
     assert observed["id"] == "python"
-    assert result["activation"]["governance"] == "shaping-and-audit"
+    assert result["activation"]["governance"] == "technical-evidence-and-audit"
 
 
 def test_governance_still_controls_promotion():
