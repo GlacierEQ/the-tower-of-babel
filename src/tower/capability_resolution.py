@@ -5,6 +5,7 @@ selection and resolution record.  Evidence gaps, experimental posture, and
 placement differences stay visible as follow-up work; they do not erase a
 candidate or leave a boundary without a selected capability.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -36,7 +37,14 @@ class LanguageLane:
 
     def observations(self) -> tuple[str, ...]:
         observations: list[str] = []
-        for field_name in ("lane_id", "concern", "language", "rationale", "interface", "proof"):
+        for field_name in (
+            "lane_id",
+            "concern",
+            "language",
+            "rationale",
+            "interface",
+            "proof",
+        ):
             if not getattr(self, field_name).strip():
                 observations.append(f"{field_name}_needs_detail")
         if self.rationale.strip() and len(self.rationale.strip()) < 20:
@@ -71,9 +79,22 @@ class BoundaryObjective:
         observations: list[str] = []
         if set(self.weights) != set(FITNESS_DIMENSIONS):
             observations.append("fitness_dimensions_need_alignment")
-        if any(not isinstance(weight, (int, float)) or weight < 0 for weight in self.weights.values()):
+        if any(
+            not isinstance(weight, (int, float)) or weight < 0
+            for weight in self.weights.values()
+        ):
             observations.append("fitness_weights_need_nonnegative_numeric_values")
-        if abs(sum(float(weight) for weight in self.weights.values() if isinstance(weight, (int, float))) - 1.0) > 1e-9:
+        if (
+            abs(
+                sum(
+                    float(weight)
+                    for weight in self.weights.values()
+                    if isinstance(weight, (int, float))
+                )
+                - 1.0
+            )
+            > 1e-9
+        ):
             observations.append("fitness_weights_need_normalization")
         for name in (
             "interoperability_penalty",
@@ -108,7 +129,9 @@ class TechnologyCandidate:
                 observations.append(f"{name}_needs_detail")
         unknown = set(self.fitness) - set(FITNESS_DIMENSIONS)
         if unknown:
-            observations.append("fitness_contains_unmapped_dimensions:" + ",".join(sorted(unknown)))
+            observations.append(
+                "fitness_contains_unmapped_dimensions:" + ",".join(sorted(unknown))
+            )
         for name in FITNESS_DIMENSIONS:
             value = self.fitness.get(name, 0.0)
             if not isinstance(value, (int, float)) or not 0.0 <= value <= 1.0:
@@ -154,7 +177,10 @@ def _unit_interval(value: object) -> float:
 
 
 def _normalized_weights(objective: BoundaryObjective) -> dict[str, float]:
-    values = {name: max(0.0, float(objective.weights.get(name, 0.0))) for name in FITNESS_DIMENSIONS}
+    values = {
+        name: max(0.0, float(objective.weights.get(name, 0.0)))
+        for name in FITNESS_DIMENSIONS
+    }
     total = sum(values.values())
     if total == 0.0:
         return {name: 1.0 / len(FITNESS_DIMENSIONS) for name in FITNESS_DIMENSIONS}
@@ -168,17 +194,24 @@ def rank_technology(
     """Rank every candidate and describe follow-up work without excluding it."""
     policy = objective or BoundaryObjective()
     resolution_work = list(policy.observations()) + list(candidate.observations())
-    if _unit_interval(candidate.evidence_confidence) < _unit_interval(policy.confidence_review_threshold):
+    if _unit_interval(candidate.evidence_confidence) < _unit_interval(
+        policy.confidence_review_threshold
+    ):
         resolution_work.append("expand_evidence_confidence")
     if candidate.experimental and not candidate.reversible:
         resolution_work.append("design_reversible_experiment_path")
 
     weights = _normalized_weights(policy)
-    raw_fitness = sum(_unit_interval(candidate.fitness.get(name, 0.0)) * weight for name, weight in weights.items())
+    raw_fitness = sum(
+        _unit_interval(candidate.fitness.get(name, 0.0)) * weight
+        for name, weight in weights.items()
+    )
     score = (
         raw_fitness * _unit_interval(candidate.evidence_confidence)
-        - _unit_interval(policy.interoperability_penalty) * _unit_interval(candidate.interoperability_cost)
-        - _unit_interval(policy.migration_penalty) * _unit_interval(candidate.migration_cost)
+        - _unit_interval(policy.interoperability_penalty)
+        * _unit_interval(candidate.interoperability_cost)
+        - _unit_interval(policy.migration_penalty)
+        * _unit_interval(candidate.migration_cost)
     )
     return RankedTechnology(
         candidate=candidate,
@@ -214,7 +247,9 @@ def resolve_technology(
         boundary=boundary_names[0] if len(boundary_names) == 1 else "",
         selected=selected,
         ranked=ranked,
-        decision="selected_strongest_available_capability" if selected else "resolution_work_required",
+        decision="selected_strongest_available_capability"
+        if selected
+        else "resolution_work_required",
         continuation="enabled",
         resolution_work=tuple(sorted(set(resolution_work))),
     )
@@ -229,21 +264,32 @@ def resolve_lane_against_candidates(
     resolution = resolve_technology(candidates, objective)
     work = list(lane.observations()) + list(resolution.resolution_work)
     comparable = [
-        item for item in resolution.ranked
+        item
+        for item in resolution.ranked
         if item.candidate.boundary.casefold() == lane.concern.casefold()
     ]
     selected = comparable[0] if comparable else resolution.selected
     declared = next(
-        (item for item in comparable if item.candidate.language.casefold() == lane.language.casefold()),
+        (
+            item
+            for item in comparable
+            if item.candidate.language.casefold() == lane.language.casefold()
+        ),
         None,
     )
     if not comparable:
         work.append("supply_candidates_for_lane_boundary")
     elif declared is None:
         work.append("add_declared_language_comparison_evidence")
-    elif selected is not None and selected.candidate.language.casefold() != declared.candidate.language.casefold():
+    elif (
+        selected is not None
+        and selected.candidate.language.casefold()
+        != declared.candidate.language.casefold()
+    ):
         advantage = selected.score - declared.score
-        threshold = _unit_interval((objective or BoundaryObjective()).advantage_review_threshold)
+        threshold = _unit_interval(
+            (objective or BoundaryObjective()).advantage_review_threshold
+        )
         if advantage >= threshold:
             work.append("review_stronger_alternative:" + selected.candidate.language)
     return LaneResolution(
@@ -261,10 +307,14 @@ def resolve_architecture(
     """Resolve every known boundary without abandoning empty or evolving surfaces."""
     result: dict[str, BoundaryResolution] = {}
     for boundary, candidates in sorted(candidate_sets.items()):
-        result[boundary] = resolve_technology(candidates, (objectives or {}).get(boundary))
+        result[boundary] = resolve_technology(
+            candidates, (objectives or {}).get(boundary)
+        )
     return result
 
 
-def resolve_lanes(lanes: Iterable[LanguageLane]) -> tuple[tuple[LanguageLane, tuple[str, ...]], ...]:
+def resolve_lanes(
+    lanes: Iterable[LanguageLane],
+) -> tuple[tuple[LanguageLane, tuple[str, ...]], ...]:
     """Return lane observations without rejecting existing language ownership."""
     return tuple((lane, lane.observations()) for lane in lanes)

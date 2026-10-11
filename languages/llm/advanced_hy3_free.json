@@ -1,0 +1,21 @@
+{
+  "model": "hy3-free",
+  "runtime_alias": "opencode/hy3-free",
+  "openrouter_slug": "tencent/hy3",
+  "kind": "advanced_example",
+  "description": "Advanced descriptor and activation contract for the HY3 free-tier runtime model, referenced in the estate as opencode/hy3-free and routed through the canonical OpenRouter slug tencent/hy3.",
+  "interfaces": ["openrouter", "chat_completion", "tool_use"],
+  "routing": "opencode (Zen)",
+  "operator_reported_billing": "0 USD — OpenCode-native free gateway (Zen mode); not billed via OpenRouter",
+  "evidence_state": "service_gated",
+  "proof_class": "integration",
+  "activation": {
+    "requires": ["openrouter_api_key", "openrouter_reachability"],
+    "blocked_without": ["payment_details"],
+    "receipt_fields": ["status", "slug", "reachable"]
+  },
+  "source_patterns": [
+    "tencent/hy3",
+    "opencode/hy3-free"
+  ]
+}

@@ -3,13 +3,15 @@
 Easy Exhibit: JAX Functional Automatic Differentiation & XLA JIT Compilation
 Case: Grok-Scale AI Functional Compute Primitives
 """
+
 import json
+
 
 def dummy_jax_grad_jit():
     # Functional forward pass: f(x) = 3*x^2 + 2*x + 1
     # Derivative: f'(x) = 6*x + 2
     def f(x):
-        return 3.0 * (x ** 2) + 2.0 * x + 1.0
+        return 3.0 * (x**2) + 2.0 * x + 1.0
 
     def df_dx(x):
         return 6.0 * x + 2.0
@@ -24,8 +26,9 @@ def dummy_jax_grad_jit():
         "x": x_val,
         "f_x": y_val,
         "grad_f_x": grad_val,
-        "xla_jit_compiled": True
+        "xla_jit_compiled": True,
     }
+
 
 if __name__ == "__main__":
     result = dummy_jax_grad_jit()

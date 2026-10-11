@@ -1,53 +1,35 @@
-# The Tower of Babel — APEX
+# The Tower of Babel
 
-> **Executable polyglot architecture selection for maximum coherent advance.**
+> **An executable technology-selection, interoperability, and proof system for multi-language engineering.**
 
 [![Tower Verification](https://github.com/GlacierEQ/the-tower-of-babel/actions/workflows/tower.yml/badge.svg)](https://github.com/GlacierEQ/the-tower-of-babel/actions/workflows/tower.yml)
 [![Quality Gate](https://github.com/GlacierEQ/the-tower-of-babel/actions/workflows/ci.yml/badge.svg)](https://github.com/GlacierEQ/the-tower-of-babel/actions/workflows/ci.yml)
 [![Spiral Engine](https://github.com/GlacierEQ/the-tower-of-babel/actions/workflows/spiral.yml/badge.svg)](https://github.com/GlacierEQ/the-tower-of-babel/actions/workflows/spiral.yml)
 
-The Tower decides **which technology belongs at which engineering boundary, why it belongs there, how it interoperates with adjacent lanes, how it fails, and what evidence would justify replacing it**.
+The Tower of Babel **decides where a technology belongs, explains why it belongs there, shows how it works, verifies the claim at the strongest available proof level, and exports the result for humans, software, and AI agents**.
 
-It is not a language museum, a monoculture generator, or an authority over Casey Barton's intended system. Casey's project intent controls direction. The Tower supplies boundary analysis, executable comparison, interoperability, proof, and a continuously revisable frontier.
-
-## APEX law
-
-```text
-INTENDED SYSTEM + CURRENT SOURCE STATE + VERIFIED PRIOR GAINS
-→ identify real boundaries and bottlenecks
-→ observe current frontier technology
-→ generate multiple strong candidates
-→ compose best-fit technologies by lane
-→ build the strongest justified reversible experiment
-→ measure + adversarially break + operate
-→ preserve all unique gains
-→ keep the non-dominated winner(s)
-→ expand again
-```
-
-**Smallness and uniformity have zero intrinsic score.** A one-language repository is correct when one technology actually dominates its boundaries. A six-language repository is correct when six technologies each materially outperform alternatives in their lane and their interfaces are explicit.
+It is not a language collection built for display. It is a governed engineering map: **42 technology floors**, **84 linked exhibits**, versioned interface contracts, explicit blockers, executable build gates, and deterministic receipts. A floor earns its role through runtime behavior, safety, performance, hardware fit, or interoperability—not decorative polyglot signaling.
 
 ## The system in one minute
 
 | Capability | What the Tower does |
 |---|---|
-| **Boundary decomposition** | Turns a mission into explicit runtime, memory, compute, proof, interface, policy, and presentation concerns. |
-| **Technology placement** | Records What, Where, When, Why, and How for every admitted language, format, compiler layer, database, HDL, and proof system. |
-| **Frontier metabolism** | Ingests fresh primary-source technology signals and maps credible advances to real GlacierEQ bottlenecks. |
-| **Executable learning** | Pairs each technology with an approachable exhibit and a substantive advanced implementation. |
-| **Truthful verification** | Compiles, tests, benchmarks, integrates, or formally verifies claims; missing requirements become exact blockers. |
-| **Cross-language composition** | Publishes versioned interfaces so specialized components cooperate without ambiguous ownership. |
-| **Deterministic evidence** | Seals source state and emits reproducible build, proof, integrity, and release receipts. |
+| **Technology placement** | Records the What, Where, When, Why, and How for every admitted language, format, compiler layer, HDL, and proof system. |
+| **Executable learning path** | Pairs each floor with an approachable exhibit and a substantive advanced implementation. |
+| **Truthful verification** | Compiles, tests, benchmarks, integrates, or formally verifies a claim; unavailable dependencies return exact blockers instead of false success. |
+| **Cross-language composition** | Publishes versioned interfaces so components cooperate without duplicating responsibility. |
+| **Agent-readable selection contracts** | Generates current placement, proof, orchestration, maturity, and integration contracts for Megamind, Spiral Engine, and Smithery surfaces. |
+| **Deterministic evidence** | Seals governed files and emits reproducible proof and release receipts. |
 
-| APEX surface | Count |
+| Governed surface | Count |
 |---|---:|
-| Technology floors | **40** |
-| Easy + advanced exhibits | **80** |
+| Technology floors | **42** |
+| Easy + advanced exhibits | **84** |
 | Behavioral proof floors | **17** |
 | Formal proof floors | **3** |
-| Explicitly gated floors | **9** |
+| Explicitly gated floors | **11** |
 
-## From mission to APEX receipt
+## From mission to receipt
 
 ```text
 human objective / agent mission / system requirement
@@ -56,25 +38,24 @@ human objective / agent mission / system requirement
               Spiral or Megamind request
                          │
                          ▼
-             APEX Tower source registry
+           current Tower technology contract
        placement · interfaces · owners · proof gate
-                         │
-                         ▼
-        candidate composition / bounded experiment
                          │
                          ▼
          build / test / benchmark / formal check
                          │
           ┌──────────────┴──────────────┐
           ▼                             ▼
-   stronger proven lane            exact blocker
+   verified capability            exact blocker
           │                    toolchain · hardware
-          ▼                       service · evidence
+          ▼                       or service gate
   cross-language execution
           │
           ▼
- deterministic evidence receipt + next frontier cursor
+ deterministic evidence receipt
 ```
+
+A recruiter can see what the system accomplishes. An engineer can inspect execution and failure semantics. An agent initializes from the same current verified contracts while remaining free to compare stronger compatible routes.
 
 ## Start the Tower
 
@@ -92,12 +73,12 @@ tower megamind-map
 
 tower spiral question \
   --seed tower-demo \
-  --prompt-hint "maximum coherent multi-agent architecture"
+  --prompt-hint "safe multi-agent legal automation"
 
 python flagship/run_pipeline.py
 ```
 
-Run a complete portable proof pass:
+Run a complete portable governance pass:
 
 ```bash
 tower build --all --allow-blocked --output artifacts/build-report.json
@@ -113,11 +94,9 @@ tower receipt \
   --output artifacts/tower_receipt.json
 ```
 
-## APEX source state
+## Inside the engine
 
-`registry/tower.yml` is the authored APEX technology source index. It names contained `registry/tower.d/*.json` technology fragments and `registry/advanced-claim-contracts.json`. Generated projections derive from that source state.
-
-The source registry proves what the Tower currently knows and what evidence is attached. It does **not** redefine the intended system downward when implementation lags the target.
+`registry/tower.yml` is the current authored selection index. It indexes `registry/tower.d/*.json` technology fragments and `registry/advanced-claim-contracts.json`; the README, Atlas, and machine-readable projections are derived from that current reviewed state and remain revisable through verified engineering.
 
 ```text
 registry/tower.yml + tower.d fragments + advanced claim contracts
@@ -135,48 +114,47 @@ registry/tower.yml + tower.d fragments + advanced claim contracts
         └─────────┴─────────┴──────────┴───────────┘
                   │
                   ▼
-       build · benchmark · proof · receipt · evolve
+       build · benchmark · proof · receipt
 ```
 
-### Tower of Babel lane law
+### The engineering contract
 
-A technology earns a lane when the registry establishes:
+A technology is admitted only when the registry establishes:
 
-- a unique responsibility and explicit boundary;
-- activation conditions and measurable reason it beats alternatives there;
-- easy and advanced exhibits;
-- pinned toolchain references and execution commands;
-- hardware, service, and dependency constraints;
-- explicit interfaces and owners;
-- evidence state and proof class matching checked-in verification;
-- replacement criteria if a stronger technology appears;
-- preservation accounting for any prior capability it supersedes.
+- its unique responsibility and architectural boundary;
+- its activation conditions and the reason another floor should not own the work;
+- an easy exhibit and an advanced exhibit;
+- a pinned toolchain reference, build/test commands, and execution tier;
+- hardware, service, and toolchain constraints;
+- cross-language interfaces and owning Megamind agents/pistons;
+- an evidence state and proof class matching checked-in verification;
+- a registry-owned semantic claim contract with source assertions, failure cases, receipt fields, and prohibited overclaims.
 
-No language receives estate-wide privilege. Python, TypeScript, Rust, Go, SQL, Julia, Fortran, Triton, CUDA, Zig, C/C++, Elixir/Erlang, Datalog, Lean, Coq, TLA+, Rego, WebAssembly, and future technologies compete at the boundaries they are actually good at.
+Working components are extended rather than rewritten for novelty. A new language must provide measurable value at a clear boundary without duplicating a component that already works.
 
 ### Flagship polyglot mission
 
 ```text
 TypeScript ingress
-    → mission contract
+    → ProtoJSON mission contract
 Python planner
     → capability plan
-Rust authority boundary
+Rust decision governor
     → allow / block decision
-Go telemetry
+Go telemetry emitter
     → execution event
-SQL durable state
+SQL selected state
     → persisted mission
 WebAssembly sandbox
     → constrained tool boundary
 Lean 4
     → receipt-chain invariant
-Tower APEX receipt
+Tower receipt
 ```
 
 See [`flagship/README.md`](flagship/README.md) and run `python flagship/run_pipeline.py`.
 
-### Proof before activation
+### Proof before promotion
 
 | Evidence state | Meaning |
 |---|---|
@@ -191,15 +169,23 @@ See [`flagship/README.md`](flagship/README.md) and run `python flagship/run_pipe
 | `integrated` | The floor participates in the flagship multi-language system. |
 | `production_reference` | Operational failure handling, observability, and deployment evidence exist. |
 
-Evidence limits what may be claimed. It does not prohibit a reversible ambitious experiment.
+| Evidence tier | Runtime admission meaning |
+|---|---|
+| `concept_only` | Reference material; never eligible for runtime selection. |
+| `gated_reference` | Candidate blocked by a declared toolchain, service, or hardware requirement. |
+| `runnable_reference` | Build or schema acceptance exists; behavioral correctness is not implied. |
+| `tested_implementation` | Automated behavior or formal proof has been reproduced. |
+| `benchmarked_implementation` | Reproducible comparative performance evidence exists. |
+| `integrated_capability` | The capability is exercised through a verified system boundary. |
+| `production_reference` | Operational failure handling, observability, and deployment evidence exist. |
 
 ## Advanced Exhibit Atlas
 
-The easy exhibit teaches the technology. The advanced exhibit owns a real engineering boundary, exposes failure behavior, and terminates in proof or an exact blocker. [`ADVANCED_EXHIBITS.md`](ADVANCED_EXHIBITS.md) publishes signature engineering moves and claim boundaries; [`quality/advanced_exhibit_atlas.json`](quality/advanced_exhibit_atlas.json) provides the same map to agents and automation.
+The easy exhibit teaches the technology. The advanced exhibit must own a real engineering boundary, expose failure behavior, and terminate in proof or an exact blocker. [`ADVANCED_EXHIBITS.md`](ADVANCED_EXHIBITS.md) publishes the signature engineering move and claim boundary for all 42 floors; [`quality/advanced_exhibit_atlas.json`](quality/advanced_exhibit_atlas.json) provides the same map to agents and automation.
 
-## Complete APEX technology map
+## The thirty-floor map
 
-The matrix is generated from the APEX source registry. Change source state and exhibits, not the generated README.
+The matrix is generated from the current reviewed registry. Change the registry and exhibits, not this README, to change a floor.
 
 <details>
 <summary><strong>Open the complete placement, proof, and exhibit matrix</strong></summary>
@@ -246,11 +232,14 @@ The matrix is generated from the APEX source registry. Change source state and e
 | 38 | **JAX + XLA (gated autodiff runtime)** `.py` | tensor_autodiff | Python autodiff and XLA compilation framework; this record is a pure-Python shape simulation until JAX executes. | Verified JAX runtimes with a declared CPU/GPU/TPU backend and reproducible device tests. | Select only after JAX imports, jax.jit or pjit executes, and the requested sharding/backend receipt is captured. | Use when JAX/XLA provides a measured advantage for autodiff, compilation, or device parallelism. | `illustrative` / `illustrative` | [easy_grad_jit.py](languages/jax/easy_grad_jit.py) | [advanced_grok_distributed_mesh.py](languages/jax/advanced_grok_distributed_mesh.py) |
 | 39 | **Soufflé Datalog** `.dl` | logic_rules | Declarative logic programming language for high-speed static code analysis and security verification. | Vulnerability scanning, compiler program analysis, access control evaluation, and static call graph analysis. | Use when declarative rule-based query evaluation across large code graphs is required. | It resolves complex graph reachability, pointer analysis, and security policy rules in parallel C++ code. | `compiles` / `compile` | [easy_reachability.dl](languages/datalog/easy_reachability.dl) | [advanced_vulnerability_scanner.dl](languages/datalog/advanced_vulnerability_scanner.dl) |
 | 40 | **RHL-Quant reference quantizer (unbenchmarked)** `.py` | tensor_compression | Reference ternary/residual quantization experiment; no accelerator, model-scale, memory, or quality result is established here. | Benchmark harnesses for model compression after a backend, dataset, quality metric, and rollback path are defined. | Select only after a real backend implementation, baseline comparison, memory measurement, throughput measurement, and quality delta are verified. | A candidate compression path, not an operational choice, until numerical baselines and hardware measurements are reproduced. | `illustrative` / `illustrative` | [easy_ternary_scale.py](languages/rhl_quant/easy_ternary_scale.py) | [advanced_rhl_quant_engine.py](languages/rhl_quant/advanced_rhl_quant_engine.py) |
+| 41 | **HY3 (Tencent Hunyuan) free-tier runtime model** `.openrouter.json` | llm_model | A compact instruction-tuned large language model in the Tencent Hunyuan family, used as the local Kilo/OpenCode agent runtime under the opencode/hy3-free alias and routed through OpenRouter free-tier selection. | Agentic coding assistants, local Kilo/OpenCode runtimes, and APEX swarm generalist reasoning where a small, fast, free model is sufficient; used in OpenCode Zen sessions as the primary free generalist. | Use for general coding, orchestration, and synthesis tasks when the objective does not require the largest frontier reasoning model and a zero or low-cost path is preferred. | It provides a dependable free-tier generalist that keeps the assistant runtime operational without payment-gated dependencies, preserving continuity of the estate's primary agent loop. | `service_gated` / `integration` | [easy_hy3_free.json](languages/llm/easy_hy3_free.json) | [advanced_hy3_free.json](languages/llm/advanced_hy3_free.json) |
+| 42 | **MiMo v2.5 Pro (Xiaomi) free-tier reasoning model** `.openrouter.json` | llm_model | A reasoning-oriented large language model in the Xiaomi MiMo family (xiaomi/mimo-v2.5-pro), used as a free/low-cost agent runtime model and referenced in the estate as mimo-v2.5-pro:free. | Agentic reasoning, tool-use, and multi-step coding tasks within Kilo/OpenCode and APEX swarm flows where a stronger reasoning model is preferred at no cost; used in OpenCode Zen sessions as the free reasoning-class option. | Use for planning, chain-of-thought reasoning, and tool-driven agentic tasks when the objective benefits from explicit reasoning but must stay on a free or low-cost tier. | It offers a capable reasoning-class model on a low-cost OpenRouter slug, giving the estate a second verified free-tier option alongside hy3-free for load distribution and resilience. | `service_gated` / `integration` | [easy_mimo_v2_5_pro.json](languages/llm/easy_mimo_v2_5_pro.json) | [advanced_mimo_v2_5_pro.json](languages/llm/advanced_mimo_v2_5_pro.json) |
 
 </details>
 
 ### Domain coverage
 
+- **Ai Runtime** — HY3 (Tencent Hunyuan) free-tier runtime model, MiMo v2.5 Pro (Xiaomi) free-tier reasoning model
 - **Ai Systems** — Mojo
 - **Apple Native** — Swift
 - **Bare Metal Systems** — C
@@ -293,78 +282,83 @@ The matrix is generated from the APEX source registry. Change source state and e
 
 ## Machine entrypoint
 
-An AI system should use Tower source state as evidence and selection input, not as authority to shrink intent.
+An AI system should treat the Tower as a technology-selection and proof service, not prose to imitate.
 
-1. **Initialize** from `registry/tower.yml` or generated technology maps.
-2. **Resolve** a mission into explicit architecture concerns and interfaces.
-3. **Generate candidates** from incumbent and frontier technologies.
-4. **Select or compose** technologies whose boundary advantages are measurable.
-5. **Reject** ambiguous ownership, missing evidence, undeclared interfaces, and capability loss.
-6. **Execute** through generated build contracts or typed adapters.
-7. **Preserve** blockers, hashes, proof state, prior gains, rollback, and receipts.
-8. **Advance** only when evidence shows the resulting boundary is stronger.
-9. **Repeat** when the frontier moves.
+1. **Initialize** from `registry/tower.yml` or the generated Megamind map.
+2. **Resolve** a mission into capabilities and interfaces.
+3. **Select** floors whose activation conditions and proof class satisfy the mission.
+4. **Reject** duplicated ownership, missing evidence, and undeclared interfaces.
+5. **Execute** through generated build contracts or governed adapters.
+6. **Preserve** blockers, hashes, proof state, and receipts downstream.
+7. **Promote** capability only through an explicit admission or evidence update.
 
 ### Generated contract library
 
 | Surface | Role | Status |
 |---|---|---|
-| [`registry/tower.yml`](registry/tower.yml) | APEX technology source index | **Authored source state** |
-| [`registry/advanced-claim-contracts.json`](registry/advanced-claim-contracts.json) | Claim boundaries and proof obligations | **Authored source state** |
-| [`generated/build_commands.json`](generated/build_commands.json) | Toolchains, pins, build/test commands, execution tiers | Generated |
+| [`registry/tower.yml`](registry/tower.yml) | Current authored technology index | **Selected, revisable** |
+| [`registry/advanced-claim-contracts.json`](registry/advanced-claim-contracts.json) | Source assertions, failure obligations, receipt fields, and truthful claim boundaries | **Authored evidence contract** |
+| [`generated/build_commands.json`](generated/build_commands.json) | Toolchains, pins, build/test commands, and execution tiers | Generated |
 | [`generated/interfaces.json`](generated/interfaces.json) | Cross-language interface graph | Generated |
-| [`generated/maturity.json`](generated/maturity.json) | Evidence state, proof class, exhibit locations | Generated |
+| [`generated/maturity.json`](generated/maturity.json) | Evidence state, proof class, and exhibit locations | Generated |
 | [`generated/megamind.technology-map.json`](generated/megamind.technology-map.json) | Agent/piston ownership and activation map | Active export |
-| [`generated/spiral-engine.registry.json`](generated/spiral-engine.registry.json) | Spiral APEX frontier metadata | Generated |
-| [`generated/smithery.registry.json`](generated/smithery.registry.json) | Smithery capability and publication contract | Declared, not published |
-| [`.integrity/file_hashes.json`](.integrity/file_hashes.json) | Immutable base integrity ledger | Sealed base |
-| [`.integrity/approved_delta.json`](.integrity/approved_delta.json) | Reviewed APEX evolution delta | Reviewed evolution |
+| [`integrations/megamind/`](integrations/megamind/) | Typed Tower-to-Megamind adapter contracts | Executable surface |
+| [`generated/spiral-engine.registry.json`](generated/spiral-engine.registry.json) | Spiral metadata and technology edges | Declared metadata |
+| [`src/tower/spiral.py`](src/tower/spiral.py) | Question, admission, override, audit, and receipt runtime | Operational-alpha |
+| [`generated/smithery.registry.json`](generated/smithery.registry.json) | Smithery capability and publication contract | **Declared, not published** |
+| [`generated/link_library.md`](generated/link_library.md) | Curated primary evidence for every floor | Generated library |
+| [`src/tower/integrity.py`](src/tower/integrity.py) | Git-HEAD/index integrity plus optional evidence snapshots | Evolvable verification |
+| [`docs/SUPPLY_CHAIN_AND_PROTECTION.md`](docs/SUPPLY_CHAIN_AND_PROTECTION.md) | Hash-locked CI, OIDC attestations, ruleset verification, and deletion receipts | Operational contract |
 
-## Portfolio mesh
+### Portfolio mesh
 
-The Tower owns technology placement and proof within its boundary. Connected repositories retain their own responsibilities and consume Tower exports through explicit interfaces.
+The Tower provides technology placement and proof capability. Connected repositories remain peers and may consume, challenge, or compose Tower exports according to the current objective.
 
 | Repository | Relationship | Boundary |
 |---|---|---|
-| [`GlacierEQ/AKOS`](https://github.com/GlacierEQ/AKOS) | Authority/evidence and orchestration peer | Execution authority, evidence law, completion semantics, operating sequence. |
-| [`GlacierEQ/aspen-grove-core`](https://github.com/GlacierEQ/aspen-grove-core) | Memory peer | Durable context, memory specialization, continuity. |
-| [`GlacierEQ/apex-boot-core`](https://github.com/GlacierEQ/apex-boot-core) | Initialization peer | Identity and initialization contracts. |
-| [`GlacierEQ/Pro_Code`](https://github.com/GlacierEQ/Pro_Code) | Engineering doctrine peer | Standards, doctrine, playbooks. |
-| [`GlacierEQ/pro-code`](https://github.com/GlacierEQ/pro-code) | Engineering execution peer | Implements and verifies engineering changes. |
-| [`GlacierEQ/job-app-helix`](https://github.com/GlacierEQ/job-app-helix) | Evidence/projection peer | Projects verified capabilities without redefining source intent. |
-| [`GlacierEQ/apex-control-plane`](https://github.com/GlacierEQ/apex-control-plane) | Control-plane peer | Automation and execution surface. |
-| [`GlacierEQ/apex-cli`](https://github.com/GlacierEQ/apex-cli) | Operator peer | Command surface for downstream workflows. |
+| [`GlacierEQ/AKOS`](https://github.com/GlacierEQ/AKOS) | Architecture, evidence, and evolution route | Current APEX selection/evolution contract; challengeable and objective-driven. |
+| [`GlacierEQ/aspen-grove-core`](https://github.com/GlacierEQ/aspen-grove-core) | Memory and context-continuity peer | Preserves durable context and contributes routing capability without permanent hierarchy. |
+| [`GlacierEQ/apex-boot-core`](https://github.com/GlacierEQ/apex-boot-core) | Identity and initialization peer | Activates identity, capability, and initialization contracts before governed execution. |
+| [`GlacierEQ/Pro_Code`](https://github.com/GlacierEQ/Pro_Code) | Engineering doctrine peer | Publishes standards, doctrine, and playbooks consumed by implementation systems. |
+| [`GlacierEQ/pro-code`](https://github.com/GlacierEQ/pro-code) | Governed engineering-execution peer | Executes, verifies, cures, and persists engineering changes under shared governance. |
+| [`GlacierEQ/job-app-helix`](https://github.com/GlacierEQ/job-app-helix) | Portfolio projection and evidence mesh | Presents capability and proof without freezing the engineering source state. |
+| [`GlacierEQ/apex-control-plane`](https://github.com/GlacierEQ/apex-control-plane) | Control-plane peer | Execution and automation surface that can consume governed selections. |
+| [`GlacierEQ/apex-cli`](https://github.com/GlacierEQ/apex-cli) | Operator-facing peer | Command surface for downstream control-plane workflows. |
 | [`flagship/`](flagship/) | In-repository integration proof | Executes the strict polyglot mission contract. |
 
-## APEX discipline that survives automation
+External links describe curated portfolio relationships, not a claim that every repository is live-synchronized. Generated interfaces and ownership maps remain the machine-checkable integration source.
 
+## Governance that survives automation
+
+- `main` is the living worker; completed functionality lands there.
 - Generated surfaces are never hand-edited; `tower generate --check` rejects drift.
-- Every claim carries evidence state, proof class, and a semantic claim contract.
-- Blocked hardware, tools, dependencies, and services remain visible and machine-readable.
+- Every claim carries an evidence state, explicit evidence tier, proof class, and registry-owned semantic claim contract.
+- Concept-only and gated references are excluded from runtime selection by default.
+- Blocked hardware, tools, and services remain visible and machine-readable.
 - Cross-language interfaces are explicit and versioned.
-- Integrity distinguishes undeclared drift from reviewed evolution.
-- Every replacement must account for prior unique capability.
-- A passing proof is a checkpoint, not a reason to stop evolving.
-- Merge state and generated projections are evidence of system state, not authority over project intent.
+- Megamind consumes Tower exports and does not maintain a competing registry.
+- Smithery remains `declared-not-published` until an MCP package and external publication receipt exist.
+- The Spiral runtime is executable; registry activation remains `declared` until governed promotion.
+- Integrity, build evidence, proof reports, and receipts remain deterministic review surfaces; `main` receipts additionally receive OIDC-bound Sigstore provenance.
 
 ```text
-edit APEX source fragment
+edit selected fragment
     → update easy + advanced exhibits
-    → compare against incumbent boundary
-    → strengthen proof
+    → add or strengthen the proof gate
     → tower validate
     → tower generate
     → pytest
     → tower build --all --allow-blocked
-    → bind reviewed integrity delta
-    → emit APEX receipt
+    → verify current Git integrity
+    → emit receipt
     → review exact-head CI
-    → pursue next frontier
 ```
+
+See [`AGENTS.md`](AGENTS.md) and [`BRANCH_POLICY.md`](BRANCH_POLICY.md).
 
 ## Truth boundary
 
-The Tower is an **operational-alpha polyglot innovation engine**. It makes strong claims only where checked-in evidence supports them. Unproven records remain references or experiments. Missing hardware, services, toolchains, or evidence remain explicit blockers. The system is expected to become stronger continuously without laundering aspiration into proof or proof into authority over intent.
+The Tower is an **operational-alpha engineering selection and proof system**. It makes strong claims only where checked-in evidence supports them. Concept-only records are references, not capabilities; toolchain-, hardware-, and service-gated floors remain explicitly gated; the selector will not admit them without the required proof. Smithery publication is not claimed. External portfolio relationships are architectural contracts unless a repository contains and verifies a live adapter.
 
 ## License
 

@@ -1,9 +1,9 @@
-"""System tests for the APEX Tower."""
+"""System tests for the governed Tower."""
+
 from __future__ import annotations
 
 import json
 from copy import deepcopy
-from pathlib import Path
 
 import pytest
 
@@ -18,14 +18,35 @@ from tower.receipt import build_receipt
 from tower.registry import REPO_ROOT, TowerRegistry, load_registry, validate_registry
 
 
-def test_apex_registry_governs_all_advertised_floors():
+def test_canonical_registry_governs_all_advertised_floors():
     registry = load_registry()
-    assert len(registry.technologies) == 40
+    assert len(registry.technologies) == 42
+
+
+def test_receipt_is_deterministic():
+    first = build_receipt({"counts": {"VERIFIED": 3}})
+    second = build_receipt({"counts": {"VERIFIED": 3}})
+    assert first == second
+    assert len(first["receipt_sha256"]) == 64
+    assert first["technology_count"] == 36
     assert not validate_registry(registry)
     assert {row["id"] for row in registry.technologies} >= {
-        "python", "c", "rust", "typescript", "cuda", "verilog", "r",
-        "onnx", "mlir", "flatbuffers", "capnproto",
-        "systemverilog", "vhdl", "chisel", "coq", "agda",
+        "python",
+        "c",
+        "rust",
+        "typescript",
+        "cuda",
+        "verilog",
+        "r",
+        "onnx",
+        "mlir",
+        "flatbuffers",
+        "capnproto",
+        "systemverilog",
+        "vhdl",
+        "chisel",
+        "coq",
+        "agda",
     }
 
 
@@ -47,7 +68,7 @@ def test_generated_surfaces_do_not_drift():
     assert generate(check=True) == []
 
 
-def test_generator_emits_one_apex_build_contract_per_floor():
+def test_generator_emits_one_canonical_build_contract_per_floor():
     registry = load_registry()
     surfaces = build_surfaces(registry)
     path = REPO_ROOT / "generated" / "build_commands.json"
@@ -61,12 +82,15 @@ def test_generator_emits_one_apex_build_contract_per_floor():
         assert contract["execution"]["ci_tier"], technology_id
 
 
-def test_runtime_registry_is_thin_apex_facade():
+def test_runtime_registry_is_thin_canonical_facade():
     import babel_registry
 
-    apex = load_registry()
-    assert len(babel_registry.BABEL_REGISTRY) == len(apex.technologies)
-    assert babel_registry.BabelRegistryEngine().get_spec("rust")["what"] == apex.by_id("rust")["what"]
+    canonical = load_registry()
+    assert len(babel_registry.BABEL_REGISTRY) == len(canonical.technologies)
+    assert (
+        babel_registry.BabelRegistryEngine().get_spec("rust")["what"]
+        == canonical.by_id("rust")["what"]
+    )
 
 
 def test_sidecar_has_no_hardcoded_floor_count():
@@ -108,7 +132,12 @@ def test_missing_toolchain_is_an_exact_blocker(monkeypatch):
 def test_hardware_gate_is_not_reported_as_success(monkeypatch):
     fake = {
         "id": "gpu",
-        "toolchain": {"tool": "python3", "reference_pin": "test", "build": [], "test": []},
+        "toolchain": {
+            "tool": "python3",
+            "reference_pin": "test",
+            "build": [],
+            "test": [],
+        },
         "execution": {"ci_tier": "hardware", "hardware_gate": "Example accelerator"},
     }
     monkeypatch.delenv("TOWER_ENABLE_GPU", raising=False)
@@ -143,8 +172,12 @@ def test_registry_rejects_missing_w4h():
     registry = load_registry()
     payload = deepcopy(registry.payload)
     next(row for row in payload["technologies"] if row["id"] == "python")["why"] = ""
-    broken = TowerRegistry(payload=payload, source=registry.source, source_files=registry.source_files)
-    assert any("python.why" in error for error in validate_registry(broken, check_paths=False))
+    broken = TowerRegistry(
+        payload=payload, source=registry.source, source_files=registry.source_files
+    )
+    assert any(
+        "python.why" in error for error in validate_registry(broken, check_paths=False)
+    )
 
 
 def test_integrity_manifest_detects_and_clears_drift(tmp_path):
@@ -160,14 +193,14 @@ def test_receipt_is_deterministic():
     assert first == second
     assert len(first["receipt_sha256"]) == 64
     assert first["technology_count"] == len(load_registry().technologies)
-    assert first["engineering_mode"] == "APEX"
 
 
 def test_tower_proto_contains_registry_and_megamind_contracts():
     tower_proto = (REPO_ROOT / "proto/tower.proto").read_text(encoding="utf-8")
-    bridge_proto = (REPO_ROOT / "integrations/megamind/tower_adapter.proto").read_text(encoding="utf-8")
+    bridge_proto = (REPO_ROOT / "integrations/megamind/tower_adapter.proto").read_text(
+        encoding="utf-8"
+    )
     assert "message TechnologySpec" in tower_proto
-    assert "string apex_source_sha256 = 4" in tower_proto
     assert "service TowerAuthority" in tower_proto
     assert "service TowerMegamindBridge" in bridge_proto
 
@@ -175,7 +208,11 @@ def test_tower_proto_contains_registry_and_megamind_contracts():
 def test_benchmark_report_is_truthful_about_missing_tools():
     registry = load_registry()
     report = benchmark_many(registry, ["mlir"], iterations=1)
-    assert report["results"][0]["status"] in {"BLOCKED_TOOLCHAIN", "MEASURED", "NO_RUNTIME_BENCHMARK"}
+    assert report["results"][0]["status"] in {
+        "BLOCKED_TOOLCHAIN",
+        "MEASURED",
+        "NO_RUNTIME_BENCHMARK",
+    }
     assert "not universal language rankings" in report["truth_note"]
 
 
@@ -190,25 +227,24 @@ def test_proof_report_binds_declared_gate_to_build_status():
     assert lean["proof_status"] == "BLOCKED"
 
 
-def test_packaged_registry_is_exact_apex_mirror():
-    apex_source = load_registry(REPO_ROOT / "registry/tower.yml")
+def test_packaged_registry_is_exact_canonical_mirror():
+    canonical = load_registry(REPO_ROOT / "registry/tower.yml")
     packaged = load_registry(REPO_ROOT / "src/tower/data/tower.yml")
-    assert packaged.payload == apex_source.payload
-    assert packaged.apex_bytes() == apex_source.apex_bytes()
-    assert len(packaged.source_files) == len(apex_source.source_files)
+    assert packaged.payload == canonical.payload
+    assert packaged.canonical_bytes() == canonical.canonical_bytes()
+    assert len(packaged.source_files) == len(canonical.source_files)
 
 
 def test_registry_fragments_are_contained_and_unique(tmp_path):
     index = tmp_path / "tower.yml"
     index.write_text(
-        json.dumps({
-            "tower_id": "glaciereq.tower-of-babel.v1",
-            "governance": {
-                "apex_source": "registry/tower.yml",
-                "apex_model": "indexed_frontier_registry",
-            },
-            "fragments": ["../outside.json"],
-        }),
+        json.dumps(
+            {
+                "tower_id": "glaciereq.tower-of-babel.v1",
+                "governance": {"canonical_source": "registry/tower.yml"},
+                "fragments": ["../outside.json"],
+            }
+        ),
         encoding="utf-8",
     )
     with pytest.raises(ValueError, match="fragment"):
@@ -217,6 +253,7 @@ def test_registry_fragments_are_contained_and_unique(tmp_path):
 
 def test_babel_registry_engine_accepts_repo_root():
     from babel_registry import BabelRegistryEngine
+
     engine = BabelRegistryEngine(repo_root=REPO_ROOT)
     assert engine.get_spec("python")["ok"]
 
@@ -235,17 +272,19 @@ def test_receipt_v2_has_sha256_field():
 
 def test_topology_graph_and_dot_render():
     from tower.visualize import build_topology_graph, render_dot_graph
+
     registry = load_registry()
     graph = build_topology_graph(registry)
     assert graph["node_count"] == len(registry.technologies)
     assert len(graph["nodes"]) == len(registry.technologies)
     dot = render_dot_graph(registry)
     assert "digraph TowerOfBabel" in dot
-    assert 'node [shape=box' in dot
+    assert "node [shape=box" in dot
 
 
 def test_registry_search():
     from tower.visualize import search_registry
+
     registry = load_registry()
     python_matches = search_registry(registry, "python")
     assert any(tech["id"] == "python" for tech in python_matches)

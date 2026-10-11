@@ -46,6 +46,8 @@ The Atlas is generated from `registry/tower.yml` and `registry/advanced-claim-co
 | **JAX + XLA (gated autodiff runtime)** | Reference distributed-mesh shape simulation with an explicit JAX/XLA admission gate — Python reference behavior only until JAX/XLA execution and real sharding are evidenced | `illustrative` / `illustrative` | [`advanced_grok_distributed_mesh.py`](languages/jax/advanced_grok_distributed_mesh.py) |
 | **Soufflé Datalog** | Declarative static security scanner — declarative vulnerability taint flow | `compiles` / `compile` | [`advanced_vulnerability_scanner.dl`](languages/datalog/advanced_vulnerability_scanner.dl) |
 | **RHL-Quant reference quantizer (unbenchmarked)** | Reference ternary/residual quantizer with an explicit accelerator and benchmark admission gate — Numerical reference only until HLO/accelerator execution and baseline quality/performance receipts exist | `illustrative` / `illustrative` | [`advanced_rhl_quant_engine.py`](languages/rhl_quant/advanced_rhl_quant_engine.py) |
+| **HY3 (Tencent Hunyuan) free-tier runtime model** | Free-tier generalist agent runtime model — OpenRouter slug reachability and runtime wiring receipt | `service_gated` / `integration` | [`advanced_hy3_free.json`](languages/llm/advanced_hy3_free.json) |
+| **MiMo v2.5 Pro (Xiaomi) free-tier reasoning model** | Free-tier reasoning-class agent runtime model — OpenRouter slug reachability and runtime wiring receipt | `service_gated` / `integration` | [`advanced_mimo_v2_5_pro.json`](languages/llm/advanced_mimo_v2_5_pro.json) |
 
 ## Machine-enforced claim contract
 

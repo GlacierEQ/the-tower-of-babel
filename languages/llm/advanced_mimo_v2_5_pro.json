@@ -1,0 +1,21 @@
+{
+  "model": "mimo-v2.5-pro-free",
+  "runtime_alias": "opencode/mimo-v2.5-pro:free",
+  "openrouter_slug": "xiaomi/mimo-v2.5-pro",
+  "kind": "advanced_example",
+  "description": "Advanced descriptor and activation contract for the MiMo v2.5 Pro free-tier reasoning model, referenced in the estate as opencode/mimo-v2.5-pro:free and served as a free model through OpenCode Zen, with canonical OpenRouter slug xiaomi/mimo-v2.5-pro.",
+  "interfaces": ["opencode", "chat_completion", "tool_use"],
+  "routing": "opencode (Zen)",
+  "operator_reported_billing": "0 USD — OpenCode Zen runtime free model; not billed via OpenRouter",
+  "evidence_state": "service_gated",
+  "proof_class": "integration",
+  "activation": {
+    "requires": ["openrouter_api_key", "openrouter_reachability"],
+    "blocked_without": ["payment_details"],
+    "receipt_fields": ["status", "slug", "reachable"]
+  },
+  "source_patterns": [
+    "xiaomi/mimo-v2.5-pro",
+    "mimo-v2.5-pro:free"
+  ]
+}

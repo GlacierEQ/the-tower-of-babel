@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Fetch registered frontier sources and emit deterministic observation receipts."""
+
 from __future__ import annotations
 
 import argparse
@@ -56,8 +57,10 @@ def main() -> int:
         if result.get("status") == "ok":
             successful += 1
             prior_hash = prior.get("sha256") if isinstance(prior, dict) else None
-            row["change"] = "first_observation" if prior_hash is None else (
-                "changed" if prior_hash != result.get("sha256") else "unchanged"
+            row["change"] = (
+                "first_observation"
+                if prior_hash is None
+                else ("changed" if prior_hash != result.get("sha256") else "unchanged")
             )
             if row["change"] != "unchanged":
                 changed.append(source["id"])
@@ -74,7 +77,9 @@ def main() -> int:
         "observations": observations,
     }
     Path(args.output).parent.mkdir(parents=True, exist_ok=True)
-    Path(args.output).write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    Path(args.output).write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     print(json.dumps({"successful": successful, "changed": len(changed)}))
     return 0 if successful else 2
 

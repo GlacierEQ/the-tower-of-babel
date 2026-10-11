@@ -8,7 +8,8 @@
     "tower.d/compute-graphs.json",
     "tower.d/contracts-hardware.json",
     "tower.d/formal.json",
-    "tower.d/nextgen-innovations.json"
+    "tower.d/nextgen-innovations.json",
+    "tower.d/llm-models.json"
   ],
   "governance": {
     "addition_rule": "No technology is advertised or integrated outside this registry.",

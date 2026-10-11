@@ -7,10 +7,12 @@ Demonstrates:
   3. Tensor Parallelism & Mesh Sharding abstractions (`NamedSharding`, `PartitionSpec`).
   4. Functional autograd loss calculation and XLA JIT optimization.
 """
+
 import math
 import json
 import time
 from typing import Dict, Any, List, Tuple
+
 
 class GrokJaxDistributedEngine:
     def __init__(self, num_heads: int = 8, head_dim: int = 64, num_layers: int = 4):
@@ -29,9 +31,9 @@ class GrokJaxDistributedEngine:
             cos_t = math.cos(theta)
             sin_t = math.sin(theta)
             if i % 2 == 0 and i + 1 < len(x):
-                val = x[i] * cos_t - x[i+1] * sin_t
+                val = x[i] * cos_t - x[i + 1] * sin_t
             elif i % 2 != 0:
-                val = x[i-1] * sin_t + x[i] * cos_t
+                val = x[i - 1] * sin_t + x[i] * cos_t
             else:
                 val = x[i]
             out.append(round(val, 6))
@@ -41,7 +43,7 @@ class GrokJaxDistributedEngine:
         self,
         query: List[float],
         kv_cache: List[Tuple[List[float], List[float]]],
-        seq_idx: int
+        seq_idx: int,
     ) -> Tuple[List[float], List[Tuple[List[float], List[float]]], float]:
         """Computes Multi-Head Attention with KV-Cache for single token decoding."""
         q_rope = self.apply_rope(query, seq_idx)
@@ -77,12 +79,14 @@ class GrokJaxDistributedEngine:
         """Simulates distributed XLA JIT training step across 8 mesh devices."""
         kv_cache = []
         dummy_query = [0.1 * (i % 7) for i in range(self.embed_dim)]
-        
+
         t0 = time.perf_counter()
         latencies = []
 
         for seq_idx in range(prompt_tokens):
-            _, kv_cache, score = self.multi_head_attention_kv_cache(dummy_query, kv_cache, seq_idx)
+            _, kv_cache, score = self.multi_head_attention_kv_cache(
+                dummy_query, kv_cache, seq_idx
+            )
             latencies.append(score)
 
         elapsed_ms = round((time.perf_counter() - t0) * 1000, 3)
@@ -95,28 +99,30 @@ class GrokJaxDistributedEngine:
                 "mesh_axes": ["data", "model"],
                 "partition_spec": "PartitionSpec('data', 'model')",
                 "xla_devices": 8,
-                "sharding_strategy": "Megatron-LM Tensor Parallel + Pipeline Parallel"
+                "sharding_strategy": "Megatron-LM Tensor Parallel + Pipeline Parallel",
             },
             "transformer_config": {
                 "num_heads": self.num_heads,
                 "head_dim": self.head_dim,
                 "embed_dim": self.embed_dim,
                 "num_layers": self.num_layers,
-                "positional_embeddings": "RoPE (Rotary Position Embeddings)"
+                "positional_embeddings": "RoPE (Rotary Position Embeddings)",
             },
             "execution_metrics": {
                 "tokens_processed": prompt_tokens,
                 "kv_cache_length": len(kv_cache),
                 "avg_attention_score": round(sum(latencies) / len(latencies), 6),
                 "total_time_ms": elapsed_ms,
-                "xla_jit_status": "NOT_EXECUTED"
-            }
+                "xla_jit_status": "NOT_EXECUTED",
+            },
         }
+
 
 def main():
     engine = GrokJaxDistributedEngine(num_heads=8, head_dim=64, num_layers=32)
     report = engine.simulate_sharded_grok_step(prompt_tokens=8)
     print(json.dumps(report, indent=2))
+
 
 if __name__ == "__main__":
     main()

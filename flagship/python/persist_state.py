@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Persist and verify the flagship mission chain through the governed SQL schema."""
+
 from __future__ import annotations
 
 import json
@@ -41,9 +42,15 @@ def main() -> int:
             "usage: persist_state <schema.sql> <db> <mission.json> <decision.json> "
             "<event.json> <plan.json> <readback.json>"
         )
-    schema_path, db_path, mission_path, decision_path, event_path, plan_path, output_path = map(
-        Path, sys.argv[1:]
-    )
+    (
+        schema_path,
+        db_path,
+        mission_path,
+        decision_path,
+        event_path,
+        plan_path,
+        output_path,
+    ) = map(Path, sys.argv[1:])
     mission = read_object(mission_path, "mission")
     decision = read_object(decision_path, "decision")
     event = read_object(event_path, "event")
@@ -61,7 +68,11 @@ def main() -> int:
     if require_sha256(plan, "input_sha256", "plan") != input_sha256:
         raise ValueError("plan input_sha256 does not match mission")
     observed_input = decision.get("observed_input_sha256")
-    if observed_input is not None and require_sha256(decision, "observed_input_sha256", "decision") != input_sha256:
+    if (
+        observed_input is not None
+        and require_sha256(decision, "observed_input_sha256", "decision")
+        != input_sha256
+    ):
         raise ValueError("decision observed_input_sha256 does not match mission")
 
     authority_status = "SUCCEEDED" if decision.get("allowed") is True else "BLOCKED"
@@ -136,7 +147,9 @@ def main() -> int:
         "evidence_sha256": row[7],
     }
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(readback, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    output_path.write_text(
+        json.dumps(readback, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     print(json.dumps(readback, sort_keys=True))
     return 0
 
