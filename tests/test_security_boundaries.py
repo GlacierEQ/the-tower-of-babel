@@ -64,9 +64,9 @@ class SecurityBoundaryTests(unittest.TestCase):
             {
                 "id": "unsafe",
                 "toolchain": {
-                    "tool": "curl",
+                    "tool": "wget",
                     "reference_pin": "1",
-                    "build": [["curl", "https://example.invalid"]],
+                    "build": [["wget", "https://example.invalid"]],
                     "test": [],
                 },
                 "execution": {"hardware_gate": "", "ci_tier": "portable"},

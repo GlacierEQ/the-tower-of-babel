@@ -1,26 +1,37 @@
 {
+  "access_mode": "PRIVATE_SOURCE_OBSERVED_THROUGH_AUTHORIZED_REPOSITORY_ACCESS",
+  "max_age_hours": 168,
+  "observed_at": "2026-10-12T01:10:28.678744Z",
+  "observed_blob_sha": "b137384e7abaffb9f746b3ed783576ec9315cb51",
+  "observed_commit": "450b60e768a7276d8e1afc3ccd377426069caf2c",
+  "public_projection_policy": "NO_PRIVATE_SOURCE_BODY_COPIED_TO_PUBLIC_REPOSITORY",
   "schema": "glaciereq.private-source-checkpoint.v1",
-  "source_repository": "GlacierEQ/AKOS",
   "source_path": "governance/glaciereq.nervous-system.v2.json",
   "source_ref": "main",
-  "observed_commit": "450b60e768a7276d8e1afc3ccd377426069caf2c",
-  "observed_blob_sha": "b137384e7abaffb9f746b3ed783576ec9315cb51",
-  "observed_at": "2026-09-07T04:20:00Z",
-  "max_age_hours": 168,
-  "access_mode": "PRIVATE_SOURCE_OBSERVED_THROUGH_AUTHORIZED_REPOSITORY_ACCESS",
-  "public_projection_policy": "NO_PRIVATE_SOURCE_BODY_COPIED_TO_PUBLIC_REPOSITORY",
+  "source_repository": "GlacierEQ/AKOS",
   "verified_summary": {
-    "schema_id": "glaciereq.nervous-system.v2",
-    "version": "2.1.0",
-    "selection_mode": "CURRENT_BEST_REVISABLE",
-    "challengeable": true,
     "capability_donor_preservation": true,
+    "challengeable": true,
+    "machine_project_direction_authority": false,
     "operator_objective_precedence": true,
     "operator_project_direction_authority": true,
-    "machine_project_direction_authority": false,
-    "tower_role": "polyglot_placement_interoperability_proof",
+    "schema_id": "glaciereq.nervous-system.v2",
+    "selection_mode": "CURRENT_BEST_REVISABLE",
     "tower_apex_role": "ACTIVE_POLYGLOT_ENGINEERING_CAPABILITY_DONOR",
-    "tower_required_terms": ["technology", "interoperability", "proof", "language"],
-    "tower_required_links": ["GlacierEQ/AKOS", "GlacierEQ/aspen-grove-core", "GlacierEQ/apex-boot-core", "GlacierEQ/Pro_Code", "GlacierEQ/pro-code"]
+    "tower_required_links": [
+      "GlacierEQ/AKOS",
+      "GlacierEQ/aspen-grove-core",
+      "GlacierEQ/apex-boot-core",
+      "GlacierEQ/Pro_Code",
+      "GlacierEQ/pro-code"
+    ],
+    "tower_required_terms": [
+      "technology",
+      "interoperability",
+      "proof",
+      "language"
+    ],
+    "tower_role": "polyglot_placement_interoperability_proof",
+    "version": "2.1.0"
   }
 }

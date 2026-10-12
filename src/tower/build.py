@@ -29,6 +29,7 @@ _SAFE_EXECUTABLES = frozenset(
         "cmake",
         "coqc",
         "ctest",
+        "curl",
         "elixir",
         "flatc",
         "g++",
