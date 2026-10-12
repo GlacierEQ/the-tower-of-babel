@@ -231,7 +231,7 @@ def test_packaged_registry_is_exact_canonical_mirror():
     canonical = load_registry(REPO_ROOT / "registry/tower.yml")
     packaged = load_registry(REPO_ROOT / "src/tower/data/tower.yml")
     assert packaged.payload == canonical.payload
-    assert packaged.canonical_bytes() == canonical.canonical_bytes()
+    assert packaged.apex_bytes() == canonical.apex_bytes()
     assert len(packaged.source_files) == len(canonical.source_files)
 
 

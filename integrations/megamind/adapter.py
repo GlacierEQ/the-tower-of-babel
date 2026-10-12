@@ -176,7 +176,7 @@ def select_technologies(
             if any(reason.startswith("interface:") for reason in candidate[2]):
                 selected.append(candidate)
 
-    registry_sha = hashlib.sha256(registry.canonical_bytes()).hexdigest()
+    registry_sha = hashlib.sha256(registry.apex_bytes()).hexdigest()
     agents = sorted(
         {
             agent

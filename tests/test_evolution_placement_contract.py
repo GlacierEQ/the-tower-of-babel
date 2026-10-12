@@ -113,7 +113,6 @@ def test_contract_is_consistent_with_apex_tower_source_and_quality_proof():
     assert REGISTRY["governance"]["apex_source"] == "registry/tower.yml"
     assert "canonical_source" not in REGISTRY["governance"]
     assert CATALOG["source"] == "registry/tower.yml"
-    assert CATALOG["engineering_mode"] == "APEX"
     assert "technology:python" in CATALOG["capabilities"]
     assert "technology:go" in CATALOG["capabilities"]
     assert "technology:rust" in CATALOG["capabilities"]

@@ -54,7 +54,7 @@ def build_receipt(build_report: dict[str, Any]) -> dict[str, Any]:
     governed_ids = {technology["id"] for technology in registry.technologies}
     build_errors = _validate_build_report(build_report, governed_ids)
     integrity = verify_integrity()
-    registry_sha = hashlib.sha256(registry.canonical_bytes()).hexdigest()
+    registry_sha = hashlib.sha256(registry.apex_bytes()).hexdigest()
     integrity_identity_sha = str(integrity.get("receipt_sha256", ""))
     build_sha = hashlib.sha256(_stable_json(build_report)).hexdigest()
 
