@@ -1,0 +1,94 @@
+name: APEX Surface Regeneration
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apex-surface-regeneration-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout requested APEX ref
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.ref_name }}
+          persist-credentials: true
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.12"
+
+      - name: Regenerate APEX-derived Tower surfaces
+        env:
+          PYTHONPATH: src
+        run: python -m tower.generate
+
+      - name: Bind exact APEX evolution delta to immutable base
+        env:
+          PYTHONPATH: src
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from tower.integrity import MANIFEST, DELTA_MANIFEST, collect_hashes
+
+          base_bytes = MANIFEST.read_bytes()
+          base_sha256 = hashlib.sha256(base_bytes).hexdigest()
+          base = json.loads(base_bytes.decode("utf-8"))
+          base_hashes = base["hashes"]
+          current = collect_hashes()
+
+          changes = {
+              path: digest
+              for path, digest in sorted(current.items())
+              if base_hashes.get(path) != digest
+          }
+          removals = sorted(set(base_hashes) - set(current))
+          payload = {
+              "schema": "glaciereq.integrity-delta.v1",
+              "base_manifest_sha256": base_sha256,
+              "engineering_mode": "APEX",
+              "reason": "Reviewed APEX evolution: derived surfaces and proof state are regenerated from authored source while immutable historical base truth is preserved.",
+              "changes": changes,
+              "removals": removals,
+              "resulting_file_count": len(current),
+          }
+          DELTA_MANIFEST.write_text(
+              json.dumps(payload, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          print(json.dumps({
+              "base_manifest_sha256": base_sha256,
+              "changes": len(changes),
+              "removals": len(removals),
+              "resulting_file_count": len(current),
+          }, indent=2))
+          PY
+
+      - name: Verify generated surfaces before commit
+        env:
+          PYTHONPATH: src
+        run: |
+          python -m tower.generate --check
+          git diff --check
+
+      - name: Commit exact generated APEX state
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "GlacierEQ APEX Automation"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No generated APEX delta required."
+            exit 0
+          fi
+          git commit -m "APEX: regenerate derived surfaces and integrity delta [apex-generated]"
+          git push origin "HEAD:${{ github.ref_name }}"

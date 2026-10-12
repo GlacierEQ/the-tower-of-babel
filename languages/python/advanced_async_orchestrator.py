@@ -92,7 +92,9 @@ class CircuitBreaker:
         async with self._lock:
             self.failures += 1
             self._probe_in_flight = False
-            tripped = self.failures >= self.threshold or self.state is CircuitState.HALF_OPEN
+            tripped = (
+                self.failures >= self.threshold or self.state is CircuitState.HALF_OPEN
+            )
             if tripped:
                 self.state = CircuitState.OPEN
                 self.opened_at = time.monotonic()
@@ -103,12 +105,16 @@ Handler = Callable[[dict[str, Any]], Awaitable[Any]]
 
 
 class Agent:
-    def __init__(self, agent_id: str, handler: Handler, *, concurrency: int, capacity: int) -> None:
+    def __init__(
+        self, agent_id: str, handler: Handler, *, concurrency: int, capacity: int
+    ) -> None:
         if concurrency < 1 or capacity < 1:
             raise ValueError("agent bounds must be positive")
         self.agent_id = agent_id
         self.handler = handler
-        self.queue: asyncio.PriorityQueue[tuple[int, int, Work]] = asyncio.PriorityQueue(capacity)
+        self.queue: asyncio.PriorityQueue[tuple[int, int, Work]] = (
+            asyncio.PriorityQueue(capacity)
+        )
         self.metrics = Metrics()
         self.circuit = CircuitBreaker()
         self._sequence = 0
@@ -185,7 +191,9 @@ class Orchestrator:
     ) -> None:
         if agent_id in self.agents or not capabilities:
             raise ValueError("agent id must be unique and capabilities non-empty")
-        self.agents[agent_id] = Agent(agent_id, handler, concurrency=concurrency, capacity=capacity)
+        self.agents[agent_id] = Agent(
+            agent_id, handler, concurrency=concurrency, capacity=capacity
+        )
         for capability in capabilities:
             self.routes[capability].append(agent_id)
 
@@ -194,10 +202,21 @@ class Orchestrator:
 
     def _select(self, capability: str) -> Agent:
         candidates = [self.agents[key] for key in self.routes.get(capability, [])]
-        candidates = [agent for agent in candidates if agent.circuit.state is not CircuitState.OPEN]
+        candidates = [
+            agent
+            for agent in candidates
+            if agent.circuit.state is not CircuitState.OPEN
+        ]
         if not candidates:
             raise LookupError(f"no available agent for {capability}")
-        return min(candidates, key=lambda agent: (agent.queue.qsize(), agent.metrics.average_latency_ms, agent.agent_id))
+        return min(
+            candidates,
+            key=lambda agent: (
+                agent.queue.qsize(),
+                agent.metrics.average_latency_ms,
+                agent.agent_id,
+            ),
+        )
 
     async def dispatch(
         self,
@@ -252,7 +271,9 @@ async def _demo() -> None:
         return {"processed": payload["id"]}
 
     orchestrator = Orchestrator()
-    orchestrator.register("inference-a", handler, ["inference"], concurrency=1, capacity=8)
+    orchestrator.register(
+        "inference-a", handler, ["inference"], concurrency=1, capacity=8
+    )
     futures = [
         await orchestrator.dispatch("inference", {"id": 1}, Priority.LOW),
         await orchestrator.dispatch("inference", {"id": 2}, Priority.CRITICAL),

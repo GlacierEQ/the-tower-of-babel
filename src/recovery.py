@@ -1,5 +1,7 @@
 """Source-aware language transformation with explicit provenance."""
+
 from dataclasses import dataclass
+
 
 @dataclass(frozen=True)
 class Translation:
@@ -9,4 +11,8 @@ class Translation:
     source_digest: str
 
     def receipt(self) -> dict[str, str]:
-        return {'source': self.source, 'ruleset': self.ruleset, 'source_digest': self.source_digest}
+        return {
+            "source": self.source,
+            "ruleset": self.ruleset,
+            "source_digest": self.source_digest,
+        }

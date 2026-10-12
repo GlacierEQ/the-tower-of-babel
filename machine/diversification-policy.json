@@ -1,0 +1,148 @@
+{
+  "schema": "glaciereq.technology-diversification-policy.v2",
+  "system_id": "glaciereq.tower-of-babel.v1",
+  "default_decision": "evaluate_additive_benefit",
+  "principle": "Use as many governed technologies as materially improve the system. A language, runtime, format, compiler IR, serialization system, proof system, or hardware boundary should be added when it contributes a distinct evidence-qualified benefit whose value exceeds its integration and operational cost. Existing technologies do not need to fail first; specialists should coexist when they own different functions better.",
+  "optimization_goal": "maximize_verified_system_advantage_without_redundant_responsibility",
+  "benefit_dimensions": [
+    "performance",
+    "memory_efficiency",
+    "memory_safety",
+    "data_layout_control",
+    "interoperability",
+    "model_portability",
+    "zero_copy_access",
+    "hardware_acceleration",
+    "compression",
+    "sandboxing",
+    "formal_verification",
+    "fault_tolerance",
+    "deployment_portability",
+    "developer_velocity"
+  ],
+  "decision_record": {
+    "required_fields": [
+      "problem_boundary",
+      "existing_composition",
+      "candidate_floor",
+      "benefit_dimension",
+      "measurable_requirement",
+      "comparison_method",
+      "integration_cost",
+      "failure_modes",
+      "interop_boundary",
+      "proof_gate",
+      "rollback_path"
+    ]
+  },
+  "admission_gates": [
+    "boundary_is_real_not_novelty",
+    "candidate_has_distinct_system_role",
+    "marginal_benefit_is_positive",
+    "benefit_claim_matches_required_evidence",
+    "interop_contract_explicit",
+    "operational_cost_bounded",
+    "failure_and_rollback_defined",
+    "required_evidence_gate_passed"
+  ],
+  "benefit_proof_floor": {
+    "performance": "benchmark",
+    "memory_efficiency": "benchmark",
+    "memory_safety": "behavioral",
+    "data_layout_control": "behavioral",
+    "interoperability": "behavioral",
+    "model_portability": "behavioral",
+    "zero_copy_access": "behavioral",
+    "hardware_acceleration": "hardware",
+    "compression": "benchmark",
+    "sandboxing": "behavioral",
+    "formal_verification": "formal",
+    "fault_tolerance": "behavioral",
+    "deployment_portability": "behavioral",
+    "developer_velocity": "behavioral"
+  },
+  "claim_rules": {
+    "performance_or_compression": "benchmark",
+    "hardware_acceleration": "hardware_gated_or_hardware_proof",
+    "runtime_behavior": "tested",
+    "syntax_or_toolchain_presence": "compiles",
+    "production_reference": "revision_bound_local_production_receipt"
+  },
+  "anti_patterns": [
+    "minimal_language_count_as_quality",
+    "language_count_as_quality_without_benefit",
+    "resume_signaling_as_architecture",
+    "rewrite_for_novelty",
+    "external_reputation_as_local_proof",
+    "performance_claim_without_baseline",
+    "format_selected_for_a_job_it_does_not_own",
+    "one_language_for_every_function",
+    "rejecting_a_helpful_specialist_only_because_the_function_is_already_covered"
+  ],
+  "role_examples": {
+    "protobuf": {
+      "owns": [
+        "evolvable typed cross-language messages",
+        "rpc and telemetry contracts",
+        "compact control and receipt envelopes"
+      ],
+      "does_not_own": [
+        "bulk dense model weights",
+        "zero-copy hot-path tensor access",
+        "general human-authored configuration"
+      ]
+    },
+    "flatbuffers": {
+      "owns": [
+        "schema-driven low-allocation binary access",
+        "latency-sensitive local ipc and telemetry"
+      ],
+      "does_not_own": [
+        "general rpc semantics",
+        "training checkpoints"
+      ]
+    },
+    "onnx": {
+      "owns": [
+        "portable typed machine-learning compute graphs",
+        "model exchange and inference-backend portability",
+        "graph inspection and optimization boundaries"
+      ],
+      "does_not_own": [
+        "general application configuration",
+        "arbitrary training checkpoints",
+        "proof of model quality by file existence"
+      ]
+    },
+    "odin": {
+      "owns": [
+        "data-oriented native loops",
+        "explicit allocator and memory-context control",
+        "predictable SIMD-friendly layouts when its toolchain is proven"
+      ],
+      "does_not_own": [
+        "all memory-safe systems by default",
+        "cross-language contracts",
+        "automatic replacement of proven C Rust or Zig components"
+      ]
+    },
+    "rust": {
+      "owns": [
+        "memory-safe native authority boundaries",
+        "concurrency-sensitive security and evidence components"
+      ],
+      "does_not_own": [
+        "every low-level component regardless of interoperability cost"
+      ]
+    },
+    "rhl_quant": {
+      "owns": [
+        "experimental model quantization and compression after benchmark admission"
+      ],
+      "does_not_own": [
+        "production compression before quality memory throughput and backend benchmarks",
+        "model serialization contracts"
+      ]
+    }
+  }
+}

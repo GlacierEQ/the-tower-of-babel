@@ -7,6 +7,7 @@ masquerading as VERIFIED.
 Mechanism: engineered_first_class / formal floor for polyglot placement
 (Library of Links: Wasm Core Spec + Lean 4 Manual).
 """
+
 from __future__ import annotations
 
 import json
@@ -16,7 +17,9 @@ from typing import Any
 
 # Honest plane labels for this module's own claims
 PLANE_IMPLEMENTED = "IMPLEMENTED"  # inventory + refuse paths exist
-PLANE_VERIFIED = "VERIFIED"  # only when external proof harness says so (not this module)
+PLANE_VERIFIED = (
+    "VERIFIED"  # only when external proof harness says so (not this module)
+)
 
 LEAN_PATHS: tuple[str, ...] = (
     "languages/lean4/easy_logic.lean",
@@ -152,5 +155,7 @@ def write_receipt(root: Path | None = None, path: Path | None = None) -> Path:
         "placement": placement_contract_snippet(),
         "ok": floor.complete,
     }
-    out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    out.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     return out

@@ -951,6 +951,52 @@
         "dedup|duplicate"
       ],
       "signature_innovation": "Mission-scoped allocator discipline"
+    },
+    "hy3-free": {
+      "signature_innovation": "Free-tier generalist agent runtime model",
+      "proof_surface": "OpenRouter slug reachability and runtime wiring receipt",
+      "required_source_patterns": [
+        "tencent/hy3",
+        "opencode/hy3-free"
+      ],
+      "expected_failure_cases": [
+        "missing openrouter api key",
+        "slug not reachable",
+        "payment-gated fallback"
+      ],
+      "required_receipt_fields": [
+        "status",
+        "slug",
+        "reachable"
+      ],
+      "forbidden_claim_patterns": [
+        "production correctness",
+        "formally verified",
+        "frontier reasoning"
+      ]
+    },
+    "mimo-v2.5-pro-free": {
+      "signature_innovation": "Free-tier reasoning-class agent runtime model",
+      "proof_surface": "OpenRouter slug reachability and runtime wiring receipt",
+      "required_source_patterns": [
+        "xiaomi/mimo-v2.5-pro",
+        "mimo-v2.5-pro:free"
+      ],
+      "expected_failure_cases": [
+        "missing openrouter api key",
+        "slug not reachable",
+        "payment-gated fallback"
+      ],
+      "required_receipt_fields": [
+        "status",
+        "slug",
+        "reachable"
+      ],
+      "forbidden_claim_patterns": [
+        "production correctness",
+        "formally verified",
+        "largest frontier model"
+      ]
     }
   },
   "global_claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
