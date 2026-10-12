@@ -1,0 +1,27 @@
+{
+  "schema": "glaciereq.peer-discovery-pointer.v1",
+  "repo": "GlacierEQ/the-tower-of-babel",
+  "contract": "This file advertises where to begin live discovery. It does not freeze this repository's role, capabilities, maturity, or end state.",
+  "discovery": {
+    "mode": "repo_native_live",
+    "roots": [
+      "registry/tower.yml",
+      "generated/megamind.technology-map.json",
+      "generated/interfaces.json",
+      "generated/maturity.json",
+      "README.md"
+    ],
+    "rule": "Inspect current repository head and follow repo-owned indexes/registries from these bootstrap roots. Discover beyond them when the objective requires it."
+  },
+  "mesh": {
+    "bootstrap_repo": "GlacierEQ/apex-control-plane",
+    "bootstrap_path": "integration/cognitive_mesh.json"
+  },
+  "invariants": [
+    "standalone capability remains intact",
+    "live source state outranks copied descriptions",
+    "route instead of copy",
+    "compose without permanent hierarchy",
+    "rediscover after material change"
+  ]
+}
