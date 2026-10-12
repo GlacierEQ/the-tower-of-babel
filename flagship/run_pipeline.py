@@ -180,7 +180,7 @@ def main() -> int:
     expected_maximum_action = canonical_mission(source_payload)["maximum_action"]
 
     registry = load_registry()
-    expected_registry_sha256 = hashlib.sha256(registry.canonical_bytes()).hexdigest()
+    expected_registry_sha256 = hashlib.sha256(registry.apex_bytes()).hexdigest()
     allowed_technology_ids = ",".join(
         sorted(technology["id"] for technology in registry.technologies)
     )
