@@ -8,7 +8,7 @@
 
 The Tower of Babel **decides where a technology belongs, explains why it belongs there, shows how it works, verifies the claim at the strongest available proof level, and exports the result for humans, software, and AI agents**.
 
-It is not a language collection built for display. It is a governed engineering map: **40 technology floors**, **80 linked exhibits**, versioned interface contracts, explicit blockers, executable build gates, and deterministic receipts. A floor earns its role through runtime behavior, safety, performance, hardware fit, or interoperability—not decorative polyglot signaling.
+It is not a language collection built for display. It is a governed engineering map: **41 technology floors**, **82 linked exhibits**, versioned interface contracts, explicit blockers, executable build gates, and deterministic receipts. A floor earns its role through runtime behavior, safety, performance, hardware fit, or interoperability—not decorative polyglot signaling.
 
 ## The system in one minute
 
@@ -23,9 +23,9 @@ It is not a language collection built for display. It is a governed engineering 
 
 | Governed surface | Count |
 |---|---:|
-| Technology floors | **40** |
-| Easy + advanced exhibits | **80** |
-| Behavioral proof floors | **17** |
+| Technology floors | **41** |
+| Easy + advanced exhibits | **82** |
+| Behavioral proof floors | **19** |
 | Formal proof floors | **3** |
 | Explicitly gated floors | **9** |
 
@@ -181,7 +181,7 @@ See [`flagship/README.md`](flagship/README.md) and run `python flagship/run_pipe
 
 ## Advanced Exhibit Atlas
 
-The easy exhibit teaches the technology. The advanced exhibit must own a real engineering boundary, expose failure behavior, and terminate in proof or an exact blocker. [`ADVANCED_EXHIBITS.md`](ADVANCED_EXHIBITS.md) publishes the signature engineering move and claim boundary for all 40 floors; [`quality/advanced_exhibit_atlas.json`](quality/advanced_exhibit_atlas.json) provides the same map to agents and automation.
+The easy exhibit teaches the technology. The advanced exhibit must own a real engineering boundary, expose failure behavior, and terminate in proof or an exact blocker. [`ADVANCED_EXHIBITS.md`](ADVANCED_EXHIBITS.md) publishes the signature engineering move and claim boundary for all 41 floors; [`quality/advanced_exhibit_atlas.json`](quality/advanced_exhibit_atlas.json) provides the same map to agents and automation.
 
 ## The thirty-floor map
 
@@ -226,12 +226,13 @@ The matrix is generated from the current reviewed registry. Change the registry 
 | 32 | **Lean 4** `.lean` | proof_language | Combines dependent types, executable functional programming, and machine-checked proofs. | Safety invariants, receipt-chain correctness, mathematics, and verified decision gates. | Use when a critical property must be proven rather than sampled by tests. | It produces kernel-checked proofs with explicit assumptions and reusable theorem libraries. | `formally_verified` / `formal` | [easy_logic.lean](languages/lean4/easy_logic.lean) | [advanced_truth_gate_proof.lean](languages/lean4/advanced_truth_gate_proof.lean) |
 | 33 | **Coq** `.v` | proof_language | Defines programs and machine-checked proofs in the Calculus of Inductive Constructions. | Verified compilers, protocols, cryptography, semantics, and critical algorithms. | Use when constructive proofs, extraction, or mature proof libraries fit the assurance case. | It checks every proof term with a small trusted kernel and can extract verified programs. | `formally_verified` / `formal` | [easy_logic.v](languages/coq/easy_logic.v) | [advanced_receipt_chain.v](languages/coq/advanced_receipt_chain.v) |
 | 34 | **Agda** `.agda` | proof_language | Uses dependent types for proofs and total functional programs. | Protocol models, type-safe DSLs, mathematical structures, and certified transformations. | Use when the implementation and proof should inhabit the same expressive dependent type system. | It makes invariants part of types and requires total, structurally valid definitions. | `formally_verified` / `formal` | [easy_logic.agda](languages/agda/easy_logic.agda) | [advanced_capability_lattice.agda](languages/agda/advanced_capability_lattice.agda) |
-| 35 | **eBPF** `.bpf.c` | bytecode | Executes sandboxed bytecode inside the Linux kernel without modifying kernel source code. | Linux kernel tracing, Cilium networking, Falco security auditing, and socket performance profiling. | Use when kernel-level observability, network packet filtering, or syscall enforcement is required at line rate. | It enables programmable zero-overhead packet filtering, syscall tracing, and real-time security auditing. | `compiles` / `compile` | [easy_packet_filter.bpf.c](languages/ebpf/easy_packet_filter.bpf.c) | [advanced_syscall_sentinel.bpf.c](languages/ebpf/advanced_syscall_sentinel.bpf.c) |
+| 35 | **eBPF** `.bpf.c` | bytecode | Executes sandboxed bytecode inside the Linux kernel without modifying kernel source code. | Linux kernel tracing, Cilium networking, Falco security auditing, and socket performance profiling. | Use when kernel-level observability, network packet filtering, or syscall enforcement is required at line rate. | It enables programmable zero-overhead packet filtering, syscall tracing, and real-time security auditing. | `tested` / `behavioral` | [easy_packet_filter.bpf.c](languages/ebpf/easy_packet_filter.bpf.c) | [advanced_syscall_sentinel.bpf.c](languages/ebpf/advanced_syscall_sentinel.bpf.c) |
 | 36 | **OpenQASM 3.0** `.qasm` | circuit_description | Describes quantum circuits, entanglement gates, and classical feedback loops for QPUs. | IBM Quantum, AWS Braket, Rigetti, QPU simulators, and quantum error correction algorithms. | Use when constructing quantum circuits, Bell states, or hybrid quantum-classical algorithms. | It provides a hardware-agnostic intermediate representation for gate-based quantum compilation. | `toolchain_gated` / `compile` | [easy_bell_state.qasm](languages/openqasm/easy_bell_state.qasm) | [advanced_grover_oracle.qasm](languages/openqasm/advanced_grover_oracle.qasm) |
 | 37 | **Cairo** `.cairo` | turing_complete_zk | A Turing-complete language for writing STARK-provable programs and zero-knowledge verification logic. | Starknet, STARK-based L2 rollups, verifiable AI inference, and privacy-preserving audit ledgers. | Use when off-chain state execution must produce cryptographically verifiable proof of correctness. | It allows complex off-chain execution to be mathematically proven on-chain via succinct cryptographic receipts. | `toolchain_gated` / `compile` | [easy_fib_proof.cairo](languages/cairo/easy_fib_proof.cairo) | [advanced_stark_governor.cairo](languages/cairo/advanced_stark_governor.cairo) |
 | 38 | **JAX + XLA (gated autodiff runtime)** `.py` | tensor_autodiff | Python autodiff and XLA compilation framework; this record is a pure-Python shape simulation until JAX executes. | Verified JAX runtimes with a declared CPU/GPU/TPU backend and reproducible device tests. | Select only after JAX imports, jax.jit or pjit executes, and the requested sharding/backend receipt is captured. | Use when JAX/XLA provides a measured advantage for autodiff, compilation, or device parallelism. | `illustrative` / `illustrative` | [easy_grad_jit.py](languages/jax/easy_grad_jit.py) | [advanced_grok_distributed_mesh.py](languages/jax/advanced_grok_distributed_mesh.py) |
 | 39 | **Soufflé Datalog** `.dl` | logic_rules | Declarative logic programming language for high-speed static code analysis and security verification. | Vulnerability scanning, compiler program analysis, access control evaluation, and static call graph analysis. | Use when declarative rule-based query evaluation across large code graphs is required. | It resolves complex graph reachability, pointer analysis, and security policy rules in parallel C++ code. | `compiles` / `compile` | [easy_reachability.dl](languages/datalog/easy_reachability.dl) | [advanced_vulnerability_scanner.dl](languages/datalog/advanced_vulnerability_scanner.dl) |
 | 40 | **RHL-Quant reference quantizer (unbenchmarked)** `.py` | tensor_compression | Reference ternary/residual quantization experiment; no accelerator, model-scale, memory, or quality result is established here. | Benchmark harnesses for model compression after a backend, dataset, quality metric, and rollback path are defined. | Select only after a real backend implementation, baseline comparison, memory measurement, throughput measurement, and quality delta are verified. | A candidate compression path, not an operational choice, until numerical baselines and hardware measurements are reproduced. | `illustrative` / `illustrative` | [easy_ternary_scale.py](languages/rhl_quant/easy_ternary_scale.py) | [advanced_rhl_quant_engine.py](languages/rhl_quant/advanced_rhl_quant_engine.py) |
+| 41 | **Genius-Mastery family kernel** `.py` | kernel | Validates, doctors, synthesizes, and receipts Genius family repositories under mastery-not-skills doctrine. | Genius family repos, Buildkite macos-self on OCI glacier-agent, mega-skills hierarchy. | Use when a Genius entity must be named, synthesized, validated, or receipted. | It is the GlacierEQ kernel for forging Genius entities with claim-evidence vectors instead of skill dumps. | `tested` / `behavioral` | [easy_name.py](languages/genius-mastery/easy_name.py) | [advanced_kernel_gate.py](languages/genius-mastery/advanced_kernel_gate.py) |
 
 </details>
 
@@ -265,7 +266,7 @@ The matrix is generated from the current reviewed registry. Change the registry 
 - **Jvm Multiplatform** — Kotlin
 - **Kernel Tracing And Security** — eBPF
 - **Memory Safe Systems** — Rust
-- **Orchestration And Ai** — Python
+- **Orchestration And Ai** — Python, Genius-Mastery family kernel
 - **Portable Systems** — Zig
 - **Pure Functional** — Haskell
 - **Quantization And Compression** — RHL-Quant reference quantizer (unbenchmarked)

@@ -2,6 +2,28 @@
   "authority": "registry/tower.yml",
   "contract_type": "advanced_exhibit_semantic_claims",
   "contracts": {
+    "genius-mastery": {
+      "expected_failure_cases": [
+        "empty purpose",
+        "missing kernel:true",
+        "purpose not Mastery"
+      ],
+      "forbidden_claim_patterns": [
+        "mastery percentage",
+        "complete genius",
+        "skills dump"
+      ],
+      "proof_surface": "naming contract Genius-Distributed-Systems and GENIUS.yaml kernel gate",
+      "required_receipt_fields": [
+        "name",
+        "kernel"
+      ],
+      "required_source_patterns": [
+        "Genius-",
+        "kernel"
+      ],
+      "signature_innovation": "Mastery-not-skills family kernel"
+    },
     "agda": {
       "expected_failure_cases": [
         "destructive downgrade",

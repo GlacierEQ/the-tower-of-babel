@@ -1322,8 +1322,8 @@
       "advanced_exhibit": "languages/ebpf/advanced_syscall_sentinel.bpf.c",
       "architectural_role": "Linux kernel tracing, Cilium networking, Falco security auditing, and socket performance profiling.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
-      "evidence_state": "compiles",
-      "evidence_tier": "runnable_reference",
+      "evidence_state": "tested",
+      "evidence_tier": "tested_implementation",
       "expected_failure_cases": [
         "unapproved syscall",
         "map allocation failure",
@@ -1338,9 +1338,9 @@
         "c_abi",
         "bpf_map"
       ],
-      "maturity_tier": "runnable_reference",
+      "maturity_tier": "tested_implementation",
       "promotion_gate": {},
-      "proof_class": "compile",
+      "proof_class": "behavioral",
       "proof_surface": "kernel syscall execve sentinel",
       "required_receipt_fields": [
         "trace_sys_execve",
