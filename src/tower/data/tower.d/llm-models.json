@@ -42,7 +42,9 @@
           [
             "curl",
             "-fsS",
-            "https://openrouter.ai/api/v1/models/tencent/hy3",
+            "--max-time",
+            "10",
+            "https://openrouter.ai/api/v1/models",
             "-o",
             "/dev/null"
           ]
@@ -52,7 +54,9 @@
           [
             "curl",
             "-fsS",
-            "https://openrouter.ai/api/v1/models/tencent/hy3"
+            "--max-time",
+            "10",
+            "https://openrouter.ai/api/v1/models"
           ]
         ],
         "tool": "curl"
@@ -104,7 +108,9 @@
           [
             "curl",
             "-fsS",
-            "https://openrouter.ai/api/v1/models/xiaomi/mimo-v2.5-pro",
+            "--max-time",
+            "10",
+            "https://openrouter.ai/api/v1/models",
             "-o",
             "/dev/null"
           ]
@@ -114,7 +120,9 @@
           [
             "curl",
             "-fsS",
-            "https://openrouter.ai/api/v1/models/xiaomi/mimo-v2.5-pro"
+            "--max-time",
+            "10",
+            "https://openrouter.ai/api/v1/models"
           ]
         ],
         "tool": "curl"
