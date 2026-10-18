@@ -9,8 +9,6 @@ The Atlas is generated from `registry/tower.yml` and `registry/advanced-claim-co
 | **C** | Lock-free SPSC telemetry handoff — bounded queue, atomics, FIFO and backpressure receipt | `tested` / `behavioral` | [`advanced_lockfree_spsc_ring.c`](languages/c/advanced_lockfree_spsc_ring.c) |
 | **C++** | Entropy-aware KV cache policy — deterministic utility scoring, pinned retention and decision fingerprint | `tested` / `behavioral` | [`advanced_kv_entropy.cpp`](languages/cpp/advanced_kv_entropy.cpp) |
 | **Rust** | Typed side-effect safety governor — fail-closed path, payload, depth and approval policy | `tested` / `behavioral` | [`advanced_safety_governor.rs`](languages/rust/advanced_safety_governor.rs) |
-
-**Rust exhibit scope:** Typed preflight policy plus symlink-aware existing-path checks; not an operating-system-enforced file capability or authenticated mutation approval. See [Rust boundary fitness and proof limits](docs/RUST_BOUNDARY_FIT_2026-10-17.md).
 | **Zig** | Mission-scoped allocator discipline — arena lifetime, deduplication and hard sample ceiling | `tested` / `behavioral` | [`advanced_arena_allocator.zig`](languages/zig/advanced_arena_allocator.zig) |
 | **Odin** | Data-oriented thermal integration — explicit physical bounds, ablation and mission diagnostics | `toolchain_gated` / `compile` | [`advanced_reentry_thermal.odin`](languages/odin/advanced_reentry_thermal.odin) |
 | **Lua** | Capability-table sandbox with frozen environment — frozen metatable environment, pcall capability dispatch, FNV-1a receipt digest | `tested` / `behavioral` | [`advanced_sandbox_capability_table.lua`](languages/lua/advanced_sandbox_capability_table.lua) |

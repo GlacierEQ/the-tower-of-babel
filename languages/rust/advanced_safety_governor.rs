@@ -183,24 +183,41 @@ impl SafetyGovernor {
 // file descriptor and revalidate its real owner at the effect boundary.
 fn crosses_symlink_boundary(root: &Path, target: &Path) -> bool {
     let Ok(relative) = target.strip_prefix(root) else {
-        return false;
+        // A future caller bug must never silently bypass the boundary.
+        return true;
     };
-    let mut candidate = root.to_path_buf();
+
+    // Historical uses may supply a logical allowed root that does not yet
+    // exist. Those remain lexical-only preflights, not effect authorization.
+    let real_root = match std::fs::canonicalize(root) {
+        Ok(real) => real,
+        Err(err) if err.kind() == std::io::ErrorKind::NotFound => return false,
+        Err(_) => return true,
+    };
+    let mut prefix = root.to_path_buf();
     for component in relative.components() {
-        candidate.push(component.as_os_str());
-        if let Ok(metadata) = std::fs::symlink_metadata(&candidate) {
-            if metadata.file_type().is_symlink() {
-                let (Ok(real_root), Ok(real_candidate)) = (
-                    std::fs::canonicalize(root),
-                    std::fs::canonicalize(&candidate),
-                ) else {
-                    // Dangling links and unverifiable resolution cannot pass.
-                    return true;
-                };
-                if !real_candidate.starts_with(&real_root) {
+        prefix.push(component.as_os_str());
+        match std::fs::canonicalize(&prefix) {
+            Ok(actual) => {
+                // Canonicalization follows the full symlink chain, rather than
+                // examining just one raw component.
+                if !actual.starts_with(&real_root) {
                     return true;
                 }
             }
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+                // A missing unlinked descendant may be a future write target;
+                // a broken symbolic link is not treated as a missing file.
+                match std::fs::symlink_metadata(&prefix) {
+                    Err(metadata_error)
+                        if metadata_error.kind() == std::io::ErrorKind::NotFound =>
+                    {
+                        break;
+                    }
+                    _ => return true,
+                }
+            }
+            Err(_) => return true,
         }
     }
     false
@@ -221,6 +238,17 @@ fn normalize_without_io(path: &Path) -> Result<PathBuf, DenialReason> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[cfg(unix)]
+    struct TempCleanup(PathBuf);
+
+    #[cfg(unix)]
+    impl Drop for TempCleanup {
+        fn drop(&mut self) {
+            let _ = std::fs::remove_dir_all(&self.0);
+        }
+    }
+
 
     fn governor() -> SafetyGovernor {
         SafetyGovernor::new(GovernorConfig {
@@ -296,6 +324,7 @@ mod tests {
         use std::time::{SystemTime, UNIX_EPOCH};
         let nonce = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos();
         let sandbox = std::env::temp_dir().join(format!("tower-rust-symlink-{}-{nonce}", std::process::id()));
+        let _cleanup = TempCleanup(sandbox.clone());
         let root = sandbox.join("evidence");
         let outside = sandbox.join("outside");
         std::fs::create_dir_all(&root).unwrap();
@@ -319,7 +348,6 @@ mod tests {
         let decision = governor.evaluate(&candidate);
         assert!(!decision.allowed, "a symlink cannot escape the allowlisted root");
         assert_eq!(decision.reason, Some(DenialReason::SymlinkPath));
-        std::fs::remove_dir_all(&sandbox).unwrap();
     }
 
 
@@ -330,6 +358,7 @@ mod tests {
         use std::time::{SystemTime, UNIX_EPOCH};
         let nonce = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos();
         let sandbox = std::env::temp_dir().join(format!("tower-rust-internal-{}-{nonce}", std::process::id()));
+        let _cleanup = TempCleanup(sandbox.clone());
         let root = sandbox.join("evidence");
         std::fs::create_dir_all(root.join("internal")).unwrap();
         std::fs::write(root.join("internal").join("record.txt"), b"internal-record").unwrap();
@@ -349,7 +378,6 @@ mod tests {
             approved_elevated_action: false,
         };
         assert!(governor.evaluate(&candidate).allowed);
-        std::fs::remove_dir_all(&sandbox).unwrap();
     }
 
     #[cfg(unix)]
@@ -359,6 +387,7 @@ mod tests {
         use std::time::{SystemTime, UNIX_EPOCH};
         let nonce = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos();
         let sandbox = std::env::temp_dir().join(format!("tower-rust-dangling-{}-{nonce}", std::process::id()));
+        let _cleanup = TempCleanup(sandbox.clone());
         let root = sandbox.join("evidence");
         std::fs::create_dir_all(&root).unwrap();
         symlink(sandbox.join("missing"), root.join("alias")).unwrap();
@@ -377,7 +406,75 @@ mod tests {
             approved_elevated_action: false,
         };
         assert_eq!(governor.evaluate(&candidate).reason, Some(DenialReason::SymlinkPath));
-        std::fs::remove_dir_all(&sandbox).unwrap();
+    }
+
+
+    #[cfg(unix)]
+    #[test]
+    fn denies_chained_in_root_symlink_to_external_path() {
+        use std::os::unix::fs::symlink;
+        use std::time::{SystemTime, UNIX_EPOCH};
+        let nonce = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos();
+        let sandbox = std::env::temp_dir().join(format!("tower-rust-chain-{}-{nonce}", std::process::id()));
+        let _cleanup = TempCleanup(sandbox.clone());
+        let root = sandbox.join("evidence");
+        let outside = sandbox.join("outside");
+        std::fs::create_dir_all(root.join("internal")).unwrap();
+        std::fs::create_dir_all(&outside).unwrap();
+        std::fs::write(outside.join("secret.txt"), b"outside-root").unwrap();
+        symlink(root.join("internal"), root.join("alias")).unwrap();
+        symlink(&outside, root.join("internal").join("link2")).unwrap();
+        let governor = SafetyGovernor::new(GovernorConfig {
+            allowed_roots: vec![root.clone()],
+            max_payload_bytes: 1024,
+            max_recursion_depth: 4,
+        }).unwrap();
+        let candidate = ActionRequest {
+            actor: "authenticated-operator".into(),
+            action: ActionKind::Read,
+            target: root.join("alias").join("link2").join("secret.txt"),
+            payload_bytes: 0,
+            recursion_depth: 1,
+            approved_mutation: false,
+            approved_elevated_action: false,
+        };
+        assert_eq!(governor.evaluate(&candidate).reason, Some(DenialReason::SymlinkPath));
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn directly_targeted_external_symlink_is_denied() {
+        use std::os::unix::fs::symlink;
+        use std::time::{SystemTime, UNIX_EPOCH};
+        let nonce = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos();
+        let sandbox = std::env::temp_dir().join(format!("tower-rust-direct-{}-{nonce}", std::process::id()));
+        let _cleanup = TempCleanup(sandbox.clone());
+        let root = sandbox.join("evidence");
+        let outside = sandbox.join("outside");
+        std::fs::create_dir_all(&root).unwrap();
+        std::fs::create_dir_all(&outside).unwrap();
+        symlink(&outside, root.join("alias")).unwrap();
+        let governor = SafetyGovernor::new(GovernorConfig {
+            allowed_roots: vec![root.clone()],
+            max_payload_bytes: 1024,
+            max_recursion_depth: 4,
+        }).unwrap();
+        let candidate = ActionRequest {
+            actor: "authenticated-operator".into(),
+            action: ActionKind::Read,
+            target: root.join("alias"),
+            payload_bytes: 0,
+            recursion_depth: 1,
+            approved_mutation: false,
+            approved_elevated_action: false,
+        };
+        assert_eq!(governor.evaluate(&candidate).reason, Some(DenialReason::SymlinkPath));
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn broken_owner_prefix_in_helper_fails_closed() {
+        assert!(crosses_symlink_boundary(Path::new("/srv/evidence"), Path::new("/private/outside")));
     }
 
     #[test]
