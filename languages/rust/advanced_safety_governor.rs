@@ -167,9 +167,13 @@ impl SafetyGovernor {
         if matching_roots.is_empty() {
             return PolicyDecision::deny(DenialReason::TargetOutsideAllowedRoots);
         }
-        // Select the deepest declared owner for overlapping roots.
-        let root = matching_roots.into_iter().max_by_key(|r| r.components().count()).unwrap();
-        if crosses_symlink_boundary(root, &normalized) {
+        // Every applicable declared boundary must hold. Selecting only the
+        // deepest root would trust a nested root that is itself a symlink
+        // escaping an ancestor evidence boundary.
+        if matching_roots
+            .iter()
+            .any(|root| crosses_symlink_boundary(root, &normalized))
+        {
             return PolicyDecision::deny(DenialReason::SymlinkPath);
         }
 
@@ -475,6 +479,39 @@ mod tests {
     #[test]
     fn broken_owner_prefix_in_helper_fails_closed() {
         assert!(crosses_symlink_boundary(Path::new("/srv/evidence"), Path::new("/private/outside")));
+    }
+
+
+    #[cfg(unix)]
+    #[test]
+    fn overlapping_nested_roots_cannot_hide_symlink_escape_from_parent() {
+        use std::os::unix::fs::symlink;
+        use std::time::{SystemTime, UNIX_EPOCH};
+        let nonce = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos();
+        let sandbox = std::env::temp_dir().join(format!("tower-rust-nested-{}-{nonce}", std::process::id()));
+        let _cleanup = TempCleanup(sandbox.clone());
+        let broad_root = sandbox.join("evidence");
+        let outside = sandbox.join("outside");
+        std::fs::create_dir_all(&broad_root).unwrap();
+        std::fs::create_dir_all(&outside).unwrap();
+        std::fs::write(outside.join("secret.txt"), b"outside-root").unwrap();
+        let nested_root = broad_root.join("nested");
+        symlink(&outside, &nested_root).unwrap();
+        let governor = SafetyGovernor::new(GovernorConfig {
+            allowed_roots: vec![broad_root.clone(), nested_root.clone()],
+            max_payload_bytes: 1024,
+            max_recursion_depth: 4,
+        }).unwrap();
+        let candidate = ActionRequest {
+            actor: "authenticated-operator".into(),
+            action: ActionKind::Read,
+            target: nested_root.join("secret.txt"),
+            payload_bytes: 0,
+            recursion_depth: 1,
+            approved_mutation: false,
+            approved_elevated_action: false,
+        };
+        assert_eq!(governor.evaluate(&candidate).reason, Some(DenialReason::SymlinkPath));
     }
 
     #[test]
