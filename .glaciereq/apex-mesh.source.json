@@ -1,9 +1,9 @@
 {
   "access_mode": "PRIVATE_SOURCE_OBSERVED_THROUGH_AUTHORIZED_REPOSITORY_ACCESS",
   "max_age_hours": 168,
-  "observed_at": "2026-10-12T01:10:28.678744Z",
+  "observed_at": "2026-10-26T06:59:27.182766Z",
   "observed_blob_sha": "b137384e7abaffb9f746b3ed783576ec9315cb51",
-  "observed_commit": "450b60e768a7276d8e1afc3ccd377426069caf2c",
+  "observed_commit": "b3929da684bc9bd1daaa9417c75aee01f518ed5b",
   "public_projection_policy": "NO_PRIVATE_SOURCE_BODY_COPIED_TO_PUBLIC_REPOSITORY",
   "schema": "glaciereq.private-source-checkpoint.v1",
   "source_path": "governance/glaciereq.nervous-system.v2.json",
