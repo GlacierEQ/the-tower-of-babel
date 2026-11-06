@@ -38,7 +38,10 @@ def main(argv=None):
             if not isinstance(step.get('stage'), str) or not isinstance(step.get('status'), str):
                 raise ValueError('stage and status must be strings')
         handoff = build_handoff(data['mission_id'], data['source_revision'], data['steps'])
-        print(json.dumps(handoff, sort_keys=True, ensure_ascii=True))
+        serialized = json.dumps(handoff, sort_keys=True, ensure_ascii=True) + "\n"
+        if len(serialized.encode("utf-8")) > MAX_INPUT_BYTES:
+            raise ValueError("serialized handoff exceeds consumer limit")
+        sys.stdout.write(serialized)
         return 0
     except (ValueError, TypeError, OSError, UnicodeError, RecursionError) as exc:
         print(json.dumps({'error': str(exc)}), file=sys.stderr)
