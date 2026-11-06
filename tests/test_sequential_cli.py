@@ -19,5 +19,6 @@ class HandoffCLITests(unittest.TestCase):
     def test_reject_duplicate_and_oversized(self):
         self.assertEqual(self.invoke(b'{"x":1,"x":2}').returncode,2)
         self.assertEqual(self.invoke(b'x'*(1_048_577)).returncode,2)
+        self.assertEqual(self.invoke(b'['*2000+b']'*2000).returncode,2)
 
 if __name__ == '__main__': unittest.main()

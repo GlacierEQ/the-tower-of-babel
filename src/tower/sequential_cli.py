@@ -40,7 +40,7 @@ def main(argv=None):
         handoff = build_handoff(data['mission_id'], data['source_revision'], data['steps'])
         print(json.dumps(handoff, sort_keys=True, ensure_ascii=True))
         return 0
-    except (ValueError, TypeError, OSError, UnicodeError) as exc:
+    except (ValueError, TypeError, OSError, UnicodeError, RecursionError) as exc:
         print(json.dumps({'error': str(exc)}), file=sys.stderr)
         return 2
 

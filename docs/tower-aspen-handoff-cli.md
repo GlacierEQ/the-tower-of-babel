@@ -11,7 +11,7 @@ PYTHONPATH=src python -m tower.sequential_cli mission.json > handoff.json
 From the Aspen Core root, provide the absolute path and independently verified revision:
 
 ```sh
-python -m src.tower_handoff_cli /path/to/handoff.json --expected-revision <trusted-revision>
+python -m src.tower_handoff_cli /path/to/handoff.json --expected-revision "$TRUSTED_REVISION"
 ```
 
 Input to the producer is a JSON object with exactly `mission_id`, `source_revision`, and `steps`; steps contain `stage`, `status`, and optional `evidence`. Both commands support `-` for stdin, reject duplicate keys and inputs above 1 MiB, and return exit 2 for invalid input. The consumer explicitly reports `source_authenticated: false` and `provider_verified: false`. Treat the handoff as untrusted until source authenticity and relevant claims are verified independently.
