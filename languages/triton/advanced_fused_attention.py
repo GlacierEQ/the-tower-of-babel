@@ -74,7 +74,9 @@ def run(query: torch.Tensor, keys: torch.Tensor, values: torch.Tensor) -> torch.
 
 def main() -> None:
     if not torch.cuda.is_available():
-        raise RuntimeError("BLOCKED_HARDWARE: Triton attention requires a supported CUDA GPU")
+        raise RuntimeError(
+            "BLOCKED_HARDWARE: Triton attention requires a supported CUDA GPU"
+        )
     torch.manual_seed(7)
     n_ctx, d_head = 128, 64
     query = torch.randn(d_head, device="cuda", dtype=torch.float32)

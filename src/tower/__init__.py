@@ -1,5 +1,12 @@
 """The Tower of Babel governance, activation, and execution package."""
-from .activation import ActivationDecision, ActivationMode, activate_execution, activation_surface, resolve_activation
+
+from .activation import (
+    ActivationDecision,
+    ActivationMode,
+    activate_execution,
+    activation_surface,
+    resolve_activation,
+)
 from .capability_resolution import (
     BoundaryObjective,
     BoundaryResolution,

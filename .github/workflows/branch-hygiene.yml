@@ -1,18 +1,18 @@
-name: Branch Hygiene
+name: Branch Lineage Audit
 
 on:
   pull_request:
     types: [closed]
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: branch-hygiene-${{ github.event.pull_request.number }}
+  group: branch-lineage-${{ github.event.pull_request.number }}
   cancel-in-progress: false
 
 jobs:
-  delete-merged-pr-head:
+  preserve-merged-pr-head-lineage:
     if: >-
       github.event.pull_request.merged == true &&
       github.event.pull_request.head.repo.full_name == github.repository
@@ -25,54 +25,97 @@ jobs:
       BRANCH: ${{ github.event.pull_request.head.ref }}
       EXPECTED_SHA: ${{ github.event.pull_request.head.sha }}
     steps:
-      - name: Verify and delete only the exact merged PR head
+      - name: Read back merged PR head without mutation
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p artifacts
+          remote_sha=""
+          state="READBACK_UNRESOLVED"
+          detail="Provider readback has not completed."
+          relationship="MERGED_WITH"
+          rule="Merged PR state proves overlap only; it never proves UNIQUE_CONTRIBUTION=0 or authorizes ref deletion."
 
-          case "${BRANCH}" in
-            feature/*|fix/*|chore/*|docs/*|hardening/*|release/*|dependabot/*|renovate/*|synthesize/*|integration/*)
-              ;;
-            *)
-              echo "Refusing unapproved branch prefix: ${BRANCH}" >&2
-              exit 1
-              ;;
-          esac
+          write_receipt() {
+            jq -n \
+              --arg schema "glaciereq.branch-lineage.receipt.v2" \
+              --arg repository "${REPOSITORY}" \
+              --arg pr_number "${PR_NUMBER}" \
+              --arg branch "${BRANCH}" \
+              --arg expected_sha "${EXPECTED_SHA}" \
+              --arg observed_sha "${remote_sha}" \
+              --arg state "${state}" \
+              --arg relationship "${relationship}" \
+              --arg detail "${detail}" \
+              --arg rule "${rule}" \
+              '{schema:$schema,repository:$repository,pr_number:($pr_number|tonumber),branch:$branch,expected_sha:$expected_sha,observed_sha:$observed_sha,state:$state,relationship:$relationship,detail:$detail,rule:$rule}' \
+              > artifacts/branch-lineage-receipt.json
+          }
 
-          if [[ "${BRANCH}" == "main" || "${BRANCH}" == "HEAD" ]]; then
-            echo "Refusing protected branch: ${BRANCH}" >&2
+          # matching-refs is paginated. --slurp preserves each provider page so we can
+          # validate every page/entry before exact-ref classification; incomplete or
+          # malformed observations remain READBACK_UNRESOLVED rather than becoming
+          # false evidence of branch absence.
+          if ! refs_pages=$(gh api --paginate --slurp "repos/${REPOSITORY}/git/matching-refs/heads/" 2>artifacts/provider-readback-error.txt); then
+            detail="Provider branch readback failed; lineage state remains unresolved."
+            write_receipt
+            cat artifacts/provider-readback-error.txt >&2
             exit 1
           fi
 
-          status="deleted"
-          remote_sha=""
-          if remote_sha=$(gh api "repos/${REPOSITORY}/git/ref/heads/${BRANCH}" --jq '.object.sha' 2>/dev/null); then
-            if [[ "${remote_sha}" != "${EXPECTED_SHA}" ]]; then
-              echo "Remote branch moved after merge; refusing deletion." >&2
-              echo "expected=${EXPECTED_SHA} observed=${remote_sha}" >&2
+          if ! matches=$(printf '%s' "${refs_pages}" | jq -ce --arg ref "refs/heads/${BRANCH}" '
+            if type == "array"
+               and all(.[]; type == "array")
+               and all(.[][];
+                 type == "object"
+                 and (.ref | type == "string")
+                 and (.object | type == "object")
+                 and (.object.sha | type == "string" and test("^[0-9a-fA-F]{40}$")))
+            then [.[][] | select(.ref == $ref)]
+            else error("expected paginated arrays of valid branch refs")
+            end
+          '); then
+            detail="Provider returned incomplete or invalid branch-readback data; lineage state remains unresolved."
+            write_receipt
+            exit 1
+          fi
+          match_count=$(printf '%s' "${matches}" | jq 'length')
+
+          if [[ "${match_count}" == "0" ]]; then
+            state="LINEAGE_REF_CONFIRMED_ABSENT"
+            detail="Complete paginated provider readback returned no exact matching branch ref."
+          elif [[ "${match_count}" == "1" ]]; then
+            remote_sha=$(printf '%s' "${matches}" | jq -er '.[0].object.sha | select(type == "string" and test("^[0-9a-fA-F]{40}$"))') || {
+              detail="Provider returned the exact ref without a valid 40-character object SHA."
+              write_receipt
               exit 1
+            }
+            if [[ "${remote_sha}" == "${EXPECTED_SHA}" ]]; then
+              state="ACTIVE_IN_MESH"
+              detail="Exact donor ref remains at the merged PR head SHA."
+            else
+              state="ACTIVE_IN_MESH_MOVED_AFTER_MERGE"
+              detail="Exact donor ref exists but has moved since the merged PR event."
             fi
-            gh api --method DELETE "repos/${REPOSITORY}/git/refs/heads/${BRANCH}"
           else
-            status="already_absent"
+            detail="Provider returned multiple exact matches; refusing ambiguous lineage classification."
+            write_receipt
+            exit 1
           fi
 
-          jq -n \
-            --arg schema "glaciereq.branch-hygiene.receipt.v1" \
-            --arg repository "${REPOSITORY}" \
-            --arg pr_number "${PR_NUMBER}" \
-            --arg branch "${BRANCH}" \
-            --arg expected_sha "${EXPECTED_SHA}" \
-            --arg observed_sha "${remote_sha}" \
-            --arg status "${status}" \
-            '{schema:$schema,repository:$repository,pr_number:($pr_number|tonumber),branch:$branch,expected_sha:$expected_sha,observed_sha:$observed_sha,status:$status}' \
-            > artifacts/branch-hygiene-receipt.json
+          write_receipt
 
-      - name: Upload branch-deletion receipt
+      - name: Upload lineage receipt
+        if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: branch-hygiene-pr-${{ github.event.pull_request.number }}
-          path: artifacts/branch-hygiene-receipt.json
+          name: branch-lineage-pr-${{ github.event.pull_request.number }}
+          path: artifacts/branch-lineage-receipt.json
           if-no-files-found: error
           retention-days: 30
+
+# HOLOGRAPHIC MESH ANTI-REPLACEMENT HARD LOCK
+# A merged PR establishes overlap, not donor exhaustion. Remote refs are preserved.
+# Fully drained donors transition to PRESERVE_DRAINED_LINEAGE only after independent
+# provider-read-back UNIQUE_CONTRIBUTION=0. Existing controlling Operator instructions
+# govern routine forward repair; this workflow does not invent a per-retirement gate.
