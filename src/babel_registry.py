@@ -104,7 +104,7 @@ class BabelRegistryEngine:
                 "reason": "capabilities_and_evidence_match",
             })
         candidates.sort(key=lambda item: (-item["score"], item["id"]))
-        registry_sha256 = hashlib.sha256(self.registry.canonical_bytes()).hexdigest()
+        registry_sha256 = hashlib.sha256(self.registry.apex_bytes()).hexdigest()
         if not candidates:
             return {
                 "ok": False,

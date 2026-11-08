@@ -88,12 +88,19 @@ def test_lane_difference_becomes_review_work_without_rejecting_lane():
     resolution = resolve_lane_against_candidates(declared, candidates)
 
     assert resolution.continuation == "enabled"
-    assert any(item.startswith("review_stronger_alternative:Rust") for item in resolution.resolution_work)
+    assert any(
+        item.startswith("review_stronger_alternative:Rust")
+        for item in resolution.resolution_work
+    )
 
 
 def test_empty_boundary_remains_visible_resolution_work():
-    resolutions = resolve_architecture({"future_boundary": []}, {"future_boundary": BoundaryObjective()})
+    resolutions = resolve_architecture(
+        {"future_boundary": []}, {"future_boundary": BoundaryObjective()}
+    )
 
     assert resolutions["future_boundary"].continuation == "enabled"
     assert resolutions["future_boundary"].selected is None
-    assert "supply_capability_candidates" in resolutions["future_boundary"].resolution_work
+    assert (
+        "supply_capability_candidates" in resolutions["future_boundary"].resolution_work
+    )

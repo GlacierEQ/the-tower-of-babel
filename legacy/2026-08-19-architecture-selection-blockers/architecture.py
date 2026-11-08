@@ -5,6 +5,7 @@ repository-wide implementation language. A polyglot design is valid when each
 architectural concern has one owner, explicit interfaces, proof, and a language
 choice that survives evidence-backed comparison against credible alternatives.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -22,7 +23,14 @@ class LanguageLane:
 
     def validate(self) -> list[str]:
         errors: list[str] = []
-        for field_name in ("lane_id", "concern", "language", "rationale", "interface", "proof"):
+        for field_name in (
+            "lane_id",
+            "concern",
+            "language",
+            "rationale",
+            "interface",
+            "proof",
+        ):
             if not getattr(self, field_name).strip():
                 errors.append(f"{field_name} must be non-empty")
         if len(self.rationale.strip()) < 20:
@@ -210,7 +218,9 @@ def select_best_technology(
         boundary=boundary,
         selected=selected,
         ranked=ranked,
-        decision="selected_maximum_boundary_fitness" if selected else "no_eligible_candidate",
+        decision="selected_maximum_boundary_fitness"
+        if selected
+        else "no_eligible_candidate",
     )
 
 
@@ -239,12 +249,15 @@ def validate_lane_against_candidates(
         (
             item
             for item in selection.ranked
-            if item.candidate.language.casefold() == lane.language.casefold() and item.eligible
+            if item.candidate.language.casefold() == lane.language.casefold()
+            and item.eligible
         ),
         None,
     )
     if chosen is None:
-        errors.append(f"declared language {lane.language} has no eligible candidate evidence")
+        errors.append(
+            f"declared language {lane.language} has no eligible candidate evidence"
+        )
         return errors
     advantage = selection.selected.score - chosen.score
     if (
@@ -272,7 +285,10 @@ def optimize_architecture(
     for boundary, candidates in sorted(candidate_sets.items()):
         if not candidates:
             raise ValueError(f"boundary {boundary} has no technology candidates")
-        if any(candidate.boundary.casefold() != boundary.casefold() for candidate in candidates):
+        if any(
+            candidate.boundary.casefold() != boundary.casefold()
+            for candidate in candidates
+        ):
             raise ValueError(f"candidate boundary mismatch for {boundary}")
         result[boundary] = select_best_technology(
             candidates,

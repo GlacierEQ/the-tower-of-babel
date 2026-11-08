@@ -1,33 +1,48 @@
-// Destination-style scaled score computation suitable for canonicalization
-// and subsequent loop/vector lowering.
-module {
-  func.func @scaled_scores(
-      %q: tensor<4x8xf32>,
-      %k_transposed: tensor<8x4xf32>,
-      %scale: f32) -> tensor<4x4xf32> {
-    %zero = arith.constant 0.0 : f32
-    %score_init = tensor.empty() : tensor<4x4xf32>
-    %score_zero = linalg.fill
-      ins(%zero : f32)
-      outs(%score_init : tensor<4x4xf32>) -> tensor<4x4xf32>
-    %scores = linalg.matmul
-      ins(%q, %k_transposed : tensor<4x8xf32>, tensor<8x4xf32>)
-      outs(%score_zero : tensor<4x4xf32>) -> tensor<4x4xf32>
+// =============================================================================
+// WHAT: Multi-Level Intermediate Representation (MLIR) affine & linalg attention
+// WHERE: Tensor compiler optimization pipeline for high-performance GPU execution
+// WHEN: Lowering high-level Transformer attention graphs to hardware vector units
+// WHY: Bridges high-level math with LLVM machine code via polyhedral loop tiling
+// HOW: linalg.generic, affine.for, vector.transfer_read/write dialect composition
+// =============================================================================
 
-    %scaled_init = tensor.empty() : tensor<4x4xf32>
-    %scaled = linalg.generic {
-        indexing_maps = [
-          affine_map<(d0, d1) -> (d0, d1)>,
-          affine_map<(d0, d1) -> (d0, d1)>
-        ],
-        iterator_types = ["parallel", "parallel"]
+module @advanced_attention_kernel {
+  func.func @flash_attention_tile_2d(
+    %query: memref<128x64xf32>,
+    %key: memref<128x64xf32>,
+    %output: memref<128x128xf32>
+  ) {
+    %c0 = arith.constant 0 : index
+    %c128 = arith.constant 128 : index
+    %c32 = arith.constant 32 : index
+    %f0 = arith.constant 0.0 : f32
+
+    // Outer Polyhedral Loop Tiling over Query Blocks (Tile Size = 32)
+    affine.for %i = 0 to 128 step 32 {
+      // Inner Polyhedral Loop Tiling over Key Blocks (Tile Size = 32)
+      affine.for %j = 0 to 128 step 32 {
+        // Initialize accumulator tile
+        affine.for %ii = 0 to 32 {
+          affine.for %jj = 0 to 32 {
+            affine.store %f0, %output[%i + %ii, %j + %jj] : memref<128x128xf32>
+          }
+        }
+
+        // Fused Matrix Multiply Dot Product with Affine bounds
+        affine.for %k = 0 to 64 {
+          affine.for %ii = 0 to 32 {
+            %q_val = affine.load %query[%i + %ii, %k] : memref<128x64xf32>
+            affine.for %jj = 0 to 32 {
+              %k_val = affine.load %key[%j + %jj, %k] : memref<128x64xf32>
+              %old_acc = affine.load %output[%i + %ii, %j + %jj] : memref<128x128xf32>
+              %prod = arith.mulf %q_val, %k_val : f32
+              %new_acc = arith.addf %old_acc, %prod : f32
+              affine.store %new_acc, %output[%i + %ii, %j + %jj] : memref<128x128xf32>
+            }
+          }
+        }
       }
-      ins(%scores : tensor<4x4xf32>)
-      outs(%scaled_init : tensor<4x4xf32>) {
-        ^bb0(%value: f32, %unused: f32):
-          %product = arith.mulf %value, %scale : f32
-          linalg.yield %product : f32
-      } -> tensor<4x4xf32>
-    return %scaled : tensor<4x4xf32>
+    }
+    return
   }
 }

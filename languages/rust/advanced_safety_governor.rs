@@ -52,6 +52,7 @@ pub enum DenialReason {
     MissingActor,
     NoAllowedRoots,
     PathTraversal,
+    SymlinkPath,
     TargetOutsideAllowedRoots,
     PayloadTooLarge { actual: usize, maximum: usize },
     RecursionTooDeep { actual: usize, maximum: usize },
@@ -65,6 +66,7 @@ impl fmt::Display for DenialReason {
             Self::MissingActor => write!(f, "authenticated actor is required"),
             Self::NoAllowedRoots => write!(f, "no allowed roots are configured"),
             Self::PathTraversal => write!(f, "target contains a parent traversal component"),
+            Self::SymlinkPath => write!(f, "target traverses a symbolic link beneath an allowed root"),
             Self::TargetOutsideAllowedRoots => write!(f, "target is outside every allowed root"),
             Self::PayloadTooLarge { actual, maximum } => {
                 write!(f, "payload size {actual} exceeds maximum {maximum}")
@@ -156,17 +158,73 @@ impl SafetyGovernor {
             Ok(path) => path,
             Err(reason) => return PolicyDecision::deny(reason),
         };
-        if !self
+        let matching_roots: Vec<&PathBuf> = self
             .config
             .allowed_roots
             .iter()
-            .any(|root| normalized == *root || normalized.starts_with(root))
-        {
+            .filter(|root| normalized == **root || normalized.starts_with(root))
+            .collect();
+        if matching_roots.is_empty() {
             return PolicyDecision::deny(DenialReason::TargetOutsideAllowedRoots);
+        }
+        // Every applicable declared boundary must hold. Selecting only the
+        // deepest root would trust a nested root that is itself a symlink
+        // escaping an ancestor evidence boundary.
+        if matching_roots
+            .iter()
+            .any(|root| crosses_symlink_boundary(root, &normalized))
+        {
+            return PolicyDecision::deny(DenialReason::SymlinkPath);
         }
 
         PolicyDecision::allow(normalized)
     }
+}
+
+
+// The governor is a preflight decision, not an openat2/dirfd filesystem
+// capability or authorization token. Every caller must still bind the actual
+// file descriptor and revalidate its real owner at the effect boundary.
+fn crosses_symlink_boundary(root: &Path, target: &Path) -> bool {
+    let Ok(relative) = target.strip_prefix(root) else {
+        // A future caller bug must never silently bypass the boundary.
+        return true;
+    };
+
+    // Historical uses may supply a logical allowed root that does not yet
+    // exist. Those remain lexical-only preflights, not effect authorization.
+    let real_root = match std::fs::canonicalize(root) {
+        Ok(real) => real,
+        Err(err) if err.kind() == std::io::ErrorKind::NotFound => return false,
+        Err(_) => return true,
+    };
+    let mut prefix = root.to_path_buf();
+    for component in relative.components() {
+        prefix.push(component.as_os_str());
+        match std::fs::canonicalize(&prefix) {
+            Ok(actual) => {
+                // Canonicalization follows the full symlink chain, rather than
+                // examining just one raw component.
+                if !actual.starts_with(&real_root) {
+                    return true;
+                }
+            }
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+                // A missing unlinked descendant may be a future write target;
+                // a broken symbolic link is not treated as a missing file.
+                match std::fs::symlink_metadata(&prefix) {
+                    Err(metadata_error)
+                        if metadata_error.kind() == std::io::ErrorKind::NotFound =>
+                    {
+                        break;
+                    }
+                    _ => return true,
+                }
+            }
+            Err(_) => return true,
+        }
+    }
+    false
 }
 
 fn normalize_without_io(path: &Path) -> Result<PathBuf, DenialReason> {
@@ -184,6 +242,17 @@ fn normalize_without_io(path: &Path) -> Result<PathBuf, DenialReason> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[cfg(unix)]
+    struct TempCleanup(PathBuf);
+
+    #[cfg(unix)]
+    impl Drop for TempCleanup {
+        fn drop(&mut self) {
+            let _ = std::fs::remove_dir_all(&self.0);
+        }
+    }
+
 
     fn governor() -> SafetyGovernor {
         SafetyGovernor::new(GovernorConfig {
@@ -249,6 +318,200 @@ mod tests {
 
         candidate.approved_elevated_action = true;
         assert!(governor().evaluate(&candidate).allowed);
+    }
+
+
+    #[cfg(unix)]
+    #[test]
+    fn denies_symlink_escape_from_allowed_evidence_root() {
+        use std::os::unix::fs::symlink;
+        use std::time::{SystemTime, UNIX_EPOCH};
+        let nonce = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos();
+        let sandbox = std::env::temp_dir().join(format!("tower-rust-symlink-{}-{nonce}", std::process::id()));
+        let _cleanup = TempCleanup(sandbox.clone());
+        let root = sandbox.join("evidence");
+        let outside = sandbox.join("outside");
+        std::fs::create_dir_all(&root).unwrap();
+        std::fs::create_dir_all(&outside).unwrap();
+        std::fs::write(outside.join("secret.txt"), b"outside-root").unwrap();
+        symlink(&outside, root.join("alias")).unwrap();
+        let governor = SafetyGovernor::new(GovernorConfig {
+            allowed_roots: vec![root.clone()],
+            max_payload_bytes: 1024,
+            max_recursion_depth: 4,
+        }).unwrap();
+        let candidate = ActionRequest {
+            actor: "authenticated-operator".into(),
+            action: ActionKind::Read,
+            target: root.join("alias").join("secret.txt"),
+            payload_bytes: 0,
+            recursion_depth: 1,
+            approved_mutation: false,
+            approved_elevated_action: false,
+        };
+        let decision = governor.evaluate(&candidate);
+        assert!(!decision.allowed, "a symlink cannot escape the allowlisted root");
+        assert_eq!(decision.reason, Some(DenialReason::SymlinkPath));
+    }
+
+
+    #[cfg(unix)]
+    #[test]
+    fn permits_symlink_resolving_within_the_same_evidence_root() {
+        use std::os::unix::fs::symlink;
+        use std::time::{SystemTime, UNIX_EPOCH};
+        let nonce = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos();
+        let sandbox = std::env::temp_dir().join(format!("tower-rust-internal-{}-{nonce}", std::process::id()));
+        let _cleanup = TempCleanup(sandbox.clone());
+        let root = sandbox.join("evidence");
+        std::fs::create_dir_all(root.join("internal")).unwrap();
+        std::fs::write(root.join("internal").join("record.txt"), b"internal-record").unwrap();
+        symlink(root.join("internal"), root.join("alias")).unwrap();
+        let governor = SafetyGovernor::new(GovernorConfig {
+            allowed_roots: vec![root.clone()],
+            max_payload_bytes: 1024,
+            max_recursion_depth: 4,
+        }).unwrap();
+        let candidate = ActionRequest {
+            actor: "authenticated-operator".into(),
+            action: ActionKind::Read,
+            target: root.join("alias").join("record.txt"),
+            payload_bytes: 0,
+            recursion_depth: 1,
+            approved_mutation: false,
+            approved_elevated_action: false,
+        };
+        assert!(governor.evaluate(&candidate).allowed);
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn denies_dangling_symlink_within_evidence_root() {
+        use std::os::unix::fs::symlink;
+        use std::time::{SystemTime, UNIX_EPOCH};
+        let nonce = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos();
+        let sandbox = std::env::temp_dir().join(format!("tower-rust-dangling-{}-{nonce}", std::process::id()));
+        let _cleanup = TempCleanup(sandbox.clone());
+        let root = sandbox.join("evidence");
+        std::fs::create_dir_all(&root).unwrap();
+        symlink(sandbox.join("missing"), root.join("alias")).unwrap();
+        let governor = SafetyGovernor::new(GovernorConfig {
+            allowed_roots: vec![root.clone()],
+            max_payload_bytes: 1024,
+            max_recursion_depth: 4,
+        }).unwrap();
+        let candidate = ActionRequest {
+            actor: "authenticated-operator".into(),
+            action: ActionKind::Read,
+            target: root.join("alias"),
+            payload_bytes: 0,
+            recursion_depth: 1,
+            approved_mutation: false,
+            approved_elevated_action: false,
+        };
+        assert_eq!(governor.evaluate(&candidate).reason, Some(DenialReason::SymlinkPath));
+    }
+
+
+    #[cfg(unix)]
+    #[test]
+    fn denies_chained_in_root_symlink_to_external_path() {
+        use std::os::unix::fs::symlink;
+        use std::time::{SystemTime, UNIX_EPOCH};
+        let nonce = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos();
+        let sandbox = std::env::temp_dir().join(format!("tower-rust-chain-{}-{nonce}", std::process::id()));
+        let _cleanup = TempCleanup(sandbox.clone());
+        let root = sandbox.join("evidence");
+        let outside = sandbox.join("outside");
+        std::fs::create_dir_all(root.join("internal")).unwrap();
+        std::fs::create_dir_all(&outside).unwrap();
+        std::fs::write(outside.join("secret.txt"), b"outside-root").unwrap();
+        symlink(root.join("internal"), root.join("alias")).unwrap();
+        symlink(&outside, root.join("internal").join("link2")).unwrap();
+        let governor = SafetyGovernor::new(GovernorConfig {
+            allowed_roots: vec![root.clone()],
+            max_payload_bytes: 1024,
+            max_recursion_depth: 4,
+        }).unwrap();
+        let candidate = ActionRequest {
+            actor: "authenticated-operator".into(),
+            action: ActionKind::Read,
+            target: root.join("alias").join("link2").join("secret.txt"),
+            payload_bytes: 0,
+            recursion_depth: 1,
+            approved_mutation: false,
+            approved_elevated_action: false,
+        };
+        assert_eq!(governor.evaluate(&candidate).reason, Some(DenialReason::SymlinkPath));
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn directly_targeted_external_symlink_is_denied() {
+        use std::os::unix::fs::symlink;
+        use std::time::{SystemTime, UNIX_EPOCH};
+        let nonce = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos();
+        let sandbox = std::env::temp_dir().join(format!("tower-rust-direct-{}-{nonce}", std::process::id()));
+        let _cleanup = TempCleanup(sandbox.clone());
+        let root = sandbox.join("evidence");
+        let outside = sandbox.join("outside");
+        std::fs::create_dir_all(&root).unwrap();
+        std::fs::create_dir_all(&outside).unwrap();
+        symlink(&outside, root.join("alias")).unwrap();
+        let governor = SafetyGovernor::new(GovernorConfig {
+            allowed_roots: vec![root.clone()],
+            max_payload_bytes: 1024,
+            max_recursion_depth: 4,
+        }).unwrap();
+        let candidate = ActionRequest {
+            actor: "authenticated-operator".into(),
+            action: ActionKind::Read,
+            target: root.join("alias"),
+            payload_bytes: 0,
+            recursion_depth: 1,
+            approved_mutation: false,
+            approved_elevated_action: false,
+        };
+        assert_eq!(governor.evaluate(&candidate).reason, Some(DenialReason::SymlinkPath));
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn broken_owner_prefix_in_helper_fails_closed() {
+        assert!(crosses_symlink_boundary(Path::new("/srv/evidence"), Path::new("/private/outside")));
+    }
+
+
+    #[cfg(unix)]
+    #[test]
+    fn overlapping_nested_roots_cannot_hide_symlink_escape_from_parent() {
+        use std::os::unix::fs::symlink;
+        use std::time::{SystemTime, UNIX_EPOCH};
+        let nonce = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos();
+        let sandbox = std::env::temp_dir().join(format!("tower-rust-nested-{}-{nonce}", std::process::id()));
+        let _cleanup = TempCleanup(sandbox.clone());
+        let broad_root = sandbox.join("evidence");
+        let outside = sandbox.join("outside");
+        std::fs::create_dir_all(&broad_root).unwrap();
+        std::fs::create_dir_all(&outside).unwrap();
+        std::fs::write(outside.join("secret.txt"), b"outside-root").unwrap();
+        let nested_root = broad_root.join("nested");
+        symlink(&outside, &nested_root).unwrap();
+        let governor = SafetyGovernor::new(GovernorConfig {
+            allowed_roots: vec![broad_root.clone(), nested_root.clone()],
+            max_payload_bytes: 1024,
+            max_recursion_depth: 4,
+        }).unwrap();
+        let candidate = ActionRequest {
+            actor: "authenticated-operator".into(),
+            action: ActionKind::Read,
+            target: nested_root.join("secret.txt"),
+            payload_bytes: 0,
+            recursion_depth: 1,
+            approved_mutation: false,
+            approved_elevated_action: false,
+        };
+        assert_eq!(governor.evaluate(&candidate).reason, Some(DenialReason::SymlinkPath));
     }
 
     #[test]

@@ -1,4 +1,5 @@
 """Tests for the civilization-scale Spiral Engine."""
+
 from __future__ import annotations
 
 import hashlib
@@ -29,7 +30,11 @@ def _candidate() -> dict:
         "evidence": [
             {"id": "unit-tests", "kind": "test", "sha256": _digest("unit-tests")},
             {"id": "contract", "kind": "specification", "sha256": _digest("contract")},
-            {"id": "example", "kind": "executable-example", "sha256": _digest("example")},
+            {
+                "id": "example",
+                "kind": "executable-example",
+                "sha256": _digest("example"),
+            },
         ],
         "controls": {
             "owner": "Tower Governance",

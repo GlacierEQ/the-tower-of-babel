@@ -1,1 +1,24 @@
-{"capabilities": ["hyper-scaling"]}
+{
+  "schema": "glaciereq.tower.capabilities.v2",
+  "project_direction_authority": "operator",
+  "capabilities": [
+    "boundary-fitness-technology-selection",
+    "polyglot-architecture-validation",
+    "cross-language-interface-mapping",
+    "build-test-benchmark-and-formal-proof",
+    "deterministic-receipts",
+    "frontier-primary-source-observation",
+    "resource-memory-continuous-orientation",
+    "capability-activation",
+    "flagship-polyglot-integration",
+    "git-index-integrity-verification",
+    "risk-classified-external-effect-execution"
+  ],
+  "nonclaims": [
+    "capability-list-does-not-prove-current-runtime-health",
+    "capability-list-does-not-grant-project-authority",
+    "orientation-telemetry-does-not-grant-or-deny-execution-permission",
+    "reversible-external-effects-not-second-approval",
+    "materially-irreversible-external-effects-remain-operator-scope-bound"
+  ]
+}

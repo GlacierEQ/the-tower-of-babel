@@ -200,3 +200,11 @@
 - https://github.com/GlacierEQ/residual-lattice-quantization
 - https://arxiv.org/abs/2402.17764
 
+## HY3 (Tencent Hunyuan) free-tier runtime model
+- https://openrouter.ai/models/tencent/hy3
+- https://openrouter.ai/docs
+
+## MiMo v2.5 Pro (Xiaomi) free-tier reasoning model
+- https://openrouter.ai/models/xiaomi/mimo-v2.5-pro
+- https://openrouter.ai/docs
+

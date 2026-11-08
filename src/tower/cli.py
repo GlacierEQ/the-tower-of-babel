@@ -13,6 +13,8 @@ from .integrity import verify_integrity, write_manifest
 from .proofs import build_proof_report, write_proof_report
 from .receipt import write_receipt
 from .registry import load_registry, validate_registry
+from .resource_memory import DEFAULT_ORIENTATION_OUTPUT, DEFAULT_OUTPUT as DEFAULT_PREFLIGHT_OUTPUT
+from .resource_memory import write_orientation
 from .spiral import (
     build_admission_receipt,
     generate_civilization_question,
@@ -53,6 +55,24 @@ def main() -> int:
     gen.add_argument("--check", action="store_true")
     spec = sub.add_parser("spec")
     spec.add_argument("technology")
+
+    orient = sub.add_parser("orient")
+    orient.add_argument("--mission", required=True)
+    orient.add_argument("--memory")
+    orient.add_argument("--checkpoint-receipt")
+    orient.add_argument("--output", default=str(DEFAULT_ORIENTATION_OUTPUT))
+
+    preflight = sub.add_parser("preflight")
+    preflight.add_argument("--mission", required=True)
+    preflight.add_argument("--memory")
+    preflight.add_argument(
+        "--require-memory",
+        action="store_true",
+        help="Compatibility flag: never grants or denies execution permission.",
+    )
+    preflight.add_argument("--checkpoint-receipt")
+    preflight.add_argument("--output", default=str(DEFAULT_PREFLIGHT_OUTPUT))
+
     build = sub.add_parser("build")
     build.add_argument("technologies", nargs="*")
     build.add_argument("--all", action="store_true")
@@ -89,6 +109,25 @@ def main() -> int:
     spiral_verify = spiral_sub.add_parser("verify")
     spiral_verify.add_argument("receipt")
 
+    innovate = sub.add_parser("innovate")
+    innovate_sub = innovate.add_subparsers(dest="innovate_action", required=True)
+    innovate_eval = innovate_sub.add_parser("evaluate")
+    innovate_eval.add_argument("repository", nargs="?", default=".")
+    innovate_eval.add_argument("--target", type=float, default=9.0)
+    innovate_plan = innovate_sub.add_parser("plan")
+    innovate_plan.add_argument("repository", nargs="?", default=".")
+    innovate_plan.add_argument("--target", type=float, default=9.0)
+    innovate_plan.add_argument("--limit", type=int, default=10)
+    innovate_run = innovate_sub.add_parser("run")
+    innovate_run.add_argument("repository", nargs="?", default=".")
+    innovate_run.add_argument("--target", type=float, default=9.0)
+    innovate_run.add_argument("--max-revolutions", type=int, default=12)
+    innovate_run.add_argument("--output", default="artifacts/babel-innovation-report.json")
+    innovate_bridge = innovate_sub.add_parser("bridge")
+    innovate_bridge.add_argument("repository", nargs="?", default=".")
+    innovate_bridge.add_argument("--target", type=float, default=9.0)
+    innovate_bridge.add_argument("--output", default="artifacts/babel-spiral-bridge.json")
+
     sub.add_parser("report")
     sub.add_parser("megamind-map")
 
@@ -101,6 +140,54 @@ def main() -> int:
     args = parser.parse_args()
 
     try:
+        # Orientation intentionally runs before registry loading. Its job includes
+        # diagnosing a missing or malformed registry and must survive that damage.
+        # "preflight" remains a compatibility alias and has identical nonblocking semantics.
+        if args.command in {"orient", "preflight"}:
+            memory_path = Path(args.memory) if args.memory else None
+            checkpoint_receipt = Path(args.checkpoint_receipt) if args.checkpoint_receipt else None
+            try:
+                payload = write_orientation(
+                    Path(args.output),
+                    args.mission,
+                    memory_path=memory_path,
+                    checkpoint_receipt=checkpoint_receipt,
+                )
+            except (OSError, ValueError) as exc:
+                failure_class = (
+                    "ORIENTATION_IO_ERROR" if isinstance(exc, OSError)
+                    else "ORIENTATION_INPUT_OR_PROTECTION_ERROR"
+                )
+                payload = {
+                    "schema": "glaciereq.tower.resource-memory-preflight.v3",
+                    "mission": args.mission,
+                    "state": "ORIENTATION_DEGRADED",
+                    "status": "DEGRADED",
+                    "failure": {
+                        "class": failure_class,
+                        "message": str(exc),
+                    },
+                    "orientation": {
+                        "mode": "CONTINUOUS_ORIENTATION",
+                        "continuation_state": "CONTINUE_WITH_GAPS",
+                        "certainty": "LOW",
+                        "execution_permission": "NOT_EVALUATED_BY_ORIENTATION",
+                        "stop_condition_created": False,
+                        "unresolved_count": 1,
+                        "recommended_next_route": "RECOVER_ORIENTATION_FAILURE",
+                        "route_hints": [
+                            {
+                                "priority": 1,
+                                "route": "RECOVER_ORIENTATION_FAILURE",
+                                "reason": failure_class,
+                                "count": 1,
+                            }
+                        ],
+                    },
+                }
+            _print(payload)
+            return 0
+
         registry = load_registry()
         if args.command == "validate":
             errors = validate_registry(registry)
@@ -182,6 +269,52 @@ def main() -> int:
                 result = verify_admission_receipt(payload)
                 _print(result)
                 return 0 if result["ok"] else 1
+        if args.command == "innovate":
+            from dataclasses import asdict
+            from .innovation import (
+                BabelSpiralEngine,
+                evaluate_repository,
+                plan_interventions,
+                write_report as write_innovation_report,
+            )
+            repo_path = Path(args.repository)
+            if args.innovate_action == "evaluate":
+                payload = evaluate_repository(repo_path, registry, target=args.target)
+                _print(asdict(payload))
+                return 0
+            if args.innovate_action == "plan":
+                evaluation = evaluate_repository(repo_path, registry, target=args.target)
+                payload = {
+                    "repository": evaluation.repository,
+                    "score": evaluation.overall_score,
+                    "critical_floor": evaluation.critical_floor,
+                    "complete": evaluation.complete,
+                    "roles": [asdict(row) for row in evaluation.roles],
+                    "interventions": [asdict(row) for row in plan_interventions(evaluation, limit=args.limit)],
+                }
+                _print(payload)
+                return 0
+            if args.innovate_action == "run":
+                engine = BabelSpiralEngine(registry, target=args.target, max_revolutions=args.max_revolutions)
+                payload = engine.run(repo_path)
+                write_innovation_report(Path(args.output), payload)
+                _print(payload)
+                return 0
+            if args.innovate_action == "bridge":
+                from .spiral_bridge import build_bridge_contract
+                evaluation = evaluate_repository(repo_path, registry, target=args.target)
+                plan = plan_interventions(evaluation, limit=1)
+                payload = build_bridge_contract(
+                    evaluation,
+                    plan[0] if plan else None,
+                )
+                Path(args.output).parent.mkdir(parents=True, exist_ok=True)
+                Path(args.output).write_text(
+                    json.dumps(payload, indent=2, sort_keys=True) + "\n",
+                    encoding="utf-8",
+                )
+                _print(payload)
+                return 0
         if args.command == "report":
             _print(_read_json_object(Path("generated/maturity.json"), "maturity report"))
             return 0

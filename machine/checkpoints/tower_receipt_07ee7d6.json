@@ -1,0 +1,41 @@
+{
+  "body_sha256": "9f0f3d7b64d0ba164fed8729ad2e08302188d955231bf630357c600bf0c30bc7",
+  "build_report_errors": [],
+  "build_report_sha256": "1259f6381497647eba3312d25ce8aaeca23d32666dff4e3ff0d6165e906c677c",
+  "build_report_valid": true,
+  "build_summary": {
+    "BLOCKED_DEPENDENCY": 2,
+    "BLOCKED_HARDWARE": 4,
+    "BLOCKED_SERVICE": 1,
+    "BLOCKED_TOOLCHAIN": 18,
+    "VERIFIED": 15
+  },
+  "integrity": {
+    "changed": [],
+    "commit_sha": "07ee7d6bfecf58f1c27b925c8028b3e410f6f96f",
+    "evolution_note": "Integrity verifies the reviewed current tree; stronger reviewed commits may replace it without rewriting a static baseline.",
+    "mode": "GIT_INDEX_LIVE",
+    "ok": true,
+    "receipt_sha256": "ff3c53654bbdd9418e343ef18d70c32a179667602a7f91eafc929a02446d2bd9",
+    "selection_mode": "CURRENT_HEAD_REVISABLE",
+    "status": "VERIFIED",
+    "tracked_file_count": 260,
+    "tree_listing_sha256": "a57836d342feeaf188ffdf734dddc2702e3c1bb48ef98c4318d82de9d4220389",
+    "tree_sha": "31fccb0e696094805e81100195d0a18427827756",
+    "unexpected": []
+  },
+  "integrity_commit_sha": "07ee7d6bfecf58f1c27b925c8028b3e410f6f96f",
+  "integrity_errors": [],
+  "integrity_identity_sha256": "ff3c53654bbdd9418e343ef18d70c32a179667602a7f91eafc929a02446d2bd9",
+  "integrity_mode": "GIT_INDEX_LIVE",
+  "integrity_tree_sha": "31fccb0e696094805e81100195d0a18427827756",
+  "integrity_valid": true,
+  "receipt_id": "tower-f46c77079688-ff3c53654bbd-1259f6381497",
+  "receipt_sha256": "9f0f3d7b64d0ba164fed8729ad2e08302188d955231bf630357c600bf0c30bc7",
+  "registry_sha256": "f46c77079688adade848536e7a9f2ba0bd9a8fbbb66c44b8dcd92efa215623d6",
+  "registry_valid": true,
+  "schema_version": "2.0.0",
+  "technology_count": 40,
+  "tower_id": "glaciereq.tower-of-babel.v1",
+  "validation_errors": []
+}

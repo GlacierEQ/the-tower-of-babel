@@ -1,28 +1,64 @@
-namespace Tower.Telemetry;
+// =============================================================================
+// WHAT: FlatBuffers binary serialization schema for high-frequency telemetry
+// WHERE: Real-time telemetry, sensor streams, and binary forensic event logging
+// WHEN: Zero-copy random-access reading directly from mmap buffers is required
+// WHY: Avoids heap allocations and permits direct field reads without unpacking
+// HOW: Tables, Structs, Enums, Vectors, previous_frame_sha256 and Root Table
+// =============================================================================
 
-enum Health:byte { Unknown = 0, Nominal = 1, Degraded = 2, Critical = 3 }
+namespace APEX.Telemetry;
 
-struct Vector3 {
-  x:double;
-  y:double;
-  z:double;
+enum SeverityLevel : byte {
+    DEBUG = 0,
+    INFO = 1,
+    WARNING = 2,
+    ERROR = 3,
+    CRITICAL_BREACH = 4
 }
 
-table SensorSample {
-  sensor_id:string (required);
-  observed_unix_ns:ulong;
-  temperature_c:double;
-  vibration:Vector3;
+enum HardwareSubsystem : byte {
+    CPU = 0,
+    GPU = 1,
+    MEMORY = 2,
+    STORAGE_APFS = 3,
+    NETWORK_USB = 4,
+    SECURITY_ENCLAVE = 5
 }
 
-table RackFrame {
-  schema_version:uint = 1;
-  rack_id:uint;
-  sequence:ulong;
-  health:Health = Unknown;
-  samples:[SensorSample];
-  previous_frame_sha256:[ubyte];
+struct MemoryUsageMetric {
+    total_bytes: ulong;
+    used_bytes: ulong;
+    swap_bytes: ulong;
+    page_faults_per_sec: uint;
 }
 
-root_type RackFrame;
-file_identifier "TRAK";
+struct HardwareVector {
+    voltage_mv: float;
+    current_ma: float;
+    temperature_celsius: float;
+}
+
+table SecurityAuditRecord {
+    record_id: string (required);
+    timestamp_ns: ulong;
+    severity: SeverityLevel = INFO;
+    subsystem: HardwareSubsystem = CPU;
+    caller_pid: uint;
+    source_ip: string;
+    action_digest: [ubyte];
+    detail_message: string;
+}
+
+table HighFrequencyFrame {
+    frame_sequence: ulong;
+    capture_epoch_ms: ulong;
+    previous_frame_sha256: [ubyte];
+    memory_metrics: MemoryUsageMetric;
+    hardware_sensors: [HardwareVector];
+    security_events: [SecurityAuditRecord];
+    cryptographic_receipt_sha256: [ubyte];
+}
+
+root_type HighFrequencyFrame;
+file_identifier "APEX";
+file_extension "atf";
