@@ -78,3 +78,8 @@ Do not refactor merely to add another language. Do not refuse a better language 
 Generated surfaces must not be hand-edited. They are overwritten by `python3 -m tower.generate`.
 
 Historical files and receipts may contain the retired term `canonical`. That term is historical metadata only and has no governing force over APEX intent or current engineering direction.
+## Working-directory supplement
+
+For agents operating in this project, see `@/root/.agents/skills/tower-of-babel/SKILL.md`
+for the operator-routing skill (project layout, CLI cheat sheet, evidence/proof
+quick reference, sharp edges). That skill defers to this file on doctrine.

@@ -354,10 +354,15 @@ def test_preflight_refuses_to_overwrite_memory_input(tmp_path: Path) -> None:
 
 
 def test_preflight_refuses_hard_link_overwrite_of_memory_input(tmp_path: Path) -> None:
+    if not hasattr(os, "link"):
+        pytest.skip("hard links (os.link) not supported on this platform")
     _seed_minimal_tower(tmp_path)
     memory = _source_bound_memory(tmp_path)
     output = tmp_path / "hard-linked-output.json"
-    os.link(memory, output)
+    try:
+        os.link(memory, output)
+    except OSError:
+        pytest.skip("hard links not supported by filesystem")
     before = memory.read_bytes()
 
     with pytest.raises(ValueError, match="hard-linked"):
