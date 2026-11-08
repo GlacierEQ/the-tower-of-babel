@@ -1,0 +1,14 @@
+{
+  "schema": "glaciereq.tower.portfolio-demand.v1",
+  "requirements": {
+    "required_interfaces": ["bpf_map", "datalog_facts"],
+    "preferred_categories": ["kernel_tracing_and_security", "declarative_static_analysis"],
+    "required_technology_ids": [],
+    "minimum_evidence_state": "compiles",
+    "allow_gated": false,
+    "require_full_interface_coverage": true,
+    "max_technologies": 2,
+    "max_candidates": 8,
+    "max_combinations": 100
+  }
+}
