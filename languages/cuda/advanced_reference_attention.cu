@@ -1,6 +1,6 @@
 // CUDA — Advanced Example: Audited Reference Scaled Dot-Product Attention.
-// This is an auditable correctness reference, not a claim to implement the
-// production FlashAttention algorithm. Evidence class: hardware_gated.
+// Audited reference implementation of scaled dot-product attention.
+// Evidence class: hardware_gated.
 
 #include <cuda_runtime.h>
 #include <cmath>
