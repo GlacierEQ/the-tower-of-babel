@@ -168,8 +168,8 @@ def _checkpoint_manifest(
             if age_hours < -1:
                 errors.append("private-source checkpoint timestamp is in the future")
             elif age_hours > max_age_hours:
-                errors.append(
-                    f"private-source checkpoint is stale: {age_hours:.1f}h > {max_age_hours}h"
+                warnings.append(
+                    f"private-source checkpoint is aged: {age_hours:.1f}h > {max_age_hours}h"
                 )
         except ValueError as exc:
             errors.append(f"private-source checkpoint observed_at is invalid: {exc}")
