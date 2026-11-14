@@ -131,6 +131,19 @@ report = engine.run("/path/to/repository", executor=executor)
 Planning is not mutation. Mutation is not completion. A revolution counts only
 after the changed repository is re-evaluated.
 
+## Sequential code plan
+
+`tower innovate code-plan REPOSITORY --objective "..."` turns Tower's ranked
+interventions into an ordered inspect/change/verify/persist plan. Each step
+depends on the prior step's verification, includes a stable plan hash, and
+requires operator authorization before implementation. The command evaluates
+the repository only; it does not edit files or run an executor.
+
+The JSON report uses `glaciereq.tower.sequential-code-plan.v1` and includes the
+baseline repository fingerprint, score, critical floor, and completion state.
+An empty plan is reported as `COMPLETE` or `NO_INTERVENTIONS`; neither status is
+an execution receipt.
+
 
 ## Runtime evidence weighting
 
