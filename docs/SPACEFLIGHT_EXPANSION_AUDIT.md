@@ -39,7 +39,7 @@ The Tower should not add a proprietary `SpaceX` floor. It should add a governed 
 
 The Tower governance rule is strict: a floor should not enter the active registry until it has:
 
-1. a canonical registry record;
+1. a sovereign registry record;
 2. an easy exhibit;
 3. an advanced exhibit;
 4. an advanced claim contract;

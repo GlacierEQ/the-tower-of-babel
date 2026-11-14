@@ -14,23 +14,23 @@ def _load(path: Path) -> dict:
 
 
 def test_runtime_claims_require_executable_promotion_evidence() -> None:
-    canonical = _load(CONTRACT_PATHS[0])
+    sovereign = _load(CONTRACT_PATHS[0])
     mirrored = _load(CONTRACT_PATHS[1])
-    assert canonical == mirrored
+    assert sovereign == mirrored
 
-    cuda = canonical["cuda"]
+    cuda = sovereign["cuda"]
     assert cuda["promotion_requirements"]["minimum_evidence_state"] == "tested"
     assert "__global__" in cuda["promotion_requirements"]["required_source_patterns"]
     assert "gpu_backend" in cuda["promotion_requirements"]["required_receipt_fields"]
     assert "real nvcc-built and GPU-executed" in cuda["proof_surface"]
 
-    jax = canonical["jax"]
+    jax = sovereign["jax"]
     assert jax["promotion_requirements"]["minimum_evidence_state"] == "tested"
     assert "import\\s+jax" in jax["promotion_requirements"]["required_source_patterns"]
     assert "device_count" in jax["promotion_requirements"]["required_receipt_fields"]
     assert "JAX/XLA execution" in jax["proof_surface"]
 
-    rhl = canonical["rhl_quant"]
+    rhl = sovereign["rhl_quant"]
     assert rhl["promotion_requirements"]["minimum_evidence_state"] == "benchmark"
     assert "quality_delta" in rhl["promotion_requirements"]["required_receipt_fields"]
     assert "throughput" in rhl["promotion_requirements"]["required_receipt_fields"]
