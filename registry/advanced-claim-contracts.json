@@ -16,7 +16,8 @@
       "proof_surface": "naming contract Genius-Distributed-Systems and GENIUS.yaml kernel gate",
       "required_receipt_fields": [
         "name",
-        "kernel"
+        "kernel",
+        "purpose"
       ],
       "required_source_patterns": [
         "Genius-",

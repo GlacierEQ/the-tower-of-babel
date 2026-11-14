@@ -202,6 +202,9 @@
 - https://github.com/GlacierEQ/residual-lattice-quantization
 - https://arxiv.org/abs/2402.17764
 
+## Genius-Mastery family kernel
+- https://github.com/GlacierEQ/Genius-Mastery
+
 ## HY3 (Tencent Hunyuan) free-tier runtime model
 - https://openrouter.ai/models/tencent/hy3
 - https://openrouter.ai/docs

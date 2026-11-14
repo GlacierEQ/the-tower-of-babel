@@ -18,7 +18,7 @@
   "integration": {
     "consumer": "GlacierEQ/job-application",
     "placement_receipt_path": "machine/tower-placement.json",
-    "placement_required_before_material_evolution": false,
+    "placement_required_before_material_evolution": true,
     "placement_can_delay_material_evolution": false,
     "placement_receipt_semantics": "advisory_technical_evidence_not_permission",
     "retroactively_invalidates_existing_excellence_state": false
@@ -26,8 +26,17 @@
   "compatibility": {
     "tower_authority_field": "legacy field name retained for v1 consumers; value means Tower recommendation provenance, never project-direction authority"
   },
-  "decisions": ["KEEP", "ADD", "SPLIT", "EXPERIMENT"],
-  "proof_tiers": ["A", "B", "C"],
+  "decisions": [
+    "KEEP",
+    "ADD",
+    "SPLIT",
+    "EXPERIMENT"
+  ],
+  "proof_tiers": [
+    "A",
+    "B",
+    "C"
+  ],
   "required_receipt_fields": [
     "schema",
     "repository",

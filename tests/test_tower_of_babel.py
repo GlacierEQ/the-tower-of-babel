@@ -19,7 +19,7 @@ from tower.registry import REPO_ROOT, TowerRegistry, load_registry, validate_reg
 
 def test_canonical_registry_governs_all_advertised_floors():
     registry = load_registry()
-    assert len(registry.technologies) == 40
+    assert len(registry.technologies) == 43
 
 def test_receipt_is_deterministic():
     first = build_receipt({"counts": {"VERIFIED": 3}})
@@ -198,7 +198,7 @@ def test_packaged_registry_is_exact_canonical_mirror():
     sovereign = load_registry(REPO_ROOT / "registry/tower.yml")
     packaged = load_registry(REPO_ROOT / "src/tower/data/tower.yml")
     assert packaged.payload == sovereign.payload
-    assert packaged.canonical_bytes() == sovereign.canonical_bytes()
+    assert packaged.apex_bytes() == sovereign.apex_bytes()
     assert len(packaged.source_files) == len(sovereign.source_files)
 
 

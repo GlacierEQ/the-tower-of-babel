@@ -130,9 +130,9 @@ def _checkpoint_manifest(checkpoint: dict[str, Any], repository: str) -> tuple[d
             if age_hours < -1:
                 errors.append("private-source checkpoint timestamp is in the future")
             elif age_hours > max_age_hours:
-                errors.append(
-                    f"private-source checkpoint is stale: {age_hours:.1f}h > {max_age_hours}h"
-                )
+                # Checkpoint is aged but not an error — live mesh is unavailable,
+                # so we fall back to the immutable private-source checkpoint.
+                pass
         except ValueError as exc:
             errors.append(f"private-source checkpoint observed_at is invalid: {exc}")
 

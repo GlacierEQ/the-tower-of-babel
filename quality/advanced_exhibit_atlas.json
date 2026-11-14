@@ -1,5 +1,5 @@
 {
-  "advanced_exhibit_count": 42,
+  "advanced_exhibit_count": 43,
   "all_claim_contracts_present": true,
   "all_profiles_present": true,
   "authority": [
@@ -1566,6 +1566,45 @@
         "dequantize_and_matmul"
       ],
       "technology": "RHL-Quant reference quantizer (unbenchmarked)"
+    },
+    {
+      "activation_condition": "Use when a Genius entity must be named, synthesized, validated, or receipted.",
+      "advanced_exhibit": "languages/genius-mastery/advanced_kernel_gate.py",
+      "architectural_role": "Genius family repos, Buildkite macos-self on OCI glacier-agent, mega-skills hierarchy.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
+      "evidence_state": "tested",
+      "evidence_tier": "tested_implementation",
+      "expected_failure_cases": [
+        "empty purpose",
+        "missing kernel:true",
+        "purpose not Mastery"
+      ],
+      "forbidden_claim_patterns": [
+        "mastery percentage",
+        "complete genius",
+        "skills dump"
+      ],
+      "id": "genius-mastery",
+      "interfaces": [
+        "python_api",
+        "cli",
+        "yaml_contract"
+      ],
+      "maturity_tier": "tested_implementation",
+      "promotion_gate": {},
+      "proof_class": "behavioral",
+      "proof_surface": "naming contract Genius-Distributed-Systems and GENIUS.yaml kernel gate",
+      "required_receipt_fields": [
+        "name",
+        "kernel",
+        "purpose"
+      ],
+      "signature_innovation": "Mastery-not-skills family kernel",
+      "source_assertions": [
+        "Genius-",
+        "kernel"
+      ],
+      "technology": "Genius-Mastery family kernel"
     },
     {
       "activation_condition": "Use for general coding, orchestration, and synthesis tasks when the objective does not require the largest frontier reasoning model and a zero or low-cost path is preferred.",

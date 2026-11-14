@@ -55,7 +55,7 @@ class TowerRegistry:
     def fragment_files(self) -> tuple[Path, ...]:
         return tuple(path for path in self.source_files if path != self.source)
 
-    def canonical_bytes(self) -> bytes:
+    def apex_bytes(self) -> bytes:
         """Serialize the complete merged registry for identity and receipts."""
         return json.dumps(
             self.payload,
