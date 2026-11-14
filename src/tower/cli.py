@@ -13,8 +13,8 @@ from .integrity import verify_integrity, write_manifest
 from .proofs import build_proof_report, write_proof_report
 from .receipt import write_receipt
 from .registry import load_registry, validate_registry
-from .resource_memory import DEFAULT_OUTPUT as DEFAULT_PREFLIGHT_OUTPUT
-from .resource_memory import write_preflight
+from .resource_memory import DEFAULT_ORIENTATION_OUTPUT, DEFAULT_OUTPUT as DEFAULT_PREFLIGHT_OUTPUT
+from .resource_memory import write_orientation
 from .spiral import (
     build_admission_receipt,
     generate_civilization_question,
@@ -55,6 +55,12 @@ def main() -> int:
     gen.add_argument("--check", action="store_true")
     spec = sub.add_parser("spec")
     spec.add_argument("technology")
+
+    orient = sub.add_parser("orient")
+    orient.add_argument("--mission", required=True)
+    orient.add_argument("--memory")
+    orient.add_argument("--checkpoint-receipt")
+    orient.add_argument("--output", default=str(DEFAULT_ORIENTATION_OUTPUT))
 
     preflight = sub.add_parser("preflight")
     preflight.add_argument("--mission", required=True)
@@ -115,22 +121,52 @@ def main() -> int:
     args = parser.parse_args()
 
     try:
-        # Preflight intentionally runs before registry loading. Its job includes
+        # Orientation intentionally runs before registry loading. Its job includes
         # diagnosing a missing or malformed registry and must survive that damage.
-        if args.command == "preflight":
+        # "preflight" remains a compatibility alias and has identical nonblocking semantics.
+        if args.command in {"orient", "preflight"}:
             memory_path = Path(args.memory) if args.memory else None
             checkpoint_receipt = Path(args.checkpoint_receipt) if args.checkpoint_receipt else None
-            payload = write_preflight(
-                Path(args.output),
-                args.mission,
-                memory_path=memory_path,
-                checkpoint_receipt=checkpoint_receipt,
-            )
+            try:
+                payload = write_orientation(
+                    Path(args.output),
+                    args.mission,
+                    memory_path=memory_path,
+                    checkpoint_receipt=checkpoint_receipt,
+                )
+            except (OSError, ValueError) as exc:
+                failure_class = (
+                    "ORIENTATION_IO_ERROR" if isinstance(exc, OSError)
+                    else "ORIENTATION_INPUT_OR_PROTECTION_ERROR"
+                )
+                payload = {
+                    "schema": "glaciereq.tower.resource-memory-preflight.v3",
+                    "mission": args.mission,
+                    "state": "ORIENTATION_DEGRADED",
+                    "status": "DEGRADED",
+                    "failure": {
+                        "class": failure_class,
+                        "message": str(exc),
+                    },
+                    "orientation": {
+                        "mode": "CONTINUOUS_ORIENTATION",
+                        "continuation_state": "CONTINUE_WITH_GAPS",
+                        "certainty": "LOW",
+                        "execution_permission": "NOT_EVALUATED_BY_ORIENTATION",
+                        "stop_condition_created": False,
+                        "unresolved_count": 1,
+                        "recommended_next_route": "RECOVER_ORIENTATION_FAILURE",
+                        "route_hints": [
+                            {
+                                "priority": 1,
+                                "route": "RECOVER_ORIENTATION_FAILURE",
+                                "reason": failure_class,
+                                "count": 1,
+                            }
+                        ],
+                    },
+                }
             _print(payload)
-            # Orientation is telemetry and routing input, not an execution gate.
-            # Missing memory, resource gaps, or an absent checkpoint reduce certainty
-            # and shape the next route; a successfully emitted orientation receipt
-            # does not deny permission to continue the wider mission.
             return 0
 
         registry = load_registry()
