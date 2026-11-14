@@ -78,8 +78,35 @@ Do not refactor merely to add another language. Do not refuse a better language 
 Generated surfaces must not be hand-edited. They are overwritten by `python3 -m tower.generate`.
 
 Historical files and receipts may contain the retired term `canonical`. That term is historical metadata only and has no governing force over APEX intent or current engineering direction.
+
 ## Working-directory supplement
 
 For agents operating in this project, see `@/root/.agents/skills/tower-of-babel/SKILL.md`
 for the operator-routing skill (project layout, CLI cheat sheet, evidence/proof
 quick reference, sharp edges). That skill defers to this file on doctrine.
+
+## Continuous-orientation invariant
+
+The orientation engine emits routing telemetry, not authorization. Its machine result must preserve:
+
+- `execution_permission: NOT_EVALUATED_BY_ORIENTATION`;
+- `stop_condition_created: false`;
+- a certainty level that can fall without reducing execution effort by itself;
+- explicit route hints for resource recovery, continuity sourcing, contested-memory reconciliation, current-state acquisition, checkpoint establishment, committed-delta verification, and working-tree reconciliation;
+- `CONTINUE` or `CONTINUE_WITH_GAPS` as the continuation state.
+
+A gap is work to route, not a reason to manufacture a global stop. Disputed, invalidated, or superseded memory never becomes current positive continuity merely because parsing succeeded. Local orientation I/O failure is surfaced as degraded JSON telemetry, and output protection must reject same-path, symlink-resolved, or hard-linked attempts to overwrite operator memory.
+
+## External-effect risk law
+
+External effect is a location/boundary fact, not automatically a reason to stop.
+
+Classify consequential action by reversibility:
+
+- `reversible`: execute within the current Operator-directed mission when the technical execution boundary is satisfied; no redundant exact-scope receipt is required;
+- `materially-irreversible`: require exact Operator-scoped authorization before crossing the effect boundary;
+- `unclassified`: preserve the conservative legacy authorization requirement until the effect is classified.
+
+Legacy `--external-effects` without `--effect-risk` remains `unclassified`, so existing callers do not silently become less protected.
+
+Operator scope never bypasses toolchain, interface, execution, evidence, or proof requirements. Those requirements control what the system can truthfully do or claim; they do not acquire project-direction authority.
