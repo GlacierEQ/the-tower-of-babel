@@ -326,7 +326,7 @@ The Tower provides technology placement and proof capability. Connected reposito
 | [`GlacierEQ/apex-cli`](https://github.com/GlacierEQ/apex-cli) | Operator-facing peer | Command surface for downstream control-plane workflows. |
 | [`flagship/`](flagship/) | In-repository integration proof | Executes the strict polyglot mission contract. |
 
-External links describe curated portfolio relationships, not a claim that every repository is live-synchronized. Generated interfaces and ownership maps remain the machine-checkable integration source.
+External links describe curated portfolio relationships. Generated interfaces and ownership maps remain the machine-checkable integration source.
 
 ## Governance that survives automation
 
