@@ -53,6 +53,10 @@ def _read_json(path: Path, label: str) -> dict[str, Any]:
 
 
 def _fetch(url: str, attempts: int = 3, timeout: int = 20) -> bytes:
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    headers = {"User-Agent": USER_AGENT}
+    if token:
+        headers["Authorization"] = f"token {token}"
     last_error: Exception | None = None
     headers: dict[str, str] = {"User-Agent": USER_AGENT}
     token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_MASTER_TOKEN")
