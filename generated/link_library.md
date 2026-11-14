@@ -182,6 +182,8 @@
 
 ## eBPF
 - https://ebpf.io/docs/
+- https://github.com/GlacierEQ/apex-ebpf-sentinel
+- https://github.com/GlacierEQ/apex-ebpf-sentinel
 
 ## OpenQASM 3.0
 - https://openqasm.com/
