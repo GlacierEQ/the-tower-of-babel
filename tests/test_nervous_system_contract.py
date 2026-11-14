@@ -28,3 +28,14 @@ def test_apex_nervous_system_contract_is_current_or_source_bound_and_revisable()
         assert len(payload["observed_blob_sha"]) == 40
         assert len(payload["verified_summary_sha256"]) == 64
         assert payload["checkpoint_age_hours"] <= payload["checkpoint_max_age_hours"]
+
+
+def test_local_tower_contract_cannot_reintroduce_execution_gate() -> None:
+    payload = json.loads(open(".glaciereq/nervous-system.node.json", encoding="utf-8").read())
+    assert "resource_memory_preflight" not in payload
+    orientation = payload["resource_memory_orientation"]
+    assert orientation["mode"] == "ORIENTATION_NOT_PERMISSION"
+    assert orientation["required_before_mutation"] is False
+    assert orientation["partial_state_changes_certainty_not_execution_permission"] is True
+    assert orientation["missing_checkpoint_is_not_execution_veto"] is True
+    assert orientation["default_continuation"] == "CONTINUE_WHILE_MEANINGFUL_ROUTE_EXISTS"
