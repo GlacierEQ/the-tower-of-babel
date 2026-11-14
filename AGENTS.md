@@ -123,3 +123,6 @@ The orientation engine emits routing telemetry, not authorization. Its machine r
 - `CONTINUE` or `CONTINUE_WITH_GAPS` as the continuation state.
 
 A gap is work to route, not a reason to manufacture a global stop. Disputed, invalidated, or superseded memory never becomes current positive continuity merely because parsing succeeded. Local orientation I/O failure is surfaced as degraded JSON telemetry, and output protection must reject same-path, symlink-resolved, or hard-linked attempts to overwrite operator memory.
+
+## Strength and Intelligence Strictly Outrank Speed
+- Default to `deep` / `xhigh` / frontier (`pro` / `inherit`) execution across build, integrity, receipt, and spiral verification; never compromise proof discipline or test coverage for latency or lightweight model shortcuts (inherits root `/Users/kcbflux/workspace/AGENTS.md` & `RULES.md` Rule 13).
