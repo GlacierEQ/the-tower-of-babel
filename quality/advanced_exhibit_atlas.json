@@ -1,5 +1,5 @@
 {
-  "advanced_exhibit_count": 42,
+  "advanced_exhibit_count": 43,
   "all_claim_contracts_present": true,
   "all_profiles_present": true,
   "authority": [
@@ -673,7 +673,7 @@
     {
       "activation_condition": "Use when durable data relationships and set-oriented operations belong inside the database.",
       "advanced_exhibit": "languages/sql/advanced_pgvector_hnsw.sql",
-      "architectural_role": "Canonical state, analytics, audit records, knowledge graphs, and embedding search.",
+      "architectural_role": "Sovereign state, analytics, audit records, knowledge graphs, and embedding search.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
       "evidence_state": "service_gated",
       "evidence_tier": "gated_reference",
@@ -1322,8 +1322,8 @@
       "advanced_exhibit": "languages/ebpf/advanced_syscall_sentinel.bpf.c",
       "architectural_role": "Linux kernel tracing, Cilium networking, Falco security auditing, and socket performance profiling.",
       "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
-      "evidence_state": "compiles",
-      "evidence_tier": "runnable_reference",
+      "evidence_state": "tested",
+      "evidence_tier": "tested_implementation",
       "expected_failure_cases": [
         "unapproved syscall",
         "map allocation failure",
@@ -1338,9 +1338,9 @@
         "c_abi",
         "bpf_map"
       ],
-      "maturity_tier": "runnable_reference",
+      "maturity_tier": "tested_implementation",
       "promotion_gate": {},
-      "proof_class": "compile",
+      "proof_class": "behavioral",
       "proof_surface": "kernel syscall execve sentinel",
       "required_receipt_fields": [
         "trace_sys_execve",
@@ -1566,6 +1566,45 @@
         "dequantize_and_matmul"
       ],
       "technology": "RHL-Quant reference quantizer (unbenchmarked)"
+    },
+    {
+      "activation_condition": "Use when a Genius entity must be named, synthesized, validated, or receipted.",
+      "advanced_exhibit": "languages/genius-mastery/advanced_kernel_gate.py",
+      "architectural_role": "Genius family repos, Buildkite macos-self on OCI glacier-agent, mega-skills hierarchy.",
+      "claim_boundary": "Distinctive repository synthesis; no unsupported claim of first invention, production readiness, universal security, or hardware validation.",
+      "evidence_state": "tested",
+      "evidence_tier": "tested_implementation",
+      "expected_failure_cases": [
+        "empty purpose",
+        "missing kernel:true",
+        "purpose not Mastery"
+      ],
+      "forbidden_claim_patterns": [
+        "mastery percentage",
+        "complete genius",
+        "skills dump"
+      ],
+      "id": "genius-mastery",
+      "interfaces": [
+        "python_api",
+        "cli",
+        "yaml_contract"
+      ],
+      "maturity_tier": "tested_implementation",
+      "promotion_gate": {},
+      "proof_class": "behavioral",
+      "proof_surface": "naming contract Genius-Distributed-Systems and GENIUS.yaml kernel gate",
+      "required_receipt_fields": [
+        "name",
+        "kernel",
+        "purpose"
+      ],
+      "signature_innovation": "Mastery-not-skills family kernel",
+      "source_assertions": [
+        "Genius-",
+        "kernel"
+      ],
+      "technology": "Genius-Mastery family kernel"
     },
     {
       "activation_condition": "Use for general coding, orchestration, and synthesis tasks when the objective does not require the largest frontier reasoning model and a zero or low-cost path is preferred.",

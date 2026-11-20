@@ -12,13 +12,15 @@
       "when": "Use when kernel-level observability, network packet filtering, or syscall enforcement is required at line rate.",
       "how": "C/Rust eBPF programs, BPF maps, helpers, kprobes, tracepoints, and clang target bpf compilation.",
       "primary_evidence": [
-        "https://ebpf.io/docs/"
+        "https://ebpf.io/docs/",
+        "https://github.com/GlacierEQ/apex-ebpf-sentinel",
+        "https://github.com/GlacierEQ/apex-ebpf-sentinel"
       ],
-      "proof_class": "compile",
-      "evidence_state": "compiles",
+      "proof_class": "behavioral",
+      "evidence_state": "tested",
       "execution": {
         "ci_tier": "portable",
-        "hardware_gate": ""
+        "hardware_gate": "Linux kernel >=5.15 required for full eBPF CO-RE; Go userspace tests run portable"
       },
       "toolchain": {
         "tool": "clang",
@@ -47,7 +49,16 @@
             "build/ebpf_advanced.o"
           ]
         ],
-        "test": []
+        "test": [
+          [
+            "go",
+            "test",
+            "./tests/integration/",
+            "-v",
+            "-timeout",
+            "30s"
+          ]
+        ]
       },
       "interfaces": [
         "c_abi",
@@ -63,7 +74,13 @@
         ]
       },
       "easy_example": "languages/ebpf/easy_packet_filter.bpf.c",
-      "advanced_example": "languages/ebpf/advanced_syscall_sentinel.bpf.c"
+      "advanced_example": "languages/ebpf/advanced_syscall_sentinel.bpf.c",
+      "apex_estate_integration": {
+        "repo": "apex-ebpf-sentinel",
+        "path": "/Users/kcbflux/APEX_SYSTEM/DOMAINS/SWARM_INTELLIGENCE/SWARM_TECH/apex-ebpf-sentinel",
+        "test_evidence": "4/4 integration tests pass (policy eval, start/stop, platform probes, metrics)",
+        "advancement": "compiles -> tested (Go userspace); hardware_gated for full kernel CO-RE"
+      }
     },
     {
       "id": "openqasm",
@@ -180,7 +197,7 @@
       "why": "Use when JAX/XLA provides a measured advantage for autodiff, compilation, or device parallelism.",
       "where": "Verified JAX runtimes with a declared CPU/GPU/TPU backend and reproducible device tests.",
       "when": "Select only after JAX imports, jax.jit or pjit executes, and the requested sharding/backend receipt is captured.",
-      "how": "Admission requires JAX runtime markers, executable XLA lowering, real device count, and sharding evidence—not Python lists.",
+      "how": "Admission requires JAX runtime markers, executable XLA lowering, real device count, and sharding evidence\u2014not Python lists.",
       "primary_evidence": [
         "https://jax.readthedocs.io/",
         "https://x.ai/blog/grok-1"
@@ -244,7 +261,7 @@
     },
     {
       "id": "datalog",
-      "name": "Soufflé Datalog",
+      "name": "Souffl\u00e9 Datalog",
       "category": "declarative_static_analysis",
       "artifact_type": "logic_rules",
       "extension": ".dl",
@@ -358,6 +375,73 @@
       "easy_example": "languages/rhl_quant/easy_ternary_scale.py",
       "advanced_example": "languages/rhl_quant/advanced_rhl_quant_engine.py",
       "verification_notes": "Demoted until HLO/accelerator execution, numerical baselines, and memory/performance measurements are reproduced."
+    },
+    {
+      "id": "genius-mastery",
+      "name": "Genius-Mastery family kernel",
+      "category": "orchestration_and_ai",
+      "artifact_type": "kernel",
+      "extension": ".py",
+      "what": "Validates, doctors, synthesizes, and receipts Genius family repositories under mastery-not-skills doctrine.",
+      "why": "It is the GlacierEQ kernel for forging Genius entities with claim-evidence vectors instead of skill dumps.",
+      "where": "Genius family repos, Buildkite macos-self on OCI glacier-agent, mega-skills hierarchy.",
+      "when": "Use when a Genius entity must be named, synthesized, validated, or receipted.",
+      "how": "genius CLI: validate, doctor, name, new, synthesize, vector; pytest in the kernel tree.",
+      "primary_evidence": [
+        "https://github.com/GlacierEQ/Genius-Mastery"
+      ],
+      "proof_class": "behavioral",
+      "evidence_state": "tested",
+      "execution": {
+        "ci_tier": "portable",
+        "hardware_gate": ""
+      },
+      "toolchain": {
+        "tool": "python3",
+        "reference_pin": "3.12",
+        "build": [
+          [
+            "python3",
+            "languages/genius-mastery/easy_name.py"
+          ],
+          [
+            "python3",
+            "languages/genius-mastery/advanced_kernel_gate.py"
+          ]
+        ],
+        "test": [
+          [
+            "python3",
+            "languages/genius-mastery/easy_name.py"
+          ],
+          [
+            "python3",
+            "languages/genius-mastery/advanced_kernel_gate.py"
+          ]
+        ]
+      },
+      "interfaces": [
+        "python_api",
+        "cli",
+        "yaml_contract"
+      ],
+      "megamind": {
+        "agents": [
+          "orchestrator-agent",
+          "document-agent"
+        ],
+        "pistons": [
+          "stealth-sherlock-alpha"
+        ]
+      },
+      "easy_example": "languages/genius-mastery/easy_name.py",
+      "advanced_example": "languages/genius-mastery/advanced_kernel_gate.py",
+      "apex_estate_integration": {
+        "repo": "Genius-Mastery",
+        "path": "/Users/kcbflux/APEX_SYSTEM/INFRASTRUCTURE/Genius-Mastery",
+        "test_evidence": "75 pytest passed on glacier-agent 2026-09-04; genius 1.1.0 validate+doctor PASS",
+        "advancement": "compiles -> tested"
+      }
     }
   ]
 }

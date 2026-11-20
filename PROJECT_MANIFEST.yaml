@@ -1,0 +1,227 @@
+# The Tower of Babel — Portable Project Manifest
+schema: glaciereq.project-manifest.v1
+generated_at: "2026-11-20T06:45:00-10:00"
+source_authority: "estate_owner_graph.json (t_a4098ff2 strategy) + live git readback + README.md machine-mesh protocol"
+
+project:
+  key: the-tower-of-babel
+  canonical_name: "The Tower of Babel"
+  canonical_owner: "GlacierEQ/the-tower-of-babel"
+  local_path_alias: "tower-of-babel"
+  role: "polyglot_engineering"
+  tier: "Tier0"
+  purpose: "Executable technology-selection, interoperability, and proof system for multi-language engineering. Decides where a technology belongs, explains why, shows how it works, verifies at strongest proof level, exports for humans/software/AI agents."
+  operator_intent: "Governed engineering map: 43 technology floors, 86 linked exhibits, versioned interface contracts, explicit blockers, executable build gates, deterministic receipts. Not a language collection for display."
+  runtime_entrypoint: "tower CLI (tower validate, tower generate, tower build, tower benchmark, tower proof-report, tower receipt, tower megamind-map, tower spiral)"
+  target_output: "Verified capability or exact blocker (toolchain/hardware/service gate) + cross-language execution + deterministic evidence receipt"
+  operational_users:
+    - "Casey (Operator)"
+    - "Megamind agents"
+    - "Spiral Engine"
+    - "Smithery surfaces"
+    - "Job-App Helix (capability resolution)"
+    - "Recruiters, engineers, agents"
+
+identity:
+  local_path: "/Users/kcbflux/workspace/tower-of-babel"
+  git_origin: "https://github.com/GlacierEQ/the-tower-of-babel.git"
+  head_branch: "main"
+  head_sha: "211b203"  # from estate_owner_graph.md
+  last_commit: "2026-11-14 (measured)"
+  version: "1.2.1"
+  commit_count: "unknown (267 ahead of origin)"
+  dirty_files: 0
+  branch_count: 47
+  worktrees: []
+  github:
+    visibility: "PRIVATE"
+    is_fork: false
+    is_archived: false
+    default_branch: "main"
+    updated_at: "2026-11-14T08:03:00Z"  # approximate
+    language: "Multi-language (Python, Rust, Go, TypeScript, C, C++, Zig, Odin, Lua, Lean, etc.)"
+    description: "An executable technology-selection, interoperability, and proof system for multi-language engineering"
+  local_aliases:
+    - "tower-of-babel (connectors/ssh-github.md:92 states this explicitly)"
+
+boundaries:
+  files:
+    - "registry/ (tower.yml + tower.d/*.json + advanced-claim-contracts.json)"
+    - "languages/ (43 floors: easy + advanced exhibits)"
+    - "flagship/ (polyglot mission pipeline)"
+    - "quality/ (advanced_exhibit_atlas.json, quality contracts)"
+    - "docs/ (generated surfaces)"
+    - "examples/"
+    - "frontier/"
+    - "generated/"
+    - "build/"
+    - "tests/"
+    - ".glaciereq/"
+    - ".integrity/"
+    - ".buildkite/"
+    - ".github/"
+  languages:
+    - "Python"
+    - "Rust"
+    - "Go"
+    - "TypeScript"
+    - "C"
+    - "C++"
+    - "Zig"
+    - "Odin"
+    - "Lua"
+    - "Lean 4"
+    - "SQL"
+    - "WebAssembly"
+    - "Scala"
+    - "Kotlin"
+    - "Swift"
+    - "And 28 more..."
+  packages: []
+  dependency_interfaces:
+    - "registry/tower.yml + tower.d fragments (current authored selection index)"
+    - "registry/advanced-claim-contracts.json (semantic claim contracts with source assertions, failure cases, receipt fields, prohibited overclaims)"
+    - "quality/advanced_exhibit_atlas.json (agent-readable advanced exhibit map)"
+    - "ADVANCED_EXHIBITS.md (signature engineering move and claim boundary for all 43 floors)"
+    - "FLAGSHIP README.md (polyglot mission: TS→ProtoJSON→Python→Rust→Go→SQL→WASM→Lean→Tower receipt)"
+    - "MESH_PEERS.json (mesh peer registry)"
+    - "apex.capabilities.yaml (capability manifest)"
+    - "NERVOUS_SYSTEM.md, QUALITY_CONTRACT.md, ARCHITECTURE_LAW.md, BRANCH_POLICY.md"
+  services:
+    - "GitHub Actions (CI, tower.yml, spiral.yml workflows)"
+    - "Buildkite (optional)"
+    - "Lean 4 (formal verification, toolchain_gated)"
+    - "Various compiler toolchains per floor"
+  secrets_references:
+    - ".env"
+  deploy_targets:
+    - "local Mac workstation"
+    - "GitHub Actions CI"
+    - "Any agent via tower CLI or generated contracts"
+  upstream_projects: []
+  downstream_projects:
+    - "villaiage-workspace (repo-pipeline registration: scripts/repo_pipeline.py:145-148)"
+    - "job-app-helix (tower.capability_resolution: tower_resolution.py)"
+    - "aspen-grove-core (tower_adapter.py routes evaluation-only sequential code planning)"
+    - "monolith (catalog federation)"
+
+lineage:
+  root_source_branch: "main"
+  forks: []
+  history_preserving_renames: []
+  archived_generations: []
+  predecessor_projects: []
+  generated_mirrors: []
+  unique_unmerged_work:
+    - "267 commits ahead of origin (large unique unmerged work)"
+    - "7339545: harmonize: merge all branches and purge hidden harms"
+    - "Branch consolidation doctrine executed: 19 PRs closed, 5 PRs merged via synthesis/transcription, 17 drained refs retired, lineage pointers archived in context/tower-branch-archive.json"
+  all_branches: "47 branches (measured)"
+  remotes:
+    - "origin"
+  ahead_behind: "267/0"
+  unpushed_commits: 10
+  unpulled_commits: 0
+
+state:
+  observed_working_features:
+    - "43 technology floors with placement, proof, and exhibit matrix"
+    - "86 linked exhibits (easy + advanced per floor)"
+    - "19 behavioral proof floors, 3 formal proof floors, 11 explicitly gated floors"
+    - "Evidence states: illustrative → compiles → tested → benchmark → hardware_gated → toolchain_gated → service_gated → formally_verified → integrated → production_reference"
+    - "Runtime admission tiers: concept_only → gated_reference → runnable_reference → tested_implementation → benchmarked_implementation → integrated_capability → production_reference"
+    - "Tower CLI: validate, generate, build, benchmark, proof-report, receipt, megamind-map, spiral"
+    - "Flagship polyglot mission: TypeScript ingress → ProtoJSON → Python planner → Rust governor → Go telemetry → SQL state → WASM sandbox → Lean 4 proof → Tower receipt"
+    - "Deterministic surface generation: README, build map, interfaces, maturity, agent maps from registry"
+    - "Build · benchmark · proof · receipt pipeline"
+    - "Spiral Engine integration (tower spiral question)"
+    - "Megamind mapping (tower megamind-map)"
+    - "Advanced Exhibit Atlas (ADVANCED_EXHIBITS.md + quality/advanced_exhibit_atlas.json)"
+    - "Branch policy: Harmonious transcription = last upgrade placed into main; fail-closed retirement rejecting deletion unless 100% unique benefits embodied in main"
+    - "Harmonious Transcription Specialist persona (pro tier) in coordination/teams/repo-lifecycle/personas/"
+    - "scripts/harmonious_transcription.py (scan, assess, transcribe, retire)"
+    - "SHA-256 receipts minted in ops/runs/transcriptions/"
+    - "Genius-Mastery synchronization (capabilities/HARMONIOUS_TRANSCRIPTION.yaml, capabilities/LEARNED_REGISTRY.json, mastery/MAP.md)"
+  broken_features: []
+  missing_dependencies:
+    - "Lean 4 toolchain (formal proof floors toolchain_gated)"
+    - "Some hardware/service gates for specific floors"
+  current_build_status: "operational (100% green test suites across all 15 repositories per harmonious transcription verification)"
+  outstanding_human_decisions:
+    - "PR #103 (fix/validate-mesh-fetch-auth) blocked on Lean elan download 504 in GitHub Actions (upstream infra outage)"
+
+separation:
+  case_evidence_excluded: true
+  forensic_records_preserved: true
+
+architecture_contracts:
+  - "README.md (Machine–Mesh Protocol Manifest with glacier-eq.readme.machine-mesh/v1 schema)"
+  - "registry/tower.yml + tower.d/*.json (selection index)"
+  - "registry/advanced-claim-contracts.json (semantic claim contracts)"
+  - "quality/advanced_exhibit_atlas.json (agent-readable exhibit map)"
+  - "ADVANCED_EXHIBITS.md (signature engineering moves)"
+  - "FLAGSHIP/README.md (polyglot mission pipeline)"
+  - "ARCHITECTURE_LAW.md, QUALITY_CONTRACT.md, BRANCH_POLICY.md"
+  - "NERVOUS_SYSTEM.md (nervous system integration)"
+  - "coordination/teams/repo-lifecycle/personas/harmonious-transcription-specialist (pro tier persona)"
+  - "scripts/harmonious_transcription.py (scan, assess, transcribe, retire)"
+  - "ops/runs/transcriptions/ (SHA-256 receipts)"
+
+handoff:
+  startup_instructions: |
+    1. Install: `python -m pip install -e .[dev]`
+    2. Validate: `tower validate`
+    3. Generate check: `tower generate --check`
+    4. Integrity verify: `tower integrity verify`
+    5. Run complete portable governance pass:
+       `tower build --all --allow-blocked --output artifacts/build-report.json`
+       `tower benchmark python c cpp rust go typescript webassembly --output artifacts/benchmarks.json`
+       `tower proof-report --build-report artifacts/build-report.json --benchmark-report artifacts/benchmarks.json --allow-blocked --output artifacts/proof-report.json`
+       `tower receipt --build-report artifacts/build-report.json --output artifacts/tower_receipt.json`
+    6. Run flagship pipeline: `python flagship/run_pipeline.py`
+  operator_instructions: |
+    - Role: Technology placement, executable learning, truthful verification, cross-language composition, agent-readable contracts, deterministic evidence
+    - A floor earns its role through runtime behavior, safety, performance, hardware fit, or interoperability — NOT decorative polyglot signaling
+    - Admission requires: unique responsibility + activation conditions + easy/advanced exhibits + pinned toolchain + constraints + cross-language interfaces + evidence state + proof class + semantic claim contract
+    - Working components extended rather than rewritten; new language must provide measurable value at clear boundary
+    - Harmonious transcription is the LAST upgrade placed into main; when no more benefit, no more branch
+    - Sovereign law: fail-closed branch retirement — cryptographic proof required that 100% unique branch benefits embodied and tested in main
+    - Evidence state and runtime admission tiers are the vocabulary; never claim stronger state than observed
+    - Recruiter sees accomplishment; engineer inspects execution/failure; agent initializes from verified contracts while free to compare stronger routes
+  dependency_map:
+    imports:
+      - "registry/tower.yml + tower.d fragments (selection index)"
+      - "registry/advanced-claim-contracts.json (claim contracts)"
+    contracts:
+      - "quality/advanced_exhibit_atlas.json"
+      - "ADVANCED_EXHIBITS.md"
+      - "FLAGSHIP/README.md"
+      - "ARCHITECTURE_LAW.md, QUALITY_CONTRACT.md, BRANCH_POLICY.md"
+    entrypoints:
+      - "tower CLI (validate, generate, build, benchmark, proof-report, receipt, megamind-map, spiral)"
+      - "python flagship/run_pipeline.py (flagship polyglot mission)"
+      - "scripts/harmonious_transcription.py (scan, assess, transcribe, retire)"
+      - "tests/ (run-before-reliance)"
+  handoff_notes: |
+    - 267 commits ahead of origin — large unique unmerged work including harmonize merge (7339545)
+    - 10 unpushed commits — DO NOT force-push; forward-port strongest behavior per MASTER_HISTORICAL_FUNCTION_RECLAIM.md
+    - Branch consolidation completed (2026-11-08 directive): 19 PRs closed, 5 merged via synthesis, 17 refs retired, lineage archived
+    - 9 PRs remain open (#57, #60, #70, #79, #80, #82, #83, #84, #103); #84 kept open by repo doctrine; #103 blocked on Lean elan 504 (upstream infra)
+    - Machine-mesh protocol manifest in README.md
+    - Job-App Helix consumes tower.capability_resolution (nextgen-innovations.json, 40 floors, 10 fitness dimensions)
+    - Aspen Grove Core routes evaluation-only sequential code planning via tower_adapter.py
+
+verification_receipts:
+  - "estate_owner_graph.json (t_a4098ff2 strategy) — canonical owner with measured head"
+  - "GitHub Actions: Tower Verification, Quality Gate, Spiral Engine workflows"
+  - "100% green test suites across all 15 repositories (harmonious transcription verification)"
+  - "SHA-256 receipts in ops/runs/transcriptions/"
+  - "context/tower-branch-archive.json (lineage pointers for retired branches)"
+
+status: "deployed_verified"
+remaining_work:
+  - "Forward-port 267 ahead commits (select strongest coherent combination per function)"
+  - "Resolve 10 unpushed commits"
+  - "Unblock PR #103 (Lean elan download 504 — upstream infra, no admin bypass)"
+  - "Complete harmonious transcription for remaining 9 open PRs"
+  - "Sync Genius-Mastery capabilities (HARMONIOUS_TRANSCRIPTION.yaml, LEARNED_REGISTRY.json, MAP.md)"

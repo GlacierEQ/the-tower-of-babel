@@ -127,6 +127,11 @@ def main() -> int:
     innovate_bridge.add_argument("repository", nargs="?", default=".")
     innovate_bridge.add_argument("--target", type=float, default=9.0)
     innovate_bridge.add_argument("--output", default="artifacts/babel-spiral-bridge.json")
+    innovate_code_plan = innovate_sub.add_parser("code-plan")
+    innovate_code_plan.add_argument("repository", nargs="?", default=".")
+    innovate_code_plan.add_argument("--objective", required=True)
+    innovate_code_plan.add_argument("--target", type=float, default=9.0)
+    innovate_code_plan.add_argument("--limit", type=int, default=10)
 
     sub.add_parser("report")
     sub.add_parser("megamind-map")
@@ -278,6 +283,20 @@ def main() -> int:
                 write_report as write_innovation_report,
             )
             repo_path = Path(args.repository)
+            if args.innovate_action == "code-plan":
+                from .code_plan import build_sequential_code_plan
+                if not 0 < args.target <= 10:
+                    raise ValueError("target must be within (0, 10]")
+                if args.limit < 1:
+                    raise ValueError("limit must be positive")
+                evaluation = evaluate_repository(repo_path, registry, target=args.target)
+                interventions = plan_interventions(evaluation, limit=args.limit)
+                _print(build_sequential_code_plan(
+                    evaluation,
+                    interventions,
+                    objective=args.objective,
+                ))
+                return 0
             if args.innovate_action == "evaluate":
                 payload = evaluate_repository(repo_path, registry, target=args.target)
                 _print(asdict(payload))

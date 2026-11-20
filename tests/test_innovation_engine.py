@@ -1,9 +1,11 @@
 """Babel semantic placement and Spiral iteration tests."""
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
+from tower.code_plan import build_sequential_code_plan
 from tower.innovation import BabelSpiralEngine, evaluate_repository, plan_interventions
 from tower.registry import load_registry
 
@@ -124,6 +126,53 @@ def test_spiral_without_executor_returns_real_next_action(tmp_path: Path):
     result = BabelSpiralEngine(registry, max_revolutions=3).run(repo)
     assert result["revolutions"][0]["status"] == "ACTION_REQUIRED"
     assert result["next_interventions"]
+
+
+def test_sequential_code_plan_is_ordered_deterministic_and_non_mutating(tmp_path: Path):
+    registry = _registry(tmp_path)
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    _write(repo, "README.md", "# API action service\n")
+    _write(repo, "action.py", "def execute(): return True # api action")
+
+    evaluation = evaluate_repository(repo, registry)
+    interventions = plan_interventions(evaluation, limit=3)
+    first = build_sequential_code_plan(
+        evaluation, interventions, objective="Improve the API service safely"
+    )
+    second = build_sequential_code_plan(
+        evaluation, interventions, objective="Improve the API service safely"
+    )
+
+    assert first == second
+    assert first["schema"] == "glaciereq.tower.sequential-code-plan.v1"
+    assert first["execution_authorized"] is False
+    assert first["status"] == "ACTION_REQUIRED"
+    assert [step["sequence"] for step in first["steps"]] == list(range(1, len(interventions) + 1))
+    assert first["steps"][0]["depends_on"] == []
+    assert first["steps"][1]["depends_on"] == [first["steps"][0]["step_id"]]
+    assert all(step["advance_only_after_verification"] for step in first["steps"])
+    assert len(first["plan_sha256"]) == 64
+    hash_body = {key: value for key, value in first.items() if key != "plan_sha256"}
+    expected_hash = hashlib.sha256(
+        json.dumps(hash_body, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    ).hexdigest()
+    assert first["plan_sha256"] == expected_hash
+
+
+def test_sequential_code_plan_rejects_empty_objective(tmp_path: Path):
+    registry = _registry(tmp_path)
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    _write(repo, "README.md", "# API service\n")
+    evaluation = evaluate_repository(repo, registry)
+
+    try:
+        build_sequential_code_plan(evaluation, (), objective="   ")
+    except ValueError as exc:
+        assert "objective" in str(exc)
+    else:
+        raise AssertionError("an empty objective must be rejected")
 
 
 def test_spiral_reinspects_after_execution(tmp_path: Path):
@@ -286,4 +335,3 @@ def test_lean_file_resolves_lean4_registry_evidence_without_duplicate_candidate(
     assert lean_candidates[0].registry_evidence == "formally_verified"
     assert lean_candidates[0].execution_ready is True
     assert all(row.language != "lean4" for row in proof.alternatives)
-

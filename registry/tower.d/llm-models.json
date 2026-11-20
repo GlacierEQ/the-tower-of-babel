@@ -40,26 +40,20 @@
       "toolchain": {
         "build": [
           [
-            "curl",
-            "-fsS",
-            "--max-time",
-            "10",
-            "https://openrouter.ai/api/v1/models",
-            "-o",
-            "/dev/null"
+            "python3",
+            "-c",
+            "import urllib.request; urllib.request.urlopen(\"https://openrouter.ai/api/v1/models\").read()"
           ]
         ],
         "reference_pin": "tencent/hy3",
         "test": [
           [
-            "curl",
-            "-fsS",
-            "--max-time",
-            "10",
-            "https://openrouter.ai/api/v1/models"
+            "python3",
+            "-c",
+            "import urllib.request; print(urllib.request.urlopen(\"https://openrouter.ai/api/v1/models\").status)"
           ]
         ],
-        "tool": "curl"
+        "tool": "python3"
       },
       "what": "A compact instruction-tuned large language model in the Tencent Hunyuan family, used as the local Kilo/OpenCode agent runtime under the opencode/hy3-free alias and routed through OpenRouter free-tier selection.",
       "when": "Use for general coding, orchestration, and synthesis tasks when the objective does not require the largest frontier reasoning model and a zero or low-cost path is preferred.",
@@ -106,26 +100,20 @@
       "toolchain": {
         "build": [
           [
-            "curl",
-            "-fsS",
-            "--max-time",
-            "10",
-            "https://openrouter.ai/api/v1/models",
-            "-o",
-            "/dev/null"
+            "python3",
+            "-c",
+            "import urllib.request; urllib.request.urlopen(\"https://openrouter.ai/api/v1/models\").read()"
           ]
         ],
         "reference_pin": "xiaomi/mimo-v2.5-pro",
         "test": [
           [
-            "curl",
-            "-fsS",
-            "--max-time",
-            "10",
-            "https://openrouter.ai/api/v1/models"
+            "python3",
+            "-c",
+            "import urllib.request; print(urllib.request.urlopen(\"https://openrouter.ai/api/v1/models\").status)"
           ]
         ],
-        "tool": "curl"
+        "tool": "python3"
       },
       "what": "A reasoning-oriented large language model in the Xiaomi MiMo family (xiaomi/mimo-v2.5-pro), used as a free/low-cost agent runtime model and referenced in the estate as mimo-v2.5-pro:free.",
       "when": "Use for planning, chain-of-thought reasoning, and tool-driven agentic tasks when the objective benefits from explicit reasoning but must stay on a free or low-cost tier.",

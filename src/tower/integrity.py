@@ -63,7 +63,7 @@ def _eligible(path: Path, manifest_path: Path | None = None) -> bool:
                 manifest_path.resolve().relative_to(REPO_ROOT).as_posix()
             )
         except (OSError, ValueError):
-            pass
+            excluded_manifest = None
     return (
         path.is_file()
         and _eligible_relative(relative)

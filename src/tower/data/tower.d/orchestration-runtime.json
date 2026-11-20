@@ -10,6 +10,12 @@
       "extension": ".py",
       "how": "Interpreted modules, asyncio, dataclasses, typing, subprocess adapters, and scientific libraries.",
       "id": "python",
+      "apex_estate_integration": {
+        "repo": "Genius-Mastery",
+        "path": "/Users/kcbflux/APEX_SYSTEM/INFRASTRUCTURE/Genius-Mastery",
+        "test_evidence": "75 pytest passed 2026-09-04 on glacier-agent; genius 1.1.0 validate+doctor PASS",
+        "advancement": "python floor hosts Genius-Mastery kernel (tested)"
+      },
       "interfaces": ["protobuf", "json", "subprocess"],
       "megamind": {"agents": ["orchestrator-agent", "document-agent"], "pistons": ["stealth-sherlock-alpha", "stealth-microwave"]},
       "name": "Python",

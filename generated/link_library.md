@@ -182,6 +182,8 @@
 
 ## eBPF
 - https://ebpf.io/docs/
+- https://github.com/GlacierEQ/apex-ebpf-sentinel
+- https://github.com/GlacierEQ/apex-ebpf-sentinel
 
 ## OpenQASM 3.0
 - https://openqasm.com/
@@ -199,6 +201,9 @@
 ## RHL-Quant reference quantizer (unbenchmarked)
 - https://github.com/GlacierEQ/residual-lattice-quantization
 - https://arxiv.org/abs/2402.17764
+
+## Genius-Mastery family kernel
+- https://github.com/GlacierEQ/Genius-Mastery
 
 ## HY3 (Tencent Hunyuan) free-tier runtime model
 - https://openrouter.ai/models/tencent/hy3
