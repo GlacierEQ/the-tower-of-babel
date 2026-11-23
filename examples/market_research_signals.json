@@ -1,0 +1,8 @@
+{
+  "schema": "glaciereq.tower.market-research-input.v1",
+  "prices": [100, 102, 105, 104, 107, 109, 108],
+  "signals": [0, 1, 1, 1, 0, 0, 0],
+  "initial_capital": 59.0,
+  "fee_bps": 5.0,
+  "slippage_bps": 5.0
+}

@@ -131,6 +131,12 @@ def main() -> int:
     sub.add_parser("report")
     sub.add_parser("megamind-map")
 
+    algorithms = sub.add_parser("algorithms")
+    algorithm_sub = algorithms.add_subparsers(dest="algorithm_action", required=True)
+    algorithm_sub.add_parser("list")
+    simulate = algorithm_sub.add_parser("simulate")
+    simulate.add_argument("dataset", help="JSON file with caller-supplied prices and 0/1 signals")
+
     search_parser = sub.add_parser("search")
     search_parser.add_argument("query")
 
@@ -191,6 +197,8 @@ def main() -> int:
         registry = load_registry()
         if args.command == "validate":
             errors = validate_registry(registry)
+            from .algorithm_catalog import load_algorithm_catalog, validate_algorithm_catalog
+            errors.extend(validate_algorithm_catalog(load_algorithm_catalog(), registry))
             _print({"valid": not errors, "technology_count": len(registry.technologies), "errors": errors})
             return 0 if not errors else 1
         if args.command == "generate":
@@ -320,6 +328,30 @@ def main() -> int:
             return 0
         if args.command == "megamind-map":
             _print(_read_json_object(Path("generated/megamind.technology-map.json"), "Megamind map"))
+            return 0
+        if args.command == "algorithms":
+            from .algorithm_catalog import list_algorithms
+            if args.algorithm_action == "list":
+                _print(list_algorithms())
+                return 0
+            from .market_algorithms import simulate_long_only
+            dataset = _read_json_object(Path(args.dataset), "market research dataset")
+            if dataset.get("schema") != "glaciereq.tower.market-research-input.v1":
+                raise ValueError("unsupported market research dataset schema")
+            for key in ("prices", "signals"):
+                if not isinstance(dataset.get(key), list):
+                    raise ValueError(f"market research dataset {key} must be an array")
+            for key in ("initial_capital", "fee_bps", "slippage_bps"):
+                value = dataset.get(key)
+                if isinstance(value, bool) or not isinstance(value, (int, float)):
+                    raise ValueError(f"market research dataset {key} must be numeric")
+            _print(simulate_long_only(
+                dataset["prices"],
+                dataset["signals"],
+                initial_capital=dataset["initial_capital"],
+                fee_bps=dataset["fee_bps"],
+                slippage_bps=dataset["slippage_bps"],
+            ).as_dict())
             return 0
         if args.command == "search":
             from .visualize import search_registry
