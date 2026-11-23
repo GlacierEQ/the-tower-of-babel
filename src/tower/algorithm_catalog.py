@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import math
+from dataclasses import asdict, is_dataclass
 from pathlib import Path
 from typing import Any
 
@@ -75,4 +77,47 @@ def list_algorithms() -> dict[str, Any]:
         "benchmark_status": "NOT_BENCHMARKED_AGAINST_ALTERNATIVES",
         "count": len(catalog["algorithms"]),
         "algorithms": catalog["algorithms"],
+    }
+
+
+def execute_algorithm(identifier: str, arguments: dict[str, Any]) -> dict[str, Any]:
+    """Execute only a registered, side-effect-free algorithm from JSON arguments.
+
+    Bisection receives polynomial coefficients (highest degree first) instead
+    of accepting executable code across the JSON boundary.
+    """
+    if not isinstance(arguments, dict):
+        raise ValueError("algorithm arguments must be a JSON object")
+    catalog = load_algorithm_catalog()
+    entry = next((row for row in catalog["algorithms"] if row["id"] == identifier), None)
+    if entry is None:
+        raise ValueError(f"unknown algorithm id: {identifier}")
+    implementation = getattr(_MODULES[entry["module"]], entry["function"])
+    params = dict(arguments)
+    if identifier == "math.bisect_root":
+        coefficients = params.pop("coefficients", None)
+        if not isinstance(coefficients, list) or not 1 <= len(coefficients) <= 100:
+            raise ValueError("bisection requires 1-100 polynomial coefficients")
+        if any(isinstance(value, bool) or not isinstance(value, (int, float))
+               or not math.isfinite(value) for value in coefficients):
+            raise ValueError("polynomial coefficients must be finite numbers")
+
+        def polynomial(point: float) -> float:
+            total = 0.0
+            for coefficient in coefficients:
+                total = total * point + coefficient
+            return total
+
+        params["function"] = polynomial
+    try:
+        outcome = implementation(**params)
+    except (TypeError, OverflowError, ZeroDivisionError) as exc:
+        raise ValueError(f"invalid algorithm arguments: {exc}") from exc
+    if is_dataclass(outcome) and not isinstance(outcome, type):
+        outcome = asdict(outcome)
+    return {
+        "schema": "glaciereq.tower.algorithm-result.v1",
+        "algorithm_id": identifier,
+        "external_effects": False,
+        "result": outcome,
     }

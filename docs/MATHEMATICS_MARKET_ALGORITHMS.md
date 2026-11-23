@@ -39,11 +39,23 @@ domain capability to the Tower, not a fictitious extra technology floor.
 ```bash
 PYTHONPATH=src python3 -m tower validate
 PYTHONPATH=src python3 -m tower algorithms list
+PYTHONPATH=src python3 -m tower algorithms run examples/market_algorithm_request.json
 PYTHONPATH=src python3 -m tower algorithms simulate examples/market_research_signals.json
 PYTHONPATH=src python3 -m unittest discover -s tests -p 'test_tower_numerics.py'
 PYTHONPATH=src python3 -m unittest discover -s tests -p 'test_tower_market_algorithms.py'
 PYTHONPATH=src python3 -m unittest discover -s tests -p 'test_tower_algorithm_catalog.py'
 ```
+
+The **agent calculation interface** accepts a read-only JSON request with
+schema `glaciereq.tower.algorithm-execution.v1`, a catalog `algorithm_id`, and
+an `arguments` object matching that function's named parameters. The checked-in
+request computes a three-bar moving average. The response contains the
+algorithm ID, a JSON-serializable result, and `external_effects: false`.
+Only registered functions can run; unsupported names and parameters fail.
+The root-finding adapter accepts polynomial coefficients (highest degree first)
+in lieu of accepting arbitrary executable functions. For example,
+`{"coefficients": [1, 0, -2], "lower": 1, "upper": 2}` finds positive √2.
+This interface performs numerical calculations, **not trade orders**.
 
 The simulation input is a JSON object using
 `glaciereq.tower.market-research-input.v1`: strictly positive closing prices,

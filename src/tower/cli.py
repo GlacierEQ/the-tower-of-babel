@@ -136,6 +136,8 @@ def main() -> int:
     algorithm_sub.add_parser("list")
     simulate = algorithm_sub.add_parser("simulate")
     simulate.add_argument("dataset", help="JSON file with caller-supplied prices and 0/1 signals")
+    algorithm_run = algorithm_sub.add_parser("run")
+    algorithm_run.add_argument("request", help="JSON file with algorithm_id and arguments")
 
     search_parser = sub.add_parser("search")
     search_parser.add_argument("query")
@@ -330,9 +332,15 @@ def main() -> int:
             _print(_read_json_object(Path("generated/megamind.technology-map.json"), "Megamind map"))
             return 0
         if args.command == "algorithms":
-            from .algorithm_catalog import list_algorithms
+            from .algorithm_catalog import execute_algorithm, list_algorithms
             if args.algorithm_action == "list":
                 _print(list_algorithms())
+                return 0
+            if args.algorithm_action == "run":
+                request = _read_json_object(Path(args.request), "algorithm request")
+                if request.get("schema") != "glaciereq.tower.algorithm-execution.v1":
+                    raise ValueError("unsupported algorithm execution schema")
+                _print(execute_algorithm(request.get("algorithm_id"), request.get("arguments")))
                 return 0
             from .market_algorithms import simulate_long_only
             dataset = _read_json_object(Path(args.dataset), "market research dataset")

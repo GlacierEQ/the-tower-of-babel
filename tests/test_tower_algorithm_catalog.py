@@ -8,6 +8,7 @@ import unittest
 from copy import deepcopy
 
 from tower.algorithm_catalog import (
+    execute_algorithm,
     list_algorithms,
     load_algorithm_catalog,
     validate_algorithm_catalog,
@@ -52,6 +53,32 @@ class AlgorithmCatalogTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 1)
         self.assertIn("unsupported market research dataset schema", result.stdout)
+
+    def test_json_execution_runs_registered_algorithm(self):
+        environment = {**os.environ, "PYTHONPATH": str(REPO_ROOT / "src")}
+        result = subprocess.run(
+            [sys.executable, "-m", "tower", "algorithms", "run", "examples/market_algorithm_request.json"],
+            cwd=REPO_ROOT, env=environment, capture_output=True, text=True, check=True,
+        )
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload["algorithm_id"], "market.simple_moving_average")
+        self.assertFalse(payload["external_effects"])
+        self.assertEqual(payload["result"], [None, None, 101.0, 102.66666666666667, 105.33333333333333])
+
+    def test_json_execution_supports_polynomial_roots_without_code_evaluation(self):
+        payload = execute_algorithm("math.bisect_root", {
+            "coefficients": [1, 0, -2], "lower": 1, "upper": 2,
+        })
+        self.assertAlmostEqual(payload["result"]["root"], 2**0.5, places=9)
+        self.assertLess(abs(payload["result"]["residual"]), 1e-8)
+
+    def test_json_execution_rejects_unknown_or_untrusted_parameters(self):
+        with self.assertRaisesRegex(ValueError, "unknown algorithm"):
+            execute_algorithm("market.send_order", {})
+        with self.assertRaisesRegex(ValueError, "invalid algorithm arguments"):
+            execute_algorithm("market.simple_returns", {"command": "trade"})
+        with self.assertRaisesRegex(ValueError, "polynomial coefficients"):
+            execute_algorithm("math.bisect_root", {"coefficients": ["__import__('os')"], "lower": 0, "upper": 1})
 
 
 if __name__ == "__main__":
