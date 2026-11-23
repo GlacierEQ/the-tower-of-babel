@@ -28,10 +28,12 @@ def _print(value: Any) -> None:
     print(json.dumps(value, indent=2, sort_keys=True))
 
 
-def _read_json_object(path: Path, label: str) -> dict[str, Any]:
+def _read_json_object(path: Path, label: str, *, max_bytes: int | None = None) -> dict[str, Any]:
     if not path.is_file():
         raise ValueError(f"{label} not found: {path}")
     try:
+        if max_bytes is not None and path.stat().st_size > max_bytes:
+            raise ValueError(f"{label} exceeds {max_bytes} byte safety limit")
         payload = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         raise ValueError(f"{label} is unreadable or invalid JSON: {path}: {exc}") from exc
@@ -131,6 +133,14 @@ def main() -> int:
     sub.add_parser("report")
     sub.add_parser("megamind-map")
 
+    algorithms = sub.add_parser("algorithms")
+    algorithm_sub = algorithms.add_subparsers(dest="algorithm_action", required=True)
+    algorithm_sub.add_parser("list")
+    simulate = algorithm_sub.add_parser("simulate")
+    simulate.add_argument("dataset", help="JSON file with caller-supplied prices and 0/1 signals")
+    algorithm_run = algorithm_sub.add_parser("run")
+    algorithm_run.add_argument("request", help="JSON file with algorithm_id and arguments")
+
     search_parser = sub.add_parser("search")
     search_parser.add_argument("query")
 
@@ -191,6 +201,8 @@ def main() -> int:
         registry = load_registry()
         if args.command == "validate":
             errors = validate_registry(registry)
+            from .algorithm_catalog import load_algorithm_catalog, validate_algorithm_catalog
+            errors.extend(validate_algorithm_catalog(load_algorithm_catalog(), registry))
             _print({"valid": not errors, "technology_count": len(registry.technologies), "errors": errors})
             return 0 if not errors else 1
         if args.command == "generate":
@@ -320,6 +332,36 @@ def main() -> int:
             return 0
         if args.command == "megamind-map":
             _print(_read_json_object(Path("generated/megamind.technology-map.json"), "Megamind map"))
+            return 0
+        if args.command == "algorithms":
+            from .algorithm_catalog import execute_algorithm, list_algorithms
+            if args.algorithm_action == "list":
+                _print(list_algorithms())
+                return 0
+            if args.algorithm_action == "run":
+                request = _read_json_object(Path(args.request), "algorithm request", max_bytes=32 * 1024 * 1024)
+                if request.get("schema") != "glaciereq.tower.algorithm-execution.v1":
+                    raise ValueError("unsupported algorithm execution schema")
+                _print(execute_algorithm(request.get("algorithm_id"), request.get("arguments")))
+                return 0
+            from .market_algorithms import simulate_long_only
+            dataset = _read_json_object(Path(args.dataset), "market research dataset", max_bytes=32 * 1024 * 1024)
+            if dataset.get("schema") != "glaciereq.tower.market-research-input.v1":
+                raise ValueError("unsupported market research dataset schema")
+            for key in ("prices", "signals"):
+                if not isinstance(dataset.get(key), list):
+                    raise ValueError(f"market research dataset {key} must be an array")
+            for key in ("initial_capital", "fee_bps", "slippage_bps"):
+                value = dataset.get(key)
+                if isinstance(value, bool) or not isinstance(value, (int, float)):
+                    raise ValueError(f"market research dataset {key} must be numeric")
+            _print(simulate_long_only(
+                dataset["prices"],
+                dataset["signals"],
+                initial_capital=dataset["initial_capital"],
+                fee_bps=dataset["fee_bps"],
+                slippage_bps=dataset["slippage_bps"],
+            ).as_dict())
             return 0
         if args.command == "search":
             from .visualize import search_registry

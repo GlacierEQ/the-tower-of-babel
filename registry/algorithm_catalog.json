@@ -1,0 +1,26 @@
+{
+  "schema": "glaciereq.tower.algorithm-catalog.v1",
+  "purpose": "Source-backed mathematical and market research algorithms; no broker access or trade execution",
+  "owner_technology_id": "python",
+  "alternatives_not_yet_benchmarked": ["julia", "fortran", "r", "cpp"],
+  "algorithms": [
+    {"id": "math.online_moments", "module": "tower.numerics", "function": "online_moments", "domain": "mathematics", "proof": "tests/test_tower_numerics.py"},
+    {"id": "math.online_covariance", "module": "tower.numerics", "function": "online_covariance", "domain": "mathematics", "proof": "tests/test_tower_numerics.py"},
+    {"id": "math.linear_quantile", "module": "tower.numerics", "function": "linear_quantile", "domain": "mathematics", "proof": "tests/test_tower_numerics.py"},
+    {"id": "math.bisect_root", "module": "tower.numerics", "function": "bisect_root", "domain": "mathematics", "proof": "tests/test_tower_numerics.py"},
+    {"id": "market.simple_returns", "module": "tower.market_algorithms", "function": "simple_returns", "domain": "market_research", "proof": "tests/test_tower_market_algorithms.py"},
+    {"id": "market.log_returns", "module": "tower.market_algorithms", "function": "log_returns", "domain": "market_research", "proof": "tests/test_tower_market_algorithms.py"},
+    {"id": "market.simple_moving_average", "module": "tower.market_algorithms", "function": "simple_moving_average", "domain": "market_research", "proof": "tests/test_tower_market_algorithms.py"},
+    {"id": "market.exponential_moving_average", "module": "tower.market_algorithms", "function": "exponential_moving_average", "domain": "market_research", "proof": "tests/test_tower_market_algorithms.py"},
+    {"id": "market.wilder_rsi", "module": "tower.market_algorithms", "function": "wilder_rsi", "domain": "market_research", "proof": "tests/test_tower_market_algorithms.py"},
+    {"id": "market.cumulative_vwap", "module": "tower.market_algorithms", "function": "cumulative_vwap", "domain": "market_research", "proof": "tests/test_tower_market_algorithms.py"},
+    {"id": "market.order_book_imbalance", "module": "tower.market_algorithms", "function": "order_book_imbalance", "domain": "market_microstructure", "proof": "tests/test_tower_market_algorithms.py"},
+    {"id": "market.black_scholes_european", "module": "tower.market_algorithms", "function": "black_scholes_european", "domain": "derivatives_research", "proof": "tests/test_tower_market_algorithms.py"},
+    {"id": "market.black_scholes_implied_volatility", "module": "tower.market_algorithms", "function": "black_scholes_implied_volatility", "domain": "derivatives_research", "proof": "tests/test_tower_market_algorithms.py"},
+    {"id": "market.maximum_drawdown", "module": "tower.market_algorithms", "function": "maximum_drawdown", "domain": "market_risk", "proof": "tests/test_tower_market_algorithms.py"},
+    {"id": "market.annualized_volatility", "module": "tower.market_algorithms", "function": "annualized_volatility", "domain": "market_risk", "proof": "tests/test_tower_market_algorithms.py"},
+    {"id": "market.historical_var_expected_shortfall", "module": "tower.market_algorithms", "function": "historical_var_expected_shortfall", "domain": "market_risk", "proof": "tests/test_tower_market_algorithms.py"},
+    {"id": "market.gbm_terminal_prices", "module": "tower.market_algorithms", "function": "gbm_terminal_prices", "domain": "market_simulation", "proof": "tests/test_tower_market_algorithms.py"},
+    {"id": "market.simulate_long_only", "module": "tower.market_algorithms", "function": "simulate_long_only", "domain": "market_simulation", "proof": "tests/test_tower_market_algorithms.py"}
+  ]
+}

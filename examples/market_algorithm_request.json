@@ -1,0 +1,8 @@
+{
+  "schema": "glaciereq.tower.algorithm-execution.v1",
+  "algorithm_id": "market.simple_moving_average",
+  "arguments": {
+    "prices": [100, 102, 101, 105, 110],
+    "window": 3
+  }
+}
