@@ -21,7 +21,7 @@ def finite_values(values: Iterable[float], *, minimum: int = 1) -> tuple[float, 
         raise ValueError("expected numeric values, not text")
     try:
         result = tuple(
-            float(value) if not isinstance(value, bool) else float("nan")
+            float(value) if not isinstance(value, (bool, str, bytes)) else float("nan")
             for value in islice(values, MAX_SERIES_LENGTH + 1)
         )
     except (TypeError, ValueError, OverflowError) as exc:
@@ -44,7 +44,7 @@ class Moments:
 
 def online_moments(values: Iterable[float], *, ddof: int = 1) -> Moments:
     """One-pass Welford mean and variance; ddof is explicitly 0 or 1."""
-    if ddof not in (0, 1):
+    if isinstance(ddof, bool) or ddof not in (0, 1):
         raise ValueError("ddof must be 0 or 1")
     count = 0
     mean = 0.0
@@ -56,7 +56,7 @@ def online_moments(values: Iterable[float], *, ddof: int = 1) -> Moments:
         if count > MAX_SERIES_LENGTH:
             raise ValueError("series exceeds one-million-observation safety bound")
         try:
-            value = float(raw_value) if not isinstance(raw_value, bool) else float("nan")
+            value = float(raw_value) if not isinstance(raw_value, (bool, str, bytes)) else float("nan")
         except (TypeError, ValueError, OverflowError) as exc:
             raise ValueError("values must be finite numbers") from exc
         if not math.isfinite(value):
@@ -76,7 +76,7 @@ def online_covariance(
     left: Iterable[float], right: Iterable[float], *, ddof: int = 1
 ) -> float:
     """One-pass paired sample/population covariance with strict equal lengths."""
-    if ddof not in (0, 1):
+    if isinstance(ddof, bool) or ddof not in (0, 1):
         raise ValueError("ddof must be 0 or 1")
     if isinstance(left, (str, bytes)) or isinstance(right, (str, bytes)):
         raise ValueError("expected paired numeric values, not text")
@@ -89,8 +89,8 @@ def online_covariance(
         if index > MAX_SERIES_LENGTH:
             raise ValueError("series exceeds one-million-observation safety bound")
         try:
-            x = float(raw_x) if not isinstance(raw_x, bool) else float("nan")
-            y = float(raw_y) if not isinstance(raw_y, bool) else float("nan")
+            x = float(raw_x) if not isinstance(raw_x, (bool, str, bytes)) else float("nan")
+            y = float(raw_y) if not isinstance(raw_y, (bool, str, bytes)) else float("nan")
         except (TypeError, ValueError, OverflowError) as exc:
             raise ValueError("paired values must be finite numbers") from exc
         if not math.isfinite(x) or not math.isfinite(y):
@@ -118,10 +118,12 @@ def linear_quantile(values: Iterable[float], probability: float) -> float:
     lower = int(index)
     upper = min(lower + 1, len(numbers) - 1)
     fraction = index - lower
+    if numbers[lower] == numbers[upper]:
+        return numbers[lower]
     result = numbers[lower] * (1.0 - fraction) + numbers[upper] * fraction
     if not math.isfinite(result):
         raise ValueError("numeric overflow while interpolating quantile")
-    return result
+    return min(numbers[upper], max(numbers[lower], result))
 
 
 @dataclass(frozen=True)

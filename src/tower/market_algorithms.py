@@ -8,7 +8,9 @@ from __future__ import annotations
 
 import math
 import random
+import sys
 from dataclasses import asdict, dataclass
+from decimal import Decimal, localcontext
 from itertools import islice
 from typing import Iterable
 
@@ -42,15 +44,42 @@ def simple_moving_average(prices: Iterable[float], window: int) -> tuple[float |
     values = _prices(prices)
     if isinstance(window, bool) or not isinstance(window, int) or window < 1:
         raise ValueError("window must be a positive integer")
-    total = 0.0
+    # A finite mean can exist even if a float summation overflows. Use exact
+    # decimal sliding sums in that exceptional regime, preserving subnormals
+    # that would disappear if every observation were divided by the window.
+    if max(values) > sys.float_info.max / min(window, len(values)):
+        output: list[float | None] = []
+        with localcontext() as context:
+            context.prec = 800  # spans the entire IEEE-754 double exponent range
+            running = Decimal(0)
+            for index, value in enumerate(values):
+                if index >= window:
+                    running -= Decimal.from_float(values[index - window])
+                running += Decimal.from_float(value)
+                output.append(float(running / window) if index + 1 >= window else None)
+        return tuple(output)
+    # Neumaier compensation retains small values while a much larger observation
+    # enters and later leaves the rolling window; O(n) instead of resumming it.
+    total = correction = 0.0
+
+    def accumulate(value: float) -> None:
+        nonlocal total, correction
+        updated = total + value
+        if abs(total) >= abs(value):
+            correction += (total - updated) + value
+        else:
+            correction += (value - updated) + total
+        total = updated
+
     output: list[float | None] = []
     for index, value in enumerate(values):
-        total += value
         if index >= window:
-            total -= values[index - window]
-        if not math.isfinite(total):
+            accumulate(-values[index - window])
+        accumulate(value)
+        adjusted = total + correction
+        if not math.isfinite(total) or not math.isfinite(correction) or not math.isfinite(adjusted):
             raise ValueError("SMA accumulation overflow")
-        output.append(total / window if index + 1 >= window else None)
+        output.append(adjusted / window if index + 1 >= window else None)
     return tuple(output)
 
 
@@ -76,10 +105,12 @@ def wilder_rsi(prices: Iterable[float], period: int = 14) -> tuple[float | None,
     if len(values) <= period:
         raise ValueError("RSI requires at least period + 1 prices")
     deltas = [new - old for old, new in zip(values, values[1:])]
-    gain = sum(max(delta, 0.0) for delta in deltas[:period]) / period
-    loss = sum(max(-delta, 0.0) for delta in deltas[:period]) / period
+    gain = math.fsum(max(delta, 0.0) / period for delta in deltas[:period])
+    loss = math.fsum(max(-delta, 0.0) / period for delta in deltas[:period])
 
     def index_value(average_gain: float, average_loss: float) -> float:
+        if not (math.isfinite(average_gain) and math.isfinite(average_loss)):
+            raise ValueError("RSI accumulation overflow")
         if average_gain == 0 and average_loss == 0:
             return 50.0  # no directional movement
         if average_loss == 0:
@@ -90,8 +121,8 @@ def wilder_rsi(prices: Iterable[float], period: int = 14) -> tuple[float | None,
 
     output: list[float | None] = [None] * period + [index_value(gain, loss)]
     for delta in deltas[period:]:
-        gain = (gain * (period - 1) + max(delta, 0.0)) / period
-        loss = (loss * (period - 1) + max(-delta, 0.0)) / period
+        gain += (max(delta, 0.0) - gain) / period
+        loss += (max(-delta, 0.0) - loss) / period
         output.append(index_value(gain, loss))
     return tuple(output)
 
@@ -104,14 +135,20 @@ def cumulative_vwap(
     volume = finite_values(volumes)
     if len(px) != len(volume) or any(value < 0 for value in volume):
         raise ValueError("prices/volumes must align and volumes cannot be negative")
-    notional = total_volume = 0.0
+    scale = 0.0
+    total_weight = mean = 0.0
     result: list[float | None] = []
     for price, size in zip(px, volume):
-        notional += price * size
-        total_volume += size
-        if not math.isfinite(notional) or not math.isfinite(total_volume):
+        if size > scale:
+            total_weight *= scale / size
+            scale = size
+        weight = size / scale if scale > 0 else 0.0
+        total_weight += weight
+        if weight:
+            mean += (price - mean) * (weight / total_weight)
+        if not math.isfinite(mean) or not math.isfinite(total_weight):
             raise ValueError("VWAP accumulation overflow")
-        result.append(notional / total_volume if total_volume > 0 else None)
+        result.append(mean if total_weight > 0 else None)
     return tuple(result)
 
 
@@ -133,10 +170,11 @@ def order_book_imbalance(
             raise ValueError("order book prices must be positive and sizes nonnegative")
     if max(price for price, _ in left) > min(price for price, _ in right):
         raise ValueError("crossed order book cannot be measured as a valid snapshot")
-    buy_size = math.fsum(size for _, size in left)
-    sell_size = math.fsum(size for _, size in right)
-    if not math.isfinite(buy_size + sell_size) or buy_size + sell_size <= 0:
+    largest = max(size for _, size in (*left, *right))
+    if largest <= 0:
         raise ValueError("order book depth must be finite and nonzero")
+    buy_size = math.fsum(size / largest for _, size in left)
+    sell_size = math.fsum(size / largest for _, size in right)
     return (buy_size - sell_size) / (buy_size + sell_size)
 
 
@@ -156,6 +194,8 @@ def black_scholes_european(
         return max(0.0, spot - strike) if option_type == "call" else max(0.0, strike - spot)
     try:
         discounted_strike = strike * math.exp(-risk_free_rate * years)
+        if not math.isfinite(discounted_strike):
+            raise ValueError("discounted strike overflow")
         if annual_volatility == 0:
             intrinsic = spot - discounted_strike
             return max(0.0, intrinsic if option_type == "call" else -intrinsic)
@@ -216,7 +256,13 @@ def annualized_volatility(returns: Iterable[float], *, periods_per_year: int = 2
             or periods_per_year < 1):
         raise ValueError("periods_per_year must be a positive integer")
     variance = online_moments(returns).variance
-    return math.sqrt(variance * periods_per_year)
+    try:
+        result = math.sqrt(variance) * math.sqrt(periods_per_year)
+    except OverflowError as exc:
+        raise ValueError("periods_per_year is outside numeric range") from exc
+    if not math.isfinite(result):
+        raise ValueError("annualized volatility overflow")
+    return result
 
 
 def historical_var_expected_shortfall(
@@ -234,7 +280,7 @@ def historical_var_expected_shortfall(
     losses = tuple(-value for value in values)
     threshold = linear_quantile(losses, confidence)
     tail = [value for value in losses if value >= threshold]
-    return max(0.0, threshold), max(0.0, math.fsum(tail) / len(tail))
+    return max(0.0, threshold), max(0.0, math.fsum(value / len(tail) for value in tail))
 
 
 def gbm_terminal_prices(
@@ -257,8 +303,13 @@ def gbm_terminal_prices(
     if isinstance(seed, bool) or not isinstance(seed, int):
         raise ValueError("seed must be an integer")
     generator = random.Random(seed)
-    mean_log = (annual_drift - annual_volatility**2 / 2) * years
-    scale = annual_volatility * math.sqrt(years)
+    try:
+        scale = annual_volatility * math.sqrt(years)
+        mean_log = annual_drift * years - scale**2 / 2
+    except OverflowError as exc:
+        raise ValueError("GBM overflow; constrain scenario parameters") from exc
+    if not math.isfinite(scale) or not math.isfinite(mean_log):
+        raise ValueError("GBM overflow; constrain scenario parameters")
     try:
         result = tuple(initial_price * math.exp(mean_log + scale * generator.gauss(0, 1))
                        for _ in range(paths))
@@ -310,18 +361,27 @@ def simulate_long_only(
     market impact. Signals must be 0 (cash) or 1 (fully long).
     """
     closes = _prices(prices, minimum=2)
-    targets = tuple(signals)
+    # At most one extra element is necessary to detect both mismatches and an
+    # infinite/oversized signal generator without unbounded allocation.
+    targets = tuple(islice(signals, len(closes) + 1))
     if len(targets) != len(closes) or any(
         type(value) is not int or value not in (0, 1) for value in targets
     ):
         raise ValueError("signals must be exactly one integer 0/1 per price")
-    if not math.isfinite(initial_capital) or initial_capital <= 0:
+    try:
+        capital = float(initial_capital)
+        friction = (float(fee_bps), float(slippage_bps))
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError("capital and friction must be finite numeric values") from exc
+    if (isinstance(initial_capital, bool) or not math.isfinite(capital)
+            or capital <= 0):
         raise ValueError("initial_capital must be finite and positive")
-    if not all(math.isfinite(value) and 0 <= value < 10_000 for value in (fee_bps, slippage_bps)):
+    if (isinstance(fee_bps, bool) or isinstance(slippage_bps, bool)
+            or not all(math.isfinite(value) and 0 <= value < 10_000 for value in friction)):
         raise ValueError("fee_bps and slippage_bps must lie in [0, 10000)")
-    fee = fee_bps / 10_000
-    slip = slippage_bps / 10_000
-    cash, shares = float(initial_capital), 0.0
+    fee = friction[0] / 10_000
+    slip = friction[1] / 10_000
+    cash, shares = capital, 0.0
     equity: list[float] = []
     fills: list[SimulatedFill] = []
     for index, close in enumerate(closes):
@@ -344,11 +404,14 @@ def simulate_long_only(
         if not math.isfinite(marked_equity) or marked_equity <= 0:
             raise ValueError("simulation equity is nonfinite or nonpositive")
         equity.append(marked_equity)
+    total_return = equity[-1] / capital - 1
+    if not math.isfinite(total_return):
+        raise ValueError("simulation total return overflow")
     return BacktestResult(
         schema="glaciereq.tower.market-backtest.v1",
-        initial_capital=float(initial_capital),
+        initial_capital=capital,
         final_equity=equity[-1],
-        total_return=equity[-1] / initial_capital - 1,
+        total_return=total_return,
         max_drawdown=maximum_drawdown(equity),
         equity_curve=tuple(equity),
         fills=tuple(fills),

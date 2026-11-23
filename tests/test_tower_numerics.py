@@ -35,6 +35,7 @@ class NumericalAlgorithmsTests(unittest.TestCase):
         self.assertAlmostEqual(linear_quantile(samples, 0.25), 1.75)
         self.assertAlmostEqual(linear_quantile(samples, 0.5), 2.5)
         self.assertEqual(linear_quantile([7], 0.2), 7)
+        self.assertEqual(linear_quantile([0.0003, 0.0003], 0.95), 0.0003)
 
     def test_bisection_bracket_convergence(self):
         result = bisect_root(lambda x: x * x - 2, 1, 2, absolute_tolerance=1e-12)
@@ -59,8 +60,15 @@ class NumericalAlgorithmsTests(unittest.TestCase):
             lambda: online_moments([5]),
             lambda: online_moments([1, float("nan")]),
             lambda: online_moments([True, 2]),
+            lambda: online_moments(["3.5", 2]),
+            lambda: linear_quantile(["3.5", 2], 0.5),
             lambda: linear_quantile(repeat(1.0, 1_000_001), 0.5),
             lambda: online_moments([1, 2], ddof=3),
+            lambda: online_moments([1, 2], ddof=True),
+            lambda: online_covariance([1, 2], [3, 4], ddof=False),
+            lambda: online_covariance([True, 2], [3, 4]),
+            lambda: online_covariance(["1", 2], [3, 4]),
+            lambda: online_covariance([1, float('nan')], [3, 4]),
             lambda: linear_quantile([1, float("inf")], 0.5),
             lambda: linear_quantile([1, 2], -0.2),
         ):

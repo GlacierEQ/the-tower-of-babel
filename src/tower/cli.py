@@ -28,10 +28,12 @@ def _print(value: Any) -> None:
     print(json.dumps(value, indent=2, sort_keys=True))
 
 
-def _read_json_object(path: Path, label: str) -> dict[str, Any]:
+def _read_json_object(path: Path, label: str, *, max_bytes: int | None = None) -> dict[str, Any]:
     if not path.is_file():
         raise ValueError(f"{label} not found: {path}")
     try:
+        if max_bytes is not None and path.stat().st_size > max_bytes:
+            raise ValueError(f"{label} exceeds {max_bytes} byte safety limit")
         payload = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         raise ValueError(f"{label} is unreadable or invalid JSON: {path}: {exc}") from exc
@@ -337,13 +339,13 @@ def main() -> int:
                 _print(list_algorithms())
                 return 0
             if args.algorithm_action == "run":
-                request = _read_json_object(Path(args.request), "algorithm request")
+                request = _read_json_object(Path(args.request), "algorithm request", max_bytes=32 * 1024 * 1024)
                 if request.get("schema") != "glaciereq.tower.algorithm-execution.v1":
                     raise ValueError("unsupported algorithm execution schema")
                 _print(execute_algorithm(request.get("algorithm_id"), request.get("arguments")))
                 return 0
             from .market_algorithms import simulate_long_only
-            dataset = _read_json_object(Path(args.dataset), "market research dataset")
+            dataset = _read_json_object(Path(args.dataset), "market research dataset", max_bytes=32 * 1024 * 1024)
             if dataset.get("schema") != "glaciereq.tower.market-research-input.v1":
                 raise ValueError("unsupported market research dataset schema")
             for key in ("prices", "signals"):

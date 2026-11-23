@@ -6,6 +6,9 @@ The Tower now includes **18 implemented mathematical / market research functions
 not merely algorithm names. They are discoverable through the authored
 [`registry/algorithm_catalog.json`](../registry/algorithm_catalog.json), which
 `tower validate` checks against real function objects and test paths.
+The authored catalog is mirrored into packaged Tower data; validation rejects
+source/package drift, and an installed wheel can list and validate algorithms
+without access to the original test checkout.
 
 The *existing* Python floor owns the correctness-reference implementation. No
 new programming language is claimed. Julia, Fortran, R, and C++ remain candidates
@@ -93,7 +96,9 @@ about any broker's support or permitted minimum order.
   deterministic CLI readback. Passing these tests supports only these methods.
 - Numeric series are bounded to one million observations, market-book snapshots
   to 10,000 levels per side, Monte Carlo to 100,000 paths, and bisection to
-  a caller-bounded iteration count; excess work is rejected.
+  a caller-bounded iteration count; excess work is rejected. JSON algorithm
+  requests are limited to 32 MiB before parsing. A bisection result includes
+  a residual that callers must check before claiming a genuine root.
 
 ### Technology choice, provenance, and next comparison
 

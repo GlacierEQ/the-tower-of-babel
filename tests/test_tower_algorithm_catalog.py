@@ -6,13 +6,18 @@ import subprocess
 import sys
 import unittest
 from copy import deepcopy
+from pathlib import Path
+from unittest.mock import patch
 
 from tower.algorithm_catalog import (
+    PACKAGED_CATALOG,
+    REPOSITORY_CATALOG,
     execute_algorithm,
     list_algorithms,
     load_algorithm_catalog,
     validate_algorithm_catalog,
 )
+from tower.cli import _read_json_object
 from tower.registry import REPO_ROOT, load_registry
 
 
@@ -24,6 +29,12 @@ class AlgorithmCatalogTests(unittest.TestCase):
         self.assertEqual(exposed["count"], 18)
         self.assertIs(exposed["external_effects"], False)
         self.assertEqual(exposed["benchmark_status"], "NOT_BENCHMARKED_AGAINST_ALTERNATIVES")
+        self.assertEqual(REPOSITORY_CATALOG.read_bytes(), PACKAGED_CATALOG.read_bytes())
+
+    def test_packaged_catalog_validates_without_source_test_checkout(self):
+        packaged = load_algorithm_catalog(PACKAGED_CATALOG)
+        with patch("tower.algorithm_catalog.REPOSITORY_CATALOG", Path("/no-source-checkout/registry/algorithm_catalog.json")):
+            self.assertEqual(validate_algorithm_catalog(packaged, load_registry()), [])
 
     def test_catalog_rejects_unimplemented_algorithm_and_duplicate_id(self):
         original = load_algorithm_catalog()
@@ -33,6 +44,23 @@ class AlgorithmCatalogTests(unittest.TestCase):
         errors = validate_algorithm_catalog(modified, load_registry())
         self.assertTrue(any("approved executable implementation" in error for error in errors))
         self.assertTrue(any("duplicate id" in error for error in errors))
+        modified = deepcopy(original)
+        modified["algorithms"][0]["module"] = []
+        modified["algorithms"][1]["domain"] = []
+        modified["algorithms"][2]["id"] = "MATH.ONLINE_MOMENTS"
+        errors = validate_algorithm_catalog(modified, load_registry())
+        self.assertTrue(any("approved executable implementation" in error for error in errors))
+        self.assertTrue(any("unknown domain" in error for error in errors))
+        self.assertTrue(any("duplicate id" in error for error in errors))
+
+    def test_invalid_catalog_fails_cleanly_when_listed(self):
+        with patch("tower.algorithm_catalog.load_algorithm_catalog", return_value={"schema": "bad"}):
+            with self.assertRaisesRegex(ValueError, "invalid algorithm catalog"):
+                list_algorithms()
+
+    def test_agent_json_rejects_files_over_declared_limit(self):
+        with self.assertRaisesRegex(ValueError, "byte safety limit"):
+            _read_json_object(REPO_ROOT / "examples/market_algorithm_request.json", "request", max_bytes=4)
 
     def test_cli_simulates_fixture_without_broker_and_is_deterministic(self):
         command = [sys.executable, "-m", "tower", "algorithms", "simulate", "examples/market_research_signals.json"]

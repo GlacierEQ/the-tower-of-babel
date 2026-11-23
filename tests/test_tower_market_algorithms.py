@@ -3,6 +3,7 @@
 import math
 import random
 import unittest
+from itertools import repeat
 
 from tower.market_algorithms import (
     annualized_volatility,
@@ -35,6 +36,13 @@ class MarketAlgorithmsTests(unittest.TestCase):
         self.assertEqual(exponential_moving_average([1, 2, 3], 3), (1.0, 1.5, 2.25))
         self.assertEqual(simple_moving_average([1, 2], 5), (None, None))
 
+    def test_rolling_average_preserves_small_values_after_large_outlier(self):
+        self.assertEqual(simple_moving_average([1e16, 1, 1, 1], 1), (1e16, 1, 1, 1))
+        self.assertEqual(simple_moving_average([1e16, 1, 1, 1], 2)[2:], (1, 1))
+        self.assertEqual(simple_moving_average([1e308, 1e308, 1e308], 2), (None, 1e308, 1e308))
+        self.assertEqual(simple_moving_average([1e308, 5e-324, 5e-324], 2),
+                         (None, 5e307, 5e-324))
+
     def test_wilder_rsi_known_edges(self):
         self.assertEqual(wilder_rsi([10, 10, 10, 10, 10], 3), (None, None, None, 50, 50))
         self.assertEqual(wilder_rsi([1, 2, 3, 4, 5], 3)[-1], 100)
@@ -42,12 +50,20 @@ class MarketAlgorithmsTests(unittest.TestCase):
         mixed = wilder_rsi([10, 12, 11, 13, 10, 14], 3)
         self.assertEqual(len(mixed), 6)
         self.assertTrue(all(0 <= v <= 100 for v in mixed if v is not None))
+        self.assertAlmostEqual(mixed[3], 80)
+        self.assertAlmostEqual(mixed[4], 100 - 1100 / 19)
+        self.assertAlmostEqual(mixed[5], 100 - 1100 / 37)
+        large = wilder_rsi([1, 1e308, 1, 1e308, 1], 4)
+        self.assertTrue(math.isfinite(large[-1]))
 
     def test_vwap_and_order_book_microstructure(self):
         self.assertEqual(cumulative_vwap([100, 110, 90], [1, 3, 0]), (100, 107.5, 107.5))
         self.assertEqual(cumulative_vwap([100, 110], [0, 1]), (None, 110))
         self.assertAlmostEqual(order_book_imbalance([(99, 20), (98, 10)], [(100, 10)]), 0.5)
         self.assertEqual(order_book_imbalance([(99, 10)], [(100, 10)]), 0)
+        self.assertEqual(cumulative_vwap([100, 110], [1e-300, 1e308])[0], 100)
+        self.assertEqual(cumulative_vwap([100, 110], [1e-300, 1e308])[-1], 110)
+        self.assertAlmostEqual(order_book_imbalance([(99, 1e308)] * 3, [(100, 1e308)]), 0.5)
 
     def test_black_scholes_reference_and_put_call_parity(self):
         call = black_scholes_european(100, 100, 1, 0.2, 0.05)
@@ -65,6 +81,7 @@ class MarketAlgorithmsTests(unittest.TestCase):
         self.assertAlmostEqual(maximum_drawdown([100, 120, 90, 108]), 0.25)
         self.assertEqual(maximum_drawdown([1, 2, 3]), 0)
         self.assertAlmostEqual(annualized_volatility([0.01, -0.01]), math.sqrt(0.0002 * 252))
+        self.assertTrue(math.isfinite(annualized_volatility([1e153, -1e153])))
 
     def test_historical_var_es(self):
         var, es = historical_var_expected_shortfall([-0.1, -0.05, 0, 0.02, 0.03], confidence=0.8)
@@ -72,12 +89,15 @@ class MarketAlgorithmsTests(unittest.TestCase):
         self.assertAlmostEqual(es, 0.1)
         self.assertGreaterEqual(es, var)
         self.assertEqual(historical_var_expected_shortfall([0.01, 0.03, 0.02]), (0, 0))
+        self.assertEqual(historical_var_expected_shortfall([-0.0003, -0.0003]), (0.0003, 0.0003))
+        self.assertEqual(historical_var_expected_shortfall([-1e308, -1e308]), (1e308, 1e308))
 
     def test_gbm_reproducible_and_not_market_data(self):
         first = gbm_terminal_prices(100, 0.05, 0.2, 1, paths=20, seed=123)
         self.assertEqual(first, gbm_terminal_prices(100, 0.05, 0.2, 1, paths=20, seed=123))
         self.assertNotEqual(first, gbm_terminal_prices(100, 0.05, 0.2, 1, paths=20, seed=124))
         self.assertEqual(gbm_terminal_prices(100, 0, 0, 1, paths=3), (100, 100, 100))
+        self.assertEqual(gbm_terminal_prices(100, 0, 1e308, 0, paths=3), (100, 100, 100))
 
     def test_backtest_signal_acts_only_on_next_bar(self):
         result = simulate_long_only([100, 110, 120, 100], [1, 1, 0, 1], initial_capital=59)
@@ -105,6 +125,8 @@ class MarketAlgorithmsTests(unittest.TestCase):
         expensive = simulate_long_only([1000, 1100, 1200], [1, 1, 0], initial_capital=59)
         self.assertGreater(expensive.fills[0].shares, 0)  # simulated fractional shares
         self.assertLess(expensive.fills[0].shares, 1)
+        with self.assertRaises(ValueError):
+            simulate_long_only([100, 101], repeat(1))
 
     def test_randomized_delayed_fills_and_positive_equity(self):
         generator = random.Random(20261123)
@@ -145,6 +167,8 @@ class MarketAlgorithmsTests(unittest.TestCase):
             lambda: simulate_long_only([100, 110], [1, 0.5], initial_capital=59),
             lambda: simulate_long_only([100, 110], [1, 1], initial_capital=-1),
             lambda: simulate_long_only([100, 110], [1, 1], slippage_bps=10000),
+            lambda: simulate_long_only([100, 110], [1, 1], initial_capital=10**400),
+            lambda: simulate_long_only([1e-300, 1e-300, 1e300], [1, 1, 1], initial_capital=1e-300),
         )
         for call in invalid:
             with self.assertRaises(ValueError):
